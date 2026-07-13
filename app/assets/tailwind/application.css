@@ -1,0 +1,54 @@
+@import "tailwindcss";
+
+@plugin "@tailwindcss/forms";
+@plugin "@tailwindcss/typography";
+
+@variant dark (&:where(.dark, .dark *));
+@variant hotwire-native (html.hotwire-native &);
+@variant not-hotwire-native (html:not(.hotwire-native) &);
+
+@theme {
+  --font-sans: InterVariable, ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  /* https://rsms.me/inter/lab */
+  --font-sans--font-feature-settings: 'liga', 'cv02', 'cv03', 'cv04', 'cv11';
+  --color-primary: var(--bg-primary);
+
+  --color-gray-50: var(--color-neutral-50);
+  --color-gray-100: var(--color-neutral-100);
+  --color-gray-200: var(--color-neutral-200);
+  --color-gray-300: var(--color-neutral-300);
+  --color-gray-400: var(--color-neutral-400);
+  --color-gray-500: var(--color-neutral-500);
+  --color-gray-600: var(--color-neutral-600);
+  --color-gray-700: var(--color-neutral-700);
+  --color-gray-800: var(--color-neutral-800);
+  --color-gray-900: var(--color-neutral-900);
+  --color-gray-950: var(--color-neutral-950);
+}
+
+@import "./themes/dark.css" layer(theme);
+@import "./themes/light.css" layer(theme);
+
+@import "./components/base.css" layer(components);
+@import "./components/alert.css" layer(components);
+@import "./components/animation.css" layer(components);
+@import "./components/buttons.css" layer(components);
+@import "./components/cards.css" layer(components);
+@import "./components/direct_uploads.css" layer(components);
+@import "./components/docs.css" layer(components);
+@import "./components/forms.css" layer(components);
+@import "./components/hotwire_native.css" layer(components);
+@import "./components/iframe.css" layer(components);
+@import "./components/modal.css" layer(components);
+@import "./components/nav.css" layer(components);
+@import "./components/notifications.css" layer(components);
+@import "./components/pagination.css" layer(components);
+@import "./components/pills.css" layer(components);
+@import "./components/tabs.css" layer(components);
+@import "./components/toasts.css" layer(components);
+@import "./components/tooltips.css" layer(components);
+@import "./components/top_nav.css" layer(components);
+@import "./components/typography.css" layer(components);
+@import "./components/wells.css" layer(components);
+@import "./components/braintree.css" layer(components);
+@import "./components/lexxy.css";

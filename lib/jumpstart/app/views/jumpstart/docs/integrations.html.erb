@@ -1,0 +1,53 @@
+<% content_for :title, "Integrations" %>
+<% content_for :subtitle do %>
+  Jumpstart Pro has support for integrating your app with several third party services.
+<% end %>
+
+<%= h2_with_anchor "Enabling Integrations" %>
+
+<p>To enable an integration you can do so in the Integrations section of the Jumpstart Pro configuration wizard UI located at <%= link_to nil, "/jumpstart", target: :_blank %>.</p>
+
+<%= link_to("https://jumpstartpro.b-cdn.net/jsp-integration-config-wizard-v1.png", target: "_blank") do %>
+  <%= image_tag "https://jumpstartpro.b-cdn.net/jsp-integration-config-wizard-v1.png", class: "block my-8", alt: "Screenshot of Jumpstart Pro Integrations configuration wizard", size: "800" %>
+<% end %>
+
+<%= h2_with_anchor "Error & Performance Monitoring" %>
+
+<p class="mb-4">Jumpstart Pro can configure these services for you for reporting errors and performance in production.</p>
+
+<p>
+  <%= link_to "AppSignal", "https://appsignal.com/r/f422858ba7", target: :_blank %>
+  <%= badge "Recommended", class: "ml-3", tag: :span %>
+  <span class="ml-3 text-sm text-muted">Error and performance monitoring</span>
+</p>
+
+<p>
+  <%= link_to "Honeybadger", "https://www.honeybadger.io/?affiliate=vq7ujA", target: :_blank %>
+  <%= badge "Recommended", class: "ml-3", tag: :span %>
+  <span class="ml-3 text-sm text-muted">Error and uptime monitoring</span>
+</p>
+
+<p>
+  <%= link_to "AirBrake", "https://airbrake.io", target: :_blank %>
+  <span class="ml-3 text-sm text-muted">Error and performance monitoring</span>
+</p>
+
+<p>
+  <%= link_to "Rollbar", "https://rollbar.com", target: :_blank %>
+  <span class="ml-3 text-sm text-muted">Error monitoring</span>
+</p>
+
+<p>
+  <%= link_to "Scout APM", "https://scoutapm.com", target: :_blank %>
+  <span class="ml-3 text-sm text-muted">Performance monitoring</span>
+</p>
+
+<p>
+  <%= link_to "Sentry", "https://sentry.io", target: :_blank %>
+  <span class="ml-3 text-sm text-muted">Error monitoring</span>
+</p>
+
+<p>
+  <%= link_to "Skylight", "https://www.skylight.io/r/rIsVdwGGkNQs", target: :_blank %>
+  <span class="ml-3 text-sm text-muted">Performance monitoring</span>
+</p>

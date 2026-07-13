@@ -1,0 +1,9 @@
+<div>
+  <p>
+    <%= t(".header_html", inviter: @invited_by.name, account: @account.name) %>
+  </p>
+
+  <p>
+    <%= link_to t(".view_invitation"), account_invitation_url(@account_invitation) %>
+  </p>
+</div>

@@ -1,0 +1,18 @@
+<% Current.meta_tags.set(title: t(".title", account: @account.name)) %>
+
+<div class="max-w-md mx-auto mt-12 text-center">
+  <h1><%= t(".title", account: @account.name) %></h1>
+
+  <div class="mt-8 flex items-center justify-center">
+    <%= image_tag avatar_url_for(@account_invitation.account), class: "size-5 rounded-full inline-block mr-1" %>
+
+    <div>
+      <%= t(".invited_you_to_join_html", inviter: @account_invitation.invited_by.name, account: @account_invitation.account.name) %>
+    </div>
+  </div>
+
+  <div class="mt-8 flex gap-4 justify-center">
+    <%= button_to t(".accept"), account_invitation_path(@account_invitation.token), method: :put, class: "btn btn-primary" %>
+    <%= button_to t(".decline"), account_invitation_path(@account_invitation.token), method: :delete, class: "btn btn-secondary", data: {turbo_confirm: t("are_you_sure")} %>
+  </div>
+</div>

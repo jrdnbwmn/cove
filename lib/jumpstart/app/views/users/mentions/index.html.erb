@@ -1,0 +1,10 @@
+<% @users.each do |user| %>
+  <lexxy-prompt-item search="<%= "#{user.name}" %>" sgid="<%= user.attachable_sgid %>">
+    <template type="menu">
+      <%= render "users/user", user: user %>
+    </template>
+    <template type="editor">
+      <%= render "users/user", user: user %>
+    </template>
+  </lexxy-prompt-item>
+<% end %>

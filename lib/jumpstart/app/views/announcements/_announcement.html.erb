@@ -1,0 +1,11 @@
+<div class="my-4 lg:my-10" id="<%= dom_id(announcement) %>">
+  <%= tag.div local_relative_time(announcement.published_at, 'weekday-or-date'), class: "text-muted text-sm font-medium capitalize" %>
+
+  <h2 class="h3 my-2"><%= link_to announcement.title, announcement %></h2>
+
+  <%= announcement_badge announcement, class: "my-2" %>
+
+  <div class="mt-6">
+    <%= announcement.description %>
+  </div>
+</div>

@@ -1,0 +1,17 @@
+Description:
+    Copies files from Jumpstart into your application. This allows you to
+    override any functionality in Jumpstart without having to deal with git
+    merge conflicts when upgrading.
+
+Examples:
+    `bin/rails generate jumpstart:override app/views/layouts/application.html.erb`
+
+    copies the application.html.erb layout from Jumpstart into your app.
+
+    `bin/rails generate jumpstart:override app/views/layouts`
+
+    copies the layouts directory from Jumpstart into your application.
+
+    `bin/rails generate jumpstart:override app/models/account_user.rb`
+
+    copies the AccountUser model from Jumpstart into your application.

@@ -1,0 +1,20 @@
+<% Current.meta_tags.set(title: t(".title")) %>
+
+<div class="sm:max-w-sm px-4 mx-auto my-10 lg:px-0">
+  <h2 class="mb-4 h3"><%= t('.forgot_your_password') %></h2>
+
+  <%= form_for(resource, as: resource_name, url: password_path(resource_name), html: { method: :post }) do |f| %>
+    <%= render "error_messages", resource: resource %>
+
+    <div class="form-group">
+      <%= f.label :email %>
+      <%= f.email_field :email,  autocomplete: "email", placeholder: "you@example.com", class: "form-control" %>
+    </div>
+
+    <div class="form-group">
+      <%= f.submit t('.send_me_reset_password_instructions'), class: "btn btn-primary btn-expanded" %>
+    </div>
+  <% end %>
+
+  <%= render "devise/shared/links" %>
+</div>
