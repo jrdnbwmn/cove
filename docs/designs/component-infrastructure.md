@@ -1,3 +1,5 @@
+> Plan created: docs/plans/component-infrastructure.md
+
 # Feature: Component Infrastructure Plumbing (ViewComponent + Lookbook)
 
 _Linear: COV-10 — [1] Component infrastructure plumbing (ViewComponent + Lookbook)_
