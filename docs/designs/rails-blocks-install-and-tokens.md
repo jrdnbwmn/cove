@@ -1,5 +1,6 @@
 > Ticket: COV-11
 > Branch: feature/cov-11-rails-blocks-install
+> Plan created: docs/plans/rails-blocks-install-and-tokens.md
 
 # Feature: Install Rails Blocks Pro + default design tokens
 
