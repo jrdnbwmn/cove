@@ -4,12 +4,12 @@
 
 | Task | Description | Assign | Done |
 | ---- | ----------- | ------ | ---- |
-| 1 | Install gems + ViewComponent/Lookbook preview-path config | Master | |
-| 2 | Dev-only routes, `Dev::KitchenSinkController`, kitchen-sink view + tests | Master | |
-| 3 | Empty design-token file, imported into Tailwind build | Clone | |
-| 4 | Catalog + component-map doc scaffolds | Clone | |
-| 5 | Fix stale `_tokens.css` paths in style-ui skill (out-of-repo) | Clone | |
-| 6 | `ExampleComponent` end-to-end smoke test, then delete | Master | |
+| 1 | Install gems + ViewComponent/Lookbook preview-path config | Master | ✓ |
+| 2 | Dev-only routes, `Dev::KitchenSinkController`, kitchen-sink view + tests | Master | ✓ |
+| 3 | Empty design-token file, imported into Tailwind build | Clone | ✓ |
+| 4 | Catalog + component-map doc scaffolds | Clone | ✓ |
+| 5 | Fix stale `_tokens.css` paths in style-ui skill (out-of-repo) | Clone | ✓ |
+| 6 | `ExampleComponent` end-to-end smoke test, then delete | Master | ✓ |
 
 ## Prerequisites
 
