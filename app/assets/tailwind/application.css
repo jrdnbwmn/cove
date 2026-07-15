@@ -28,6 +28,7 @@
 
 @import "./themes/dark.css" layer(theme);
 @import "./themes/light.css" layer(theme);
+@import "./theme/_tokens.css";
 
 @import "./components/base.css" layer(components);
 @import "./components/alert.css" layer(components);

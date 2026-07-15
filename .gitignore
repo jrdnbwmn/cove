@@ -69,3 +69,7 @@ yarn-debug.log*
 /vendor/assets/bower_components
 *.bowerrc
 bower.json
+
+# Claude Code local session state
+/CLAUDE.local.md
+/.claude/

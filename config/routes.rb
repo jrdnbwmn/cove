@@ -18,4 +18,9 @@ Rails.application.routes.draw do
 
   # Public marketing homepage
   root to: "public#index"
+
+  if Rails.env.local?
+    mount Lookbook::Engine, at: "/lookbook" if defined?(Lookbook::Engine)
+    get "dev/kitchen_sink", to: "dev/kitchen_sink#show"
+  end
 end
