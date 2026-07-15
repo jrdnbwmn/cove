@@ -80,7 +80,7 @@ module Buttons
       if @href.present?
         attrs[:href] = @href
         attrs[:role] = "button"
-        attrs[:'aria-disabled'] = @disabled if @disabled
+        attrs[:"aria-disabled"] = @disabled if @disabled
       else
         attrs[:type] = @type
         attrs[:disabled] = @disabled if @disabled
@@ -137,7 +137,7 @@ module Buttons
     end
 
     def variant_classes
-      @style == :fancy ? fancy_variant_classes : basic_variant_classes
+      (@style == :fancy) ? fancy_variant_classes : basic_variant_classes
     end
 
     def basic_variant_classes
