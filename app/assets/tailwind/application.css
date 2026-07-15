@@ -11,8 +11,6 @@
   --font-sans: InterVariable, ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
   /* https://rsms.me/inter/lab */
   --font-sans--font-feature-settings: 'liga', 'cv02', 'cv03', 'cv04', 'cv11';
-  --color-primary: var(--bg-primary);
-
   --color-gray-50: var(--color-neutral-50);
   --color-gray-100: var(--color-neutral-100);
   --color-gray-200: var(--color-neutral-200);
@@ -52,4 +50,5 @@
 @import "./components/typography.css" layer(components);
 @import "./components/wells.css" layer(components);
 @import "./components/braintree.css" layer(components);
+@import "./rails_blocks/base.css" layer(components);
 @import "./components/lexxy.css";

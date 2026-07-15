@@ -25,6 +25,7 @@ module JumpstartApp
     # config.eager_load_paths << Rails.root.join("extras")
 
     config.view_component.previews.paths = [Rails.root.join("test/components/previews")]
+    config.view_component.previews.default_layout = "component_preview"
 
     # Use ErrorsController for handling 404s and 500s.
     config.exceptions_app = routes

@@ -2,7 +2,12 @@
 
 <section>
   <h2>Buttons</h2>
-  <%# TODO: replace with button component examples %>
+  <div class="flex gap-4">
+    <%= render Buttons::Component.new(text: "Primary Button") %>
+    <div class="dark">
+      <%= render Buttons::Component.new(text: "Primary Button") %>
+    </div>
+  </div>
 </section>
 
 <section>

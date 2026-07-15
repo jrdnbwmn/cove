@@ -7,12 +7,12 @@
 
 | Task | Description | Assign | Done |
 | ---- | ----------- | ------ | ---- |
-| 1 | Default token layer (`_tokens.css`) | Master |  |
-| 2 | Foundational Rails Blocks base CSS + `application.css` wiring | Master |  |
-| 3 | Install `buttons` ViewComponent, wire to tokens, component test | Master |  |
-| 4 | Lookbook preview + kitchen-sink smoke-test entry | Master |  |
-| 5 | `# AIDEV-NOTE` markers on Jumpstart CSS files that clash with new tokens | Clone |  |
-| 6 | Catalog/preview sync, full test suite, final commit | Master |  |
+| 1 | Default token layer (`_tokens.css`) | Master | ✅ |
+| 2 | Foundational Rails Blocks base CSS + `application.css` wiring | Master | ✅ |
+| 3 | Install `buttons` ViewComponent, wire to tokens, component test | Master | ✅ |
+| 4 | Lookbook preview + kitchen-sink smoke-test entry | Master | ✅ |
+| 5 | `# AIDEV-NOTE` markers on Jumpstart CSS files that clash with new tokens | Clone | ✅ |
+| 6 | Catalog/preview sync, full test suite, final commit | Master | ✅ |
 
 ## Prerequisites
 
