@@ -1,3 +1,4 @@
+/* AIDEV-NOTE: This file reads Jumpstart's --bg-primary/--text-on-primary token family; COV-4–6 will migrate it to the new _tokens.css palette. */
 .pill {
   border-radius: 9999px;
   padding: 4px 16px;

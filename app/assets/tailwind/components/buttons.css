@@ -1,3 +1,4 @@
+/* AIDEV-NOTE: This file reads Jumpstart's --bg-primary/--text-on-primary token family; COV-4–6 will migrate it to the new _tokens.css palette. */
 /* Hotwire's version of data-disable-with */
 button                  .when-disabled { display: none; }
 button[disabled]        .when-disabled { display: initial; }
