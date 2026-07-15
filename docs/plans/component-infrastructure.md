@@ -1,3 +1,6 @@
+> Ticket: COV-10
+> Branch: feature/component-infrastructure
+
 # Plan: Component Infrastructure Plumbing (ViewComponent + Lookbook)
 
 ## Status

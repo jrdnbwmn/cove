@@ -1,3 +1,6 @@
+> Ticket: COV-10
+> Branch: feature/component-infrastructure
+
 > Plan created: docs/plans/component-infrastructure.md
 
 # Feature: Component Infrastructure Plumbing (ViewComponent + Lookbook)
