@@ -14,7 +14,7 @@
 | 5 | `_notifications` → `DropdownComponent` (preserve turbo-frame + badge) | Master | ✅ |
 | 6 | `_flash` → `AlertComponent` banners (keep toasts) | Master | ✅ |
 | 7 | `_footer` app-level restyle with tokens | Clone | ✅ |
-| 8 | Surgical CSS trim of `top_nav.css` / `nav.css` | Master | |
+| 8 | Surgical CSS trim of `top_nav.css` / `nav.css` | Master | ✅ |
 | 9 | Full verification: tests, browser widths/themes, `/update-catalog` | Master | |
 
 ## Prerequisites
@@ -184,11 +184,11 @@
 **Skills:** style-ui
 **Reference:** design "CSS trim boundary" table; `app/assets/tailwind/components/top_nav.css`, `nav.css`
 
-**In scope — delete ONLY orphaned shell rules:**
+**In scope — delete ONLY rules confirmed orphaned by the implementation audit:**
 
-- `top_nav.css`: `.top-nav` core shell bits, `.nav-container`, `.nav-user-controls`, `#sidebar-open`, `.top-nav__sub-nav*`, `section nav a` / `section nav form button`, `.dropdown-menu`, `.account-menu`, `button[aria-label="Notifications"]`.
-- `nav.css`: `nav.menu-component` (+ `.notifications`).
-- **Keep:** `.top-nav` base (shared with native/minimal/docs), `.top-nav.native`, `.minimal-top-nav`, `.sidebar`, `.vertical-nav`, `.left-nav__sub-nav`.
+- `top_nav.css`: `.top-nav__sub-nav*`, `.dropdown-menu`, and `.account-menu`.
+- `nav.css`: only the `nav.menu-component.notifications` modifier.
+- **Keep:** `.top-nav` base, `.top-nav.native`, `.minimal-top-nav`, `.nav-container`, `.nav-user-controls`, `#sidebar-open`, `section nav a` / `section nav form button`, `button[aria-label="Notifications"]`, and the main `nav.menu-component` rule because Hotwire Native and/or the vendored docs navigation examples still use them; also keep `.sidebar`, `.vertical-nav`, and `.left-nav__sub-nav`.
 
 **NOT in scope:** deleting either file entirely (later ticket); touching native/minimal/sidebar/docs rules.
 
