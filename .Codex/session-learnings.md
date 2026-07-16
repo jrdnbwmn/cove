@@ -158,3 +158,6 @@ auto-format pass after that normalization. Browser automation remains
 unavailable; use a temporary Puma process with curl for `/dev/kitchen_sink` and
 `/lookbook`, and preserve the browser-only network and interactive checks for a
 browser-enabled session.
+
+## Catchup 2026-07-16 (wrap-up)
+Nothing notable.
