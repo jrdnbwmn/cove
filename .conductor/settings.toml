@@ -5,6 +5,9 @@ setup = """
 export PATH="$HOME/.local/share/mise/shims:$PATH"
 set -e
 
+# REPO_ROOT isn't always set by Conductor; fall back to the workspace cwd
+REPO_ROOT="${REPO_ROOT:-$(pwd)}"
+
 # Symlink gitignored local files so they stay in sync across workspaces
 if [ -f "$CONDUCTOR_ROOT_PATH/CLAUDE.local.md" ]; then
   ln -sf "$CONDUCTOR_ROOT_PATH/CLAUDE.local.md" "$REPO_ROOT/CLAUDE.local.md"
