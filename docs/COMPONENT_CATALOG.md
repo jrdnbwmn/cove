@@ -4,11 +4,11 @@
 
 | Component | Purpose | Key args | Preview |
 | --- | --- | --- | --- |
-| `Buttons::Component` | Renders an action button or link with visual variants, sizes, and states. | `text`, `variant`, `size`, `style`, `href` | `Buttons::ComponentPreview` |
+| `ButtonComponent` | Renders an action button or link with visual variants, sizes, and states. | `text`, `variant`, `size`, `style`, `href` | `ButtonComponentPreview` |
 
 ## Component Details
 
-### Buttons::Component
+### ButtonComponent
 
 **Purpose:** Renders a reusable action button or link with primary, secondary,
 outline, ghost, and destructive variants.
@@ -40,12 +40,12 @@ The basic primary variant uses the shared `bg-primary` and
 **States:** Supports disabled and loading states. Loading shows a spinner and
 disables the control.
 
-**Preview:** `Buttons::ComponentPreview`
+**Preview:** `ButtonComponentPreview`
 
 **Usage:**
 
 ```erb
-<%= render Buttons::Component.new(text: "Save changes") %>
+<%= render ButtonComponent.new(text: "Save changes") %>
 ```
 
 ### Component Details template
