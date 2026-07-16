@@ -161,3 +161,23 @@ browser-enabled session.
 
 ## Catchup 2026-07-16 (wrap-up)
 Nothing notable.
+
+## Catchup 2026-07-16 (COV-13 Task 1)
+
+### Friction
+
+The plan’s `test:system TEST=...` verification syntax is incompatible with this
+checkout, and `-n` emits a deprecation warning. Use the positional test-file
+form with `-i` instead.
+
+### Mistakes
+
+The initial system test used `click_button` with aria-labels. This Capybara
+version did not resolve those controls; CSS attribute selectors are reliable.
+
+### Observations
+
+The COV-13 system-test skeleton intentionally stays partly red while its menu,
+notification, flash, and footer implementation tasks remain pending. Verify
+only the cases owned by the current task, then retain the shared suite for the
+later tasks to turn green.
