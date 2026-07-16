@@ -25,6 +25,8 @@
 | `PaginationComponent` | Renders Pagy navigation in full, compact, or minimal form. | `pagy`, `variant`, `size`, `frame_id` | `PaginationComponentPreview` |
 | `SidebarComponent` | Renders responsive primary navigation with collapsible groups. | `variant`, `collapsible`, `storage_key`, `position` | `SidebarComponentPreview` |
 | `CardComponent` | Renders a content container with optional image, header, body, and footer slots. | `variant`, `padding`, `shadow`, `divide`, `hoverable` | `CardComponentPreview` |
+| `AvatarComponent` | Renders a user or account image with accessible initials fallback and optional online status. | `alt`, `src`, `fallback`, `size`, `status` | `AvatarComponentPreview` |
+| `TableComponent` | Renders a responsive, accessible data table with row and column slots. | `striped`, `hoverable`, `density`, `sticky_header` | `TableComponentPreview` |
 
 ## Component Details
 
@@ -604,6 +606,71 @@ and edge-to-edge mobile rendering.
   <% card.with_footer { "View project" } %>
 <% end %>
 ```
+
+### AvatarComponent
+
+**Purpose:** Renders a user or account avatar with a supplied image or accessible
+initials fallback. Use `AvatarComponent::GroupComponent` for compact member
+groups.
+
+**Arguments:** Use `alt`, `src`, `fallback`, `size`, `status`, `status_label`,
+`pulse`, `classes`, `html_options`, and `image_options`. `alt` is required;
+when `src` is absent, initials are derived from it.
+
+**Variants:** Sizes are `:xs`, `:sm`, `:md`, `:lg`, and `:xl`. The only status
+variant is `:online` and includes non-color status text for assistive technology.
+
+**Slots:** `AvatarComponent::GroupComponent` provides `with_avatar` and accepts
+`remaining_count`, `label`, and `animated` for a member group.
+
+**Preview:** `AvatarComponentPreview`
+
+**Usage:**
+
+```erb
+<%= render AvatarComponent.new(src: avatar_url_for(current_user), alt: current_user.name) %>
+```
+
+### TableComponent
+
+**Purpose:** Renders a responsive semantic table for account lists and other
+structured data.
+
+**Arguments:** Use `striped`, `hoverable`, `bordered`, `density`,
+`sticky_header`, `rounded`, `full_width`, `responsive`, `max_height`,
+`container`, `classes`, and `container_classes`. Pass a Tailwind max-height
+utility such as `"max-h-96"` to `max_height` when the header should scroll.
+
+**Slots:** `with_caption`, `with_head`, `with_body`, and `with_foot` support
+custom markup. The standard API uses `with_column`, `with_row`, and each row's
+`with_cell` slots.
+
+**Variants:** `density` accepts `:default` or `:compact`; `rounded` accepts
+`:none`, `:sm`, `:md`, `:lg`, or `:xl`.
+
+**Preview:** `TableComponentPreview`
+
+**Usage:**
+
+```erb
+<%= render TableComponent.new(striped: true) do |table| %>
+  <% table.with_column(label: "Name") %>
+  <% table.with_row do |row| %>
+    <% row.with_cell(primary: true) { current_user.name } %>
+  <% end %>
+<% end %>
+```
+
+## On-demand component policy
+
+When a feature needs a generic primitive not already in this catalog, install
+only that one Rails Blocks component through the `rails-blocks-cli` workflow:
+confirm its API, dry-run it as a ViewComponent, self-host any dependency,
+preserve Jumpstart controllers, add tests and previews, then update this catalog
+and the component map. Do not bulk-install the Rails Blocks catalog.
+
+Native file inputs remain wrapped by `FormFieldComponent` until Rails Blocks
+ships a matching primitive; do not create a parallel base component.
 
 ### Component Details template
 

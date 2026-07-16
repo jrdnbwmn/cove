@@ -7,7 +7,7 @@ The working tree is clean after the latest commit,
 `2a79b48 feature: add card component`. The active plan is
 [curated-rails-blocks-starter-set.md](../docs/plans/curated-rails-blocks-starter-set.md).
 
-Tasks B0 through B7 are complete and committed.
+Tasks B0 through B8 are complete.
 
 B6 added `NavbarComponent`, `BreadcrumbComponent`, `UiTabsComponent`,
 `PaginationComponent`, and `SidebarComponent`, including their nested
@@ -36,6 +36,15 @@ component and preview tests, Lookbook previews, kitchen-sink examples, catalog
 entry, and Data Display component-map node. `card` requires no Stimulus
 controller, importmap pin, vendored asset, or CDN resource.
 
+B8 audited the Jumpstart shell, Devise, and account views. Jordan approved the
+available Rails Blocks extras: `AvatarComponent` and `TableComponent`, including
+their tests, Lookbook previews, kitchen-sink examples, catalog entries, and Data
+Display component-map nodes. Both components are self-contained and add no
+Stimulus controller, importmap pin, vendored asset, or CDN resource. Rails Blocks
+does not ship a file-upload primitive, so profile and account file inputs remain
+native controls wrapped by `FormFieldComponent`; the catalog records this
+intentional fallback and the standing on-demand install policy.
+
 Earlier committed batches are B0 (button), B1 (form field), B2 (form controls
 and self-hosted tom-select), B3 (static feedback), B4 (toast/tooltip), and B5
 (modal/dropdown). All component classes include the required `# AIDEV-NOTE:`
@@ -43,29 +52,18 @@ normalization notes where relevant.
 
 ## Work Remaining
 
-Continue strictly in order from the approved plan. Before resuming, run:
-
-```sh
-git status --porcelain
-git branch --show-current
-mise exec -- bin/rails db:migrate:status
-mise exec -- bin/rails test
-```
-
-1. **B8 [next]:** Audit the existing shell, Devise, and account views. Present the
-   candidate Rails Blocks extras and stop for Jordan's explicit approval before
-   installing anything. Then document the ongoing on-demand install policy.
-
-Do not begin B8 automatically after B7; it is an explicit approval gate.
+The curated Rails Blocks starter-set plan is complete. The actual shell, auth,
+and billing rebuild remains deferred to Ticket 4; do not begin that work from
+this branch without a new approved plan.
 
 ## Verification
 
-After B7, the following all passed:
+After B8, the following all passed:
 
-- `mise exec -- bin/rails test` — 276 runs, 605 assertions, 0 failures.
-- `mise exec -- bundle exec rubocop` — 417 files inspected, no offenses.
-- A local Puma smoke check returned 200 for `/dev/kitchen_sink` (93,130 bytes)
-  and `/lookbook` (122,769 bytes). The server was stopped cleanly afterward.
+- `mise exec -- bin/rails test` — 280 runs, 611 assertions, 0 failures.
+- `mise exec -- bundle exec rubocop` — 427 files inspected, no offenses.
+- A local Puma smoke check returned 200 for `/dev/kitchen_sink` (92,980 bytes)
+  and `/lookbook` (132,336 bytes). The server was stopped cleanly afterward.
 
 Browser automation is unavailable in this workspace. Do not substitute an
 unrelated browser. Component tests and the local server/curl smoke check were
@@ -91,5 +89,4 @@ used instead; defer interactive visual checks to a browser-enabled session.
 
 ## Open Questions
 
-- B8's candidate extras and any subsequent install require Jordan's approval
-  after the audit.
+- None for the curated starter set.

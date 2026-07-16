@@ -205,6 +205,15 @@
 <section>
   <h2>Data Display</h2>
   <div class="grid gap-4 md:grid-cols-2">
+    <div class="flex items-center gap-4">
+      <%= render AvatarComponent.new(alt: "Avery Stone") %>
+      <%= render AvatarComponent.new(src: "/icon.svg", alt: "Jordan Lee", size: :lg, status: :online) %>
+      <% member_group = AvatarComponent::GroupComponent.new(label: "Project members", remaining_count: 2) %>
+      <% member_group.with_avatar(alt: "Avery Stone") %>
+      <% member_group.with_avatar(alt: "Jordan Lee") %>
+      <%= render member_group %>
+    </div>
+
     <%= render CardComponent.new.with_content("A default card with standard content padding.") %>
 
     <%= render CardComponent.new(variant: :elevated, shadow: :lg, hoverable: true).with_content("An elevated card with a hover state.") %>
@@ -216,9 +225,25 @@
       <% card.with_body { "Three tasks are ready." } %>
       <% card.with_footer { "View project" } %>
     <% end %>
+
+    <% project_table = TableComponent.new(striped: true, hoverable: true) %>
+    <% project_table.with_column(label: "Project") %>
+    <% project_table.with_column(label: "Owner") %>
+    <% project_table.with_row do |row| %>
+      <% row.with_cell(primary: true) { "Onboarding" } %>
+      <% row.with_cell { "Avery Stone" } %>
+    <% end %>
+    <% project_table.with_row do |row| %>
+      <% row.with_cell(primary: true) { "Billing" } %>
+      <% row.with_cell { "Jordan Lee" } %>
+    <% end %>
+    <%= render project_table %>
   </div>
 
   <div class="dark mt-6 bg-neutral-900 p-4">
-    <%= render CardComponent.new(variant: :elevated, shadow: :lg).with_content("An elevated card in dark mode.") %>
+    <div class="flex items-center gap-4">
+      <%= render AvatarComponent.new(alt: "Dark mode user", fallback: "DU", status: :online) %>
+      <%= render CardComponent.new(variant: :elevated, shadow: :lg).with_content("An elevated card in dark mode.") %>
+    </div>
   </div>
 </section>
