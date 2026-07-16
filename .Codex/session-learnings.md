@@ -41,3 +41,31 @@ then install and normalize. Preview tests can provide a second RED/GREEN cycle.
 The generated component source needed RuboCop auto-formatting after namespace
 removal, and its inline HTML styles must be removed to comply with this repo's
 ViewComponent rules.
+
+## Catchup 2026-07-16 (B3)
+
+### Friction
+
+None — B3's dry-run confirmed all four slugs (`alert`, `badge`,
+`loading_indicator`, `skeleton`) generate zero JavaScript, so several of the
+plan's anticipated collision/vendoring steps didn't apply and could be
+skipped without back-and-forth.
+
+### Mistakes
+
+None.
+
+### Observations
+
+Not every Rails Blocks batch needs the full vendoring/collision machinery —
+check each dry-run's actual output before assuming a controller or CDN dep
+exists, rather than defaulting to the heaviest-case workflow. Also worth
+inheriting-with-care: RB's generated components can encode small bugs (e.g.
+`loading_indicator`'s `:primary` color option was hard-coded to literal
+red instead of this app's brand token) or minor rule violations (fixed-value
+inline `style=""` for animation delays, which have static Tailwind
+arbitrary-value equivalents) — worth a deliberate token-accent/inline-style
+pass on every batch rather than a blind copy of RB's output. Where a
+generated component intentionally allows raw HTML via `.html_safe` (RB's
+`alert` description), the safer fix is documenting the caveat in the catalog
+rather than removing a documented RB feature outright.
