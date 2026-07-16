@@ -93,3 +93,27 @@ the app under the required `ui_*_controller.js` name. Audit generated JS for
 unescaped `innerHTML`: B4 now escapes ordinary toast/tooltip text and documents
 the custom-HTML boundary. The generated B4 toast controller did not actually
 import Motion, even though the approved plan required it to be locally vendored.
+
+## Catchup 2026-07-16 (B5)
+
+### Friction
+
+`ModalComponent` exists in `lib/jumpstart/app/components/`, not in
+`app/components/`. The initial collision search missed it, and B5 correctly
+paused for Jordan's approval before using `UiModalComponent`.
+
+### Mistakes
+
+The generated dropdown source uses Ruby argument-forwarding syntax that this
+workspace's parser rejected. Replace the helper aliases with explicit
+`*args, **options, &block` forwarding before running the component tests.
+
+### Observations
+
+Rails Blocks' current dropdown does not generate a `dropdown_controller.js`.
+It uses `dropdown-popover`, `menu`, and `searchable-dropdown`; namespace all
+three as `ui-dropdown-popover`, `ui-menu`, and `ui-searchable-dropdown`, then
+update both Stimulus selector strings and rendered `data-*` values/actions.
+The direct `ApplicationController.render` smoke attempt fails because the app
+layout expects Devise/Warden; use a temporary Rails server plus curl against
+`/dev/kitchen_sink` and `/lookbook` instead.

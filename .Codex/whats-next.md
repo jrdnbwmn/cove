@@ -3,12 +3,13 @@
 ## Work completed and current state
 
 Work is on `feature/cov-12-starter-components`, targeting `origin/main`.
-The working tree was clean when this handoff was written. The active plan is
+The working tree is clean at this handoff. The active plan is
 [curated-rails-blocks-starter-set.md](../docs/plans/curated-rails-blocks-starter-set.md).
 
 Tasks B0 through B5 are complete and committed:
 
-- B5 added `UiModalComponent` because Jumpstart already defines
+- `02e63fe feature: add modal and dropdown components` (B5) added
+  `UiModalComponent` because Jumpstart already defines
   `ModalComponent`, plus `DropdownComponent` with Rails Blocks' internal item
   subcomponents. The generated controllers are collision-safe:
   `ui-modal`, `ui-dropdown-popover`, `ui-menu`, and
@@ -89,5 +90,6 @@ catalog/map, verification, review, and one batch commit.
   `TabsComponent` class.
 - B8 has an explicit approval gate after its audit.
 - A later browser-enabled session should manually verify interactive B4
-  behavior: toast creation/dismissal and both the Jumpstart `tooltip` and
-  Rails Blocks `ui-tooltip` hover/click behavior.
+  behavior (toast creation/dismissal and both the Jumpstart `tooltip` and Rails
+  Blocks `ui-tooltip` hover/click) and B5 behavior (modal open/close and
+  dropdown positioning).
