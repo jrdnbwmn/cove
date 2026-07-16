@@ -1,0 +1,20 @@
+<footer class="w-full border-t border-border bg-background px-4 py-6 text-sm text-muted-foreground lg:px-8">
+  <% footer_link_classes = "block rounded-md px-3 py-2 transition-colors hover:bg-muted hover:text-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring" %>
+
+  <div class="flex flex-col-reverse items-center gap-4 lg:flex-row lg:justify-between">
+    <div class="flex items-center justify-center">
+      <%= link_to root_path, class: "hidden text-primary transition-colors hover:text-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring sm:inline-flex" do %>
+        <%= render_svg "mark", class: "size-6 fill-current" %>
+        <span class="sr-only"><%= Jumpstart.config.application_name %></span>
+      <% end %>
+      <div class="sm:ml-4">© <%= Date.current.year %> <%= Jumpstart.config.business_name %></div>
+    </div>
+
+    <ul class="flex flex-wrap items-center justify-center gap-x-2 gap-y-1">
+      <li><%= link_to t(".announcements"), announcements_path, class: footer_link_classes %></li>
+      <li><%= link_to t(".about"), about_path, class: footer_link_classes %></li>
+      <li><%= link_to t(".privacy"), privacy_path, class: footer_link_classes %></li>
+      <li><%= link_to t(".terms"), terms_path, class: footer_link_classes %></li>
+    </ul>
+  </div>
+</footer>
