@@ -3,7 +3,8 @@
 ## Work completed and current state
 
 Work is on `feature/cov-12-starter-components`, targeting `origin/main`.
-The working tree was clean before this handoff update. The active plan is
+The working tree is clean after the latest commit,
+`2a79b48 feature: add card component`. The active plan is
 [curated-rails-blocks-starter-set.md](../docs/plans/curated-rails-blocks-starter-set.md).
 
 Tasks B0 through B7 are complete and committed.

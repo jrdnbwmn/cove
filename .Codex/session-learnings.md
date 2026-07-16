@@ -137,3 +137,24 @@ link helpers cannot derive a base URL. Rails Blocks' B6 navigation controllers
 can stay local without adding third-party imports. Browser automation remains
 unavailable here; a temporary Puma process plus curl is the dependable smoke
 path for kitchen sink and Lookbook.
+
+## Catchup 2026-07-16 (B7)
+
+### Friction
+
+None. The `card` dry-run generated only a Ruby ViewComponent and template, so
+no Stimulus, importmap, vendoring, or CDN work was required.
+
+### Mistakes
+
+None.
+
+### Observations
+
+For a Rails Blocks component that must be flattened, write the `FooComponent`
+test before the install so it fails for the missing constant, then normalize
+the generated namespace. Generated nested-module indentation needs a RuboCop
+auto-format pass after that normalization. Browser automation remains
+unavailable; use a temporary Puma process with curl for `/dev/kitchen_sink` and
+`/lookbook`, and preserve the browser-only network and interactive checks for a
+browser-enabled session.
