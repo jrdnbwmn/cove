@@ -1,0 +1,44 @@
+<div class="<%= wrapper_classes %>" <%= tag.attributes(controller_data) %>>
+  <% if show_progress_bar? %>
+    <div class="w-full h-1 bg-neutral-200 dark:bg-neutral-700 rounded-full mb-4 overflow-hidden">
+      <div
+        data-ui-tabs-target="progressBar"
+        class="h-full bg-neutral-900 dark:bg-white rounded-full"
+        style="width: 0%"
+      ></div>
+    </div>
+  <% end %>
+
+  <% if vertical? %>
+    <div class="<%= tab_list_wrapper_classes %>" data-ui-tabs-target="tabList" role="tablist" aria-orientation="<%= aria_orientation %>">
+      <% tabs.each do |tab| %>
+        <%= tab %>
+      <% end %>
+    </div>
+    <div class="flex-1">
+      <% panels.each_with_index do |panel, index| %>
+        <div class="<%= panel_wrapper_classes(panel, index) %>" data-ui-tabs-target="panel" role="tabpanel">
+          <%= panel %>
+        </div>
+      <% end %>
+    </div>
+  <% else %>
+    <div
+      class="<%= tab_list_wrapper_classes %> <%= tab_list_grid_cols %>"
+      data-ui-tabs-target="tabList"
+      role="tablist"
+      aria-orientation="<%= aria_orientation %>"
+      style="<%= tab_list_style %>"
+    >
+      <% tabs.each do |tab| %>
+        <%= tab %>
+      <% end %>
+    </div>
+
+    <% panels.each_with_index do |panel, index| %>
+      <div class="<%= panel_wrapper_classes(panel, index) %>" data-ui-tabs-target="panel" role="tabpanel">
+        <%= panel %>
+      </div>
+    <% end %>
+  <% end %>
+</div>

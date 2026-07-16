@@ -1,0 +1,13 @@
+<%= content_tag(:div, **wrapper_attributes) do %>
+  <% avatars.each do |avatar| %>
+    <span class="<%= item_wrapper_classes %>">
+      <%= avatar %>
+    </span>
+  <% end %>
+
+  <% if remaining? %>
+    <span class="<%= item_wrapper_classes %>">
+      <span class="<%= count_classes %>" role="img" aria-label="<%= remaining_label %>">+<%= @remaining_count %></span>
+    </span>
+  <% end %>
+<% end %>

@@ -1,0 +1,30 @@
+<div <%= tag.attributes(controller_data) %>>
+  <button class="<%= trigger_button_classes %>" data-action="click->ui-modal#open:prevent">
+    <%= trigger_text %>
+  </button>
+
+  <dialog class="<%= dialog_classes %>" data-ui-modal-target="dialog" data-action="mousedown->ui-modal#backdropClose">
+    <div class="<%= content_wrapper_classes %>">
+      <% if show_close_button %>
+        <button type="button" data-action="ui-modal#close:prevent" class="<%= close_button_classes %>">
+          <%= render_close_icon %>
+          <span class="sr-only">Close</span>
+        </button>
+      <% end %>
+
+      <% if header? %>
+        <%= header %>
+      <% elsif title.present? %>
+        <h2 class="<%= title_classes %>"><%= title %></h2>
+      <% end %>
+
+      <%= content %>
+
+      <% if footer? %>
+        <div class="<%= footer_classes %>">
+          <%= footer %>
+        </div>
+      <% end %>
+    </div>
+  </dialog>
+</div>

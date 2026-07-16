@@ -6,8 +6,10 @@ class KitchenSinkTest < ActionDispatch::IntegrationTest
 
     assert_response :success
     assert_select "h1", "Component Kitchen Sink"
-    assert_select "button.bg-primary.text-primary-foreground", count: 2
+    assert_select "button.bg-primary.text-primary-foreground", count: 3
     assert_select ".dark button.bg-primary.text-primary-foreground", count: 1
+    assert_select "[data-controller='ui-modal']", count: 2
+    assert_select "[data-controller='ui-dropdown-popover']", count: 2
     %w[Buttons Forms Feedback Overlays Navigation Data\ Display].each do |section|
       assert_select "h2", section
     end

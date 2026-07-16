@@ -1,0 +1,17 @@
+<button
+  type="button"
+  class="<%= tab_classes %>"
+  id="<%= unique_id %>"
+  data-ui-tabs-target="tab"
+  data-action="click->ui-tabs#change:prevent"
+  role="tab"
+  <% if disabled %>disabled aria-disabled="true"<% end %>
+>
+  <% if icon.present? %>
+    <%= icon.html_safe %>
+  <% end %>
+  <span><%= title %></span>
+  <% if meta.present? %>
+    <span class="<%= meta_classes %>"><%= meta %></span>
+  <% end %>
+</button>

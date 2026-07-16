@@ -1,9 +1,9 @@
 require "test_helper"
 require "view_component/test_case"
 
-class Buttons::ComponentTest < ViewComponent::TestCase
+class ButtonComponentTest < ViewComponent::TestCase
   test "renders the primary button with design tokens" do
-    render_inline(Buttons::Component.new(text: "Click me"))
+    render_inline(ButtonComponent.new(text: "Click me"))
 
     assert_selector "button.bg-primary"
     assert_selector "button.text-primary-foreground"

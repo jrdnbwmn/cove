@@ -1,24 +1,41 @@
 flowchart TB
   subgraph buttons["Buttons"]
-    buttons_component["Buttons::Component"]
+    button_component["ButtonComponent"]
   end
 
   subgraph forms["Forms"]
-    %% Components go here.
+    form_field_component["FormFieldComponent"]
+    checkbox_component["CheckboxComponent"]
+    radio_component["RadioComponent"]
+    switch_component["SwitchComponent"]
+    select_component["SelectComponent"]
+    password_component["PasswordComponent"]
   end
 
   subgraph feedback["Feedback"]
-    %% Components go here.
+    alert_component["AlertComponent"]
+    badge_component["BadgeComponent"]
+    loading_indicator_component["LoadingIndicatorComponent"]
+    skeleton_component["SkeletonComponent"]
+    ui_toast_component["UiToastComponent"]
+    tooltip_component["TooltipComponent"]
   end
 
   subgraph overlays["Overlays"]
-    %% Components go here.
+    ui_modal_component["UiModalComponent"]
+    dropdown_component["DropdownComponent"]
   end
 
   subgraph navigation["Navigation"]
-    %% Components go here.
+    navbar_component["NavbarComponent"]
+    breadcrumb_component["BreadcrumbComponent"]
+    ui_tabs_component["UiTabsComponent"]
+    pagination_component["PaginationComponent"]
+    sidebar_component["SidebarComponent"]
   end
 
   subgraph data_display["Data Display"]
-    %% Components go here.
+    card_component["CardComponent"]
+    avatar_component["AvatarComponent"]
+    table_component["TableComponent"]
   end
