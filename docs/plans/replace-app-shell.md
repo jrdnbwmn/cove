@@ -7,7 +7,7 @@
 
 | Task | Description | Assign | Done |
 | ---- | ----------- | ------ | ---- |
-| 1 | App-level `_navbar` + `_left_nav`/`_right_nav` restyle + system-test skeleton | Master | |
+| 1 | App-level `_navbar` + `_left_nav`/`_right_nav` restyle + system-test skeleton | Master | ✅ |
 | 2 | `_account_menu` → `DropdownComponent` | Clone | |
 | 3 | `_user_menu` → `DropdownComponent` | Clone | |
 | 4 | `_dev_menu` → `DropdownComponent` | Clone | |

@@ -1,5 +1,7 @@
 <% unless user_signed_in? %>
-  <%= nav_link_to t(".pricing"), pricing_path if Jumpstart.config.payments_enabled? %>
+  <%= nav_link_to t(".pricing"), pricing_path,
+    class: "rounded-[var(--radius)] px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground",
+    active_class: "bg-muted text-foreground" if Jumpstart.config.payments_enabled? %>
 <% else %>
   <%= render "account_menu" if Jumpstart.config.team_accounts? && Current.other_accounts.any? %>
 <% end %>

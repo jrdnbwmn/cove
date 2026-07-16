@@ -1,0 +1,27 @@
+<nav class="relative flex items-center justify-between gap-4 border-b border-border bg-background px-4 py-3 text-foreground lg:px-8" data-controller="toggle" aria-label="Primary">
+  <section class="flex shrink-0 items-center">
+    <%= link_to root_path, class: "flex items-center text-primary" do %>
+      <%= render_svg "logo", class: "h-6 fill-current" %>
+      <span class="sr-only"><%= Jumpstart.config.application_name %></span>
+    <% end %>
+  </section>
+
+  <section class="absolute inset-x-0 top-full z-10 hidden flex-col border-b border-border bg-background p-4 shadow-md lg:static lg:flex lg:flex-1 lg:flex-row lg:items-center lg:justify-between lg:border-0 lg:p-0 lg:shadow-none" data-toggle-target="toggleable">
+    <nav class="flex flex-col gap-2 lg:flex-row lg:items-center" aria-label="Primary links"><%= render "left_nav" %></nav>
+    <nav class="flex flex-col gap-2 lg:flex-row lg:items-center" aria-label="Account links"><%= render "right_nav" %></nav>
+  </section>
+
+  <section class="flex shrink-0 items-center gap-2">
+    <button type="button" id="sidebar-open" class="inline-flex items-center justify-center rounded-[var(--radius)] p-2 text-foreground hover:bg-muted focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring" aria-label="Open navigation" data-action="click->toggle#toggle touch->toggle#toggle">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+      </svg>
+    </button>
+
+    <%= render "dev_menu" if Rails.env.development? %>
+    <% if user_signed_in? %>
+      <%= render "notifications" %>
+      <%= render "user_menu" %>
+    <% end %>
+  </section>
+</nav>
