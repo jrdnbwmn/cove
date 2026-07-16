@@ -270,6 +270,9 @@ section, catalog, mermaid.
   account views; produce the list of additional RB components needed to eventually
   port them (e.g. avatar). **STOP and present the list for Jordan's approval**
   (open question #2) before installing anything.
+- **Approved extras (question #2 resolved):** `avatar` and `table`. Both installed
+  as flat components (`AvatarComponent`, `TableComponent`) under the Standard
+  Batch Workflow, filed under the Data Display category.
 - After approval, install the approved extras under the Standard Batch Workflow.
 - Document the **standing on-demand install policy** in
   `docs/COMPONENT_CATALOG.md` (install one via `rails-blocks-cli` skill under the

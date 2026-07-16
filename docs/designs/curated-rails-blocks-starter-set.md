@@ -97,7 +97,7 @@ used only as grouping in `component-map.mermaid` and the kitchen sink:
 | Feedback | alert, badge, loading indicator, skeleton, toast, tooltip |
 | Overlays | modal, dropdown |
 | Navigation | navbar, breadcrumb, tabs, pagination, sidebar |
-| Data Display | card |
+| Data Display | card, avatar *(B8 shell-port extra)*, table *(B8 shell-port extra)* |
 
 **Fuzzy names resolved at install** (show mapping before installing): `forms` →
 a **single field-group wrapper** `Forms::Component` (normalized to
@@ -154,10 +154,11 @@ token-accent pass (verify light + dark) → normalize to flat shape (one
   button).
 
 ## Open Questions
-None. Two items to confirm during implementation (not blockers):
+None. Two items confirmed during implementation:
 1. B4/B5 — whether `ModalComponent`/`TabsComponent`/`ToastComponent` JSP built-ins
    actually exist in `app/components/` (drives plain vs `Ui`-prefixed name).
 2. B8 — final shell-port extras list, surfaced for approval after the audit.
+   Resolved: Jordan approved `avatar` and `table`.
 
 ## More Info
 **Standing on-demand policy** (to document in `COMPONENT_CATALOG.md`): when a
