@@ -100,7 +100,11 @@ used only as grouping in `component-map.mermaid` and the kitchen sink:
 | Data Display | card |
 
 **Fuzzy names resolved at install** (show mapping before installing): `forms` →
-field primitives (input / textarea / label / error+help); `loading indicator` →
+a **single field-group wrapper** `Forms::Component` (normalized to
+`FormFieldComponent`) + the shared `.form-control` CSS class on raw inputs — RB
+has NO separate input/textarea/label/error-help components (confirmed at dry-run
+2026-07-16; `.form-control` CSS already installed at
+`app/assets/tailwind/rails_blocks/base.css`); `loading indicator` →
 `loading_indicator` (spinner). Confirmed via `rails-blocks list/search/docs`.
 
 **RB Pro slug coverage:** all 20 map 1:1 (`alert, badge, breadcrumb, card,

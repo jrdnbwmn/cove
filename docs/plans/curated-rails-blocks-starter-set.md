@@ -8,7 +8,7 @@
 | Task | Description | Assign | Done |
 | ---- | ----------- | ------ | ---- |
 | B0   | Normalize button → `ButtonComponent`; establish Stimulus/self-host/collision conventions | Master | ✅ |
-| B1   | Forms A: `forms` field bundle (input, textarea, label, error/help) | Master |      |
+| B1   | Forms A: `forms` field-group wrapper → `FormFieldComponent` + `form-control` class | Master |      |
 | B2   | Forms B: checkbox, radio, switch, select (vendor tom-select), password | Master |      |
 | B3   | Feedback static: alert, badge, loading_indicator, skeleton | Master |      |
 | B4   | Feedback interactive: toast (`ui-toast`, motion), tooltip (`ui-tooltip`) | Master |      |
@@ -116,21 +116,50 @@ Each batch is one commit: `feature: add <components> components`.
    existing button test path), then full `bin/rails test`. Boot `/dev/kitchen_sink`.
 4. **Review:** run `/review-changes`, then commit `feature: normalize button to ButtonComponent`.
 
-### Task B1 [Master]: Forms A — the `forms` field bundle
+### Task B1 [Master]: Forms A — the `forms` field-group wrapper
 
 **Skills:** rails-blocks-cli, style-ui, update-catalog, update-component-previews, write-tests, review-changes
-**Slugs:** `forms` (→ input, textarea, label, error/help field primitives — confirm the mapping via `rails-blocks docs forms` before installing)
+**Slug:** `forms`
 
-**In scope:** Install the `forms` bundle; produce flat `InputComponent`,
-`TextareaComponent`, `LabelComponent`, and the error/help field component;
-previews, kitchen-sink Forms section, catalog, mermaid.
+**Reality correction (confirmed at dry-run, 2026-07-16):** Rails Blocks has NO
+separate input/textarea/label/error-help components — those slugs do not exist
+(`rails-blocks search input|textarea|label|field` all return nothing). RB's
+`forms` slug installs a **single field-group wrapper** `Forms::Component`
+(label + `with_input` slot + helper/error text) plus a shared `.form-control`
+CSS class applied to raw `<input>`/`<textarea>`/`<select>`. The `.form-control`
+CSS is **already installed** at `app/assets/tailwind/rails_blocks/base.css`
+(`.form-control`, `.form-control[disabled]`, `.form-control.error`) — nothing to
+vendor. The install also writes `app/javascript/controllers/nested_form_controller.js`.
+
+**In scope:**
+- Install `forms`; normalize `Forms::Component` → flat **`FormFieldComponent`**
+  at `app/components/form_field_component.{rb,html.erb}` (one `# AIDEV-NOTE:` on
+  the divergence). Preserve its `with_input` slot and label/helper/error/
+  required/disabled/size/variant options.
+- Keep the bundled `nested_form_controller.js` as installed (no name collision;
+  eager-load auto-registers it). No UX built around it this ticket.
+- Preview + kitchen-sink Forms section demonstrating the wrapper across states —
+  default, helper text, error, disabled, required, sizes (sm/md/lg), variants
+  (default/floating/inline) — wrapping raw `<input>`, `<textarea>`, and
+  `<select class="form-control">`. This is how input/textarea/label/error styling
+  is demonstrated (via wrapper + `form-control`), documented as ONE catalog entry.
+- Catalog, mermaid Forms subgraph node.
 
 **NOT in scope:** checkbox/radio/switch/select/password (B2). Any form
-*object*/model wiring — these are presentational primitives only.
+*object*/model wiring. Building nested-form add/remove UX. Producing separate
+Input/Textarea/Label components (they don't exist in RB).
 
-**Build order:** Follow the **Standard Batch Workflow**. No JS deps expected;
-confirm at dry-run. Verify light+dark and error state. Commit
-`feature: add forms field primitive components`.
+**Collision to verify (CSS):** Jumpstart also defines `.form-control` in
+`app/assets/tailwind/components/forms.css`; RB defines it in
+`rails_blocks/base.css`. Confirm which wins in the compiled build and that RB's
+field styling renders correctly in light + dark. If they conflict visibly,
+surface it for approval before reconciling — do NOT silently delete Jumpstart's.
+
+**Build order:** Follow the **Standard Batch Workflow**. Step 4: no JS/CSS to
+vendor (form-control CSS already present; nested_form is a local controller with
+no external dep) — confirm at dry-run. Step 5: verify `nested_form` doesn't
+collide. Verify light+dark, error, and disabled states. Commit
+`feature: add form field component`.
 
 ### Task B2 [Master]: Forms B — checkbox, radio, switch, select, password
 
