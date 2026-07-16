@@ -102,6 +102,14 @@
     <%= render SkeletonComponent.new(count: 3) %>
   </div>
 
+  <div class="mt-6 flex flex-wrap items-center gap-4">
+    <%= render UiToastComponent.new(position: "bottom-right") %>
+    <%= render TooltipComponent.new(text: "Rails Blocks tooltip", placement: "bottom") do %>
+      <button class="rounded-md border border-border px-3 py-2" type="button">Rails Blocks tooltip</button>
+    <% end %>
+    <button class="rounded-md border border-border px-3 py-2" data-controller="tooltip" data-tooltip-content-value="Jumpstart tooltip" type="button">Jumpstart tooltip</button>
+  </div>
+
   <div class="dark mt-6 grid gap-4 bg-neutral-900 p-4 md:grid-cols-2">
     <%= render AlertComponent.new(title: "Dark mode success", variant: :success) %>
     <%= render AlertComponent.new(title: "Dark mode error", variant: :error) %>

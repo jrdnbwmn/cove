@@ -15,6 +15,8 @@
 | `BadgeComponent` | Renders a small status/tag label with color, size, dot, and remove-button options. | `text`, `variant`, `size`, `pill`, `dot`, `removable` | `BadgeComponentPreview` |
 | `LoadingIndicatorComponent` | Renders a spinner, dots, bars, or progress bar loading indicator. | `type`, `size`, `color`, `text`, `progress` | `LoadingIndicatorComponentPreview` |
 | `SkeletonComponent` | Renders a pulsing placeholder shape while content loads. | `variant`, `width`, `height`, `count` | `SkeletonComponentPreview` |
+| `UiToastComponent` | Provides the Rails Blocks toast container for new app UI. | `position`, `layout`, `auto_dismiss_duration`, `limit` | `UiToastComponentPreview` |
+| `TooltipComponent` | Wraps content with a Rails Blocks tooltip. | `text`, `placement`, `delay`, `trigger`, `kbd` | `TooltipComponentPreview` |
 
 ## Component Details
 
@@ -313,6 +315,65 @@ classes instead of inline styles.
 
 ```erb
 <%= render SkeletonComponent.new(variant: :circle) %>
+```
+
+### UiToastComponent
+
+**Purpose:** Provides the Rails Blocks toast container and client-side toast
+behavior for new application UI.
+
+**Use this component for all new toast work.** `ToastComponent` belongs to
+Jumpstart and remains available for its existing behavior; do not use it for new
+product UI. Render this container once in the relevant layout, then use the
+Rails Blocks toast API from client-side behavior.
+
+**Arguments:**
+
+| Argument | Type | Default | Description |
+| --- | --- | --- | --- |
+| `position` | `String` | `"top-center"` | `top-*` or `bottom-*` placement. |
+| `layout` | `String` | `"default"` | `"default"` stacked or `"expanded"`. |
+| `auto_dismiss_duration` | `Integer` | `4000` | Time before dismissal, in milliseconds. |
+| `limit` | `Integer` | `3` | Maximum visible toast count. |
+| `gap` | `Integer` | `14` | Expanded-layout gap, in pixels. |
+| `classes` | `String` | `nil` | Additional container classes. |
+
+**Safety:** Message text, descriptions, and action labels are escaped. The Rails
+Blocks client API also supports custom HTML content; pass only static,
+developer-authored HTML there, never untrusted user input.
+
+**Dependencies:** Uses the collision-free `ui-toast` Stimulus controller.
+Motion is locally vendored through the import map; no CDN dependency is added.
+
+**Preview:** `UiToastComponentPreview`
+
+**Usage:**
+
+```erb
+<%= render UiToastComponent.new(position: "bottom-right") %>
+```
+
+### TooltipComponent
+
+**Purpose:** Wraps a trigger with a Rails Blocks tooltip that positions itself
+with the existing locally vendored Floating UI dependency.
+
+**Arguments:** Use `text`, `placement`, `offset`, `max_width`, `delay`, `size`,
+`animation`, `trigger`, `kbd`, `mac_kbd`, `non_mac_kbd`, `arrow`, `classes`,
+and `tag` to configure the tooltip.
+
+**States:** Supports desktop hover/focus, touch click, keyboard-shortcut, and
+arrow-free variants. It uses `ui-tooltip`, leaving Jumpstart's `tooltip`
+controller intact.
+
+**Preview:** `TooltipComponentPreview`
+
+**Usage:**
+
+```erb
+<%= render TooltipComponent.new(text: "Helpful information") do %>
+  <button type="button">Hover for help</button>
+<% end %>
 ```
 
 ### Component Details template
