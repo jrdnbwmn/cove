@@ -1,0 +1,10 @@
+<div id="flash" data-turbo-temporary>
+  <%= render AlertComponent.new(title: alert, variant: :warning) if alert %>
+  <%= render AlertComponent.new(title: notice, variant: :info) if notice %>
+</div>
+
+<div id="toasts" data-turbo-temporary>
+  <% toasts.each do |_, toast| %>
+    <%= render ToastComponent.new(toast) %>
+  <% end %>
+</div>
