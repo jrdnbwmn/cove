@@ -181,3 +181,25 @@ The COV-13 system-test skeleton intentionally stays partly red while its menu,
 notification, flash, and footer implementation tasks remain pending. Verify
 only the cases owned by the current task, then retain the shared suite for the
 later tasks to turn green.
+
+## Catchup 2026-07-16 (COV-13 Tasks 2-5)
+
+### Friction
+
+The default test configuration has personal accounts and a non-development
+Rails environment, so the shared system-test account-switcher and dev-menu
+cases need narrow test-only stubs to exercise their production-gated branches.
+
+### Mistakes
+
+The menu review initially surfaced stale `.account-menu .name` integration
+assertions and an unsupported `data_turbo` option passed through
+`DropdownComponent#with_item_link`. Update the markup assertions to the
+accessible trigger and use `with_item_custom` for non-Turbo links.
+
+### Observations
+
+The four menu partials are independent enough to implement in parallel after
+the navbar/test skeleton exists. The full shell system suite correctly stays
+red at the flash assertion until Task 6, so run only the cases owned by the
+current task during phased execution.
