@@ -1,5 +1,6 @@
 > Ticket: COV-12
 > Branch: feature/cov-12-starter-components
+> Plan created: docs/plans/curated-rails-blocks-starter-set.md
 
 # Feature: Curated Rails Blocks starter set (self-hosted, lazy JS)
 
