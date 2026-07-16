@@ -157,7 +157,49 @@
 
 <section>
   <h2>Navigation</h2>
-  <%# TODO: replace with navigation component examples %>
+  <div class="grid gap-6">
+    <%= render NavbarComponent.new do |navbar| %>
+      <% navbar.with_item(label: "Dashboard", href: "#") %>
+      <% navbar.with_item(label: "Resources", dropdown: true, content_id: "navigation-resources") %>
+      <% navbar.with_dropdown_content(id: "navigation-resources", columns: 2) do %>
+        <a class="rounded-md p-2 hover:bg-muted" href="#">Guides</a>
+        <a class="rounded-md p-2 hover:bg-muted" href="#">Support</a>
+      <% end %>
+    <% end %>
+
+    <%= render BreadcrumbComponent.new(items: [{label: "Home", href: "#"}, {label: "Projects", href: "#"}, {label: "Roadmap"}], separator: :chevron, variant: :with_background) %>
+
+    <%= render UiTabsComponent.new(variant: :underline) do |tabs| %>
+      <% tabs.with_tab(title: "Overview", id: "overview") %>
+      <% tabs.with_tab(title: "Activity", id: "activity") %>
+      <% tabs.with_panel do %>Overview content<% end %>
+      <% tabs.with_panel do %>Activity content<% end %>
+    <% end %>
+
+    <% navigation_pagy = Pagy::Offset.new(count: 30, page: 2, limit: 10, request: Pagy::Request.new(request: request)) %>
+    <%= render PaginationComponent.new(pagy: navigation_pagy, request_path: request.path) %>
+
+    <%= render SidebarComponent.new(collapsible: false, show_mobile_toggle: false) do |sidebar| %>
+      <% sidebar.with_item(label: "Dashboard", href: "#", active: true) %>
+      <% sidebar.with_item(label: "Projects", href: "#") %>
+      <% sidebar.with_section(title: "Workspace") do |section| %>
+        <% section.with_item(label: "Roadmap", href: "#", badge: "3") %>
+      <% end %>
+      <p class="p-6 text-sm text-muted-foreground">Sidebar content area</p>
+    <% end %>
+  </div>
+
+  <div class="dark mt-6 bg-neutral-900 p-4">
+    <%= render BreadcrumbComponent.new(items: [{label: "Home", href: "#"}, {label: "Settings"}], variant: :with_icons) %>
+    <div class="mt-4">
+      <%= render UiTabsComponent.new do |tabs| %>
+        <% tabs.with_tab(title: "Account", id: "account") %>
+        <% tabs.with_tab(title: "Security", id: "security") %>
+        <% tabs.with_panel do %>Account settings<% end %>
+        <% tabs.with_panel do %>Security settings<% end %>
+      <% end %>
+    </div>
+  </div>
 </section>
 
 <section>

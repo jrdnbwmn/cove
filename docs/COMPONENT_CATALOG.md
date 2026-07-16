@@ -19,6 +19,11 @@
 | `TooltipComponent` | Wraps content with a Rails Blocks tooltip. | `text`, `placement`, `delay`, `trigger`, `kbd` | `TooltipComponentPreview` |
 | `UiModalComponent` | Renders a Rails Blocks dialog without replacing Jumpstart's modal. | `title`, `size`, `prevent_dismiss`, `trigger_text` | `UiModalComponentPreview` |
 | `DropdownComponent` | Renders an accessible, positioned menu with item slots. | `trigger_text`, `placement`, `hover`, `portal` | `DropdownComponentPreview` |
+| `NavbarComponent` | Renders responsive primary navigation with optional dropdown panels. | `variant`, `sticky`, `show_mobile_menu` | `NavbarComponentPreview` |
+| `BreadcrumbComponent` | Renders an accessible page hierarchy trail. | `items`, `separator`, `variant`, `truncate_at` | `BreadcrumbComponentPreview` |
+| `UiTabsComponent` | Renders Rails Blocks tabs without replacing Jumpstart's tabs. | `variant`, `orientation`, `default_tab`, `url_sync` | `UiTabsComponentPreview` |
+| `PaginationComponent` | Renders Pagy navigation in full, compact, or minimal form. | `pagy`, `variant`, `size`, `frame_id` | `PaginationComponentPreview` |
+| `SidebarComponent` | Renders responsive primary navigation with collapsible groups. | `variant`, `collapsible`, `storage_key`, `position` | `SidebarComponentPreview` |
 
 ## Component Details
 
@@ -441,6 +446,131 @@ static, developer-authored markup to those options and slots.
   <% dropdown.with_item_link(text: "Settings", href: project_settings_path) %>
   <% dropdown.with_item_divider %>
   <% dropdown.with_item_button(text: "Archive", destructive: true) %>
+<% end %>
+```
+
+### NavbarComponent
+
+**Purpose:** Renders responsive primary navigation with optional dropdown panels.
+
+**Arguments:** Use `variant`, `sticky`, `show_mobile_menu`,
+`mobile_menu_content_id`, and `classes` to configure the navigation container.
+
+**Slots:** `with_logo`, `with_item`, `with_dropdown_content`, and `with_actions`.
+
+**Variants:** `:default`, `:bordered`, and `:transparent`.
+
+**Dependencies:** Uses the locally installed `navbar` Stimulus controller; no
+external dependency is added.
+
+**Preview:** `NavbarComponentPreview`
+
+**Usage:**
+
+```erb
+<%= render NavbarComponent.new do |navbar| %>
+  <% navbar.with_item(label: "Dashboard", href: dashboard_path) %>
+<% end %>
+```
+
+### BreadcrumbComponent
+
+**Purpose:** Renders an accessible hierarchy trail with a marked current page.
+
+**Arguments:** Use `items`, `separator`, `variant`, `show_home_icon`,
+`truncate_at`, `current_max_width`, and `classes` to configure the trail.
+
+**Variants:** `:default`, `:with_background`, and `:with_icons`.
+
+**Safety:** Per-item `icon` markup is rendered as HTML. Supply only static,
+developer-authored SVG markup.
+
+**Preview:** `BreadcrumbComponentPreview`
+
+**Usage:**
+
+```erb
+<%= render BreadcrumbComponent.new(items: [{label: "Home", href: root_path}, {label: "Settings"}]) %>
+```
+
+### UiTabsComponent
+
+**Purpose:** Renders Rails Blocks tabs for new product UI. Use this component
+instead of `TabsComponent`, which belongs to Jumpstart and remains unchanged.
+
+**Arguments:** Use `variant`, `orientation`, `default_tab`, `url_sync`,
+`scroll_to_anchor`, `auto_switch`, `lazy_load`, `arrow_focus_only`, and class
+options to configure the tab group.
+
+**Slots:** `with_tab` adds a tab button; `with_panel` adds its matching panel.
+
+**Variants:** `:pills`, `:underline`, and `:low_contrast`; `:bordered` remains
+a legacy alias for `:low_contrast`.
+
+**Dependencies:** Uses the collision-free `ui-tabs` controller. Jumpstart's
+existing `tabs` controller and `TabsComponent` remain intact.
+
+**Safety:** Tab `icon` markup is rendered as HTML. Supply only static,
+developer-authored SVG markup.
+
+**Preview:** `UiTabsComponentPreview`
+
+**Usage:**
+
+```erb
+<%= render UiTabsComponent.new do |tabs| %>
+  <% tabs.with_tab(title: "Overview", id: "overview") %>
+  <% tabs.with_panel do %>Overview content<% end %>
+<% end %>
+```
+
+### PaginationComponent
+
+**Purpose:** Renders accessible Pagy pagination using the app's existing Pagy
+object.
+
+**Arguments:** Use `pagy`, `variant`, `size`, `frame_id`, `show_info`,
+`show_page_form`, `show_limit_form`, `limit_options`, `preserve_params`,
+`request_path`, and `classes` to configure navigation.
+
+**Variants:** `:full`, `:compact`, and `:minimal`.
+
+**Preview:** `PaginationComponentPreview`
+
+**Usage:**
+
+```erb
+<%= render PaginationComponent.new(pagy: @pagy, frame_id: "projects") %>
+```
+
+### SidebarComponent
+
+**Purpose:** Renders a responsive navigation sidebar with optional collapsible
+sections and mobile drawer behavior.
+
+**Arguments:** Use `variant`, `collapsible`, `default_collapsed`, `position`,
+`storage_key`, `width`, `collapsed_width`, `min_height_class`,
+`show_mobile_toggle`, and `classes` to configure the layout.
+
+**Slots:** `with_logo`, `with_item`, `with_section`, `with_footer`, and
+`with_collapsed_footer`.
+
+**Variants:** `:default`, `:bordered`, and `:minimal`.
+
+**Dependencies:** Uses the locally installed `sidebar` Stimulus controller and
+the existing Jumpstart tooltip controller for collapsed-item labels.
+
+**Safety:** Item and section-item `icon` markup is rendered as HTML. Supply
+only static, developer-authored SVG markup.
+
+**Preview:** `SidebarComponentPreview`
+
+**Usage:**
+
+```erb
+<%= render SidebarComponent.new do |sidebar| %>
+  <% sidebar.with_item(label: "Dashboard", href: dashboard_path, active: true) %>
+  <p>Page content</p>
 <% end %>
 ```
 
