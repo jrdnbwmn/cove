@@ -69,3 +69,27 @@ pass on every batch rather than a blind copy of RB's output. Where a
 generated component intentionally allows raw HTML via `.html_safe` (RB's
 `alert` description), the safer fix is documenting the caveat in the catalog
 rather than removing a documented RB feature outright.
+
+## Catchup 2026-07-16 (B4)
+
+### Friction
+
+The plan's `app/components/` collision check missed a real Jumpstart
+`ToastComponent` under `lib/jumpstart/app/components/`. It needed Jordan's
+approval to use `UiToastComponent` before the Rails Blocks component could be
+normalized safely.
+
+### Mistakes
+
+The first tooltip preview tried to pass its trigger as a block to Lookbook's
+`render`, which did not capture content. Use
+`TooltipComponent.new(...).with_content(...)` in this preview API instead.
+
+### Observations
+
+When a Rails Blocks controller is skipped because a Jumpstart controller has
+the same filename, install it into `.context` temporarily, then move it into
+the app under the required `ui_*_controller.js` name. Audit generated JS for
+unescaped `innerHTML`: B4 now escapes ordinary toast/tooltip text and documents
+the custom-HTML boundary. The generated B4 toast controller did not actually
+import Motion, even though the approved plan required it to be locally vendored.
