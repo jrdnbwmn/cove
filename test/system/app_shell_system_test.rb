@@ -27,16 +27,19 @@ class AppShellSystemTest < ApplicationSystemTestCase
 
   test "signed in user can switch accounts from the account menu" do
     login_as users(:one), scope: :user
-    visit root_path
 
-    find("button[aria-label='Account Menu']").click
-    assert_selector "dialog[open]", text: accounts(:company).name
+    Jumpstart.config.stub(:account_types, "both") do
+      visit root_path
 
-    within "dialog[open]" do
-      click_button accounts(:company).name
+      find("button[aria-label='Account Menu']").click
+      assert_selector "dialog[open]", text: accounts(:company).name
+
+      within "dialog[open]" do
+        click_button accounts(:company).name
+      end
+
+      assert_selector "button[aria-label='Account Menu']", text: accounts(:company).name
     end
-
-    assert_selector "button[aria-label='Account Menu']", text: accounts(:company).name
   end
 
   test "signed in user can open the user menu" do
@@ -46,6 +49,17 @@ class AppShellSystemTest < ApplicationSystemTestCase
     find("button[aria-label='User Menu']").click
 
     assert_selector "dialog[open]", text: I18n.t("application.user_menu.profile")
+  end
+
+  test "admin user can open the admin link in the user menu" do
+    admin = users(:admin)
+    admin.create_default_account
+    login_as admin, scope: :user
+    visit root_path
+
+    find("button[aria-label='User Menu']").click
+
+    assert_selector "dialog[open] a[target='_blank'][data-turbo='false']", text: I18n.t("application.user_menu.admin")
   end
 
   test "signed in user can open notifications" do
@@ -59,11 +73,14 @@ class AppShellSystemTest < ApplicationSystemTestCase
 
   test "development user can open the development menu" do
     login_as users(:one), scope: :user
-    visit root_path
 
-    find("button[aria-label='Dev Menu']").click
+    Rails.env.stub(:development?, true) do
+      visit root_path
 
-    assert_selector "dialog[open]", text: "Configuration"
+      find("button[aria-label='Dev Menu']").click
+
+      assert_selector "dialog[open]", text: "Configuration"
+    end
   end
 
   test "signing out shows an alert banner" do

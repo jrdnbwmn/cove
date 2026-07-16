@@ -1,0 +1,33 @@
+<%= tag.div class: "z-10 inline-flex items-center align-middle leading-none rounded-sm no-underline",
+  data: {
+    controller: "notifications",
+    notifications_account_id_value: current_account.id,
+    notifications_account_unread_value: @notification_counts[current_account.id],
+    notifications_total_unread_value: @notification_counts.values.sum,
+  } do %>
+  <%= render DropdownComponent.new(placement: "bottom-end", width: "w-96") do |dropdown| %>
+    <% dropdown.with_trigger do %>
+      <%# Marks all notifications as read when the menu opens. %>
+      <%= tag.button type: "button",
+        class: "inline-flex select-none items-center justify-center rounded-sm p-2 text-foreground hover:bg-muted focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring",
+        aria: {label: "Notifications", haspopup: "menu"},
+        data: {
+          ui_dropdown_popover_target: "button",
+          action: "click->notifications#open click->ui-dropdown-popover#toggle"
+        } do %>
+        <span class="relative flex appearance-none items-center">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M14.857 17.082a23.848 23.848 0 0 0 5.454-1.31A8.967 8.967 0 0 1 18 9.75V9A6 6 0 0 0 6 9v.75a8.967 8.967 0 0 1-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 0 1-5.714 0m5.714 0a3 3 0 1 1-5.714 0" />
+          </svg>
+          <span data-notifications-target="badge" class="absolute top-0 right-0 hidden size-2 translate-x-1/2 -translate-y-1/2 rounded-full bg-red-500 text-white shadow-solid"></span>
+        </span>
+      <% end %>
+    <% end %>
+
+    <% dropdown.with_item_custom(unstyled: true) do %>
+      <%= turbo_frame_tag "notifications", class: "block text-sm divide-y divide-(--divider-color)", loading: :lazy, target: :_top, src: nav_notifications_path, data: {notifications_target: "list"} do %>
+        <p class="p-4">Loading...</p>
+      <% end %>
+    <% end %>
+  <% end %>
+<% end %>

@@ -8,10 +8,10 @@
 | Task | Description | Assign | Done |
 | ---- | ----------- | ------ | ---- |
 | 1 | App-level `_navbar` + `_left_nav`/`_right_nav` restyle + system-test skeleton | Master | ✅ |
-| 2 | `_account_menu` → `DropdownComponent` | Clone | |
-| 3 | `_user_menu` → `DropdownComponent` | Clone | |
-| 4 | `_dev_menu` → `DropdownComponent` | Clone | |
-| 5 | `_notifications` → `DropdownComponent` (preserve turbo-frame + badge) | Master | |
+| 2 | `_account_menu` → `DropdownComponent` | Clone | ✅ |
+| 3 | `_user_menu` → `DropdownComponent` | Clone | ✅ |
+| 4 | `_dev_menu` → `DropdownComponent` | Clone | ✅ |
+| 5 | `_notifications` → `DropdownComponent` (preserve turbo-frame + badge) | Master | ✅ |
 | 6 | `_flash` → `AlertComponent` banners (keep toasts) | Master | |
 | 7 | `_footer` app-level restyle with tokens | Clone | |
 | 8 | Surgical CSS trim of `top_nav.css` / `nav.css` | Master | |
