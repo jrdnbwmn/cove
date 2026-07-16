@@ -4,6 +4,31 @@
 setup = """
 export PATH="$HOME/.local/share/mise/shims:$PATH"
 set -e
+
+# Symlink gitignored local files so they stay in sync across workspaces
+if [ -f "$CONDUCTOR_ROOT_PATH/CLAUDE.local.md" ]; then
+  ln -sf "$CONDUCTOR_ROOT_PATH/CLAUDE.local.md" "$REPO_ROOT/CLAUDE.local.md"
+fi
+
+mkdir -p "$REPO_ROOT/.claude"
+
+if [ -f "$CONDUCTOR_ROOT_PATH/.claude/claude.local.md" ]; then
+  ln -sf "$CONDUCTOR_ROOT_PATH/.claude/claude.local.md" "$REPO_ROOT/.claude/claude.local.md"
+fi
+
+if [ -f "$CONDUCTOR_ROOT_PATH/.claude/settings.local.json" ]; then
+  ln -sf "$CONDUCTOR_ROOT_PATH/.claude/settings.local.json" "$REPO_ROOT/.claude/settings.local.json"
+fi
+
+# Copy secrets rather than symlink — isolation matters more than sync
+if [ -f "$CONDUCTOR_ROOT_PATH/config/master.key" ]; then
+  cp "$CONDUCTOR_ROOT_PATH/config/master.key" "$REPO_ROOT/config/master.key"
+fi
+
+if [ -f "$CONDUCTOR_ROOT_PATH/config/credentials/test.key" ]; then
+  cp "$CONDUCTOR_ROOT_PATH/config/credentials/test.key" "$REPO_ROOT/config/credentials/test.key"
+fi
+
 bundle check || bundle install
 RAILS_ENV=test bin/rails runner 'puts "Rails credentials OK"'
 bin/setup --skip-server
