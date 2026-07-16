@@ -5,6 +5,7 @@
 | Component | Purpose | Key args | Preview |
 | --- | --- | --- | --- |
 | `ButtonComponent` | Renders an action button or link with visual variants, sizes, and states. | `text`, `variant`, `size`, `style`, `href` | `ButtonComponentPreview` |
+| `FormFieldComponent` | Wraps a labeled raw form control with helper, error, required, and layout states. | `label`, `name`, `size`, `variant`, `error` | `FormFieldComponentPreview` |
 
 ## Component Details
 
@@ -46,6 +47,51 @@ disables the control.
 
 ```erb
 <%= render ButtonComponent.new(text: "Save changes") %>
+```
+
+### FormFieldComponent
+
+**Purpose:** Wraps a raw input, textarea, or select using the shared
+`form-control` class with a label, helper text, or error message.
+
+**Arguments:**
+
+| Argument | Type | Default | Description |
+| --- | --- | --- | --- |
+| `label` | `String` | `nil` | Visible label text. |
+| `name` | `String` | `nil` | Used to generate the control ID when `id` is omitted. |
+| `id` | `String` | generated | ID associated with the label. |
+| `required` | `Boolean` | `false` | Shows the required indicator. |
+| `disabled` | `Boolean` | `false` | Applies disabled label and helper styling. |
+| `helper_text` | `String` | `nil` | Supporting text below the control. |
+| `error` | `String` | `nil` | Error text, shown instead of helper text. |
+| `size` | `Symbol` | `:md` | Label and message size: `:sm`, `:md`, or `:lg`. |
+| `variant` | `Symbol` | `:default` | Layout: `:default`, `:floating`, `:stacked`, or `:inline`. |
+| `label_hidden` | `Boolean` | `false` | Visually hides the label while retaining it for assistive technology. |
+| `classes` | `String` | `nil` | Additional wrapper classes. |
+| `label_classes` | `String` | `nil` | Additional label classes. |
+| `input_wrapper_classes` | `String` | `nil` | Additional control-wrapper classes. |
+
+**Slots:** `with_input` supplies the raw `<input>`, `<textarea>`, or
+`<select class="form-control">`. `with_addon_left` and `with_addon_right`
+add inline content beside the control.
+
+**Variants:** `default`, `floating`, `stacked`, and `inline`.
+
+**States:** Supports helper text, error text, required and disabled labels, and
+small, medium, and large text treatments. Apply `form-control`,
+`form-control error`, and native `disabled` to the supplied control as needed.
+
+**Preview:** `FormFieldComponentPreview`
+
+**Usage:**
+
+```erb
+<%= render FormFieldComponent.new(label: "Email", name: "user[email]", required: true) do |component| %>
+  <% component.with_input do %>
+    <input class="form-control" id="user_email" name="user[email]" type="email">
+  <% end %>
+<% end %>
 ```
 
 ### Component Details template

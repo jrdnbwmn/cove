@@ -8,7 +8,7 @@
 | Task | Description | Assign | Done |
 | ---- | ----------- | ------ | ---- |
 | B0   | Normalize button → `ButtonComponent`; establish Stimulus/self-host/collision conventions | Master | ✅ |
-| B1   | Forms A: `forms` field-group wrapper → `FormFieldComponent` + `form-control` class | Master |      |
+| B1   | Forms A: `forms` field-group wrapper → `FormFieldComponent` + `form-control` class | Master | ✅ |
 | B2   | Forms B: checkbox, radio, switch, select (vendor tom-select), password | Master |      |
 | B3   | Feedback static: alert, badge, loading_indicator, skeleton | Master |      |
 | B4   | Feedback interactive: toast (`ui-toast`, motion), tooltip (`ui-tooltip`) | Master |      |

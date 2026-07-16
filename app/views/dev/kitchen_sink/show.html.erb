@@ -12,7 +12,45 @@
 
 <section>
   <h2>Forms</h2>
-  <%# TODO: replace with form component examples %>
+  <div class="grid gap-6 md:grid-cols-2">
+    <%= render FormFieldComponent.new(label: "Display name", name: "profile[display_name]", helper_text: "Shown to collaborators.", required: true) do |component| %>
+      <% component.with_input do %>
+        <input class="form-control" id="profile_display_name" name="profile[display_name]" type="text">
+      <% end %>
+    <% end %>
+
+    <%= render FormFieldComponent.new(label: "Biography", name: "profile[biography]", size: :lg) do |component| %>
+      <% component.with_input do %>
+        <textarea class="form-control" id="profile_biography" name="profile[biography]" rows="3"></textarea>
+      <% end %>
+    <% end %>
+
+    <%= render FormFieldComponent.new(label: "Plan", name: "subscription[plan]", variant: :inline, size: :sm) do |component| %>
+      <% component.with_input do %>
+        <select class="form-control" id="subscription_plan" name="subscription[plan]"><option>Starter</option><option>Team</option></select>
+      <% end %>
+    <% end %>
+
+    <%= render FormFieldComponent.new(label: "Email", name: "user[email]", error: "Email is invalid.", variant: :floating) do |component| %>
+      <% component.with_input do %>
+        <input class="form-control error" id="user_email" name="user[email]" type="email">
+      <% end %>
+    <% end %>
+
+    <%= render FormFieldComponent.new(label: "Account ID", name: "account[id]", disabled: true, size: :md) do |component| %>
+      <% component.with_input do %>
+        <input class="form-control" disabled id="account_id" name="account[id]" type="text" value="ACC-123">
+      <% end %>
+    <% end %>
+  </div>
+
+  <div class="dark mt-6 bg-neutral-900 p-4">
+    <%= render FormFieldComponent.new(label: "Dark mode field", name: "dark[field]", helper_text: "RB form-control styling in dark mode.") do |component| %>
+      <% component.with_input do %>
+        <input class="form-control" id="dark_field" name="dark[field]" type="text">
+      <% end %>
+    <% end %>
+  </div>
 </section>
 
 <section>
