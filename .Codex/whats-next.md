@@ -3,7 +3,10 @@
 ## Work completed and current state
 
 Work is on `feature/cov-12-starter-components`, targeting `origin/main`.
-The working tree was clean after the last feature commit.
+The working tree was clean after the latest feature commit.
+
+The current plan is [curated-rails-blocks-starter-set.md](../docs/plans/curated-rails-blocks-starter-set.md).
+Its status table marks B0, B1, and B2 complete; B3 through B8 remain.
 
 Completed and committed:
 
@@ -19,75 +22,82 @@ Completed and committed:
   `forms`, renamed `Forms::Component` to flat `FormFieldComponent`, kept the
   bundled `nested_form_controller.js`, added previews/tests/kitchen-sink
   examples, and documented it in the catalog and map.
+- `0e20945 feature: add checkbox, radio, switch, select, password components`
+  (B2): installed and flattened the five Rails Blocks components; added their
+  component tests, previews, kitchen-sink examples, catalog entries, and map
+  nodes. `conditional-field`, `select`, and `password` controllers use their
+  non-colliding default identifiers and are eager-auto-registered.
 
-The current plan is [curated-rails-blocks-starter-set.md](../docs/plans/curated-rails-blocks-starter-set.md).
-Its status table marks B0 and B1 complete; B2 through B8 remain.
+`SelectComponent` uses a self-hosted tom-select 2.6.2 bundle at
+`vendor/javascript/tom-select.js`, pinned in `config/importmap.rb`; its
+stylesheet is local at `app/assets/tailwind/components/tom_select.css` and
+imported by `app/assets/tailwind/application.css`. There are no B2 CDN tags.
+Both generated inline styles were removed to meet the project component rule.
 
-Verification completed for B1:
+Verification completed for B2:
 
-- `mise exec -- bin/rails test` passed: 237 runs, 537 assertions.
-- `mise exec -- bundle exec rubocop -A` on the B1 Ruby/test files passed.
+- TDD RED: the five component tests failed with missing flat component classes;
+  after installation/normalization they passed. The five preview tests then
+  failed until their previews were added and passed afterwards.
+- `mise exec -- bundle exec rubocop ...` on all B2 Ruby/test/preview files:
+  15 files inspected, no offenses.
+- `mise exec -- bin/rails test`: 247 runs, 552 assertions, 0 failures,
+  0 errors, 0 skips.
 - A local Rails server returned HTTP 200 for `/dev/kitchen_sink` and
-  `/lookbook`; kitchen-sink HTML contains the input, textarea, select, helper,
-  error, disabled, required, size, and dark-mode examples.
-- `app/assets/builds/tailwind.css` confirms Jumpstart's `.form-control` rules
-  are emitted first and Rails Blocks' later rules take precedence. No existing
-  CSS was deleted or changed.
+  `/lookbook`; kitchen-sink HTML contains the local `tom-select` asset pin,
+  `data-controller="select"`, and `data-controller="password"`.
+- `git diff --check` passed before `0e20945` was committed.
 
 ## Work Remaining
 
-Execute the remaining tasks sequentially, following the Standard Batch Workflow
-in the plan. Each task must dry-run with `rails-blocks install ... --as
-view_component --path app/components --stimulus-path app/javascript/controllers
---dry-run`, be test-first, update previews/kitchen sink/catalog/map, run the
-full suite, review, update the status table, and commit one batch.
+Continue the remaining plan tasks strictly sequentially using the Standard
+Batch Workflow. Begin with the normal execute-plan preflight (`git status`,
+`mise exec -- bin/rails db:migrate:status`, `mise exec -- bin/rails test`, and
+confirm the feature branch).
 
-1. B2: install `checkbox`, `radio`, `switch`, `select`, and `password`.
-   Vendor tom-select JavaScript and stylesheet locally, pin it in
-   `config/importmap.rb`, remove/avoid every CDN link, and check the select
-   controller for collisions.
-2. B3: install and flatten `alert`, `badge`, `loading_indicator`, and
-   `skeleton`; rename any generated `alert` controller to `ui-alert` if the
-   dry run confirms it collides.
-3. B4: install toast and tooltip. Before installing, check for existing real
-   `ToastComponent`; a real component requires user approval for the
-   `UiToastComponent` fallback. Rename controllers to `ui-toast` and
-   `ui-tooltip`, vendor motion, and reuse the already-vendored floating-ui.
-4. B5: install modal and dropdown. Check for an existing real
-   `ModalComponent`; approval is required for a `UiModalComponent` fallback.
-   Rename controllers to `ui-modal` and `ui-dropdown`.
-5. B6: install navbar, breadcrumb, tabs, pagination, and sidebar. Check for a
-   real `TabsComponent` before using a `UiTabsComponent` fallback; rename the
-   controller to `ui-tabs`.
-6. B7: install and flatten card.
-7. B8: audit the shell, Devise, and account views. Stop and present the extra
-   Rails Blocks component list for Jordan's approval before installing any of
-   them. Then document the on-demand-install policy.
-
-Known shared dependencies and conventions:
-
-- Floating UI is already local and pinned in `config/importmap.rb` and
-  `vendor/javascript/`; do not add it again.
-- Keep `eagerLoadControllersFrom("controllers", application)`; controllers
-  auto-register by filename. Rename collisions to `ui_*_controller.js` and use
-  `data-controller="ui-*"` in templates.
-- Use design-token utilities; do not introduce arbitrary Tailwind values.
-- Use `mise exec --` for Rails/RuboCop commands.
+1. B3: install `alert`, `badge`, `loading_indicator`, and `skeleton` as flat
+   ViewComponents. Dry-run each first with the exact ViewComponent and
+   controller paths in the plan. Confirm whether `alert` creates a controller;
+   rename it to `ui_alert_controller.js` and use `ui-alert` if it conflicts
+   with `tailwindcss-stimulus-components`. Add tests before install, previews,
+   Feedback kitchen-sink examples, catalog/map updates, full suite, review,
+   status checkmark, and commit `feature: add alert, badge, loading indicator, skeleton components`.
+2. B4: install `toast` and `tooltip`. Before installation, check whether a
+   real `ToastComponent` exists. If it does, stop for Jordan's approval before
+   using `UiToastComponent`. Rename controller identifiers to `ui-toast` and
+   `ui-tooltip`; vendor motion locally and reuse the already-local floating UI.
+3. B5: install `modal` and `dropdown`, with `ui-modal` and `ui-dropdown`
+   controller names. Stop for Jordan's approval if a real `ModalComponent`
+   means the Rails Blocks component needs a `Ui` prefix.
+4. B6: install `navbar`, `breadcrumb`, `tabs`, `pagination`, and `sidebar`.
+   Use `ui-tabs`; stop for approval if a real `TabsComponent` exists.
+5. B7: install and flatten `card`, with its tests, preview, kitchen-sink
+   example, catalog, and map.
+6. B8: audit shell/Devise/account views and present the candidate Rails Blocks
+   extras to Jordan. This is an explicit approval gate: do not install extras
+   without it. After approval, install only the approved extras and document
+   the standing on-demand policy.
 
 ## Dead Ends
 
-- The original B1 assumption was invalid: `rails-blocks install forms` writes
-  only `Forms::Component` and `nested_form_controller.js`, not four field
-  primitives. The corrected plan is committed as `e9803be`; do not repeat the
-  old discovery.
-- Browser automation could not be used in this workspace: the browser runtime
-  initialized, but `agent.browsers.list()` returned `[]`. Do not substitute an
-  unrelated browser tool. Local server/curl and compiled-CSS checks were used
-  instead. A later session with an available browser should still visually
-  inspect light/dark states and the interactive B4/B5 behaviors.
-- Lookbook's index returned HTTP 200 but its application showed the normal
-  blank-slate page. Component preview tests (`render_preview`) passed; use
-  those tests rather than assuming the index lists previews.
+- Do not repeat the original B1 discovery: `forms` is only a field-group
+  wrapper plus the shared `form-control` CSS; it does not ship separate input,
+  textarea, label, or error components.
+- `bin/importmap pin tom-select --download` and the flags-first variant both
+  fail in this Rails/importmap version. Plain `mise exec -- bin/importmap pin
+  tom-select` downloads/pins the package. Its initial downloaded entry was not
+  a self-contained ESM module, so B2 replaced the vendor file with the
+  self-contained 2.6.2 ESM bundle while retaining the local importmap pin. Do
+  not run `importmap pristine` unless you re-verify the bundle imports.
+- Browser automation is unavailable in this workspace: the browser runtime
+  initialized but exposed no browser backends. Do not substitute an unrelated
+  browser tool. Use local server/curl plus component tests; a later session
+  with a browser should visually check light/dark states and interactive
+  behavior.
+- The shared application head already contains external Inter font links at
+  `app/views/application/_head.html.erb`. They predate this ticket and were not
+  changed in B2, so a whole-app zero-network claim cannot be made without a
+  separate scoped decision to self-host those fonts.
 
 ## Open Questions
 
