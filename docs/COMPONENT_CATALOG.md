@@ -11,6 +11,10 @@
 | `SwitchComponent` | Renders a toggle switch with label, status, and validation state. | `label`, `name`, `checked`, `show_icons`, `disabled` | `SwitchComponentPreview` |
 | `SelectComponent` | Renders a locally enhanced single or multiple select. | `name`, `options`, `selected`, `multiple`, `error` | `SelectComponentPreview` |
 | `PasswordComponent` | Renders a password input with visibility toggle and optional guidance. | `name`, `show_strength`, `show_requirements`, `error` | `PasswordComponentPreview` |
+| `AlertComponent` | Renders a titled feedback message with a semantic variant and optional icon. | `title`, `description`, `variant`, `show_icon` | `AlertComponentPreview` |
+| `BadgeComponent` | Renders a small status/tag label with color, size, dot, and remove-button options. | `text`, `variant`, `size`, `pill`, `dot`, `removable` | `BadgeComponentPreview` |
+| `LoadingIndicatorComponent` | Renders a spinner, dots, bars, or progress bar loading indicator. | `type`, `size`, `color`, `text`, `progress` | `LoadingIndicatorComponentPreview` |
+| `SkeletonComponent` | Renders a pulsing placeholder shape while content loads. | `variant`, `width`, `height`, `count` | `SkeletonComponentPreview` |
 
 ## Component Details
 
@@ -195,6 +199,120 @@ states.
 
 ```erb
 <%= render PasswordComponent.new(name: "user[password]", show_strength: true) %>
+```
+
+### AlertComponent
+
+**Purpose:** Renders a titled feedback message with success, error, warning,
+info, or neutral variants and an optional icon.
+
+**Arguments:**
+
+| Argument | Type | Default | Description |
+| --- | --- | --- | --- |
+| `title` | `String` | required | Alert heading text. |
+| `description` | `String` | `nil` | Optional supporting text (may include HTML — see security note). |
+| `variant` | `Symbol` | `:success` | `:success`, `:error`, `:warning`, `:info`, or `:neutral`. |
+| `show_icon` | `Boolean` | `true` | Shows the variant icon. |
+| `custom_icon` | `String` | `nil` | Overrides the variant icon with custom SVG/HTML. |
+| `classes` | `String` | `nil` | Additional wrapper classes. |
+
+**Variants:** `success`, `error`, `warning`, `info`, `neutral`. These are
+semantic status colors, not the brand `primary` token.
+
+**Security:** `description` is rendered with `.html_safe` (a Rails Blocks
+default, to allow links/bold text in the message). Only pass static,
+developer-authored strings — never raw user input — or you introduce an XSS
+hole.
+
+**Preview:** `AlertComponentPreview`
+
+**Usage:**
+
+```erb
+<%= render AlertComponent.new(title: "Saved", description: "Your changes have been applied.", variant: :success) %>
+```
+
+### BadgeComponent
+
+**Purpose:** Renders a small status/tag label with color, size, dot, and
+remove-button options.
+
+**Arguments:**
+
+| Argument | Type | Default | Description |
+| --- | --- | --- | --- |
+| `text` | `String` | required | Badge text content. |
+| `variant` | `Symbol` | `:neutral` | `:neutral`, `:red`, `:orange`, `:yellow`, `:green`, `:blue`, `:purple`, or `:pink`. |
+| `size` | `Symbol` | `:md` | `:sm` or `:md`. |
+| `pill` | `Boolean` | `false` | Fully rounded pill shape. |
+| `dot` | `Boolean` | `false` | Shows a colored status dot. |
+| `removable` | `Boolean` | `false` | Shows a remove/close button. |
+| `classes` | `String` | `nil` | Additional wrapper classes. |
+
+**Preview:** `BadgeComponentPreview`
+
+**Usage:**
+
+```erb
+<%= render BadgeComponent.new(text: "Published", variant: :green, dot: true) %>
+```
+
+### LoadingIndicatorComponent
+
+**Purpose:** Renders a spinner, dots, bars, or progress bar loading state.
+
+**Arguments:**
+
+| Argument | Type | Default | Description |
+| --- | --- | --- | --- |
+| `type` | `Symbol` | `:spinner` | `:spinner`, `:dots`, `:bars`, or `:progress`. |
+| `size` | `Symbol` | `:md` | `:xs`, `:sm`, `:md`, `:lg`, or `:xl`. |
+| `color` | `Symbol` | `:neutral` | `:neutral`, `:primary`, or a semantic color (`:red`, `:orange`, `:yellow`, `:green`, `:blue`, `:purple`, `:pink`). |
+| `text` | `String` | `nil` | Optional loading text. |
+| `progress` | `Integer` | `nil` | Percentage (0-100), used with `type: :progress`. |
+| `stepped` | `Boolean` | `false` | iOS-style stepped spinner animation. |
+| `classes` | `String` | `nil` | Additional wrapper classes. |
+
+**Variants:** `:primary` uses the shared `bg-primary`/`text-primary` design
+tokens (this diverges from the Rails Blocks default, which hard-coded
+`:primary` to red).
+
+**States:** The `:progress` type sets its fill width with an inline style
+since the percentage is an unbounded runtime value with no static Tailwind
+class form; dot/bar animation delays use static Tailwind arbitrary-value
+classes instead of inline styles.
+
+**Preview:** `LoadingIndicatorComponentPreview`
+
+**Usage:**
+
+```erb
+<%= render LoadingIndicatorComponent.new(type: :progress, progress: 65, color: :primary) %>
+```
+
+### SkeletonComponent
+
+**Purpose:** Renders a pulsing placeholder shape while content loads.
+
+**Arguments:**
+
+| Argument | Type | Default | Description |
+| --- | --- | --- | --- |
+| `variant` | `Symbol` | `:text` | `:text`, `:circle`, `:rectangle`, `:image`, `:button`, or `:input`. |
+| `width` | `String` | variant default | Width classes, e.g. `"w-1/2"`. |
+| `height` | `String` | variant default | Height classes, e.g. `"h-10"`. |
+| `rounded` | `Symbol` | variant default | `:none`, `:sm`, `:md`, `:lg`, `:xl`, `:"2xl"`, or `:full`. |
+| `animated` | `Boolean` | `true` | Toggles the pulse animation. |
+| `count` | `Integer` | `1` | Renders multiple stacked skeletons. |
+| `classes` | `String` | `nil` | Additional classes. |
+
+**Preview:** `SkeletonComponentPreview`
+
+**Usage:**
+
+```erb
+<%= render SkeletonComponent.new(variant: :circle) %>
 ```
 
 ### Component Details template

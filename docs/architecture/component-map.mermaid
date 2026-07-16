@@ -13,7 +13,10 @@ flowchart TB
   end
 
   subgraph feedback["Feedback"]
-    %% Components go here.
+    alert_component["AlertComponent"]
+    badge_component["BadgeComponent"]
+    loading_indicator_component["LoadingIndicatorComponent"]
+    skeleton_component["SkeletonComponent"]
   end
 
   subgraph overlays["Overlays"]

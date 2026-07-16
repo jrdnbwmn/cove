@@ -71,7 +71,49 @@
 
 <section>
   <h2>Feedback</h2>
-  <%# TODO: replace with feedback component examples %>
+  <div class="grid gap-4 md:grid-cols-2">
+    <%= render AlertComponent.new(title: "Success! Your changes have been saved", description: "All updates have been applied successfully.", variant: :success) %>
+    <%= render AlertComponent.new(title: "Something went wrong", description: "We couldn't process your request.", variant: :error) %>
+    <%= render AlertComponent.new(title: "Your plan is expiring soon", variant: :warning) %>
+    <%= render AlertComponent.new(title: "New features are available", variant: :info) %>
+  </div>
+
+  <div class="mt-6 flex flex-wrap items-center gap-3">
+    <%= render BadgeComponent.new(text: "Neutral") %>
+    <%= render BadgeComponent.new(text: "Published", variant: :green) %>
+    <%= render BadgeComponent.new(text: "Active", variant: :blue, dot: true) %>
+    <%= render BadgeComponent.new(text: "Beta", variant: :purple, pill: true) %>
+    <%= render BadgeComponent.new(text: "Filter: Active", variant: :neutral, removable: true) %>
+  </div>
+
+  <div class="mt-6 flex flex-wrap items-center gap-6">
+    <%= render LoadingIndicatorComponent.new %>
+    <%= render LoadingIndicatorComponent.new(stepped: true) %>
+    <%= render LoadingIndicatorComponent.new(type: :dots) %>
+    <%= render LoadingIndicatorComponent.new(type: :bars) %>
+    <%= render LoadingIndicatorComponent.new(type: :progress, progress: 65) %>
+    <%= render LoadingIndicatorComponent.new(color: :primary, text: "Loading...") %>
+  </div>
+
+  <div class="mt-6 grid max-w-sm gap-2">
+    <%= render SkeletonComponent.new %>
+    <%= render SkeletonComponent.new(variant: :circle) %>
+    <%= render SkeletonComponent.new(variant: :button) %>
+    <%= render SkeletonComponent.new(count: 3) %>
+  </div>
+
+  <div class="dark mt-6 grid gap-4 bg-neutral-900 p-4 md:grid-cols-2">
+    <%= render AlertComponent.new(title: "Dark mode success", variant: :success) %>
+    <%= render AlertComponent.new(title: "Dark mode error", variant: :error) %>
+    <div class="flex flex-wrap items-center gap-3">
+      <%= render BadgeComponent.new(text: "Dark neutral") %>
+      <%= render BadgeComponent.new(text: "Dark active", variant: :blue, dot: true) %>
+    </div>
+    <div class="flex flex-wrap items-center gap-6">
+      <%= render LoadingIndicatorComponent.new %>
+      <%= render LoadingIndicatorComponent.new(color: :primary) %>
+    </div>
+  </div>
 </section>
 
 <section>
