@@ -24,6 +24,7 @@
 | `UiTabsComponent` | Renders Rails Blocks tabs without replacing Jumpstart's tabs. | `variant`, `orientation`, `default_tab`, `url_sync` | `UiTabsComponentPreview` |
 | `PaginationComponent` | Renders Pagy navigation in full, compact, or minimal form. | `pagy`, `variant`, `size`, `frame_id` | `PaginationComponentPreview` |
 | `SidebarComponent` | Renders responsive primary navigation with collapsible groups. | `variant`, `collapsible`, `storage_key`, `position` | `SidebarComponentPreview` |
+| `CardComponent` | Renders a content container with optional image, header, body, and footer slots. | `variant`, `padding`, `shadow`, `divide`, `hoverable` | `CardComponentPreview` |
 
 ## Component Details
 
@@ -571,6 +572,36 @@ only static, developer-authored SVG markup.
 <%= render SidebarComponent.new do |sidebar| %>
   <% sidebar.with_item(label: "Dashboard", href: dashboard_path, active: true) %>
   <p>Page content</p>
+<% end %>
+```
+
+### CardComponent
+
+**Purpose:** Renders related content in a container with optional image, header,
+body, and footer slots.
+
+**Arguments:** Use `variant`, `padding`, `shadow`, `rounded`, `border`,
+`hoverable`, `clickable`, `divide`, `full_width_mobile`, and `classes` to
+configure the card.
+
+**Slots:** `with_header`, `with_body`, `with_footer`, and `with_image` compose
+the card. The default block content renders in the body when no body slot is
+provided.
+
+**Variants:** `:default`, `:elevated`, and `:well`.
+
+**States:** Supports optional section dividers, hover and clickable treatments,
+and edge-to-edge mobile rendering.
+
+**Preview:** `CardComponentPreview`
+
+**Usage:**
+
+```erb
+<%= render CardComponent.new(divide: true) do |card| %>
+  <% card.with_header { "Project summary" } %>
+  <% card.with_body { "Three tasks are ready." } %>
+  <% card.with_footer { "View project" } %>
 <% end %>
 ```
 

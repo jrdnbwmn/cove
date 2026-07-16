@@ -6,8 +6,7 @@ Work is on `feature/cov-12-starter-components`, targeting `origin/main`.
 The working tree was clean before this handoff update. The active plan is
 [curated-rails-blocks-starter-set.md](../docs/plans/curated-rails-blocks-starter-set.md).
 
-Tasks B0 through B6 are complete and committed. The latest commit is
-`bb79684 feature: add navigation components`.
+Tasks B0 through B7 are complete and committed.
 
 B6 added `NavbarComponent`, `BreadcrumbComponent`, `UiTabsComponent`,
 `PaginationComponent`, and `SidebarComponent`, including their nested
@@ -31,6 +30,11 @@ controller for collapsed-label UI; it does not collide with the new `sidebar`
 controller. Generated icon arguments render with `html_safe`, so the catalog
 limits them to developer-authored static SVG markup.
 
+B7 added the flat `CardComponent`, including its nested image slot component,
+component and preview tests, Lookbook previews, kitchen-sink examples, catalog
+entry, and Data Display component-map node. `card` requires no Stimulus
+controller, importmap pin, vendored asset, or CDN resource.
+
 Earlier committed batches are B0 (button), B1 (form field), B2 (form controls
 and self-hosted tom-select), B3 (static feedback), B4 (toast/tooltip), and B5
 (modal/dropdown). All component classes include the required `# AIDEV-NOTE:`
@@ -47,12 +51,7 @@ mise exec -- bin/rails db:migrate:status
 mise exec -- bin/rails test
 ```
 
-1. **B7 [next]:** Install and flatten `card` only. Follow the plan's standard
-   batch workflow: Rails Blocks discovery/docs, dry run, TDD (prove the test
-   fails first), install, collision/token pass, flat normalization, preview,
-   kitchen sink, catalog/map, verification, review, and one commit named
-   `feature: add card component`.
-2. **B8:** Audit the existing shell, Devise, and account views. Present the
+1. **B8 [next]:** Audit the existing shell, Devise, and account views. Present the
    candidate Rails Blocks extras and stop for Jordan's explicit approval before
    installing anything. Then document the ongoing on-demand install policy.
 
@@ -60,13 +59,12 @@ Do not begin B8 automatically after B7; it is an explicit approval gate.
 
 ## Verification
 
-After B6, the following all passed:
+After B7, the following all passed:
 
-- `mise exec -- bin/rails test` — 274 runs, 600 assertions, 0 failures.
-- `mise exec -- bundle exec rubocop` — 414 files inspected, no offenses.
-- `mise exec -- bin/importmap json` — valid import map.
-- A local Puma smoke check returned 200 for `/dev/kitchen_sink` (91,003 bytes)
-  and `/lookbook` (117,202 bytes). The server was stopped cleanly afterward.
+- `mise exec -- bin/rails test` — 276 runs, 605 assertions, 0 failures.
+- `mise exec -- bundle exec rubocop` — 417 files inspected, no offenses.
+- A local Puma smoke check returned 200 for `/dev/kitchen_sink` (93,130 bytes)
+  and `/lookbook` (122,769 bytes). The server was stopped cleanly afterward.
 
 Browser automation is unavailable in this workspace. Do not substitute an
 unrelated browser. Component tests and the local server/curl smoke check were

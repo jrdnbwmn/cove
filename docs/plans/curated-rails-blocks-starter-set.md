@@ -14,7 +14,7 @@
 | B4   | Feedback interactive: toast (`ui-toast`, motion), tooltip (`ui-tooltip`) | Master | ✅ |
 | B5   | Overlays: modal, dropdown | Master | ✅ |
 | B6   | Navigation: navbar, breadcrumb, tabs, pagination, sidebar | Master | ✅ |
-| B7   | Data Display: card | Master |      |
+| B7   | Data Display: card | Master | ✅ |
 | B8   | Shell-port extras audit + install (approval gate) + document on-demand policy | Master |      |
 
 ## Prerequisites

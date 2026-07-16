@@ -204,5 +204,21 @@
 
 <section>
   <h2>Data Display</h2>
-  <%# TODO: replace with data display component examples %>
+  <div class="grid gap-4 md:grid-cols-2">
+    <%= render CardComponent.new.with_content("A default card with standard content padding.") %>
+
+    <%= render CardComponent.new(variant: :elevated, shadow: :lg, hoverable: true).with_content("An elevated card with a hover state.") %>
+
+    <%= render CardComponent.new(variant: :well).with_content("A low-emphasis well card.") %>
+
+    <%= render CardComponent.new(divide: true) do |card| %>
+      <% card.with_header { "Project summary" } %>
+      <% card.with_body { "Three tasks are ready." } %>
+      <% card.with_footer { "View project" } %>
+    <% end %>
+  </div>
+
+  <div class="dark mt-6 bg-neutral-900 p-4">
+    <%= render CardComponent.new(variant: :elevated, shadow: :lg).with_content("An elevated card in dark mode.") %>
+  </div>
 </section>
