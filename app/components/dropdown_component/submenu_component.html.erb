@@ -1,0 +1,33 @@
+<div class="flex flex-col" role="menu">
+  <div class="relative w-full" <%= tag.attributes(controller_data) %>>
+    <button
+      class="<%= trigger_classes %>"
+      data-ui-dropdown-popover-target="button"
+      data-action="click->ui-dropdown-popover#toggle"
+      data-ui-menu-target="item"
+      role="menuitem"
+      aria-haspopup="menu"
+    >
+      <% if icon.present? %>
+        <span class="text-xs text-neutral-500 dark:text-neutral-400"><%= icon.html_safe %></span>
+      <% end %>
+      <span class="menu-item-text flex-1"><%= text %></span>
+      <%= render_chevron_icon %>
+    </button>
+
+    <dialog
+      class="<%= menu_classes %>"
+      data-controller="ui-menu"
+      data-ui-dropdown-popover-target="menu"
+      data-action="keydown.up->ui-menu#prev keydown.down->ui-menu#next
+                  keydown.up->ui-menu#preventScroll keydown.down->ui-menu#preventScroll"
+    >
+      <div class="flex flex-col p-1" role="menu">
+        <% items.each do |item| %>
+          <%= item %>
+        <% end %>
+        <%= content if content? %>
+      </div>
+    </dialog>
+  </div>
+</div>

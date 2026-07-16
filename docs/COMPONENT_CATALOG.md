@@ -17,6 +17,8 @@
 | `SkeletonComponent` | Renders a pulsing placeholder shape while content loads. | `variant`, `width`, `height`, `count` | `SkeletonComponentPreview` |
 | `UiToastComponent` | Provides the Rails Blocks toast container for new app UI. | `position`, `layout`, `auto_dismiss_duration`, `limit` | `UiToastComponentPreview` |
 | `TooltipComponent` | Wraps content with a Rails Blocks tooltip. | `text`, `placement`, `delay`, `trigger`, `kbd` | `TooltipComponentPreview` |
+| `UiModalComponent` | Renders a Rails Blocks dialog without replacing Jumpstart's modal. | `title`, `size`, `prevent_dismiss`, `trigger_text` | `UiModalComponentPreview` |
+| `DropdownComponent` | Renders an accessible, positioned menu with item slots. | `trigger_text`, `placement`, `hover`, `portal` | `DropdownComponentPreview` |
 
 ## Component Details
 
@@ -373,6 +375,72 @@ controller intact.
 ```erb
 <%= render TooltipComponent.new(text: "Helpful information") do %>
   <button type="button">Hover for help</button>
+<% end %>
+```
+
+### UiModalComponent
+
+**Purpose:** Renders the Rails Blocks native-dialog modal for new product UI.
+Use this component instead of `ModalComponent`, which belongs to Jumpstart and
+continues to serve its existing behavior.
+
+**Arguments:** Use `size`, `title`, `show_close_button`, `prevent_dismiss`,
+`lazy_load`, `turbo_frame_src`, `auto_focus`, `classes`, `trigger_text`, and
+`trigger_classes` to configure the dialog and its trigger.
+
+**Variants:** Supports `:sm`, `:md`, `:lg`, `:xl`, `:"2xl"` through `:"7xl"`,
+and `:fullscreen` sizes. Header and footer slots replace the default title and
+add dialog actions.
+
+**States:** Supports dismissible dialogs, non-dismissible confirmations, lazy
+content, and keyboard/backdrop close behavior. It uses `ui-modal`, leaving
+Jumpstart's `modal` controller intact.
+
+**Preview:** `UiModalComponentPreview`
+
+**Usage:**
+
+```erb
+<%= render UiModalComponent.new(title: "Archive project", trigger_text: "Archive") do |modal| %>
+  <p>Archived projects can be restored later.</p>
+  <% modal.with_footer do %>
+    <%= render ButtonComponent.new(text: "Cancel", variant: :secondary, data: { action: "click->ui-modal#close:prevent" }) %>
+  <% end %>
+<% end %>
+```
+
+### DropdownComponent
+
+**Purpose:** Renders an accessible menu with links, buttons, labels, dividers,
+custom items, and nested submenus. Floating UI positions the menu locally with
+no CDN dependency.
+
+**Arguments:** Use `placement`, `trigger_text`, `trigger_variant`,
+`trigger_icon`, `auto_close`, `hover`, `portal`, `width`, `classes`,
+`trigger_classes`, `menu_classes`, `menu_role`, `trigger_aria_haspopup`,
+`trigger_aria_controls`, `menu_id`, and `flip_class` to configure the menu.
+
+**Slots:** `with_item_link`, `with_item_button`, `with_item_submenu`,
+`with_item_label`, `with_item_divider`, and `with_item_custom` create menu
+content. `with_trigger` supplies a custom trigger.
+
+**States:** Supports default click menus, hover menus, nested submenus,
+disabled and destructive items, and keyboard navigation. It uses
+`ui-dropdown-popover` and `ui-menu`, leaving Jumpstart's `dropdown` controller
+intact.
+
+**Safety:** Icon and custom-trigger markup may be rendered as HTML. Pass only
+static, developer-authored markup to those options and slots.
+
+**Preview:** `DropdownComponentPreview`
+
+**Usage:**
+
+```erb
+<%= render DropdownComponent.new(trigger_text: "Project actions") do |dropdown| %>
+  <% dropdown.with_item_link(text: "Settings", href: project_settings_path) %>
+  <% dropdown.with_item_divider %>
+  <% dropdown.with_item_button(text: "Archive", destructive: true) %>
 <% end %>
 ```
 

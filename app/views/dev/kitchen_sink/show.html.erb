@@ -126,7 +126,33 @@
 
 <section>
   <h2>Overlays</h2>
-  <%# TODO: replace with overlay component examples %>
+  <div class="flex flex-wrap items-start gap-4">
+    <%= render UiModalComponent.new(title: "Invite a teammate", trigger_text: "Open modal") do |modal| %>
+      <p class="text-sm text-muted-foreground">Choose a teammate to invite to this project.</p>
+      <% modal.with_footer do %>
+        <%= render ButtonComponent.new(text: "Cancel", variant: :secondary, data: { action: "click->ui-modal#close:prevent" }) %>
+        <%= render ButtonComponent.new(text: "Send invite") %>
+      <% end %>
+    <% end %>
+
+    <%= render DropdownComponent.new(trigger_text: "Project actions", placement: "bottom-end") do |dropdown| %>
+      <% dropdown.with_item_link(text: "Project settings", href: "#") %>
+      <% dropdown.with_item_link(text: "Manage members", href: "#") %>
+      <% dropdown.with_item_divider %>
+      <% dropdown.with_item_button(text: "Archive project", destructive: true) %>
+    <% end %>
+  </div>
+
+  <div class="dark mt-6 flex flex-wrap items-start gap-4 bg-neutral-900 p-4">
+    <%= render UiModalComponent.new(title: "Dark mode modal", trigger_text: "Open modal") do %>
+      <p class="text-sm text-muted-foreground">Modal styles remain legible in dark mode.</p>
+    <% end %>
+
+    <%= render DropdownComponent.new(trigger_text: "Dark mode menu") do |dropdown| %>
+      <% dropdown.with_item_link(text: "Profile", href: "#") %>
+      <% dropdown.with_item_link(text: "Settings", href: "#") %>
+    <% end %>
+  </div>
 </section>
 
 <section>

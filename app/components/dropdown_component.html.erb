@@ -1,0 +1,49 @@
+<div class="<%= wrapper_classes %>" <%= tag.attributes(controller_data) %>>
+  <% if trigger? %>
+    <% trigger_content = trigger %>
+    <% if trigger_content.to_s.include?("data-ui-dropdown-popover-target=") %>
+      <%= trigger_content %>
+    <% else %>
+      <div data-ui-dropdown-popover-target="button" data-action="click->ui-dropdown-popover#toggle" aria-expanded="false" tabindex="-1">
+        <%= trigger_content %>
+      </div>
+    <% end %>
+  <% else %>
+    <button
+      type="button"
+      class="<%= default_trigger_classes %>"
+      data-ui-dropdown-popover-target="button"
+      data-action="click->ui-dropdown-popover#toggle"
+      aria-haspopup="<%= trigger_aria_haspopup %>"
+      <% if trigger_aria_controls.present? %>aria-controls="<%= trigger_aria_controls %>"<% end %>
+    >
+      <% if trigger_variant == :icon %>
+        <%= render_default_trigger_icon %>
+      <% else %>
+        <%= trigger_text %>
+        <% if trigger_icon.present? %>
+          <%= trigger_icon.html_safe %>
+        <% else %>
+          <%= render_default_trigger_icon %>
+        <% end %>
+      <% end %>
+    </button>
+  <% end %>
+
+  <dialog
+    class="<%= menu_wrapper_classes %>"
+    data-controller="ui-menu"
+    data-ui-dropdown-popover-target="menu"
+    <% if menu_id.present? %>id="<%= menu_id %>"<% end %>
+    data-action="click@document->ui-dropdown-popover#closeOnClickOutside
+                close->ui-menu#reset
+                keydown.up->ui-menu#prev keydown.down->ui-menu#next
+                keydown.up->ui-menu#preventScroll keydown.down->ui-menu#preventScroll"
+  >
+    <div class="flex flex-col p-1" role="<%= menu_role %>">
+      <% items.each do |item| %>
+        <%= item %>
+      <% end %>
+    </div>
+  </dialog>
+</div>

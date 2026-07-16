@@ -1,0 +1,7 @@
+<% if wrapper_classes.present? %>
+  <div class="<%= wrapper_classes %>">
+    <%= content %>
+  </div>
+<% else %>
+  <%= content %>
+<% end %>

@@ -1,0 +1,12 @@
+<%= content_tag(tag, item_attributes) do %>
+  <% if icon.present? %>
+    <span class="text-xs text-neutral-500 dark:text-neutral-400"><%= icon.html_safe %></span>
+  <% end %>
+  <span class="menu-item-text flex-1"><%= text %></span>
+  <% if badge.present? %>
+    <span class="ml-auto rounded bg-neutral-100 px-1.5 py-0.5 text-xs font-medium text-neutral-600 dark:bg-neutral-700 dark:text-neutral-300"><%= badge %></span>
+  <% end %>
+  <% if shortcut.present? %>
+    <span class="ml-auto text-xs text-neutral-500 dark:text-neutral-400"><%= shortcut %></span>
+  <% end %>
+<% end %>
