@@ -51,6 +51,22 @@
       <% end %>
     <% end %>
   </div>
+
+  <div class="mt-6 grid gap-6 md:grid-cols-2">
+    <%= render CheckboxComponent.new(label: "Receive product updates", name: "preferences[product_updates]", checked: true, description: "A checked checkbox with supporting text.") %>
+    <%= render RadioComponent.new(label: "Team", name: "plan", value: "team", checked: true, description: "A selected radio option.") %>
+    <%= render SwitchComponent.new(label: "Enable weekly summary", name: "preferences[weekly_summary]", checked: true, show_icons: true) %>
+    <%= render SelectComponent.new(label: "Plan", name: "subscription[plan]", options: [["Starter", "starter"], ["Team", "team"], ["Enterprise", "enterprise"]]) %>
+    <%= render PasswordComponent.new(name: "user[password]", hint: "Use at least 8 characters.") %>
+  </div>
+
+  <div class="dark mt-6 grid gap-6 bg-neutral-900 p-4 md:grid-cols-2">
+    <%= render CheckboxComponent.new(label: "Dark mode checkbox", name: "dark[checkbox]", error: "Choose an option.") %>
+    <%= render RadioComponent.new(label: "Dark mode radio", name: "dark_radio", value: "selected", disabled: true) %>
+    <%= render SwitchComponent.new(label: "Dark mode switch", name: "dark[switch]", disabled: true) %>
+    <%= render SelectComponent.new(label: "Dark mode select", name: "dark[select]", options: [["Monthly", "monthly"]], disabled: true) %>
+    <%= render PasswordComponent.new(name: "dark[password]", error: "Password is too short.") %>
+  </div>
 </section>
 
 <section>

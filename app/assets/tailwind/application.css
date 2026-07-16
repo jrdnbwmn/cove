@@ -51,4 +51,5 @@
 @import "./components/wells.css" layer(components);
 @import "./components/braintree.css" layer(components);
 @import "./rails_blocks/base.css" layer(components);
+@import "./components/tom_select.css" layer(components);
 @import "./components/lexxy.css";

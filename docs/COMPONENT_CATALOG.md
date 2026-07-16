@@ -6,6 +6,11 @@
 | --- | --- | --- | --- |
 | `ButtonComponent` | Renders an action button or link with visual variants, sizes, and states. | `text`, `variant`, `size`, `style`, `href` | `ButtonComponentPreview` |
 | `FormFieldComponent` | Wraps a labeled raw form control with helper, error, required, and layout states. | `label`, `name`, `size`, `variant`, `error` | `FormFieldComponentPreview` |
+| `CheckboxComponent` | Renders a labeled checkbox with optional supporting text and validation state. | `label`, `name`, `checked`, `disabled`, `error` | `CheckboxComponentPreview` |
+| `RadioComponent` | Renders a labeled radio option with optional supporting text and validation state. | `label`, `name`, `value`, `checked`, `disabled` | `RadioComponentPreview` |
+| `SwitchComponent` | Renders a toggle switch with label, status, and validation state. | `label`, `name`, `checked`, `show_icons`, `disabled` | `SwitchComponentPreview` |
+| `SelectComponent` | Renders a locally enhanced single or multiple select. | `name`, `options`, `selected`, `multiple`, `error` | `SelectComponentPreview` |
+| `PasswordComponent` | Renders a password input with visibility toggle and optional guidance. | `name`, `show_strength`, `show_requirements`, `error` | `PasswordComponentPreview` |
 
 ## Component Details
 
@@ -92,6 +97,104 @@ small, medium, and large text treatments. Apply `form-control`,
     <input class="form-control" id="user_email" name="user[email]" type="email">
   <% end %>
 <% end %>
+```
+
+### CheckboxComponent
+
+**Purpose:** Renders a labeled native checkbox with optional description,
+required, disabled, and error states.
+
+**Arguments:** `label` is required. Use `name`, `value`, `checked`, `disabled`,
+`required`, `description`, `size`, `indeterminate`, `error`, `classes`,
+`input_classes`, and `label_classes` to configure its form and visual state.
+
+**States:** Supports checked, disabled, required, indeterminate, description,
+and error states.
+
+**Preview:** `CheckboxComponentPreview`
+
+**Usage:**
+
+```erb
+<%= render CheckboxComponent.new(label: "Receive updates", name: "preferences[updates]", checked: true) %>
+```
+
+### RadioComponent
+
+**Purpose:** Renders one labeled radio option for a radio group.
+
+**Arguments:** `label` is required. Use `name`, `value`, `checked`, `disabled`,
+`required`, `description`, `size`, `error`, `classes`, `input_classes`, and
+`label_classes` to configure the option.
+
+**States:** Supports selected, disabled, required, description, and error states.
+
+**Preview:** `RadioComponentPreview`
+
+**Usage:**
+
+```erb
+<%= render RadioComponent.new(label: "Team", name: "plan", value: "team", checked: true) %>
+```
+
+### SwitchComponent
+
+**Purpose:** Renders a labeled checkbox switch for an on/off preference.
+
+**Arguments:** Use `label`, `name`, `value`, `checked`, `disabled`, `required`,
+`description`, `size`, `show_icons`, `label_position`, `error`, `classes`,
+`switch_classes`, and `label_classes` to configure it.
+
+**States:** Supports checked, disabled, required, description, error, and
+optional status-icon states.
+
+**Preview:** `SwitchComponentPreview`
+
+**Usage:**
+
+```erb
+<%= render SwitchComponent.new(label: "Enable summary", name: "preferences[summary]", checked: true) %>
+```
+
+### SelectComponent
+
+**Purpose:** Renders a native select enhanced by the locally vendored
+tom-select JavaScript and stylesheet.
+
+**Arguments:** Use `name`, `options`, `selected`, `placeholder`, `multiple`,
+`disabled`, `required`, `label`, `description`, `error`, and `size` for the
+standard form case. Advanced remote-loading, grouping, tag, and rendering
+options mirror the Rails Blocks component API.
+
+**States:** Supports placeholder, single or multiple selection, disabled, error,
+and optional searchable/dropdown behavior.
+
+**Preview:** `SelectComponentPreview`
+
+**Usage:**
+
+```erb
+<%= render SelectComponent.new(label: "Plan", name: "subscription[plan]", options: [["Starter", "starter"], ["Team", "team"]]) %>
+```
+
+### PasswordComponent
+
+**Purpose:** Renders a password field with a Stimulus visibility toggle and
+optional strength and requirements guidance.
+
+**Arguments:** Use `label`, `name`, `placeholder`, `required`, `disabled`,
+`autocomplete`, `show_toggle`, `show_strength`, `show_requirements`, `error`,
+`hint`, `classes`, `input_classes`, and `label_classes` to configure it.
+
+**States:** Supports disabled, error, hint, strength-meter, and requirements
+states.
+
+**Preview:** `PasswordComponentPreview`
+
+**Usage:**
+
+```erb
+<%= render PasswordComponent.new(name: "user[password]", show_strength: true) %>
 ```
 
 ### Component Details template
