@@ -117,3 +117,23 @@ update both Stimulus selector strings and rendered `data-*` values/actions.
 The direct `ApplicationController.render` smoke attempt fails because the app
 layout expects Devise/Warden; use a temporary Rails server plus curl against
 `/dev/kitchen_sink` and `/lookbook` instead.
+
+## Catchup 2026-07-16 (B6)
+
+### Friction
+
+`TabsComponent` exists under `lib/jumpstart/app/components/`, so the B6
+collision check had to include engine-owned component paths before installing.
+Jordan approved the `UiTabsComponent` fallback.
+
+### Mistakes
+
+None.
+
+### Observations
+
+For direct `Pagy::Offset` preview/test data, provide a `Pagy::Request` or the
+link helpers cannot derive a base URL. Rails Blocks' B6 navigation controllers
+can stay local without adding third-party imports. Browser automation remains
+unavailable here; a temporary Puma process plus curl is the dependable smoke
+path for kitchen sink and Lookbook.
