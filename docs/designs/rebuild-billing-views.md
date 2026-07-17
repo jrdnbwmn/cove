@@ -58,11 +58,14 @@ browser) after each. One branch → **one PR**, reviewed flow-by-flow.
    billing/account views `content_for :sidebar` render it as-is).
 
 ### Standing hygiene (carried from COV-12/13/14)
-Self-host assets (no CDN). Lazy-register only the Stimulus controllers used. Route
-accents through tokens (`bg-primary`/`text-primary-foreground`). Never `--force`
+Self-host assets (no CDN; vendor/importmap-pin everything). Lazy-register only the
+Stimulus controllers used. Route accents through tokens
+(`bg-primary`/`text-primary-foreground`, not hardcoded neutrals). Never `--force`
 over a Jumpstart controller without approval. Tailwind v4 CSS-first via `@theme` —
 never create `tailwind.config.js`. Importmap (no Node). `# AIDEV-NOTE:` for
-non-obvious decisions. Run Rails/bin commands via `mise exec --`.
+non-obvious decisions. Run Rails/bin commands via `mise exec --`. All Rails Blocks
+operations go through the **`rails-blocks-cli` skill, never the MCP** (non-functional
+here).
 
 ## Acceptance Criteria
 - Every billing/account behavior works unchanged (tests + browser walkthrough):
@@ -176,4 +179,8 @@ one PR).
 - **Config facts:** `payment_processors: ["stripe"]`; `omniauth_providers: []`;
   tests use Pay `fake_processor`.
 - If a needed base component turns out missing → install on demand via the
-  rails-blocks skill (dry-run, never `--force`) or STOP and ask.
+  **`rails-blocks-cli` skill** (dry-run first, never `--force`, ViewComponent since
+  the app uses it) or STOP and ask. **Do NOT use the Rails Blocks MCP** — it is
+  non-functional in this repo (wrong scope, binary not on PATH, placeholder token);
+  the CLI covers everything. None expected here — the COV-12 catalog already covers
+  this surface.
