@@ -1,5 +1,6 @@
 > Ticket: COV-15
 > Branch: feature/cov-15-rebuild-billing-views
+> Plan created: docs/plans/rebuild-billing-views.md
 
 # Feature: Rebuild account + billing (Pay) views with design-system components
 
