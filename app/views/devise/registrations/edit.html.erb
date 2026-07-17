@@ -24,7 +24,6 @@
   <%= render FormFieldComponent.new(
     label: resource.class.human_attribute_name(:name),
     name: "user[name]",
-    required: true,
     error: resource.errors[:name].first,
     classes: "mb-6"
   ) do |field| %>
@@ -36,7 +35,6 @@
   <%= render FormFieldComponent.new(
     label: resource.class.human_attribute_name(:email),
     name: "user[email]",
-    required: true,
     error: resource.errors[:email].first,
     classes: "mb-6"
   ) do |field| %>

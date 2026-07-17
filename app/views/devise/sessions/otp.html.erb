@@ -5,7 +5,6 @@
     <%= render FormFieldComponent.new(
       label: t("users.two_factor.verification_code"),
       name: "otp_attempt",
-      required: true,
       classes: "mb-6"
     ) do |field| %>
       <% field.with_input do %>

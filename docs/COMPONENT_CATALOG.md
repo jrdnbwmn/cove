@@ -199,8 +199,9 @@ and optional searchable/dropdown behavior.
 optional strength and requirements guidance.
 
 **Arguments:** Use `label`, `name`, `placeholder`, `required`, `disabled`,
-`autocomplete`, `show_toggle`, `show_strength`, `show_requirements`, `error`,
-`hint`, `classes`, `input_classes`, and `label_classes` to configure it.
+`autofocus`, `autocomplete`, `show_toggle`, `show_strength`,
+`show_requirements`, `error`, `hint`, `classes`, `input_classes`, and
+`label_classes` to configure it.
 
 **States:** Supports disabled, error, hint, strength-meter, and requirements
 states.
