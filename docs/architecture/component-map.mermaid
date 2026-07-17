@@ -36,6 +36,9 @@ flowchart TB
 
   subgraph data_display["Data Display"]
     card_component["CardComponent"]
+    plan_card_component["PlanCardComponent"]
     avatar_component["AvatarComponent"]
     table_component["TableComponent"]
   end
+
+  plan_card_component --> card_component

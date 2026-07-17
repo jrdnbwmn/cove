@@ -25,6 +25,7 @@
 | `PaginationComponent` | Renders Pagy navigation in full, compact, or minimal form. | `pagy`, `variant`, `size`, `frame_id` | `PaginationComponentPreview` |
 | `SidebarComponent` | Renders responsive primary navigation with collapsible groups. | `variant`, `collapsible`, `storage_key`, `position` | `SidebarComponentPreview` |
 | `CardComponent` | Renders a content container with optional image, header, body, and footer slots. | `variant`, `padding`, `shadow`, `divide`, `hoverable` | `CardComponentPreview` |
+| `PlanCardComponent` | Renders a billing plan, price, features, and caller-supplied actions inside a card. | `plan`, `with_actions` | `PlanCardComponentPreview` |
 | `AvatarComponent` | Renders a user or account image with accessible initials fallback and optional online status. | `alt`, `src`, `fallback`, `size`, `status` | `AvatarComponentPreview` |
 | `TableComponent` | Renders a responsive, accessible data table with row and column slots. | `striped`, `hoverable`, `density`, `sticky_header` | `TableComponentPreview` |
 
@@ -605,6 +606,33 @@ and edge-to-edge mobile rendering.
   <% card.with_header { "Project summary" } %>
   <% card.with_body { "Three tasks are ready." } %>
   <% card.with_footer { "View project" } %>
+<% end %>
+```
+
+### PlanCardComponent
+
+**Purpose:** Renders a Pay plan's name, description, price, optional unit label,
+feature checklist, and a caller-supplied action area inside `CardComponent`.
+
+**Arguments:** `plan` is required and supplies the Pay plan data.
+
+**Slots:** Pass actions as the component block, or use `with_actions`. The
+actions render unchanged below the price.
+
+**States:** Contact plans render the localized "Let's Talk" price. Plans with a
+unit label render it alongside the plan interval. The feature checklist is
+omitted when the plan has no features.
+
+**Dependencies:** Composes `CardComponent` and uses the existing Pay currency
+and plan-interval helpers.
+
+**Preview:** `PlanCardComponentPreview`
+
+**Usage:**
+
+```erb
+<%= render PlanCardComponent.new(plan: plan) do %>
+  <%= pricing_link_to(plan) %>
 <% end %>
 ```
 
