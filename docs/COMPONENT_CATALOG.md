@@ -121,7 +121,7 @@ small, medium, and large text treatments. Apply `form-control`,
 required, disabled, and error states.
 
 **Arguments:** `label` is required. Use `name`, `value`, `checked`, `disabled`,
-`required`, `description`, `size`, `indeterminate`, `error`, `classes`,
+`label_html` (an HTML-safe buffer for labels that contain links), `required`, `description`, `size`, `indeterminate`, `error`, `classes`,
 `input_classes`, and `label_classes` to configure its form and visual state.
 
 **States:** Supports checked, disabled, required, indeterminate, description,
@@ -199,8 +199,9 @@ and optional searchable/dropdown behavior.
 optional strength and requirements guidance.
 
 **Arguments:** Use `label`, `name`, `placeholder`, `required`, `disabled`,
-`autocomplete`, `show_toggle`, `show_strength`, `show_requirements`, `error`,
-`hint`, `classes`, `input_classes`, and `label_classes` to configure it.
+`autofocus`, `autocomplete`, `show_toggle`, `show_strength`,
+`show_requirements`, `error`, `hint`, `classes`, `input_classes`, and
+`label_classes` to configure it.
 
 **States:** Supports disabled, error, hint, strength-meter, and requirements
 states.

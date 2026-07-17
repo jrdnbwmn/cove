@@ -9,6 +9,22 @@ class CheckboxComponentTest < ViewComponent::TestCase
     assert_text "Receive product updates"
   end
 
+  test "renders a safe HTML label" do
+    view_helpers = ActionController::Base.helpers
+    label_html = view_helpers.safe_join(["I agree to the ", view_helpers.link_to("Terms of Service", "/terms")])
+
+    render_inline(CheckboxComponent.new(label: "I agree to the Terms of Service", label_html:, name: "user[terms_of_service]"))
+
+    assert_selector "label a[href='/terms']", text: "Terms of Service"
+  end
+
+  test "escapes the regular label" do
+    render_inline(CheckboxComponent.new(label: "<strong>Receive product updates</strong>", name: "preferences[product_updates]"))
+
+    assert_no_selector "label strong"
+    assert_text "<strong>Receive product updates</strong>"
+  end
+
   test "renders the error preview" do
     render_preview(:error)
 

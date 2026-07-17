@@ -5,6 +5,7 @@ class CheckboxComponent < ViewComponent::Base
   SIZES = %i[sm md lg].freeze
 
   # @param label [String] The checkbox label text
+  # @param label_html [ActiveSupport::SafeBuffer] Optional HTML-safe label content
   # @param name [String] The input name attribute for form submission
   # @param id [String] The input id attribute (auto-generated if not provided)
   # @param value [String] The input value attribute (default: "1")
@@ -20,6 +21,7 @@ class CheckboxComponent < ViewComponent::Base
   # @param label_classes [String] Additional CSS classes for the label element
   def initialize(
     label:,
+    label_html: nil,
     name: nil,
     id: nil,
     value: "1",
@@ -36,6 +38,7 @@ class CheckboxComponent < ViewComponent::Base
   )
     super()
     @label = label
+    @label_html = label_html
     @name = name
     @id = id || generate_id
     @value = value

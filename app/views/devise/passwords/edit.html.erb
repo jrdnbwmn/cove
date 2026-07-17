@@ -1,0 +1,36 @@
+<% Current.meta_tags.set(title: t(".title")) %>
+
+<div class="sm:max-w-sm px-4 mx-auto my-10 lg:px-0">
+  <h2 class="mb-4 h3"><%= t(".change_your_password") %></h2>
+
+  <%= form_for(resource, as: resource_name, url: password_path(resource_name), html: { method: :put }) do |f| %>
+    <%= render "error_messages", resource: resource %>
+    <%= f.hidden_field :reset_password_token %>
+
+    <%= render PasswordComponent.new(
+      label: t(".new_password"),
+      name: "user[password]",
+      id: "user_password",
+      autofocus: true,
+      autocomplete: "new-password",
+      placeholder: true,
+      error: resource.errors[:password].first,
+      hint: @minimum_password_length && t("devise.shared.minimum_password_length", count: @minimum_password_length),
+      classes: "mb-6"
+    ) %>
+
+    <%= render PasswordComponent.new(
+      label: t(".confirm_new_password"),
+      name: "user[password_confirmation]",
+      id: "user_password_confirmation",
+      autocomplete: "new-password",
+      placeholder: true,
+      error: resource.errors[:password_confirmation].first,
+      classes: "mb-6"
+    ) %>
+
+    <%= render ButtonComponent.new(text: t(".change_my_password"), type: "submit") %>
+  <% end %>
+
+  <%= render "devise/shared/links" %>
+</div>

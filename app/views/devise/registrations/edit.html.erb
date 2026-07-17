@@ -1,0 +1,96 @@
+<% Current.meta_tags.set(title: t(".title")) %>
+
+<% content_for :sidebar, render(partial: "account_navbar") %>
+
+<h1 class="h3"><%= t(".title", resource: resource.model_name.human) %></h1>
+
+<%= form_with(model: resource, as: resource_name, url: registration_path(resource_name), method: :put, class: "mt-4 max-w-md", data: {controller: "bridge--form", action: "turbo:submit-start->bridge--form#submitStart turbo:submit-end->bridge--form#submitEnd"}) do |form| %>
+  <%= render "error_messages", resource: resource %>
+
+  <%= render FormFieldComponent.new(
+    label: resource.class.human_attribute_name(:avatar),
+    name: "user[avatar]",
+    error: resource.errors[:avatar].first,
+    classes: "mb-6"
+  ) do |field| %>
+    <% field.with_input do %>
+      <div class="flex items-center gap-2 sm:gap-4">
+        <%= image_tag avatar_url_for(form.object), class: "rounded-full size-10 sm:size-20" %>
+        <%= form.file_field :avatar, accept: "image/png, image/jpeg, image/heic, image/heif, image/webp", class: "text-xs file:mr-2 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-semibold file:bg-gray-50 file:text-gray-700 hover:file:bg-gray-100" %>
+      </div>
+    <% end %>
+  <% end %>
+
+  <%= render FormFieldComponent.new(
+    label: resource.class.human_attribute_name(:name),
+    name: "user[name]",
+    error: resource.errors[:name].first,
+    classes: "mb-6"
+  ) do |field| %>
+    <% field.with_input do %>
+      <%= form.text_field :name, autofocus: true, autocomplete: "name", placeholder: true, class: "form-control", required: true %>
+    <% end %>
+  <% end %>
+
+  <%= render FormFieldComponent.new(
+    label: resource.class.human_attribute_name(:email),
+    name: "user[email]",
+    error: resource.errors[:email].first,
+    classes: "mb-6"
+  ) do |field| %>
+    <% field.with_input do %>
+      <%= form.email_field :email, autocomplete: "email", placeholder: true, class: "form-control", required: true %>
+    <% end %>
+  <% end %>
+
+  <% if devise_mapping.confirmable? && resource.pending_reconfirmation? %>
+    <%= render AlertComponent.new(title: t(".currently_waiting_confirmation_for_email", email: resource.unconfirmed_email), variant: :warning, classes: "mb-4") %>
+  <% end %>
+
+  <% if I18n.available_locales.length > 1 %>
+    <%# AIDEV-NOTE: Suppress the component's default blank placeholder to preserve Devise's original option set. %>
+    <%= render SelectComponent.new(
+      label: resource.class.human_attribute_name(:preferred_language),
+      name: "user[preferred_language]",
+      options: I18n.available_locales,
+      selected: resource.preferred_language,
+      placeholder: nil,
+      error: resource.errors[:preferred_language].first,
+      classes: "mb-6"
+    ) %>
+  <% end %>
+
+  <%= render SelectComponent.new(
+    label: resource.class.human_attribute_name(:theme),
+    name: "user[theme]",
+    options: theme_options,
+    selected: resource.theme,
+    placeholder: nil,
+    error: resource.errors[:theme].first,
+    classes: "mb-6"
+  ) %>
+
+  <%= render ButtonComponent.new(
+    text: t(".update"),
+    type: "submit",
+    data: {"bridge--form-target": "submit", "bridge-title": t(".update"), disable_with: t(".saving")}
+  ) %>
+<% end %>
+
+<hr>
+
+<h2 class="h3"><%= t(".cancel_my_account") %></h2>
+<p class="mt-2 mb-4 text-sm text-muted"><%= t(".cancel_my_account_description") %></p>
+<div class="mt-2">
+  <%= button_to t(".cancel_my_account"), registration_path(resource_name),
+    method: :delete,
+    class: "inline-flex items-center justify-center gap-1.5 rounded-[var(--radius)] border border-red-300/30 bg-red-600 px-3.5 py-2 text-sm font-medium text-white shadow-sm transition-all duration-100 ease-in-out hover:bg-red-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-neutral-600 dark:focus-visible:outline-neutral-200",
+    data: {
+      controller: "bridge--sign-out",
+      action: "bridge--sign-out#signOut",
+      bridge__sign_out_path_value: api_v1_me_path,
+      turbo_confirm: t("are_you_sure"),
+      turbo_confirm_text: current_user.email,
+      turbo_confirm_description: t(".cancel_my_account_confirm_description_html")
+    } %>
+</div>

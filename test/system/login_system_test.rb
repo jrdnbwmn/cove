@@ -62,12 +62,12 @@ class LoginSystemTest < ApplicationSystemTestCase
     visit new_user_session_path
     fill_in "user[email]", with: email
     fill_in "user[password]", with: password
-    find('input[name="commit"]').click
+    find("button[type=submit]").click
   end
 
   def submit_otp(otp)
     assert_selector "h1", text: I18n.t("users.two_factor.title")
     fill_in "otp_attempt", with: otp
-    find('input[name="commit"]').click
+    find("button[type=submit]").click
   end
 end
