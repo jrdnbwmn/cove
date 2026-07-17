@@ -9,7 +9,7 @@
 | ---- | ----------- | ------ | ---- |
 | 1 | Shared partials: `_error_messages` + `shared/_links` | Master | ✅ |
 | 2 | `sessions/new` + `sessions/otp` + system-test selector updates (pattern-setter) | Master | ✅ |
-| 3 | `passwords/new`, `confirmations/new`, `unlocks/new` (simple email forms) | Clone | |
+| 3 | `passwords/new`, `confirmations/new`, `unlocks/new` (simple email forms) | Clone | ✅ |
 | 4 | `passwords/edit` (hidden token + two PasswordComponents) | Clone | |
 | 5 | `registrations/new` (name/email/password/terms/captcha) | Clone | |
 | 6 | `registrations/edit` (avatar, selects, cancel-account, sidebar) | Master | |

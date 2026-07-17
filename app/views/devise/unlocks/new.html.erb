@@ -1,0 +1,22 @@
+<div class="sm:max-w-sm px-4 mx-auto my-10 lg:px-0">
+  <h2 class="mb-4"><%= t(".resend_unlock_instructions") %></h2>
+
+  <%= form_for(resource, as: resource_name, url: unlock_path(resource_name), html: { method: :post }) do |f| %>
+    <%= render "error_messages", resource: resource %>
+
+    <%= render FormFieldComponent.new(
+      label: resource.class.human_attribute_name(:email),
+      name: "user[email]",
+      error: resource.errors[:email].first,
+      classes: "mb-6"
+    ) do |field| %>
+      <% field.with_input do %>
+        <%= f.email_field :email, autofocus: true, autocomplete: "email", class: "form-control" %>
+      <% end %>
+    <% end %>
+
+    <%= render ButtonComponent.new(text: t(".resend_unlock_instructions"), type: "submit") %>
+  <% end %>
+
+  <%= render "devise/shared/links" %>
+</div>
