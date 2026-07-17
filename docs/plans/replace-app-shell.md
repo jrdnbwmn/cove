@@ -15,7 +15,7 @@
 | 6 | `_flash` → `AlertComponent` banners (keep toasts) | Master | ✅ |
 | 7 | `_footer` app-level restyle with tokens | Clone | ✅ |
 | 8 | Surgical CSS trim of `top_nav.css` / `nav.css` | Master | ✅ |
-| 9 | Full verification: tests, browser widths/themes, `/update-catalog` | Master | |
+| 9 | Full verification: tests, browser widths/themes, `/update-catalog` | Master | ✅ |
 
 ## Prerequisites
 
