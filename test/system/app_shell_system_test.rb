@@ -25,6 +25,12 @@ class AppShellSystemTest < ApplicationSystemTestCase
     page.current_window.resize_to(1400, 1400)
   end
 
+  test "desktop visitor does not see the mobile navigation toggle" do
+    visit root_path
+
+    assert_no_selector "button[aria-label='Open navigation']", visible: true
+  end
+
   test "signed in user can switch accounts from the account menu" do
     login_as users(:one), scope: :user
 
