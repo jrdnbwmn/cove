@@ -1,0 +1,15 @@
+<h2 class="h3"><%= t(".title") %></h2>
+<p class="mt-2 mb-4 text-sm text-muted"><%= t(".description") %></p>
+
+<%= form_with url: account_transfer_path(account), method: :patch, class: "max-w-md", data: { turbo_confirm: t(".are_you_sure") } do |form| %>
+  <%= render SelectComponent.new(
+    label: User.model_name.human,
+    name: "user_id",
+    options: account.users.where.not(users: { id: current_user.id }).map { |user| [user.name, user.id] },
+    placeholder: t("helpers.select.prompt"),
+    required: true,
+    classes: "mb-6"
+  ) %>
+
+  <%= render ButtonComponent.new(text: t(".transfer"), variant: :secondary, type: "submit") %>
+<% end %>

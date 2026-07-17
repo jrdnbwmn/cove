@@ -1,0 +1,27 @@
+<%= form_with(model: [@account, account_user], class: "max-w-md") do |form| %>
+  <%= render "error_messages", resource: form.object %>
+
+  <h2 class="mb-4 text-lg font-semibold text-foreground"><%= t("accounts.roles") %></h2>
+  <div class="mb-6 space-y-3">
+    <% AccountUser::ROLES.each do |role| %>
+      <%# AIDEV-NOTE: CheckboxComponent does not generate Rails' companion unchecked value. %>
+      <%= hidden_field_tag "account_user[#{role}]", "0", id: nil %>
+      <%= render CheckboxComponent.new(
+        label: role.to_s.humanize,
+        name: "account_user[#{role}]",
+        id: role.to_s.parameterize,
+        value: "1",
+        checked: account_user.public_send(role),
+        disabled: role == :admin && account_user.account_owner?
+      ) %>
+    <% end %>
+  </div>
+
+  <div class="flex gap-3">
+    <%= render ButtonComponent.new(
+      text: form.object.persisted? ? t("helpers.submit.update", model: form.object.model_name.human) : t("helpers.submit.create", model: form.object.model_name.human),
+      type: "submit"
+    ) %>
+    <%= render ButtonComponent.new(text: t("cancel"), variant: :secondary, href: @account) %>
+  </div>
+<% end %>
