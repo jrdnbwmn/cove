@@ -2,95 +2,62 @@
 
 ## Work completed and current state
 
-COV-13, “Rebuild the app shell with design-system components,” is active on
-`feature/cov-13-replace-app-shell` (target: `origin/main`). Tasks 1–5 of 9
-are complete and committed:
+COV-15, “Rebuild account + billing (Pay) views with design-system components,”
+is active on `feature/cov-15-rebuild-billing-views` (target: `origin/main`).
+Tasks 1–3 of 14 are complete, reviewed, and committed. The worktree is clean.
 
-- `90cf21d feature: rebuild app shell navigation` — Task 1: app-level navbar
-  shadow, token-styled left/right nav, and the shared shell system-test
-  skeleton.
-- `6c09098 feature: replace app shell menus` — Tasks 2–5: app-level
-  `_account_menu`, `_user_menu`, `_dev_menu`, and `_notifications` shadows
-  using `DropdownComponent`.
+- `79e9d3f feature: add billing plan card component` — Task 1: added the
+  composed `PlanCardComponent`, Lookbook previews, component tests, catalog
+  entry, and composition-map relationship. The component supports caller block
+  content and an explicit `with_actions` slot. Its contact-price key is
+  `billing.subscriptions.plan.contact_us_price`.
+- `df1d5d0 feature: rebuild password and API token forms` — Task 2: app-level
+  shadows for account password editing and API-token form/new/edit. Password
+  fields preserve `user[...]` names and autocomplete values; the API token
+  form preserves `api_token[name]`, autofocus, and create/update/cancel routes.
+- `567f1ad feature: rebuild API token display views` — Task 3: app-level token
+  index/show shadows using `TableComponent`, `BadgeComponent`, and
+  `ButtonComponent`. Clipboard attributes remain `clipboard tooltip`,
+  `tooltip_content_value`, and `clipboard_text`; the revoke link retains Turbo
+  delete/confirm data.
 
-The menu work preserves account switching (including the `accounts` reconnect
-action), every user-menu conditional and sign-out form, the development menu's
-tooltip/non-Turbo links/desktop-only visibility, and the notifications
-controller data, unread badge, lazy Turbo frame, and mark-read-on-open action.
-The plan status is updated through Task 5.
+Verification after Task 3:
 
-The account-menu markup test assertions in
-`test/integration/multitenancy_test.rb` now use the accessible Account Menu
-button rather than the removed `.account-menu .name` classes. The shared
-system test temporarily stubs `Jumpstart.config.account_types` for its
-team-account case and `Rails.env.development?` for its development-menu case;
-this exercises those intentionally gated branches without changing production
-conditions. It also covers the admin-only user-menu link.
+- `mise exec -- bin/rails test` — 288 runs, 629 assertions, 0 failures.
+- `mise exec -- bin/rubocop` — 432 files inspected, no offenses.
+- `git diff --check` passed.
 
-Verification completed:
-
-- `mise exec -- bin/rails db:migrate:status` — all migrations up.
-- `mise exec -- bin/rails test` — 280 runs, 611 assertions, 0 failures.
-- Targeted shell system tests for account switching, user/admin menus,
-  notifications, and the development menu — passing.
-- `mise exec -- bin/rubocop -A test/system/app_shell_system_test.rb test/integration/multitenancy_test.rb` — no offenses.
-- Review passed after fixing the stale multitenancy markup assertions and the
-  unsupported `DropdownComponent` admin-link option.
-
-The workspace is clean after the feature commit. The full
-`app_shell_system_test.rb` intentionally remains red only for the flash-banner
-assertion until Task 6 creates the app-level `_flash` shadow.
+The approved plan is [docs/plans/rebuild-billing-views.md](../docs/plans/rebuild-billing-views.md).
+The saved design is [docs/designs/rebuild-billing-views.md](../docs/designs/rebuild-billing-views.md).
 
 ## Work Remaining
 
-Continue the approved plan at
-[replace-app-shell.md](../docs/plans/replace-app-shell.md), starting with
-Task 6:
+Resume at Task 4 (Master), then follow the plan in order:
 
-1. Task 6 (Master): create `app/views/application/_flash.html.erb` with
-   `AlertComponent` for alert/notice banners while preserving the existing
-   `#flash`, `#toasts`, and `ToastComponent` loop. Run the flash system case
-   first (currently red), then green, review, and mark the plan.
-2. Task 7 (Clone): create `app/views/application/_footer.html.erb`, keeping
-   the existing routes, translation keys, and IA while applying token-based
-   styles. Run the footer case, review, and mark the plan.
-3. Task 8 (Master): trim only the enumerated shell rules from
-   `app/assets/tailwind/components/top_nav.css` and `nav.css`; grep every
-   candidate first and retain native, minimal, sidebar, and docs rules. Run
-   the full app-shell system test after each deletion chunk.
-4. Task 9 (Master): run full `bin/rails test` and `bin/rails test:system`,
-   perform the required signed-in/signed-out mobile/desktop light/dark browser
-   sweep, inspect `git diff --stat origin/main...HEAD`, and run
-   `/update-catalog` only if `app/components/` changed (none have so far).
+1. Create `app/views/accounts/_form.html.erb`, `new.html.erb`, and `edit.html.erb` as app-level shadows. Use `FormFieldComponent` for name/domain/subdomain/avatar and `ButtonComponent` for submit/cancel. Preserve all field names, `autofocus`, the file accept list, `account_avatar`, and the exact `Jumpstart::Multitenancy.domain?` / `.subdomain?` guards. Preserve edit’s conditional `button_to` delete and transfer partial. Verify with `mise exec -- bin/rails test test/controllers/accounts_controller_test.rb`, review, then mark Task 4 done.
+2. After Task 4, delegate Tasks 5–7 as the plan marks them Clone. Task 6 has a mandatory stop condition: `CheckboxComponent` has no hidden `"0"` companion, so confirm role checkbox params round-trip unchanged before implementation; ask the user if they do not.
+3. Continue Tasks 8–13 in dependency order. Task 8 establishes the `PlanCardComponent` call shape for Task 11. Task 9 requires the app-level Stripe form shadow to be byte-identical to the engine source.
+4. Run Task 14 last: selector migration, integration/system coverage, full Rails + system-test gate, and browser verification.
 
-Do not edit `lib/jumpstart/app/views/application/`; app-level partials shadow
-the engine. Keep both `dropdown` and `toggle` Stimulus controllers registered.
-Do not alter theme plumbing, Devise, billing, Hotwire Native, minimal, or
-sidebar surfaces.
-
-Use `mise exec --` for Rails commands. For targeted system tests, pass the
-file path positionally and use `-i`, for example:
-
-```sh
-mise exec -- bin/rails test:system test/system/app_shell_system_test.rb -i /flash/
-```
+Global plan constraints: create only app-level shadows; do not edit
+`lib/jumpstart/`; run all Rails/bin commands with `mise exec --`; preserve
+routes, params, `Current.meta_tags`, sidebar content, Pundit/config guards,
+Turbo confirmation data, Stimulus attributes, and Pagy conditions exactly.
+Use `FormFieldComponent#with_input` to retain raw field options. `PasswordComponent`
+must receive explicit `name`, `autocomplete`, `placeholder`, and error values.
 
 ## Dead Ends
 
-- `mise exec -- bin/rails test:system TEST=test/system/app_shell_system_test.rb`
-  fails with `InvalidTestError`; use the positional test file instead.
-- `-n` works but emits a deprecation warning; use `-i` for name filtering.
-- Capybara does not reliably resolve aria-label controls through
-  `click_button`; use selectors such as
-  `find("button[aria-label='User Menu']")`.
-- The Task 1 test skeleton did not activate its team-account or development
-  branches in the default test configuration. Keep the narrow test-only stubs
-  now present in `test/system/app_shell_system_test.rb` rather than weakening
-  the production render guards.
-- `DropdownComponent#with_item_link` does not accept arbitrary `data:`
-  options. Use `with_item_custom(unstyled: true)` plus a fully attributed
-  `link_to` for non-Turbo menu links, as the dev/admin menu implementations do.
+- `mise exec -- bin/rubocop <erb files>` parses ERB as Ruby and emits syntax
+  errors. Run the normal project-wide `mise exec -- bin/rubocop` command,
+  which is configured to inspect supported files, plus Rails tests and
+  `git diff --check`.
+- A direct `ApplicationController.render` smoke test needs `locals:` for a
+  partial local (not `assigns:`). Rendering full authenticated templates this
+  way is not useful because the layout expects session/Warden state.
+- In this checkout, always use `mise exec --`; system Ruby/Bundler does not
+  boot the project correctly.
 
 ## Open Questions
 
-None. The approved plan can proceed with Task 6.
+None. The approved plan can proceed at Task 4.

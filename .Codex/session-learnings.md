@@ -203,3 +203,24 @@ The four menu partials are independent enough to implement in parallel after
 the navbar/test skeleton exists. The full shell system suite correctly stays
 red at the flash assertion until Task 6, so run only the cases owned by the
 current task during phased execution.
+
+## Catchup 2026-07-17 (COV-15 Tasks 1-3)
+
+### Friction
+
+The plan’s Clone task marked completion in its task heading rather than in the
+status table; correct the table because `/execute-plan` uses it to determine
+the next task.
+
+### Mistakes
+
+Do not invoke RuboCop directly on `.erb` paths in this repository: it parses
+them as Ruby. Use the project-wide RuboCop command instead.
+
+### Observations
+
+`PlanCardComponent` must include `PlanHelper` for Lookbook preview rendering;
+the component render context does not reliably expose `formatted_plan_interval`
+through `helpers`. For a `ButtonComponent` link, pass an explicit path string
+such as `api_token_path(record)`, not the record itself. `ButtonComponent`'s
+`href` expects a URL string and does not perform polymorphic routing.
