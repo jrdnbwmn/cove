@@ -1,0 +1,18 @@
+<div class="sm:max-w-sm px-4 mx-auto my-10 lg:px-0">
+  <h1 class="h3 text-center"><%= t("users.two_factor.title") %></h1>
+
+  <%= form_with url: new_user_session_path do |form| %>
+    <%= render FormFieldComponent.new(
+      label: t("users.two_factor.verification_code"),
+      name: "otp_attempt",
+      required: true,
+      classes: "mb-6"
+    ) do |field| %>
+      <% field.with_input do %>
+        <%= form.text_field :otp_attempt, autocomplete: "one-time-code", inputmode: "numeric", class: "form-control", autofocus: true, required: true %>
+      <% end %>
+    <% end %>
+
+    <%= render ButtonComponent.new(text: t("users.two_factor.submit"), type: "submit", full_width: true) %>
+  <% end %>
+</div>
