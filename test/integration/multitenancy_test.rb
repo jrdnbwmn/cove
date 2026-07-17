@@ -11,13 +11,13 @@ class Jumpstart::MultitenancyTest < ActionDispatch::IntegrationTest
     Jumpstart.config.stub(:account_types, "both") do
       Jumpstart::Multitenancy.stub :selected, ["subdomain"] do
         get about_path
-        assert_select ".account-menu .name", text: @user.name
+        assert_select "button[aria-label='Account Menu']", text: @user.name
 
         host! @account.domain
         sign_in @user
 
         get about_path
-        assert_select ".account-menu .name", text: @account.name
+        assert_select "button[aria-label='Account Menu']", text: @account.name
       end
     end
   end
@@ -26,13 +26,13 @@ class Jumpstart::MultitenancyTest < ActionDispatch::IntegrationTest
     Jumpstart.config.stub(:account_types, "both") do
       Jumpstart::Multitenancy.stub :selected, ["subdomain"] do
         get about_path
-        assert_select ".account-menu .name", text: @user.name
+        assert_select "button[aria-label='Account Menu']", text: @user.name
 
         host! "#{@account.subdomain}.example.com"
         sign_in @user
 
         get about_path
-        assert_select ".account-menu .name", text: @account.name
+        assert_select "button[aria-label='Account Menu']", text: @account.name
       end
     end
   end
@@ -41,10 +41,10 @@ class Jumpstart::MultitenancyTest < ActionDispatch::IntegrationTest
     Jumpstart.config.stub(:account_types, "both") do
       Jumpstart::Multitenancy.stub :selected, ["path"] do
         get about_path
-        assert_select ".account-menu .name", text: @user.name
+        assert_select "button[aria-label='Account Menu']", text: @user.name
 
         get "/#{@account.id}/about"
-        assert_select ".account-menu .name", text: @account.name
+        assert_select "button[aria-label='Account Menu']", text: @account.name
       end
     end
   end
@@ -53,12 +53,12 @@ class Jumpstart::MultitenancyTest < ActionDispatch::IntegrationTest
     Jumpstart.config.stub(:account_types, "both") do
       Jumpstart::Multitenancy.stub :selected, [] do
         get about_path
-        assert_select ".account-menu .name", text: @user.name
+        assert_select "button[aria-label='Account Menu']", text: @user.name
 
         switch_account(@account)
 
         get about_path
-        assert_select ".account-menu .name", text: @account.name
+        assert_select "button[aria-label='Account Menu']", text: @account.name
       end
     end
   end

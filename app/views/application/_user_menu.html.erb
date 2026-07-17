@@ -1,0 +1,41 @@
+<%= render DropdownComponent.new(placement: "bottom-end") do |dropdown| %>
+  <% dropdown.with_trigger do %>
+    <%= tag.button type: "button",
+      class: "inline-flex items-center justify-center rounded-full p-1 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring",
+      aria: {label: "User Menu", haspopup: "menu"},
+      data: {
+        ui_dropdown_popover_target: "button",
+        action: "click->ui-dropdown-popover#toggle"
+      } do %>
+      <%= image_tag avatar_url_for(current_user), class: "size-6 shrink-0 rounded-full object-cover" %>
+    <% end %>
+  <% end %>
+
+  <% dropdown.with_item_link text: t(".profile"), href: edit_user_registration_path %>
+  <% dropdown.with_item_link text: t(".password"), href: edit_account_password_path %>
+  <% if Devise.omniauth_configs.any? %>
+    <% dropdown.with_item_link text: t(".connected_accounts"), href: user_connected_accounts_path %>
+  <% end %>
+  <% if Jumpstart.config.payments_enabled? %>
+    <% dropdown.with_item_link text: t(".billing"), href: billing_path %>
+  <% end %>
+  <% if Jumpstart.config.team_accounts? %>
+    <% dropdown.with_item_link text: t(".accounts"), href: accounts_path %>
+  <% end %>
+
+  <% if current_user.admin? %>
+    <% dropdown.with_item_divider %>
+    <% dropdown.with_item_custom(unstyled: true) do %>
+      <%= link_to t(".admin"), madmin_root_path, target: :_blank,
+        class: "flex items-center gap-2 rounded-md px-2 py-1.5 text-left text-sm text-neutral-700 focus:bg-neutral-100 focus:outline-hidden dark:text-neutral-100 dark:focus:bg-neutral-700/50",
+        role: "menuitem", tabindex: "-1", data: {turbo: false, ui_menu_target: "item"} %>
+    <% end %>
+  <% end %>
+
+  <% dropdown.with_item_divider %>
+  <% dropdown.with_item_custom unstyled: true do %>
+    <%= button_to t(".sign_out"), destroy_user_session_path, method: :delete,
+      form: {class: "w-full"},
+      class: "flex w-full items-center rounded-md px-2 py-1.5 text-left text-sm text-neutral-700 focus:bg-neutral-100 focus:outline-hidden dark:text-neutral-100 dark:focus:bg-neutral-700/50" %>
+  <% end %>
+<% end %>

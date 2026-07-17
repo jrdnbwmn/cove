@@ -1,0 +1,29 @@
+<%= render DropdownComponent.new(classes: "hidden lg:block") do |dropdown| %>
+  <% dropdown.with_trigger do %>
+    <button
+      type="button"
+      class="rounded-md p-2 text-foreground hover:bg-muted focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
+      data-controller="tooltip"
+      data-tooltip-content-value="Jumpstart Development"
+      data-ui-dropdown-popover-target="button"
+      data-action="click->ui-dropdown-popover#toggle"
+      aria-label="Dev Menu"
+      aria-expanded="false"
+    >
+      <svg width="24" height="24" viewBox="0 0 145 145" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+        <path fill-rule="evenodd" clip-rule="evenodd" d="M23.4023 35.617L98.075 -6.07711e-05L133.692 74.6726L46.7793 144.854L33.3226 81.973L49.5515 70.5974L51.4888 95.4288L105.722 53.5318L64.9876 63.2436L63.3583 42.3598L28.8017 60.8477L23.4023 35.617Z" />
+      </svg>
+    </button>
+  <% end %>
+
+  <% dropdown.with_item_label(text: "Jumpstart") %>
+  <% dropdown.with_item_custom(unstyled: true) do %>
+    <%= link_to "Configuration", jumpstart_path(script_name: nil), class: "flex items-center gap-2 rounded-md px-2 py-1.5 text-left text-sm text-neutral-700 focus:bg-neutral-100 focus:outline-hidden dark:text-neutral-100 dark:focus:bg-neutral-700/50", role: "menuitem", tabindex: "-1", data: {turbo: false, ui_menu_target: "item"} %>
+  <% end %>
+  <% dropdown.with_item_custom(unstyled: true) do %>
+    <%= link_to "Documentation", jumpstart.docs_path, target: :_blank, class: "flex items-center gap-2 rounded-md px-2 py-1.5 text-left text-sm text-neutral-700 focus:bg-neutral-100 focus:outline-hidden dark:text-neutral-100 dark:focus:bg-neutral-700/50", role: "menuitem", tabindex: "-1", data: {turbo: false, ui_menu_target: "item"} %>
+  <% end %>
+  <% dropdown.with_item_custom(unstyled: true) do %>
+    <%= link_to "Mailbin", mailbin_path(script_name: nil), target: :_blank, class: "flex items-center gap-2 rounded-md px-2 py-1.5 text-left text-sm text-neutral-700 focus:bg-neutral-100 focus:outline-hidden dark:text-neutral-100 dark:focus:bg-neutral-700/50", role: "menuitem", tabindex: "-1", data: {turbo: false, ui_menu_target: "item"} %>
+  <% end %>
+<% end %>
