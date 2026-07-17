@@ -1,5 +1,6 @@
 > Ticket: COV-14
 > Branch: jrdnbwmn/cov-14-rebuild-auth-devise-views
+> Plan created: docs/plans/rebuild-auth-devise-views.md
 
 # Feature: Rebuild auth (Devise) views with design-system components
 
