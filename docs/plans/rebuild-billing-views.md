@@ -13,7 +13,7 @@
 | 4 | Flow B forms: `accounts/{_form,new,edit}` (avatar/domain/subdomain guards) | Master | ✅ |
 | 5 | `accounts/{index,show}` (members table, avatars, pagination, delete/transfer) | Clone | ✅ |
 | 6 | `account_users/{_form,edit}` (role checkboxes) + `accounts/transfers/_form` | Clone | ✅ |
-| 7 | `accounts/account_invitations/{new,edit}` + `account_invitations/show` | Clone | |
+| 7 | `accounts/account_invitations/{new,edit}` + `account_invitations/show` | Clone | ✅ |
 | 8 | Flow C: `pricing/show` + retire `_plan` → `PlanCardComponent` (toggle) | Master | |
 | 9 | `checkouts/{show,_testimonial}` + `forms/_stripe` (byte-identical Stripe div) | Clone | |
 | 10 | Flow D: `billing/{show,_email,_info,_charges}` (dashboard + charges table) | Master | |
