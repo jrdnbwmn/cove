@@ -1,0 +1,42 @@
+<% Current.meta_tags.set(title: t(".title")) %>
+
+<% content_for :sidebar, render(partial: "account_navbar") %>
+
+<div class="sm:flex justify-between items-center mb-3">
+  <h1 class="h3"><%= t(".title") %></h1>
+
+  <div class="shrink-0">
+    <%= render ButtonComponent.new(text: t(".create"), href: new_api_token_path) %>
+  </div>
+</div>
+
+<%= render TableComponent.new(hoverable: true) do |table| %>
+  <% table.with_column(label: ApiToken.human_attribute_name(:name)) %>
+  <% table.with_column(label: ApiToken.human_attribute_name(:last_used_at)) %>
+  <% table.with_column(label: ApiToken.human_attribute_name(:created_at), classes: "hidden sm:table-cell") %>
+  <% table.with_column(label: "", align: :right) %>
+
+  <% @api_tokens.each do |api_token| %>
+    <% table.with_row do |row| %>
+      <% row.with_cell(primary: true) do %>
+        <%= link_to api_token.name, api_token, class: "hover:text-primary" %>
+      <% end %>
+      <% row.with_cell do %>
+        <%= render BadgeComponent.new(
+          text: api_token.last_used_at? ? local_time_ago(api_token.last_used_at) : "—",
+          size: :sm
+        ) %>
+      <% end %>
+      <% row.with_cell(classes: "hidden sm:table-cell") do %>
+        <%= api_token.created_at.strftime("%b %e, %Y") %>
+      <% end %>
+      <% row.with_cell(align: :right) do %>
+        <%= render ButtonComponent.new(text: t(".view"), variant: :secondary, size: :sm, href: api_token_path(api_token)) %>
+      <% end %>
+    <% end %>
+  <% end %>
+
+  <% table.with_row(classes: "hidden only:table-row") do %>
+    <td colspan="4" class="px-6 py-4 text-sm text-muted-foreground"><%= t(".none") %></td>
+  <% end %>
+<% end %>
