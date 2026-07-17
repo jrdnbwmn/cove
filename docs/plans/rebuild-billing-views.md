@@ -8,7 +8,7 @@
 | Task | Description | Assign | Done |
 | ---- | ----------- | ------ | ---- |
 | 1 | `PlanCardComponent` (new, composed from `CardComponent`) + preview + `/update-catalog` | Master | ✅ |
-| 2 | Flow A pattern-setter: `account/passwords/edit` + `api_tokens/{_form,new,edit}` | Master | |
+| 2 | Flow A pattern-setter: `account/passwords/edit` + `api_tokens/{_form,new,edit}` | Master | ✅ |
 | 3 | `api_tokens/{index,show}` (table + badge + clipboard) | Clone | |
 | 4 | Flow B forms: `accounts/{_form,new,edit}` (avatar/domain/subdomain guards) | Master | |
 | 5 | `accounts/{index,show}` (members table, avatars, pagination, delete/transfer) | Clone | |

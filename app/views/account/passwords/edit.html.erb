@@ -1,0 +1,60 @@
+<% Current.meta_tags.set(title: t(".title")) %>
+
+<% content_for :sidebar, render(partial: "account_navbar") %>
+
+<h1 class="h3"><%= t(".title") %></h1>
+
+<%= form_with(model: current_user, url: account_password_path, local: true, html: { method: :put }, class: "mt-4 max-w-md") do |f| %>
+  <%= render "error_messages", resource: current_user %>
+
+  <%= render PasswordComponent.new(
+    label: current_user.class.human_attribute_name(:current_password),
+    name: "user[current_password]",
+    id: "user_current_password",
+    autocomplete: "current-password",
+    placeholder: current_user.class.human_attribute_name(:current_password),
+    error: current_user.errors[:current_password].first,
+    hint: t("devise.registrations.edit.we_need_your_current_password_to_confirm_your_changes"),
+    classes: "mb-6"
+  ) %>
+
+  <%= render PasswordComponent.new(
+    label: current_user.class.human_attribute_name(:password),
+    name: "user[password]",
+    id: "user_password",
+    autocomplete: "new-password",
+    placeholder: current_user.class.human_attribute_name(:password),
+    error: current_user.errors[:password].first,
+    hint: t("devise.shared.minimum_password_length", count: User.password_length.min),
+    classes: "mb-6"
+  ) %>
+
+  <%= render PasswordComponent.new(
+    label: current_user.class.human_attribute_name(:password_confirmation),
+    name: "user[password_confirmation]",
+    id: "user_password_confirmation",
+    autocomplete: "new-password",
+    placeholder: current_user.class.human_attribute_name(:password_confirmation),
+    error: current_user.errors[:password_confirmation].first,
+    classes: "mb-6"
+  ) %>
+
+  <%= render ButtonComponent.new(text: t(".update"), type: "submit") %>
+<% end %>
+
+<hr>
+
+<h2 class="h4"><%= t(".two_factor.title") %></h2>
+<p class="mt-2 mb-4 text-sm text-muted"><%= t(".two_factor.description") %></p>
+<% if current_user.otp_required_for_login? %>
+  <div>
+    <%= render ButtonComponent.new(
+      text: t(".two_factor.disable"),
+      variant: :destructive,
+      href: user_two_factor_path,
+      data: {turbo_method: :delete, turbo_confirm: t("are_you_sure")}
+    ) %>
+  </div>
+<% else %>
+  <%= render ButtonComponent.new(text: t(".two_factor.enable"), variant: :secondary, href: backup_codes_user_two_factor_path) %>
+<% end %>

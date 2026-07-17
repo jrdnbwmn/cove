@@ -1,0 +1,26 @@
+<%= form_with(model: api_token, class: "max-w-md") do |form| %>
+  <%= render "error_messages", resource: form.object %>
+
+  <%= render FormFieldComponent.new(
+    label: form.object.class.human_attribute_name(:name),
+    name: "api_token[name]",
+    error: form.object.errors[:name].first,
+    classes: "mb-6"
+  ) do |field| %>
+    <% field.with_input do %>
+      <%= form.text_field :name, placeholder: true, autofocus: true, class: "form-control" %>
+    <% end %>
+  <% end %>
+
+  <div class="flex gap-3">
+    <%= render ButtonComponent.new(
+      text: form.object.persisted? ? t("helpers.submit.update", model: form.object.model_name.human) : t("helpers.submit.create", model: form.object.model_name.human),
+      type: "submit"
+    ) %>
+    <%= render ButtonComponent.new(
+      text: t("cancel"),
+      variant: :secondary,
+      href: form.object.persisted? ? api_token_path(form.object) : api_tokens_path
+    ) %>
+  </div>
+<% end %>
