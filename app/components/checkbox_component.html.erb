@@ -15,7 +15,7 @@
 
   <div class="<%= text_content_classes %>">
     <label for="<%= @id %>" class="<%= label_classes %>">
-      <%= @label %>
+      <%= @label_html || @label %>
       <% if @required %><span class="text-red-500">*</span><% end %>
     </label>
     <% if @description.present? %>

@@ -9,6 +9,12 @@ class PasswordComponentTest < ViewComponent::TestCase
     assert_text "Password"
   end
 
+  test "autofocuses the password input when requested" do
+    render_inline(PasswordComponent.new(name: "user[password]", autofocus: true))
+
+    assert_selector "input[type='password'][name='user[password]'][autofocus]"
+  end
+
   test "renders the requirements preview" do
     render_preview(:requirements)
 

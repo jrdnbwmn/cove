@@ -9,6 +9,7 @@ class PasswordComponent < ViewComponent::Base
   # @param value [String] The initial value (rarely used for security)
   # @param required [Boolean] Whether the input is required
   # @param disabled [Boolean] Whether the input is disabled
+  # @param autofocus [Boolean] Whether the input receives focus when the page loads
   # @param autocomplete [String] Autocomplete attribute value
   # @param show_toggle [Boolean] Show password visibility toggle button
   # @param show_strength [Boolean] Show password strength meter
@@ -26,6 +27,7 @@ class PasswordComponent < ViewComponent::Base
     value: nil,
     required: false,
     disabled: false,
+    autofocus: false,
     autocomplete: "current-password",
     show_toggle: true,
     show_strength: false,
@@ -44,6 +46,7 @@ class PasswordComponent < ViewComponent::Base
     @value = value
     @required = required
     @disabled = disabled
+    @autofocus = autofocus
     @autocomplete = autocomplete
     @show_toggle = show_toggle
     @show_strength = show_strength
