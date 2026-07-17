@@ -10,7 +10,7 @@
 | 1 | `PlanCardComponent` (new, composed from `CardComponent`) + preview + `/update-catalog` | Master | ✅ |
 | 2 | Flow A pattern-setter: `account/passwords/edit` + `api_tokens/{_form,new,edit}` | Master | ✅ |
 | 3 | `api_tokens/{index,show}` (table + badge + clipboard) | Clone | ✅ |
-| 4 | Flow B forms: `accounts/{_form,new,edit}` (avatar/domain/subdomain guards) | Master | |
+| 4 | Flow B forms: `accounts/{_form,new,edit}` (avatar/domain/subdomain guards) | Master | ✅ |
 | 5 | `accounts/{index,show}` (members table, avatars, pagination, delete/transfer) | Clone | |
 | 6 | `account_users/{_form,edit}` (role checkboxes) + `accounts/transfers/_form` | Clone | |
 | 7 | `accounts/account_invitations/{new,edit}` + `account_invitations/show` | Clone | |
