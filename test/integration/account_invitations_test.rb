@@ -18,6 +18,7 @@ class Jumpstart::AccountInvitationsTest < ActionDispatch::IntegrationTest
     sign_in @invited
     get account_invitation_path(@account_invitation)
     assert_response :success
+    assert_select "form[action='#{account_invitation_path(@account_invitation)}']", 2
   end
 
   test "can decline invitation" do

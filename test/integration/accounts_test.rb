@@ -29,6 +29,14 @@ class Jumpstart::AccountsTest < ActionDispatch::IntegrationTest
       end
     end
 
+    test "can view the team roster and invitation action" do
+      get account_path(@account)
+
+      assert_response :success
+      assert_select "table", 1
+      assert_select "a[href='#{new_account_account_invitation_path(@account)}']", I18n.t("accounts.show.invite")
+    end
+
     test "can delete account" do
       Jumpstart.config.stub(:account_types, "both") do
         assert_difference "Account.count", -1 do

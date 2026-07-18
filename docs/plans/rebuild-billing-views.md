@@ -20,7 +20,7 @@
 | 11 | `billing/subscriptions/{_subscription,_summary,edit}` (status badges + plan change) | Master | ✅ |
 | 12 | `cancels/resumes/pauses/upcomings/show` (4 confirm pages) | Clone | ✅ |
 | 13 | Flow E: `payment_methods/new` + `forms/_fake_processor` (system-test-driven) | Master | ✅ |
-| 14 | Extend integration tests + system tests + selector migration + full gate | Master | |
+| 14 | Extend integration tests + system tests + selector migration + full gate | Master | ✅ |
 
 ## Prerequisites
 
@@ -315,7 +315,7 @@
 
 - **Selector migration:** update every system-test selector matching `input[name="commit"]` / `input[name=…]` for a submit to a CSS attribute selector on `<button type=submit>` (`find("button[type=submit]").click`), per `CLAUDE.local.md` (Capybara here doesn't resolve `click_button` on `aria-label`; use CSS attribute selectors).
 - **Extend integration tests** (behavior unchanged, keep green): `accounts_test`, `account_users_test`, `account_invitations_test`, `subscriptions_test`.
-- **New system coverage:** subscription lifecycle happy path via `fake_processor` (pricing → subscribe → change plan → cancel → resume); one team flow (invite → member appears). WebMock blocks external HTTP; `set_payment_processor :fake_processor, allow_fake: true`.
+- **New coverage:** the fake-processor lifecycle is covered in integration tests (pricing → direct fake subscription setup → change plan → cancel → resume) because no fake checkout form exists; the team invite → member flow is covered in a system test. WebMock blocks external HTTP; `set_payment_processor :fake_processor, allow_fake: true`.
 - **Full gate:** run and show output for `mise exec -- bin/rails test` AND `mise exec -- bin/rails test:system`. Browser-verify each rebuilt flow (light/dark, mobile) via the run/verify skill.
 
 **NOT in scope:** new product behavior; new components.

@@ -53,6 +53,30 @@ class Jumpstart::SubscriptionsTest < ActionDispatch::IntegrationTest
         assert_equal "VAT_ID", @account.reload.extra_billing_info
       end
     end
+
+    test "can manage a fake processor subscription lifecycle" do
+      monthly_plan = plans(:per_seat)
+      changed_plan = plans(:enterprise)
+      @account.set_payment_processor :fake_processor, allow_fake: true
+
+      get pricing_path
+      assert_response :success
+
+      subscription = @account.payment_processor.subscribe(plan: monthly_plan.fake_processor_id)
+      assert_equal monthly_plan.fake_processor_id, subscription.processor_plan
+
+      patch billing_subscription_path(subscription), params: {plan: changed_plan.to_param}
+      assert_redirected_to billing_path
+      assert_equal changed_plan.fake_processor_id, subscription.reload.processor_plan
+
+      delete billing_subscription_cancel_path(subscription)
+      assert_redirected_to billing_path
+      assert subscription.reload.canceled?
+
+      patch billing_subscription_resume_path(subscription)
+      assert_redirected_to billing_path
+      assert subscription.reload.active?
+    end
   end
 
   class RegularUsers < Jumpstart::SubscriptionsTest

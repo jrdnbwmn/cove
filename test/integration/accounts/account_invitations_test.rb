@@ -15,6 +15,8 @@ class Jumpstart::AccountsAccountInvitationsTest < ActionDispatch::IntegrationTes
     test "can view invite form" do
       get new_account_account_invitation_path(@account)
       assert_response :success
+      assert_select "input[name='account_invitation[name]'][required]", 1
+      assert_select "input[name='account_invitation[email]'][required]", 1
     end
 
     test "can invite account members" do
