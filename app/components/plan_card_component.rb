@@ -3,8 +3,6 @@
 class PlanCardComponent < ViewComponent::Base
   include PlanHelper
 
-  renders_one :actions
-
   def initialize(plan:)
     super()
     @plan = plan

@@ -25,7 +25,7 @@
 | `PaginationComponent` | Renders Pagy navigation in full, compact, or minimal form. | `pagy`, `variant`, `size`, `frame_id` | `PaginationComponentPreview` |
 | `SidebarComponent` | Renders responsive primary navigation with collapsible groups. | `variant`, `collapsible`, `storage_key`, `position` | `SidebarComponentPreview` |
 | `CardComponent` | Renders a content container with optional image, header, body, and footer slots. | `variant`, `padding`, `shadow`, `divide`, `hoverable` | `CardComponentPreview` |
-| `PlanCardComponent` | Renders a billing plan, price, features, and caller-supplied actions inside a card. | `plan`, `with_actions` | `PlanCardComponentPreview` |
+| `PlanCardComponent` | Renders a billing plan, price, features, and caller-supplied actions inside a card. | `plan` | `PlanCardComponentPreview` |
 | `AvatarComponent` | Renders a user or account image with accessible initials fallback and optional online status. | `alt`, `src`, `fallback`, `size`, `status` | `AvatarComponentPreview` |
 | `TableComponent` | Renders a responsive, accessible data table with row and column slots. | `striped`, `hoverable`, `density`, `sticky_header` | `TableComponentPreview` |
 
@@ -616,8 +616,8 @@ feature checklist, and a caller-supplied action area inside `CardComponent`.
 
 **Arguments:** `plan` is required and supplies the Pay plan data.
 
-**Slots:** Pass actions as the component block, or use `with_actions`. The
-actions render unchanged below the price.
+**Slots:** Pass actions as the component block. The block content renders
+unchanged below the price.
 
 **States:** Contact plans render the localized "Let's Talk" price. Plans with a
 unit label render it alongside the plan interval. The feature checklist is
