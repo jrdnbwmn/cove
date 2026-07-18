@@ -14,16 +14,16 @@ Latest verification:
 - `mise exec -- bin/rails test test/controllers/users/registrations_controller_test.rb` — 6 runs, 20 assertions, 0 failures.
 - `mise exec -- bin/rails test` — 312 runs, 747 assertions, 0 failures.
 - Targeted RuboCop and `git diff --check` passed before the latest commit.
+- Task 6 verified that neither legacy navigation stylesheet is orphaned, so neither was deleted: `nav.css` is still used by `SidebarComponent` and Jumpstart menu partials; `top_nav.css` is still used by the engine navbar, native navbar, minimal layout, and documentation header. `mise exec -- bin/rails tailwindcss:build` and `mise exec -- bin/rails test` both passed (312 runs, 747 assertions).
 
 The approved plan is [docs/plans/component-system-audit-and-cleanup.md](../docs/plans/component-system-audit-and-cleanup.md). Its Status table is the source of truth.
 
 ## Work Remaining
 
-Resume at Task 6, then follow the plan in order:
+Resume at Tasks 7a, 7b, and 7c, then follow the plan in order:
 
-1. **Task 6 (Master):** inspect every selector defined in `app/assets/tailwind/components/nav.css` and `app/assets/tailwind/components/top_nav.css` with searches across `app/views`, `app/components`, `lib`, and JavaScript. Delete a file and its import from `app/assets/tailwind/application.css` only if every selector is unreferenced. Do not refactor a still-used selector; record what blocks deletion. Verify with `mise exec -- bin/rails tailwindcss:build` and `mise exec -- bin/rails test`, then run the required review.
-2. **Tasks 7a, 7b, and 7c (Clone):** delegate these disjoint color-audit clusters as the plan directs. Apply only the specified semantic-token mapping; leave ambiguous colors and all `dark:` utilities untouched. Each clone must run the full Rails test suite and complete its task-level review.
-3. Mark each finished plan row with `✅`, review the combined branch changes, and keep the user’s requested pause boundaries.
+1. **Tasks 7a, 7b, and 7c (Clone):** delegate these disjoint color-audit clusters as the plan directs. Apply only the specified semantic-token mapping; leave ambiguous colors and all `dark:` utilities untouched. Each clone must run the full Rails test suite and complete its task-level review.
+2. Mark each finished plan row with `✅`, review the combined branch changes, and keep the user’s requested pause boundaries.
 
 Before resuming in a fresh session, run the execute-plan preflight from this workspace: `git status --porcelain`, `mise exec -- bin/rails db:migrate:status`, and `mise exec -- bin/rails test`.
 
