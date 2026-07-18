@@ -22,10 +22,6 @@
   background-color: var(--color-gray-100);
 }
 
-.dark [data-notifications-target="notification"]:not([data-seen-at]) {
-  background: var(--color-gray-800);
-}
-
 /* Highlights unread notifications with blue dot */
 [data-notifications-target="notification"]:not([data-read-at]) {
   .unread {

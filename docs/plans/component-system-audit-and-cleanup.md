@@ -10,9 +10,9 @@
 | 1  | Add `target` param to ButtonComponent | Master | ✅ |
 | 2  | Override homepage into app + swap CTAs to ButtonComponent | Master | ✅ |
 | 3  | Cut dark-mode wiring (layout, head, theme controller) | Master | ✅ |
-| 4a | Dark CSS cleanup: tokens + entry file (keep @variant dark) | Master |  |
-| 4b | Strip `.dark` blocks from 5 JSP component CSS files | Master |  |
-| 5  | Remove theme picker + tokenize profile-edit view | Master |  |
+| 4a | Dark CSS cleanup: tokens + entry file (keep @variant dark) | Master | ✅ |
+| 4b | Strip `.dark` blocks from 5 JSP component CSS files | Master | ✅ |
+| 5  | Remove theme picker + tokenize profile-edit view | Master | ✅ |
 | 6  | Delete orphaned nav.css / top_nav.css (verify-then-delete) | Master |  |
 | 7a | Color audit: auth + account views | Clone |  |
 | 7b | Color audit: application partials + pricing | Clone |  |
