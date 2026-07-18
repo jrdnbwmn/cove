@@ -246,3 +246,17 @@ retain options. Stripe embedded checkout is an opaque host: use `cmp -s`
 against the engine source after copying it. Full authenticated-template
 rendering through `ApplicationController.render` remains unsuitable without
 Devise/Warden state; the normal Rails suite is the reliable gate.
+
+## Catchup 2026-07-18 (COV-17 Tasks 1-5)
+
+### Friction
+
+None.
+
+### Mistakes
+
+The first Task 4b sweep treated Braintree’s mixed `:is(.dark .braintree-placeholder, .braintree-heading)` selector as fully dark-mode-only. Preserve its light `.braintree-heading` rule when stripping the dark branch. The initial registration test sat on the outer test class and inherited into three nested classes; use a dedicated nested test class for a single request assertion.
+
+### Observations
+
+For this plan, removing dark-mode activation safely requires three boundaries in order: page wiring, CSS token/import rules, then component-level dark selectors. Keep `@variant dark (&:where(.dark, .dark *));` deliberately: removing it would make Tailwind fall back to `prefers-color-scheme` and re-enable the many inert `dark:` utilities. Use `mise exec --` for every Rails/Tailwind command, run the full suite after each behavior task, and update the plan Status table as each reviewed task completes.
