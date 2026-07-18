@@ -6,6 +6,7 @@ class SelectComponentTest < ViewComponent::TestCase
     render_inline(SelectComponent.new(label: "Team size", name: "account[team_size]", options: [["1-5", "small"], ["6-20", "medium"]]))
 
     assert_selector "select[name='account[team_size]']"
+    assert_selector "select[style='visibility: hidden;']"
     assert_text "Team size"
   end
 

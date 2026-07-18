@@ -2,7 +2,7 @@
 
 <div class="mb-8 flex gap-8" data-controller="toggle">
   <div class="flex-1">
-    <p class="text-muted"><%= t ".additional_information" %></p>
+    <p class="text-muted-foreground"><%= t ".additional_information" %></p>
 
     <%= form_with model: current_account, url: billing_path, html: { class: "hidden mt-4 max-w-lg", data: { toggle_target: 'toggleable', }} do |f| %>
       <%= render FormFieldComponent.new(
@@ -31,7 +31,7 @@
 </div>
 
 <% if current_account.extra_billing_info? %>
-  <blockquote class="mt-4 mb-8 border-l-4 border-(--divider-color) px-4 font-mono text-sm text-muted">
+  <blockquote class="mt-4 mb-8 border-l-4 border-(--divider-color) px-4 font-mono text-sm text-muted-foreground">
     <%= current_account.extra_billing_info %>
   </blockquote>
 <% end %>

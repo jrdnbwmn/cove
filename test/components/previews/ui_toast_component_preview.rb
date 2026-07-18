@@ -1,6 +1,6 @@
 class UiToastComponentPreview < ViewComponent::Preview
   def default
-    render UiToastComponent.new
+    render_with_template
   end
 
   def bottom_right

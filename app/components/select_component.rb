@@ -181,6 +181,10 @@ class SelectComponent < ViewComponent::Base
     ].compact.reject(&:empty?).join(" ")
   end
 
+  def select_style
+    "visibility: hidden;"
+  end
+
   def label_classes
     base = "block font-medium mb-1"
     size_class = case @size

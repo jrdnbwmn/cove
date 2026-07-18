@@ -1,0 +1,7 @@
+<%= render UiModalComponent.new(title: "Delete project?", trigger_text: "Delete project", prevent_dismiss: true, show_close_button: false) do |modal| %>
+  <p>This action cannot be undone.</p>
+  <% modal.with_footer do %>
+    <%= render ButtonComponent.new(text: "Cancel", variant: :secondary, data: {action: "click->ui-modal#close:prevent"}) %>
+    <%= render ButtonComponent.new(text: "Delete project", variant: :destructive) %>
+  <% end %>
+<% end %>

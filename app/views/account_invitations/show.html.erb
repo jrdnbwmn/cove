@@ -3,7 +3,7 @@
 <div class="mx-auto mt-12 max-w-md text-center">
   <h1 class="h3 text-foreground"><%= t(".title", account: @account.name) %></h1>
 
-  <div class="mt-8 flex items-center justify-center gap-2 text-sm text-muted">
+  <div class="mt-8 flex items-center justify-center gap-2 text-sm text-muted-foreground">
     <%= render AvatarComponent.new(
       src: avatar_url_for(@account_invitation.account),
       alt: @account_invitation.account.name,

@@ -15,4 +15,10 @@ class UiToastComponentTest < ViewComponent::TestCase
 
     assert_selector "[data-ui-toast-position-value='bottom-right']"
   end
+
+  test "renders a trigger in the default preview" do
+    render_preview(:default)
+
+    assert_selector "button[data-controller='toast-preview'][data-action='click->toast-preview#show']", text: "Show toast"
+  end
 end

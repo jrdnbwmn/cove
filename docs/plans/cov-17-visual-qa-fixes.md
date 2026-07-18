@@ -11,14 +11,14 @@ All root causes are verified against source and the compiled `app/assets/builds/
 
 | Task | Description | Assign | Done |
 | ---- | ----------- | ------ | ---- |
-| A  | Fix global link underlines + list bullets (base.css) | Master | ☐ |
-| B1 | `text-muted` → `text-muted-foreground`: accounts + api_tokens | Clone | ☐ |
-| B2 | `text-muted` → `text-muted-foreground`: billing + checkouts | Clone | ☐ |
-| B3 | `text-muted` → `text-muted-foreground`: auth + pricing + public + components | Clone | ☐ |
-| C  | Retire legacy `.text-muted` class + `--text-muted` token | Master | ☐ |
-| D  | Load JS in Lookbook preview layout | Master | ☐ |
-| E  | Make toast preview demonstrable (add trigger) | Master | ☐ |
-| F  | Kitchen sink: fix "Plan" select + remove dark examples | Master | ☐ |
+| A  | Fix global link underlines + list bullets (base.css) | Master | ✅ |
+| B1 | `text-muted` → `text-muted-foreground`: accounts + api_tokens | Clone | ✅ |
+| B2 | `text-muted` → `text-muted-foreground`: billing + checkouts | Clone | ✅ |
+| B3 | `text-muted` → `text-muted-foreground`: auth + pricing + public + components | Clone | ✅ |
+| C  | Retire legacy `.text-muted` class + `--text-muted` token | Master | ✅ |
+| D  | Load JS in Lookbook preview layout | Master | ✅ |
+| E  | Make toast preview demonstrable (add trigger) | Master | ✅ |
+| F  | Kitchen sink: fix "Plan" select + remove dark examples | Master | ✅ |
 
 ## Root-cause summary (verified)
 

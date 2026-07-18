@@ -3,7 +3,7 @@
 <% content_for :sidebar, render(partial: "account_navbar") %>
 
 <div class="mx-auto max-w-2xl">
-  <nav aria-label="Breadcrumb" class="mb-2 flex items-center gap-2 text-sm text-muted">
+  <nav aria-label="Breadcrumb" class="mb-2 flex items-center gap-2 text-sm text-muted-foreground">
     <%= render ButtonComponent.new(text: t(".billing"), variant: :ghost, size: :sm, href: billing_path, classes: "-ml-3") %>
     <svg class="size-4 shrink-0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
       <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 0 1 0-1.414L10.586 10 7.293 6.707a1 1 0 0 1 1.414-1.414l4 4a1 1 0 0 1 0 1.414l-4 4a1 1 0 0 1-1.414 0z" clip-rule="evenodd" />

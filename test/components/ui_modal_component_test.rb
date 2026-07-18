@@ -18,5 +18,7 @@ class UiModalComponentTest < ViewComponent::TestCase
     render_preview(:confirmation)
 
     assert_text "Delete project?"
+    assert_selector "button", text: "Cancel"
+    assert_selector "button", text: "Delete project"
   end
 end

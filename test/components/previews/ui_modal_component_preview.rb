@@ -8,6 +8,6 @@ class UiModalComponentPreview < ViewComponent::Preview
   end
 
   def confirmation
-    render UiModalComponent.new(title: "Delete project?", trigger_text: "Delete project", prevent_dismiss: true, show_close_button: false).with_content("This action cannot be undone.")
+    render_with_template
   end
 end

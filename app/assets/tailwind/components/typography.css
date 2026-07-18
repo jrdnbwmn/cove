@@ -79,7 +79,3 @@ pre code {
 kbd {
   font-size: var(--text-sm);
 }
-
-.text-muted {
-  color: var(--text-muted);
-}

@@ -4,9 +4,6 @@
   <h2>Buttons</h2>
   <div class="flex gap-4">
     <%= render ButtonComponent.new(text: "Primary Button") %>
-    <div class="dark">
-      <%= render ButtonComponent.new(text: "Primary Button") %>
-    </div>
   </div>
 </section>
 
@@ -25,11 +22,7 @@
       <% end %>
     <% end %>
 
-    <%= render FormFieldComponent.new(label: "Plan", name: "subscription[plan]", variant: :inline, size: :sm) do |component| %>
-      <% component.with_input do %>
-        <select class="form-control" id="subscription_plan" name="subscription[plan]"><option>Starter</option><option>Team</option></select>
-      <% end %>
-    <% end %>
+    <%= render SelectComponent.new(label: "Plan", name: "subscription[plan]", id: "subscription_plan", size: :sm, options: [["Starter", "starter"], ["Team", "team"]]) %>
 
     <%= render FormFieldComponent.new(label: "Email", name: "user[email]", error: "Email is invalid.", variant: :floating) do |component| %>
       <% component.with_input do %>
@@ -44,14 +37,6 @@
     <% end %>
   </div>
 
-  <div class="dark mt-6 bg-neutral-900 p-4">
-    <%= render FormFieldComponent.new(label: "Dark mode field", name: "dark[field]", helper_text: "RB form-control styling in dark mode.") do |component| %>
-      <% component.with_input do %>
-        <input class="form-control" id="dark_field" name="dark[field]" type="text">
-      <% end %>
-    <% end %>
-  </div>
-
   <div class="mt-6 grid gap-6 md:grid-cols-2">
     <%= render CheckboxComponent.new(label: "Receive product updates", name: "preferences[product_updates]", checked: true, description: "A checked checkbox with supporting text.") %>
     <%= render RadioComponent.new(label: "Team", name: "plan", value: "team", checked: true, description: "A selected radio option.") %>
@@ -60,13 +45,6 @@
     <%= render PasswordComponent.new(name: "user[password]", hint: "Use at least 8 characters.") %>
   </div>
 
-  <div class="dark mt-6 grid gap-6 bg-neutral-900 p-4 md:grid-cols-2">
-    <%= render CheckboxComponent.new(label: "Dark mode checkbox", name: "dark[checkbox]", error: "Choose an option.") %>
-    <%= render RadioComponent.new(label: "Dark mode radio", name: "dark_radio", value: "selected", disabled: true) %>
-    <%= render SwitchComponent.new(label: "Dark mode switch", name: "dark[switch]", disabled: true) %>
-    <%= render SelectComponent.new(label: "Dark mode select", name: "dark[select]", options: [["Monthly", "monthly"]], disabled: true) %>
-    <%= render PasswordComponent.new(name: "dark[password]", error: "Password is too short.") %>
-  </div>
 </section>
 
 <section>
@@ -110,18 +88,6 @@
     <button class="rounded-md border border-border px-3 py-2" data-controller="tooltip" data-tooltip-content-value="Jumpstart tooltip" type="button">Jumpstart tooltip</button>
   </div>
 
-  <div class="dark mt-6 grid gap-4 bg-neutral-900 p-4 md:grid-cols-2">
-    <%= render AlertComponent.new(title: "Dark mode success", variant: :success) %>
-    <%= render AlertComponent.new(title: "Dark mode error", variant: :error) %>
-    <div class="flex flex-wrap items-center gap-3">
-      <%= render BadgeComponent.new(text: "Dark neutral") %>
-      <%= render BadgeComponent.new(text: "Dark active", variant: :blue, dot: true) %>
-    </div>
-    <div class="flex flex-wrap items-center gap-6">
-      <%= render LoadingIndicatorComponent.new %>
-      <%= render LoadingIndicatorComponent.new(color: :primary) %>
-    </div>
-  </div>
 </section>
 
 <section>
@@ -143,16 +109,6 @@
     <% end %>
   </div>
 
-  <div class="dark mt-6 flex flex-wrap items-start gap-4 bg-neutral-900 p-4">
-    <%= render UiModalComponent.new(title: "Dark mode modal", trigger_text: "Open modal") do %>
-      <p class="text-sm text-muted-foreground">Modal styles remain legible in dark mode.</p>
-    <% end %>
-
-    <%= render DropdownComponent.new(trigger_text: "Dark mode menu") do |dropdown| %>
-      <% dropdown.with_item_link(text: "Profile", href: "#") %>
-      <% dropdown.with_item_link(text: "Settings", href: "#") %>
-    <% end %>
-  </div>
 </section>
 
 <section>
@@ -189,17 +145,6 @@
     <% end %>
   </div>
 
-  <div class="dark mt-6 bg-neutral-900 p-4">
-    <%= render BreadcrumbComponent.new(items: [{label: "Home", href: "#"}, {label: "Settings"}], variant: :with_icons) %>
-    <div class="mt-4">
-      <%= render UiTabsComponent.new do |tabs| %>
-        <% tabs.with_tab(title: "Account", id: "account") %>
-        <% tabs.with_tab(title: "Security", id: "security") %>
-        <% tabs.with_panel do %>Account settings<% end %>
-        <% tabs.with_panel do %>Security settings<% end %>
-      <% end %>
-    </div>
-  </div>
 </section>
 
 <section>
@@ -240,10 +185,4 @@
     <%= render project_table %>
   </div>
 
-  <div class="dark mt-6 bg-neutral-900 p-4">
-    <div class="flex items-center gap-4">
-      <%= render AvatarComponent.new(alt: "Dark mode user", fallback: "DU", status: :online) %>
-      <%= render CardComponent.new(variant: :elevated, shadow: :lg).with_content("An elevated card in dark mode.") %>
-    </div>
-  </div>
 </section>
