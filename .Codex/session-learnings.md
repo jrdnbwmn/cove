@@ -224,3 +224,25 @@ the component render context does not reliably expose `formatted_plan_interval`
 through `helpers`. For a `ButtonComponent` link, pass an explicit path string
 such as `api_token_path(record)`, not the record itself. `ButtonComponent`'s
 `href` expects a URL string and does not perform polymorphic routing.
+
+## Catchup 2026-07-17 (COV-15 Tasks 4-10)
+
+### Friction
+
+Task 6's catalog `CheckboxComponent` lacks the hidden unchecked value Rails
+forms normally generate. The plan correctly required a stop; Jordan approved
+an explicit hidden `"0"` field before each checkbox.
+
+### Mistakes
+
+The first Task 8 component migration changed the lazy-i18n scope for
+`pricing_link_to`, causing pricing tests to look for `pricing.show.get_started`.
+Do not assume a caller block preserves a layout partial's translation scope.
+
+### Observations
+
+For this plan, use `FormFieldComponent#with_input` around raw Rails fields to
+retain options. Stripe embedded checkout is an opaque host: use `cmp -s`
+against the engine source after copying it. Full authenticated-template
+rendering through `ApplicationController.render` remains unsuitable without
+Devise/Warden state; the normal Rails suite is the reliable gate.
