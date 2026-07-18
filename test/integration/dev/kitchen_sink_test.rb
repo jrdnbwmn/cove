@@ -30,4 +30,10 @@ class KitchenSinkTest < ActionDispatch::IntegrationTest
     assert_includes select_styles, "select[data-select-disable-typing-value=\"true\"] + .ts-wrapper .ts-control"
     assert_includes select_styles, ".ts-wrapper.multi.has-items .ts-control"
   end
+
+  test "native form controls suppress the forms plugin focus ring" do
+    control_styles = Rails.root.join("app/assets/tailwind/rails_blocks/form_controls.css").read
+
+    assert_includes control_styles, "box-shadow: none;"
+  end
 end

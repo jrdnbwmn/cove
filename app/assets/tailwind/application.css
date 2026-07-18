@@ -51,5 +51,7 @@
 @import "./components/wells.css" layer(components);
 @import "./components/braintree.css" layer(components);
 @import "./rails_blocks/base.css" layer(components);
+/* AIDEV-NOTE: These reference control rules must override generated utilities. */
+@import "./rails_blocks/form_controls.css";
 @import "./components/tom_select.css" layer(components);
 @import "./components/lexxy.css";
