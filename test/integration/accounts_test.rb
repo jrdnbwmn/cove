@@ -54,6 +54,18 @@ class Jumpstart::AccountsTest < ActionDispatch::IntegrationTest
       end
       assert_equal flash[:alert], I18n.t("accounts.personal.cannot_delete")
     end
+
+    test "personal account show page omits team management controls" do
+      account = @admin.personal_account
+
+      get account_path(account)
+
+      assert_response :success
+      assert_select "table", 0
+      assert_select "a[href='#{new_account_account_invitation_path(account)}']", 0
+      assert_select "a[href='#{edit_account_path(account)}']", 0
+      assert_select "h3", I18n.t("accounts.show.personal_team_description")
+    end
   end
 
   class RegularUsers < Jumpstart::AccountsTest
