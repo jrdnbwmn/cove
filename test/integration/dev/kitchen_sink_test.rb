@@ -10,6 +10,7 @@ class KitchenSinkTest < ActionDispatch::IntegrationTest
     assert_select ".dark", count: 0
     assert_select "[data-controller='ui-modal']", count: 1
     assert_select "[data-controller='ui-dropdown-popover']", count: 1
+    assert_select "h4", "Starter"
     %w[Buttons Forms Feedback Overlays Navigation Data\ Display].each do |section|
       assert_select "h2", section
     end

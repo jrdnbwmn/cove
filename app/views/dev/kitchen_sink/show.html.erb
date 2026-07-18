@@ -169,6 +169,11 @@
           <% card.with_footer { "View project" } %>
         <% end %>
 
+        <% starter_plan = Plan.new(name: "Starter", amount: 1900, interval: "month", description: "A plan-card example with a price, features, and an action.", details: {features: ["Unlimited projects", "Email support"]}) %>
+        <%= render PlanCardComponent.new(plan: starter_plan) do %>
+          <%= render ButtonComponent.new(text: "Start trial", href: "#", full_width: true) %>
+        <% end %>
+
         <% project_table = TableComponent.new(striped: true, hoverable: true) %>
         <% project_table.with_column(label: "Project") %>
         <% project_table.with_column(label: "Owner") %>
