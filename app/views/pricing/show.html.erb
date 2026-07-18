@@ -22,7 +22,13 @@
         <%= tag.div if @monthly_plans.count == 1 %>
         <% @monthly_plans.each do |plan| %>
           <%= render PlanCardComponent.new(plan: plan) do %>
-            <%= pricing_link_to(plan) %>
+            <% if plan.contact_url.present? %>
+              <%= render ButtonComponent.new(text: t("billing.subscriptions.plan.contact_us"), href: plan.contact_url, variant: :secondary, size: :lg, full_width: true) %>
+            <% elsif plan.trial_period_days? && (!user_signed_in? || current_account&.pay_subscriptions&.none?) %>
+              <%= render ButtonComponent.new(text: t("billing.subscriptions.plan.start_trial"), href: checkout_path(plan: plan), variant: :secondary, size: :lg, full_width: true) %>
+            <% else %>
+              <%= render ButtonComponent.new(text: t("billing.subscriptions.plan.get_started"), href: checkout_path(plan: plan), variant: :secondary, size: :lg, full_width: true) %>
+            <% end %>
           <% end %>
         <% end %>
         <%= tag.div if @monthly_plans.count == 1 %>
@@ -31,7 +37,13 @@
         <%= tag.div if @yearly_plans.count == 1 %>
         <% @yearly_plans.each do |plan| %>
           <%= render PlanCardComponent.new(plan: plan) do %>
-            <%= pricing_link_to(plan) %>
+            <% if plan.contact_url.present? %>
+              <%= render ButtonComponent.new(text: t("billing.subscriptions.plan.contact_us"), href: plan.contact_url, variant: :secondary, size: :lg, full_width: true) %>
+            <% elsif plan.trial_period_days? && (!user_signed_in? || current_account&.pay_subscriptions&.none?) %>
+              <%= render ButtonComponent.new(text: t("billing.subscriptions.plan.start_trial"), href: checkout_path(plan: plan), variant: :secondary, size: :lg, full_width: true) %>
+            <% else %>
+              <%= render ButtonComponent.new(text: t("billing.subscriptions.plan.get_started"), href: checkout_path(plan: plan), variant: :secondary, size: :lg, full_width: true) %>
+            <% end %>
           <% end %>
         <% end %>
         <%= tag.div if @yearly_plans.count == 1 %>

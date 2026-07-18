@@ -27,11 +27,11 @@
         <% @monthly_plans.each do |plan| %>
           <%= render PlanCardComponent.new(plan: plan) do %>
             <% if @subscription.plan == plan %>
-              <%= render ButtonComponent.new(text: t(".current_plan"), variant: :secondary, full_width: true, disabled: true) %>
+              <%= render ButtonComponent.new(text: t("billing.subscriptions.plan.current_plan"), variant: :secondary, full_width: true, disabled: true) %>
             <% else %>
               <%= form_with url: billing_subscription_url(@subscription), method: :patch do |f| %>
                 <%= f.hidden_field :plan, value: plan.to_param %>
-                <%= render ButtonComponent.new(text: t(".change_plan"), variant: :secondary, type: "submit", full_width: true, data: { disable_with: t(".processing"), turbo_confirm: "Are you sure?" }) %>
+                <%= render ButtonComponent.new(text: t("billing.subscriptions.plan.change_plan"), variant: :secondary, type: "submit", full_width: true, data: { disable_with: t("billing.subscriptions.plan.processing"), turbo_confirm: "Are you sure?" }) %>
               <% end %>
             <% end %>
           <% end %>
@@ -42,11 +42,11 @@
         <% @yearly_plans.each do |plan| %>
           <%= render PlanCardComponent.new(plan: plan) do %>
             <% if @subscription.plan == plan %>
-              <%= render ButtonComponent.new(text: t(".current_plan"), variant: :secondary, full_width: true, disabled: true) %>
+              <%= render ButtonComponent.new(text: t("billing.subscriptions.plan.current_plan"), variant: :secondary, full_width: true, disabled: true) %>
             <% else %>
               <%= form_with url: billing_subscription_url(@subscription), method: :patch do |f| %>
                 <%= f.hidden_field :plan, value: plan.to_param %>
-                <%= render ButtonComponent.new(text: t(".change_plan"), variant: :secondary, type: "submit", full_width: true, data: { disable_with: t(".processing"), turbo_confirm: "Are you sure?" }) %>
+                <%= render ButtonComponent.new(text: t("billing.subscriptions.plan.change_plan"), variant: :secondary, type: "submit", full_width: true, data: { disable_with: t("billing.subscriptions.plan.processing"), turbo_confirm: "Are you sure?" }) %>
               <% end %>
             <% end %>
           <% end %>
