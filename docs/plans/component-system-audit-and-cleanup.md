@@ -14,9 +14,9 @@
 | 4b | Strip `.dark` blocks from 5 JSP component CSS files | Master | ✅ |
 | 5  | Remove theme picker + tokenize profile-edit view | Master | ✅ |
 | 6  | Delete orphaned nav.css / top_nav.css (verify-then-delete) | Master | ✅ |
-| 7a | Color audit: auth + account views | Clone |  |
-| 7b | Color audit: application partials + pricing | Clone |  |
-| 7c | Color audit: billing subscription views | Clone |  |
+| 7a | Color audit: auth + account views | Clone | ✅ |
+| 7b | Color audit: application partials + pricing | Clone | ✅ |
+| 7c | Color audit: billing subscription views | Clone | ✅ |
 
 ## Prerequisites
 
