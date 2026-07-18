@@ -1,0 +1,66 @@
+<%= tag.div class: "mb-8 lg:flex lg:gap-8", id: dom_id(subscription) do %>
+  <% if subscription.generic_trial? %>
+    <div>
+      <%= render BadgeComponent.new(text: t(".free_trial"), classes: "mb-1") %>
+      <%= render AlertComponent.new(title: t(".free_trial_ends", date: l(subscription.trial_ends_at.to_date, format: :long)), variant: :info, show_icon: false) %>
+    </div>
+
+  <% else %>
+    <div class="flex-1">
+      <% if subscription.canceled? %>
+        <%= render BadgeComponent.new(text: t(".canceled"), classes: "mb-1") %>
+      <% elsif subscription.incomplete? %>
+        <%= render BadgeComponent.new(text: t(".incomplete"), variant: :orange, classes: "mb-1") %>
+      <% elsif subscription.past_due? %>
+        <%= render BadgeComponent.new(text: t(".past_due"), variant: :red, classes: "mb-1") %>
+      <% elsif subscription.unpaid? %>
+        <%= render BadgeComponent.new(text: t(".unpaid"), variant: :red, classes: "mb-1") %>
+      <% end %>
+
+      <%= render partial: "billing/subscriptions/summary", locals: { subscription: subscription } %>
+
+      <% if subscription.metered? %>
+        <div><%= link_to t(".view_usage"), billing_subscription_upcoming_path(subscription), class: "text-sm font-medium text-primary" %></div>
+      <% elsif subscription.plan&.charge_per_unit? %>
+        <div><%= link_to t(".view_upcoming_invoice"), billing_subscription_upcoming_path(subscription), class: "text-sm font-medium text-primary" %></div>
+      <% end %>
+
+      <% if subscription.on_trial? && subscription.canceled? %>
+        <%= render AlertComponent.new(title: t(".canceled_on_trial", date: l(subscription.trial_ends_at.to_date, format: :long)), variant: :warning, show_icon: false, classes: "mt-3") %>
+      <% elsif subscription.on_trial? %>
+        <%= render AlertComponent.new(title: t(".trial", date: l(subscription.trial_ends_at.to_date, format: :long)), variant: :info, show_icon: false, classes: "mt-3") %>
+      <% elsif subscription.on_grace_period? %>
+        <% if subscription.ends_at? %>
+          <%= render AlertComponent.new(title: t(".ends_at", date: l(subscription.ends_at.to_date, format: :long)), variant: :warning, classes: "mt-3") %>
+        <% elsif subscription.pause_starts_at %>
+          <%= render AlertComponent.new(title: t(".paused_at", date: l(subscription.pause_starts_at.to_date, format: :long)), variant: :warning, classes: "mt-3") %>
+        <% end %>
+      <% elsif subscription.paused? %>
+        <%= render AlertComponent.new(title: t(".paused"), variant: :info, show_icon: false, classes: "mt-3") %>
+      <% end %>
+    </div>
+
+    <div class="mt-2 flex flex-col gap-2 text-center">
+      <% if subscription.on_grace_period? %>
+        <%= render ButtonComponent.new(text: t(".resume"), href: billing_subscription_resume_path(subscription)) if subscription.resumable? %>
+      <% elsif subscription.active? %>
+        <%= render ButtonComponent.new(text: t(".change_plan"), variant: :secondary, href: edit_billing_subscription_path(subscription)) %>
+        <%# Only show pausing for Paddle customers because their subscription cancellations can be permanent %>
+        <%= render ButtonComponent.new(text: t(".pause"), variant: :secondary, href: billing_subscription_pause_path(subscription)) if subscription.paddle_classic? %>
+        <%= render ButtonComponent.new(text: t(".update_payment_method"), variant: :secondary, href: new_billing_subscription_payment_method_path(subscription)) %>
+        <%= render ButtonComponent.new(text: t(".cancel_plan"), variant: :secondary, href: billing_subscription_cancel_path(subscription)) %>
+      <% elsif subscription.paused? %>
+        <%= render ButtonComponent.new(text: t(".resume"), href: billing_subscription_resume_path(subscription)) %>
+        <%= render ButtonComponent.new(text: t(".cancel_plan"), variant: :secondary, href: billing_subscription_cancel_path(subscription)) %>
+      <% elsif subscription.incomplete? %>
+        <%= render ButtonComponent.new(text: t(".confirm_payment"), href: pay.payment_path(subscription.latest_payment.id)) %>
+      <% elsif subscription.past_due? %>
+        <%= render ButtonComponent.new(text: t(".update_payment_method"), href: new_billing_subscription_payment_method_path(subscription)) %>
+        <%= render ButtonComponent.new(text: t(".cancel_plan"), variant: :secondary, href: billing_subscription_cancel_path(subscription)) %>
+      <% elsif subscription.unpaid? %>
+        <%= render ButtonComponent.new(text: t(".update_payment_method"), href: new_billing_subscription_payment_method_path(subscription)) %>
+        <%= render ButtonComponent.new(text: t(".cancel_plan"), variant: :secondary, href: billing_subscription_cancel_path(subscription)) %>
+      <% end %>
+    </div>
+  <% end %>
+<% end %>
