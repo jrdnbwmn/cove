@@ -414,7 +414,7 @@
 /*# sourceMappingURL=tom-select.css.map */
 
 /* Rails Blocks Select component visual layer. */
-select[multiple][data-controller="select"] {
+select[data-controller="select"] {
   @apply invisible;
 }
 
