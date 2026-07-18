@@ -1,0 +1,15 @@
+<div class="mb-6 flex justify-center">
+  <div class="hidden max-w-xl lg:block">
+    <%= render CardComponent.new(variant: :well, padding: :md) do %>
+      <blockquote>
+        <p class="text-lg text-muted"><%= t("checkouts.testimonial", product: Jumpstart.config.application_name) %></p>
+        <cite class="mt-4 block not-italic text-foreground">
+          <div class="flex items-center gap-3">
+            <%= render AvatarComponent.new(src: "https://avatars1.githubusercontent.com/u/67093?s=40&v=4", alt: "Chris Oliver", size: :sm) %>
+            <p class="font-medium leading-tight">Chris Oliver</p>
+          </div>
+        </cite>
+      </blockquote>
+    <% end %>
+  </div>
+</div>
