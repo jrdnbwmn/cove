@@ -12,7 +12,7 @@
     name: "user[current_password]",
     id: "user_current_password",
     autocomplete: "current-password",
-    placeholder: current_user.class.human_attribute_name(:current_password),
+    placeholder: true,
     error: current_user.errors[:current_password].first,
     hint: t("devise.registrations.edit.we_need_your_current_password_to_confirm_your_changes"),
     classes: "mb-6"
@@ -23,7 +23,7 @@
     name: "user[password]",
     id: "user_password",
     autocomplete: "new-password",
-    placeholder: current_user.class.human_attribute_name(:password),
+    placeholder: true,
     error: current_user.errors[:password].first,
     hint: t("devise.shared.minimum_password_length", count: User.password_length.min),
     classes: "mb-6"
@@ -34,7 +34,7 @@
     name: "user[password_confirmation]",
     id: "user_password_confirmation",
     autocomplete: "new-password",
-    placeholder: current_user.class.human_attribute_name(:password_confirmation),
+    placeholder: true,
     error: current_user.errors[:password_confirmation].first,
     classes: "mb-6"
   ) %>
