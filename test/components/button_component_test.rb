@@ -16,4 +16,10 @@ class ButtonComponentTest < ViewComponent::TestCase
     assert_text "Primary Button"
     assert_selector "button.bg-primary.text-primary-foreground"
   end
+
+  test "renders an external link securely" do
+    render_inline(ButtonComponent.new(text: "Read the Docs", href: "https://example.com", target: "_blank"))
+
+    assert_selector 'a[href="https://example.com"][target="_blank"][rel~="noopener"]', text: "Read the Docs"
+  end
 end

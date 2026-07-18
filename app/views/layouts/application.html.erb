@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html class="<%= class_names(dark: current_user&.dark_theme?, "hotwire-native": hotwire_native_app?) %>" lang="<%= I18n.locale %>">
+<html class="<%= class_names("hotwire-native": hotwire_native_app?) %>" lang="<%= I18n.locale %>">
   <head>
     <%= render "head" %>
   </head>
-  <body data-controller="theme bridge--menu-button <%= "bridge--notification-token" if user_signed_in? %>" data-theme-preference-value="<%= current_user&.theme %>">
+  <body data-controller="bridge--menu-button <%= "bridge--notification-token" if user_signed_in? %>">
     <header>
       <%= impersonation_banner %>
       <%= render "flash" %>
