@@ -17,6 +17,12 @@ class Jumpstart::PlansTest < ActionDispatch::IntegrationTest
     end
   end
 
+  test "pricing page uses the billing plan action labels" do
+    get "/pricing"
+
+    assert_select "a[href=?]", checkout_path(plan: plans(:personal)), text: I18n.t("billing.subscriptions.plan.get_started")
+  end
+
   test "enterprise plan shows up" do
     get "/pricing"
 
