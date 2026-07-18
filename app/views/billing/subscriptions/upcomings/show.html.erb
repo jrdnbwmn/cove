@@ -1,0 +1,69 @@
+<% Current.meta_tags.set(title: t(".title")) %>
+
+<% content_for :sidebar, render(partial: "account_navbar") %>
+
+<div class="mx-auto max-w-4xl">
+  <h1 class="h3 text-foreground"><%= t ".title" %></h1>
+
+  <%= render CardComponent.new(divide: true, classes: "mt-8") do |card| %>
+    <% card.with_header do %>
+      <%= render partial: "billing/subscriptions/summary", locals: { subscription: @subscription } %>
+    <% end %>
+
+    <% card.with_body do %>
+      <div class="mb-6">
+        <p class="font-semibold text-foreground"><%= t ".description", product: Jumpstart.config.application_name %></p>
+        <p class="mt-2 text-lg text-muted"><%= l Time.at(@invoice.period_end).to_date, format: :long %></p>
+      </div>
+
+      <div class="overflow-x-auto">
+        <table class="min-w-full divide-y divide-black/10 text-sm dark:divide-white/10">
+          <thead class="text-left text-muted">
+            <tr>
+              <th class="p-3 font-medium"><%= t ".line_items.description" %></th>
+              <th class="p-3 text-right font-medium"><%= t ".line_items.quantity" %></th>
+              <th class="p-3 text-right font-medium"><%= t ".line_items.unit_price" %></th>
+              <th class="p-3 text-right font-medium"><%= t ".line_items.total" %></th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-black/10 dark:divide-white/10">
+            <% @invoice.lines.auto_paging_each do |line_item| %>
+              <tr>
+                <td class="p-3">
+                  <%= tag.div line_item.description, class: "font-medium text-foreground" %>
+                  <div class="mt-1 text-xs text-muted">
+                    <%= l Time.at(line_item.period.start).to_date, format: :long %> -
+                    <%= l Time.at(line_item.period.end).to_date, format: :long %>
+                  </div>
+                </td>
+                <td class="p-3 text-right"><%= line_item.quantity %></td>
+                <td class="p-3 text-right"><%= Pay::Currency.format line_item.pricing.unit_amount_decimal, currency: line_item.currency %></td>
+                <td class="p-3 text-right"><%= Pay::Currency.format line_item.amount, currency: line_item.currency %></td>
+              </tr>
+            <% end %>
+          </tbody>
+          <tfoot class="text-foreground">
+            <tr>
+              <td class="pt-3 px-3 text-right font-semibold" colspan="3">Subtotal</td>
+              <td class="pt-3 px-3 text-right"><%= Pay::Currency.format @invoice.subtotal, currency: @invoice.currency %></td>
+            </tr>
+
+            <tr>
+              <td class="py-1 px-3 text-right font-semibold" colspan="3">Tax</td>
+              <td class="py-1 px-3 text-right"><%= Pay::Currency.format (@invoice.total - @invoice.total_excluding_tax), currency: @invoice.currency %></td>
+            </tr>
+
+            <tr>
+              <td class="py-1 px-3 text-right font-semibold" colspan="3">Total</td>
+              <td class="py-1 px-3 text-right font-semibold"><%= Pay::Currency.format @invoice.total, currency: @invoice.currency %></td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+    <% end %>
+
+    <% card.with_footer do %>
+      <%= render ButtonComponent.new(text: t(".back"), variant: :secondary, href: billing_path) %>
+    <% end %>
+  <% end %>
+</div>

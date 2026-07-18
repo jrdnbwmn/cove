@@ -54,6 +54,14 @@ class Jumpstart::AccountUsersTest < ActionDispatch::IntegrationTest
       get edit_account_account_user_path(@account, account_user)
       assert_select "input[type=checkbox][name='account_user[admin]'][disabled]", 1
     end
+
+    test "keeps the unchecked admin role value when editing a member" do
+      account_user = account_users(:company_regular_user)
+      get edit_account_account_user_path(@account, account_user)
+
+      assert_select "input[type=hidden][name='account_user[admin]'][value='0']", 1
+      assert_select "input[type=checkbox][name='account_user[admin]'][value='1']", 1
+    end
   end
 
   class RegularUsers < Jumpstart::AccountUsersTest

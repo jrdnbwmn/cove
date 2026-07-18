@@ -1,0 +1,37 @@
+<h2 class="mt-8 mb-4 border-b border-(--divider-color) pb-2 text-lg font-semibold text-foreground"><%= t(".extra_billing_info") %></h2>
+
+<div class="mb-8 flex gap-8" data-controller="toggle">
+  <div class="flex-1">
+    <p class="text-muted"><%= t ".additional_information" %></p>
+
+    <%= form_with model: current_account, url: billing_path, html: { class: "hidden mt-4 max-w-lg", data: { toggle_target: 'toggleable', }} do |f| %>
+      <%= render FormFieldComponent.new(
+        label: current_account.class.human_attribute_name(:extra_billing_info),
+        name: "account[extra_billing_info]",
+        error: current_account.errors[:extra_billing_info].first,
+        classes: "mb-6"
+      ) do |field| %>
+        <% field.with_input do %>
+          <%= f.text_area :extra_billing_info, class: "form-control", placeholder: true %>
+        <% end %>
+      <% end %>
+
+      <%= render ButtonComponent.new(text: t(".save_info"), variant: :secondary, type: "submit", data: { disable_with: t(".saving") }) %>
+    <% end %>
+  </div>
+
+  <div>
+    <%= render ButtonComponent.new(
+      text: t(".add_info"),
+      variant: :secondary,
+      href: "#",
+      data: { action: "click->toggle#toggle:prevent touch->toggle#toggle:prevent" }
+    ) %>
+  </div>
+</div>
+
+<% if current_account.extra_billing_info? %>
+  <blockquote class="mt-4 mb-8 border-l-4 border-(--divider-color) px-4 font-mono text-sm text-muted">
+    <%= current_account.extra_billing_info %>
+  </blockquote>
+<% end %>

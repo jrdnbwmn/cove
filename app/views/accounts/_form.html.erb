@@ -1,0 +1,68 @@
+<%= form_with(model: account, class: "max-w-md") do |form| %>
+  <%= render "error_messages", resource: form.object %>
+
+  <%= render FormFieldComponent.new(
+    label: form.object.class.human_attribute_name(:name),
+    name: "account[name]",
+    error: form.object.errors[:name].first,
+    classes: "mb-6"
+  ) do |field| %>
+    <% field.with_input do %>
+      <%= form.text_field :name, placeholder: true, autofocus: true, class: "form-control" %>
+    <% end %>
+  <% end %>
+
+  <% if Jumpstart::Multitenancy.domain? %>
+    <%= render FormFieldComponent.new(
+      label: form.object.class.human_attribute_name(:domain),
+      name: "account[domain]",
+      error: form.object.errors[:domain].first,
+      classes: "mb-6"
+    ) do |field| %>
+      <% field.with_input do %>
+        <%= form.text_field :domain, placeholder: true, autofocus: true, class: "form-control" %>
+      <% end %>
+    <% end %>
+  <% end %>
+
+  <% if Jumpstart::Multitenancy.subdomain? %>
+    <%= render FormFieldComponent.new(
+      label: form.object.class.human_attribute_name(:subdomain),
+      name: "account[subdomain]",
+      error: form.object.errors[:subdomain].first,
+      classes: "mb-6"
+    ) do |field| %>
+      <% field.with_input do %>
+        <%= form.text_field :subdomain, placeholder: true, autofocus: true, class: "form-control" %>
+      <% end %>
+    <% end %>
+  <% end %>
+
+  <% if form.object.persisted? %>
+    <%= render FormFieldComponent.new(
+      label: form.object.class.human_attribute_name(:avatar),
+      name: "account[avatar]",
+      error: form.object.errors[:avatar].first,
+      classes: "mb-6"
+    ) do |field| %>
+      <% field.with_input do %>
+        <div class="flex items-center gap-4">
+          <%= account_avatar form.object %>
+          <%= form.file_field :avatar, accept: "image/png, image/jpeg, image/heic, image/heif, image/webp", class: "form-control" %>
+        </div>
+      <% end %>
+    <% end %>
+  <% end %>
+
+  <div class="flex gap-3">
+    <%= render ButtonComponent.new(
+      text: form.object.persisted? ? t("helpers.submit.update", model: form.object.model_name.human) : t("helpers.submit.create", model: form.object.model_name.human),
+      type: "submit"
+    ) %>
+    <%= render ButtonComponent.new(
+      text: t("cancel"),
+      variant: :secondary,
+      href: form.object.persisted? ? form.object : accounts_path
+    ) %>
+  </div>
+<% end %>
