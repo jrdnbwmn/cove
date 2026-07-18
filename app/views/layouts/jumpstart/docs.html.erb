@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html class="docs-layout h-full antialiased" lang="<%= I18n.locale %>">
+  <head>
+    <%= render "head" %>
+
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/styles/dracula.min.css">
+    <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/highlight.min.js"></script>
+    <script>
+      document.addEventListener("turbo:load", function() {
+        var snippets = document.querySelectorAll('pre code')
+        snippets.forEach(function(snippet) {
+          hljs.highlightBlock(snippet);
+          snippet.parentNode.classList.add("mt-4");
+        })
+      });
+    </script>
+  </head>
+
+  <body class="docs-body">
+    <%= render partial: "flash" %>
+    <%= render partial: "jumpstart/docs/top_nav" %>
+
+    <section class="docs-container">
+      <%= render partial: "jumpstart/docs/side_nav" %>
+
+      <main class="docs-main">
+        <header class="docs-header">
+          <%= tag.h1 yield(:title) %>
+          <%= tag.p yield(:subtitle) if content_for(:subtitle) %>
+        </header>
+
+        <section class="docs-content">
+          <%= yield %>
+        </section>
+      </main>
+    </section>
+  </body>
+</html>
