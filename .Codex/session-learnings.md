@@ -260,3 +260,6 @@ The first Task 4b sweep treated Braintree’s mixed `:is(.dark .braintree-placeh
 ### Observations
 
 For this plan, removing dark-mode activation safely requires three boundaries in order: page wiring, CSS token/import rules, then component-level dark selectors. Keep `@variant dark (&:where(.dark, .dark *));` deliberately: removing it would make Tailwind fall back to `prefers-color-scheme` and re-enable the many inert `dark:` utilities. Use `mise exec --` for every Rails/Tailwind command, run the full suite after each behavior task, and update the plan Status table as each reviewed task completes.
+
+## Catchup 2026-07-18 (wrap-up)
+Nothing notable.
