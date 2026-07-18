@@ -1,0 +1,32 @@
+<% Current.meta_tags.set(title: t(".title")) %>
+
+<% content_for :sidebar, render(partial: "account_navbar") %>
+
+<div class="mx-auto mt-12 max-w-xl">
+  <h1 class="h3 text-foreground"><%= t ".title" %></h1>
+
+  <%= render CardComponent.new(divide: true, classes: "mt-8") do |card| %>
+    <% card.with_header do %>
+      <%= render partial: "billing/subscriptions/summary", locals: { subscription: @subscription } %>
+    <% end %>
+
+    <% card.with_body do %>
+      <div class="space-y-4 text-muted">
+        <div class="font-semibold text-foreground"><%= t ".description", product: Jumpstart.config.application_name %></div>
+        <div><%= t ".help_html", link: mail_to(Jumpstart.config.support_email, t(".contact_us"), subject: t(".subject", product: Jumpstart.config.application_name), class: "font-medium text-primary underline") %></div>
+        <div><%= @subscription.metered? ? t(".cancel_immediately") : t(".active_until") %></div>
+        <div><%= t(".resume") %></div>
+      </div>
+    <% end %>
+
+    <% card.with_footer do %>
+      <div class="flex items-center justify-between gap-3">
+        <%= render ButtonComponent.new(text: t(".back"), variant: :secondary, href: billing_path) %>
+
+        <%= button_to billing_subscription_cancel_path(@subscription), method: :delete, class: "inline-flex items-center justify-center gap-1.5 rounded-[var(--radius)] border border-red-300/30 bg-red-600 px-3.5 py-2 text-sm font-medium whitespace-nowrap text-white shadow-sm transition-all duration-100 ease-in-out hover:bg-red-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-neutral-600 dark:focus-visible:outline-neutral-200", form: { data: { turbo_confirm: t("are_you_sure") } } do %>
+          <%= button_text t(".button"), disable_with: t(".processing") %>
+        <% end %>
+      </div>
+    <% end %>
+  <% end %>
+</div>

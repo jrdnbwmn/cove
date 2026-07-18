@@ -18,7 +18,7 @@
 | 9 | `checkouts/{show,_testimonial}` + `forms/_stripe` (byte-identical Stripe div) | Clone | ✅ |
 | 10 | Flow D: `billing/{show,_email,_info,_charges}` (dashboard + charges table) | Master | ✅ |
 | 11 | `billing/subscriptions/{_subscription,_summary,edit}` (status badges + plan change) | Master | ✅ |
-| 12 | `cancels/resumes/pauses/upcomings/show` (4 confirm pages) | Clone | |
+| 12 | `cancels/resumes/pauses/upcomings/show` (4 confirm pages) | Clone | ✅ |
 | 13 | Flow E: `payment_methods/new` + `forms/_fake_processor` (system-test-driven) | Master | |
 | 14 | Extend integration tests + system tests + selector migration + full gate | Master | |
 
