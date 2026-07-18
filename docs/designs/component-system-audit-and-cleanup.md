@@ -1,5 +1,6 @@
 > Ticket: COV-17
 > Branch: jrdnbwmn/cov-17-review-components
+> Plan created: docs/plans/component-system-audit-and-cleanup.md
 
 # Feature: Component System Audit + Final Cleanup
 
