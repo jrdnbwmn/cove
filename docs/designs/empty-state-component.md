@@ -1,5 +1,6 @@
 > Ticket: COV-18
 > Branch: feature/cov-18-empty-state-component
+> Plan created: docs/plans/empty-state-component.md
 
 # Feature: EmptyState design-system component
 
