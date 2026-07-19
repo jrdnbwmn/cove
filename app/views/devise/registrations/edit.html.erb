@@ -16,7 +16,7 @@
     <% field.with_input do %>
       <div class="flex items-center gap-2 sm:gap-4">
         <%= image_tag avatar_url_for(form.object), class: "rounded-full size-10 sm:size-20" %>
-        <%= form.file_field :avatar, accept: "image/png, image/jpeg, image/heic, image/heif, image/webp", class: "text-xs file:mr-2 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-semibold file:bg-gray-50 file:text-gray-700 hover:file:bg-gray-100" %>
+        <%= form.file_field :avatar, accept: "image/png, image/jpeg, image/heic, image/heif, image/webp", class: "text-xs file:mr-2 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-semibold file:bg-muted file:text-muted-foreground hover:file:bg-muted" %>
       </div>
     <% end %>
   <% end %>
@@ -60,16 +60,6 @@
     ) %>
   <% end %>
 
-  <%= render SelectComponent.new(
-    label: resource.class.human_attribute_name(:theme),
-    name: "user[theme]",
-    options: theme_options,
-    selected: resource.theme,
-    placeholder: nil,
-    error: resource.errors[:theme].first,
-    classes: "mb-6"
-  ) %>
-
   <%= render ButtonComponent.new(
     text: t(".update"),
     type: "submit",
@@ -80,7 +70,7 @@
 <hr>
 
 <h2 class="h3"><%= t(".cancel_my_account") %></h2>
-<p class="mt-2 mb-4 text-sm text-muted"><%= t(".cancel_my_account_description") %></p>
+<p class="mt-2 mb-4 text-sm text-muted-foreground"><%= t(".cancel_my_account_description") %></p>
 <div class="mt-2">
   <%= button_to t(".cancel_my_account"), registration_path(resource_name),
     method: :delete,

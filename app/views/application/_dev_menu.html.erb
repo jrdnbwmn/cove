@@ -18,12 +18,12 @@
 
   <% dropdown.with_item_label(text: "Jumpstart") %>
   <% dropdown.with_item_custom(unstyled: true) do %>
-    <%= link_to "Configuration", jumpstart_path(script_name: nil), class: "flex items-center gap-2 rounded-md px-2 py-1.5 text-left text-sm text-neutral-700 focus:bg-neutral-100 focus:outline-hidden dark:text-neutral-100 dark:focus:bg-neutral-700/50", role: "menuitem", tabindex: "-1", data: {turbo: false, ui_menu_target: "item"} %>
+    <%= link_to "Configuration", jumpstart_path(script_name: nil), class: "flex items-center gap-2 rounded-md px-2 py-1.5 text-left text-sm text-muted-foreground focus:bg-muted focus:outline-hidden dark:text-neutral-100 dark:focus:bg-neutral-700/50", role: "menuitem", tabindex: "-1", data: {turbo: false, ui_menu_target: "item"} %>
   <% end %>
   <% dropdown.with_item_custom(unstyled: true) do %>
-    <%= link_to "Documentation", jumpstart.docs_path, target: :_blank, class: "flex items-center gap-2 rounded-md px-2 py-1.5 text-left text-sm text-neutral-700 focus:bg-neutral-100 focus:outline-hidden dark:text-neutral-100 dark:focus:bg-neutral-700/50", role: "menuitem", tabindex: "-1", data: {turbo: false, ui_menu_target: "item"} %>
+    <%= link_to "Documentation", jumpstart.docs_path, target: :_blank, class: "flex items-center gap-2 rounded-md px-2 py-1.5 text-left text-sm text-muted-foreground focus:bg-muted focus:outline-hidden dark:text-neutral-100 dark:focus:bg-neutral-700/50", role: "menuitem", tabindex: "-1", data: {turbo: false, ui_menu_target: "item"} %>
   <% end %>
   <% dropdown.with_item_custom(unstyled: true) do %>
-    <%= link_to "Mailbin", mailbin_path(script_name: nil), target: :_blank, class: "flex items-center gap-2 rounded-md px-2 py-1.5 text-left text-sm text-neutral-700 focus:bg-neutral-100 focus:outline-hidden dark:text-neutral-100 dark:focus:bg-neutral-700/50", role: "menuitem", tabindex: "-1", data: {turbo: false, ui_menu_target: "item"} %>
+    <%= link_to "Mailbin", mailbin_path(script_name: nil), target: :_blank, class: "flex items-center gap-2 rounded-md px-2 py-1.5 text-left text-sm text-muted-foreground focus:bg-muted focus:outline-hidden dark:text-neutral-100 dark:focus:bg-neutral-700/50", role: "menuitem", tabindex: "-1", data: {turbo: false, ui_menu_target: "item"} %>
   <% end %>
 <% end %>

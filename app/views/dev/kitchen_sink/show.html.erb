@@ -1,249 +1,192 @@
-<h1>Component Kitchen Sink</h1>
+<div class="mx-auto max-w-5xl px-6 py-10">
+  <h1>Component Kitchen Sink</h1>
 
-<section>
-  <h2>Buttons</h2>
-  <div class="flex gap-4">
-    <%= render ButtonComponent.new(text: "Primary Button") %>
-    <div class="dark">
-      <%= render ButtonComponent.new(text: "Primary Button") %>
-    </div>
+  <div class="mt-8 divide-y divide-border">
+    <section class="py-10 first:pt-0">
+      <h2>Buttons</h2>
+      <div class="mt-6 flex flex-wrap gap-6">
+        <%= render ButtonComponent.new(text: "Primary Button") %>
+      </div>
+    </section>
+
+    <section class="py-10">
+      <h2>Forms</h2>
+      <div class="mt-6 grid gap-8 md:grid-cols-2">
+        <%= render FormFieldComponent.new(label: "Display name", name: "profile[display_name]", helper_text: "Shown to collaborators.", required: true) do |component| %>
+          <% component.with_input do %>
+            <input class="form-control" id="profile_display_name" name="profile[display_name]" type="text">
+          <% end %>
+        <% end %>
+
+        <%= render FormFieldComponent.new(label: "Biography", name: "profile[biography]", size: :lg) do |component| %>
+          <% component.with_input do %>
+            <textarea class="form-control" id="profile_biography" name="profile[biography]" rows="3"></textarea>
+          <% end %>
+        <% end %>
+
+        <%= render SelectComponent.new(label: "Plan", name: "subscription[plan]", id: "subscription_plan", size: :sm, options: [["Starter", "starter"], ["Team", "team"]]) %>
+
+        <%= render FormFieldComponent.new(label: "Email", name: "user[email]", error: "Email is invalid.", variant: :floating) do |component| %>
+          <% component.with_input do %>
+            <input class="form-control error" id="user_email" name="user[email]" type="email">
+          <% end %>
+        <% end %>
+
+        <%= render FormFieldComponent.new(label: "Account ID", name: "account[id]", disabled: true, size: :md) do |component| %>
+          <% component.with_input do %>
+            <input class="form-control" disabled id="account_id" name="account[id]" type="text" value="ACC-123">
+          <% end %>
+        <% end %>
+      </div>
+
+      <div class="mt-8 grid gap-8 md:grid-cols-2">
+        <%= render CheckboxComponent.new(label: "Receive product updates", name: "preferences[product_updates]", checked: true, description: "A checked checkbox with supporting text.") %>
+        <%= render RadioComponent.new(label: "Team", name: "plan", value: "team", checked: true, description: "A selected radio option.") %>
+        <%= render SwitchComponent.new(label: "Enable weekly summary", name: "preferences[weekly_summary]", checked: true, show_icons: true) %>
+        <%= render SelectComponent.new(label: "Plan", name: "subscription[plan]", options: [["Starter", "starter"], ["Team", "team"], ["Enterprise", "enterprise"]]) %>
+        <%= render PasswordComponent.new(name: "user[password]", hint: "Use at least 8 characters.") %>
+      </div>
+    </section>
+
+    <section class="py-10">
+      <h2>Feedback</h2>
+      <div class="grid gap-6 md:grid-cols-2">
+        <%= render AlertComponent.new(title: "Success! Your changes have been saved", description: "All updates have been applied successfully.", variant: :success) %>
+        <%= render AlertComponent.new(title: "Something went wrong", description: "We couldn't process your request.", variant: :error) %>
+        <%= render AlertComponent.new(title: "Your plan is expiring soon", variant: :warning) %>
+        <%= render AlertComponent.new(title: "New features are available", variant: :info) %>
+      </div>
+
+      <div class="mt-8 flex flex-wrap items-center gap-4">
+        <%= render BadgeComponent.new(text: "Neutral") %>
+        <%= render BadgeComponent.new(text: "Published", variant: :green) %>
+        <%= render BadgeComponent.new(text: "Active", variant: :blue, dot: true) %>
+        <%= render BadgeComponent.new(text: "Beta", variant: :purple, pill: true) %>
+        <%= render BadgeComponent.new(text: "Filter: Active", variant: :neutral, removable: true) %>
+      </div>
+
+      <div class="mt-8 flex flex-wrap items-center gap-8">
+        <%= render LoadingIndicatorComponent.new %>
+        <%= render LoadingIndicatorComponent.new(stepped: true) %>
+        <%= render LoadingIndicatorComponent.new(type: :dots) %>
+        <%= render LoadingIndicatorComponent.new(type: :bars) %>
+        <%= render LoadingIndicatorComponent.new(type: :progress, progress: 65) %>
+        <%= render LoadingIndicatorComponent.new(color: :primary, text: "Loading...") %>
+      </div>
+
+      <div class="mt-8 grid max-w-sm gap-3">
+        <%= render SkeletonComponent.new %>
+        <%= render SkeletonComponent.new(variant: :circle) %>
+        <%= render SkeletonComponent.new(variant: :button) %>
+        <%= render SkeletonComponent.new(count: 3) %>
+      </div>
+
+      <div class="mt-8 flex flex-wrap items-center gap-6">
+        <%= render UiToastComponent.new(position: "bottom-right") %>
+        <%= render TooltipComponent.new(text: "Rails Blocks tooltip", placement: "bottom") do %>
+          <button class="rounded-md border border-border px-3 py-2" type="button">Rails Blocks tooltip</button>
+        <% end %>
+        <button class="rounded-md border border-border px-3 py-2" data-controller="tooltip" data-tooltip-content-value="Jumpstart tooltip" type="button">Jumpstart tooltip</button>
+      </div>
+    </section>
+
+    <section class="py-10">
+      <h2>Overlays</h2>
+      <div class="mt-6 flex flex-wrap items-start gap-6">
+        <%= render UiModalComponent.new(title: "Invite a teammate", trigger_text: "Open modal") do |modal| %>
+          <p class="text-sm text-muted-foreground">Choose a teammate to invite to this project.</p>
+          <% modal.with_footer do %>
+            <%= render ButtonComponent.new(text: "Cancel", variant: :secondary, data: { action: "click->ui-modal#close:prevent" }) %>
+            <%= render ButtonComponent.new(text: "Send invite") %>
+          <% end %>
+        <% end %>
+
+        <%= render DropdownComponent.new(trigger_text: "Project actions", placement: "bottom-end") do |dropdown| %>
+          <% dropdown.with_item_link(text: "Project settings", href: "#") %>
+          <% dropdown.with_item_link(text: "Manage members", href: "#") %>
+          <% dropdown.with_item_divider %>
+          <% dropdown.with_item_button(text: "Archive project", destructive: true) %>
+        <% end %>
+      </div>
+    </section>
+
+    <section class="py-10">
+      <h2>Navigation</h2>
+      <div class="mt-6 grid gap-8">
+        <%= render NavbarComponent.new do |navbar| %>
+          <% navbar.with_item(label: "Dashboard", href: "#") %>
+          <% navbar.with_item(label: "Resources", dropdown: true, content_id: "navigation-resources") %>
+          <% navbar.with_dropdown_content(id: "navigation-resources", columns: 2) do %>
+            <a class="rounded-md p-2 hover:bg-muted" href="#">Guides</a>
+            <a class="rounded-md p-2 hover:bg-muted" href="#">Support</a>
+          <% end %>
+        <% end %>
+
+        <%= render BreadcrumbComponent.new(items: [{label: "Home", href: "#"}, {label: "Projects", href: "#"}, {label: "Roadmap"}], separator: :chevron, variant: :with_background) %>
+
+        <%= render UiTabsComponent.new(variant: :underline) do |tabs| %>
+          <% tabs.with_tab(title: "Overview", id: "overview") %>
+          <% tabs.with_tab(title: "Activity", id: "activity") %>
+          <% tabs.with_panel do %>Overview content<% end %>
+          <% tabs.with_panel do %>Activity content<% end %>
+        <% end %>
+
+        <% navigation_pagy = Pagy::Offset.new(count: 30, page: 2, limit: 10, request: Pagy::Request.new(request: request)) %>
+        <%= render PaginationComponent.new(pagy: navigation_pagy, request_path: request.path) %>
+
+        <%= render SidebarComponent.new(collapsible: false, show_mobile_toggle: false) do |sidebar| %>
+          <% sidebar.with_item(label: "Dashboard", href: "#", active: true) %>
+          <% sidebar.with_item(label: "Projects", href: "#") %>
+          <% sidebar.with_section(title: "Workspace") do |section| %>
+            <% section.with_item(label: "Roadmap", href: "#", badge: "3") %>
+          <% end %>
+          <p class="p-6 text-sm text-muted-foreground">Sidebar content area</p>
+        <% end %>
+      </div>
+    </section>
+
+    <section class="py-10">
+      <h2>Data Display</h2>
+      <div class="mt-6 grid gap-6 md:grid-cols-2">
+        <div class="flex items-center gap-4">
+          <%= render AvatarComponent.new(alt: "Avery Stone") %>
+          <%= render AvatarComponent.new(src: "/icon.svg", alt: "Jordan Lee", size: :lg, status: :online) %>
+          <% member_group = AvatarComponent::GroupComponent.new(label: "Project members", remaining_count: 2) %>
+          <% member_group.with_avatar(alt: "Avery Stone") %>
+          <% member_group.with_avatar(alt: "Jordan Lee") %>
+          <%= render member_group %>
+        </div>
+
+        <%= render CardComponent.new.with_content("A default card with standard content padding.") %>
+
+        <%= render CardComponent.new(variant: :elevated, shadow: :lg, hoverable: true).with_content("An elevated card with a hover state.") %>
+
+        <%= render CardComponent.new(variant: :well).with_content("A low-emphasis well card.") %>
+
+        <%= render CardComponent.new(divide: true) do |card| %>
+          <% card.with_header { "Project summary" } %>
+          <% card.with_body { "Three tasks are ready." } %>
+          <% card.with_footer { "View project" } %>
+        <% end %>
+
+        <% starter_plan = Plan.new(name: "Starter", amount: 1900, interval: "month", description: "A plan-card example with a price, features, and an action.", details: {features: ["Unlimited projects", "Email support"]}) %>
+        <%= render PlanCardComponent.new(plan: starter_plan) do %>
+          <%= render ButtonComponent.new(text: "Start trial", href: "#", full_width: true) %>
+        <% end %>
+
+        <% project_table = TableComponent.new(striped: true, hoverable: true) %>
+        <% project_table.with_column(label: "Project") %>
+        <% project_table.with_column(label: "Owner") %>
+        <% project_table.with_row do |row| %>
+          <% row.with_cell(primary: true) { "Onboarding" } %>
+          <% row.with_cell { "Avery Stone" } %>
+        <% end %>
+        <% project_table.with_row do |row| %>
+          <% row.with_cell(primary: true) { "Billing" } %>
+          <% row.with_cell { "Jordan Lee" } %>
+        <% end %>
+        <%= render project_table %>
+      </div>
+    </section>
   </div>
-</section>
-
-<section>
-  <h2>Forms</h2>
-  <div class="grid gap-6 md:grid-cols-2">
-    <%= render FormFieldComponent.new(label: "Display name", name: "profile[display_name]", helper_text: "Shown to collaborators.", required: true) do |component| %>
-      <% component.with_input do %>
-        <input class="form-control" id="profile_display_name" name="profile[display_name]" type="text">
-      <% end %>
-    <% end %>
-
-    <%= render FormFieldComponent.new(label: "Biography", name: "profile[biography]", size: :lg) do |component| %>
-      <% component.with_input do %>
-        <textarea class="form-control" id="profile_biography" name="profile[biography]" rows="3"></textarea>
-      <% end %>
-    <% end %>
-
-    <%= render FormFieldComponent.new(label: "Plan", name: "subscription[plan]", variant: :inline, size: :sm) do |component| %>
-      <% component.with_input do %>
-        <select class="form-control" id="subscription_plan" name="subscription[plan]"><option>Starter</option><option>Team</option></select>
-      <% end %>
-    <% end %>
-
-    <%= render FormFieldComponent.new(label: "Email", name: "user[email]", error: "Email is invalid.", variant: :floating) do |component| %>
-      <% component.with_input do %>
-        <input class="form-control error" id="user_email" name="user[email]" type="email">
-      <% end %>
-    <% end %>
-
-    <%= render FormFieldComponent.new(label: "Account ID", name: "account[id]", disabled: true, size: :md) do |component| %>
-      <% component.with_input do %>
-        <input class="form-control" disabled id="account_id" name="account[id]" type="text" value="ACC-123">
-      <% end %>
-    <% end %>
-  </div>
-
-  <div class="dark mt-6 bg-neutral-900 p-4">
-    <%= render FormFieldComponent.new(label: "Dark mode field", name: "dark[field]", helper_text: "RB form-control styling in dark mode.") do |component| %>
-      <% component.with_input do %>
-        <input class="form-control" id="dark_field" name="dark[field]" type="text">
-      <% end %>
-    <% end %>
-  </div>
-
-  <div class="mt-6 grid gap-6 md:grid-cols-2">
-    <%= render CheckboxComponent.new(label: "Receive product updates", name: "preferences[product_updates]", checked: true, description: "A checked checkbox with supporting text.") %>
-    <%= render RadioComponent.new(label: "Team", name: "plan", value: "team", checked: true, description: "A selected radio option.") %>
-    <%= render SwitchComponent.new(label: "Enable weekly summary", name: "preferences[weekly_summary]", checked: true, show_icons: true) %>
-    <%= render SelectComponent.new(label: "Plan", name: "subscription[plan]", options: [["Starter", "starter"], ["Team", "team"], ["Enterprise", "enterprise"]]) %>
-    <%= render PasswordComponent.new(name: "user[password]", hint: "Use at least 8 characters.") %>
-  </div>
-
-  <div class="dark mt-6 grid gap-6 bg-neutral-900 p-4 md:grid-cols-2">
-    <%= render CheckboxComponent.new(label: "Dark mode checkbox", name: "dark[checkbox]", error: "Choose an option.") %>
-    <%= render RadioComponent.new(label: "Dark mode radio", name: "dark_radio", value: "selected", disabled: true) %>
-    <%= render SwitchComponent.new(label: "Dark mode switch", name: "dark[switch]", disabled: true) %>
-    <%= render SelectComponent.new(label: "Dark mode select", name: "dark[select]", options: [["Monthly", "monthly"]], disabled: true) %>
-    <%= render PasswordComponent.new(name: "dark[password]", error: "Password is too short.") %>
-  </div>
-</section>
-
-<section>
-  <h2>Feedback</h2>
-  <div class="grid gap-4 md:grid-cols-2">
-    <%= render AlertComponent.new(title: "Success! Your changes have been saved", description: "All updates have been applied successfully.", variant: :success) %>
-    <%= render AlertComponent.new(title: "Something went wrong", description: "We couldn't process your request.", variant: :error) %>
-    <%= render AlertComponent.new(title: "Your plan is expiring soon", variant: :warning) %>
-    <%= render AlertComponent.new(title: "New features are available", variant: :info) %>
-  </div>
-
-  <div class="mt-6 flex flex-wrap items-center gap-3">
-    <%= render BadgeComponent.new(text: "Neutral") %>
-    <%= render BadgeComponent.new(text: "Published", variant: :green) %>
-    <%= render BadgeComponent.new(text: "Active", variant: :blue, dot: true) %>
-    <%= render BadgeComponent.new(text: "Beta", variant: :purple, pill: true) %>
-    <%= render BadgeComponent.new(text: "Filter: Active", variant: :neutral, removable: true) %>
-  </div>
-
-  <div class="mt-6 flex flex-wrap items-center gap-6">
-    <%= render LoadingIndicatorComponent.new %>
-    <%= render LoadingIndicatorComponent.new(stepped: true) %>
-    <%= render LoadingIndicatorComponent.new(type: :dots) %>
-    <%= render LoadingIndicatorComponent.new(type: :bars) %>
-    <%= render LoadingIndicatorComponent.new(type: :progress, progress: 65) %>
-    <%= render LoadingIndicatorComponent.new(color: :primary, text: "Loading...") %>
-  </div>
-
-  <div class="mt-6 grid max-w-sm gap-2">
-    <%= render SkeletonComponent.new %>
-    <%= render SkeletonComponent.new(variant: :circle) %>
-    <%= render SkeletonComponent.new(variant: :button) %>
-    <%= render SkeletonComponent.new(count: 3) %>
-  </div>
-
-  <div class="mt-6 flex flex-wrap items-center gap-4">
-    <%= render UiToastComponent.new(position: "bottom-right") %>
-    <%= render TooltipComponent.new(text: "Rails Blocks tooltip", placement: "bottom") do %>
-      <button class="rounded-md border border-border px-3 py-2" type="button">Rails Blocks tooltip</button>
-    <% end %>
-    <button class="rounded-md border border-border px-3 py-2" data-controller="tooltip" data-tooltip-content-value="Jumpstart tooltip" type="button">Jumpstart tooltip</button>
-  </div>
-
-  <div class="dark mt-6 grid gap-4 bg-neutral-900 p-4 md:grid-cols-2">
-    <%= render AlertComponent.new(title: "Dark mode success", variant: :success) %>
-    <%= render AlertComponent.new(title: "Dark mode error", variant: :error) %>
-    <div class="flex flex-wrap items-center gap-3">
-      <%= render BadgeComponent.new(text: "Dark neutral") %>
-      <%= render BadgeComponent.new(text: "Dark active", variant: :blue, dot: true) %>
-    </div>
-    <div class="flex flex-wrap items-center gap-6">
-      <%= render LoadingIndicatorComponent.new %>
-      <%= render LoadingIndicatorComponent.new(color: :primary) %>
-    </div>
-  </div>
-</section>
-
-<section>
-  <h2>Overlays</h2>
-  <div class="flex flex-wrap items-start gap-4">
-    <%= render UiModalComponent.new(title: "Invite a teammate", trigger_text: "Open modal") do |modal| %>
-      <p class="text-sm text-muted-foreground">Choose a teammate to invite to this project.</p>
-      <% modal.with_footer do %>
-        <%= render ButtonComponent.new(text: "Cancel", variant: :secondary, data: { action: "click->ui-modal#close:prevent" }) %>
-        <%= render ButtonComponent.new(text: "Send invite") %>
-      <% end %>
-    <% end %>
-
-    <%= render DropdownComponent.new(trigger_text: "Project actions", placement: "bottom-end") do |dropdown| %>
-      <% dropdown.with_item_link(text: "Project settings", href: "#") %>
-      <% dropdown.with_item_link(text: "Manage members", href: "#") %>
-      <% dropdown.with_item_divider %>
-      <% dropdown.with_item_button(text: "Archive project", destructive: true) %>
-    <% end %>
-  </div>
-
-  <div class="dark mt-6 flex flex-wrap items-start gap-4 bg-neutral-900 p-4">
-    <%= render UiModalComponent.new(title: "Dark mode modal", trigger_text: "Open modal") do %>
-      <p class="text-sm text-muted-foreground">Modal styles remain legible in dark mode.</p>
-    <% end %>
-
-    <%= render DropdownComponent.new(trigger_text: "Dark mode menu") do |dropdown| %>
-      <% dropdown.with_item_link(text: "Profile", href: "#") %>
-      <% dropdown.with_item_link(text: "Settings", href: "#") %>
-    <% end %>
-  </div>
-</section>
-
-<section>
-  <h2>Navigation</h2>
-  <div class="grid gap-6">
-    <%= render NavbarComponent.new do |navbar| %>
-      <% navbar.with_item(label: "Dashboard", href: "#") %>
-      <% navbar.with_item(label: "Resources", dropdown: true, content_id: "navigation-resources") %>
-      <% navbar.with_dropdown_content(id: "navigation-resources", columns: 2) do %>
-        <a class="rounded-md p-2 hover:bg-muted" href="#">Guides</a>
-        <a class="rounded-md p-2 hover:bg-muted" href="#">Support</a>
-      <% end %>
-    <% end %>
-
-    <%= render BreadcrumbComponent.new(items: [{label: "Home", href: "#"}, {label: "Projects", href: "#"}, {label: "Roadmap"}], separator: :chevron, variant: :with_background) %>
-
-    <%= render UiTabsComponent.new(variant: :underline) do |tabs| %>
-      <% tabs.with_tab(title: "Overview", id: "overview") %>
-      <% tabs.with_tab(title: "Activity", id: "activity") %>
-      <% tabs.with_panel do %>Overview content<% end %>
-      <% tabs.with_panel do %>Activity content<% end %>
-    <% end %>
-
-    <% navigation_pagy = Pagy::Offset.new(count: 30, page: 2, limit: 10, request: Pagy::Request.new(request: request)) %>
-    <%= render PaginationComponent.new(pagy: navigation_pagy, request_path: request.path) %>
-
-    <%= render SidebarComponent.new(collapsible: false, show_mobile_toggle: false) do |sidebar| %>
-      <% sidebar.with_item(label: "Dashboard", href: "#", active: true) %>
-      <% sidebar.with_item(label: "Projects", href: "#") %>
-      <% sidebar.with_section(title: "Workspace") do |section| %>
-        <% section.with_item(label: "Roadmap", href: "#", badge: "3") %>
-      <% end %>
-      <p class="p-6 text-sm text-muted-foreground">Sidebar content area</p>
-    <% end %>
-  </div>
-
-  <div class="dark mt-6 bg-neutral-900 p-4">
-    <%= render BreadcrumbComponent.new(items: [{label: "Home", href: "#"}, {label: "Settings"}], variant: :with_icons) %>
-    <div class="mt-4">
-      <%= render UiTabsComponent.new do |tabs| %>
-        <% tabs.with_tab(title: "Account", id: "account") %>
-        <% tabs.with_tab(title: "Security", id: "security") %>
-        <% tabs.with_panel do %>Account settings<% end %>
-        <% tabs.with_panel do %>Security settings<% end %>
-      <% end %>
-    </div>
-  </div>
-</section>
-
-<section>
-  <h2>Data Display</h2>
-  <div class="grid gap-4 md:grid-cols-2">
-    <div class="flex items-center gap-4">
-      <%= render AvatarComponent.new(alt: "Avery Stone") %>
-      <%= render AvatarComponent.new(src: "/icon.svg", alt: "Jordan Lee", size: :lg, status: :online) %>
-      <% member_group = AvatarComponent::GroupComponent.new(label: "Project members", remaining_count: 2) %>
-      <% member_group.with_avatar(alt: "Avery Stone") %>
-      <% member_group.with_avatar(alt: "Jordan Lee") %>
-      <%= render member_group %>
-    </div>
-
-    <%= render CardComponent.new.with_content("A default card with standard content padding.") %>
-
-    <%= render CardComponent.new(variant: :elevated, shadow: :lg, hoverable: true).with_content("An elevated card with a hover state.") %>
-
-    <%= render CardComponent.new(variant: :well).with_content("A low-emphasis well card.") %>
-
-    <%= render CardComponent.new(divide: true) do |card| %>
-      <% card.with_header { "Project summary" } %>
-      <% card.with_body { "Three tasks are ready." } %>
-      <% card.with_footer { "View project" } %>
-    <% end %>
-
-    <% project_table = TableComponent.new(striped: true, hoverable: true) %>
-    <% project_table.with_column(label: "Project") %>
-    <% project_table.with_column(label: "Owner") %>
-    <% project_table.with_row do |row| %>
-      <% row.with_cell(primary: true) { "Onboarding" } %>
-      <% row.with_cell { "Avery Stone" } %>
-    <% end %>
-    <% project_table.with_row do |row| %>
-      <% row.with_cell(primary: true) { "Billing" } %>
-      <% row.with_cell { "Jordan Lee" } %>
-    <% end %>
-    <%= render project_table %>
-  </div>
-
-  <div class="dark mt-6 bg-neutral-900 p-4">
-    <div class="flex items-center gap-4">
-      <%= render AvatarComponent.new(alt: "Dark mode user", fallback: "DU", status: :online) %>
-      <%= render CardComponent.new(variant: :elevated, shadow: :lg).with_content("An elevated card in dark mode.") %>
-    </div>
-  </div>
-</section>
+</div>

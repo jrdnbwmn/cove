@@ -3,9 +3,6 @@
 <%= csp_meta_tag %>
 <%= viewport_meta_tag %>
 
-<% if current_user&.system_theme? %>
-  <script>document.documentElement.classList.toggle("dark", window.matchMedia('(prefers-color-scheme: dark)').matches)</script>
-<% end %>
 <%= javascript_importmap_tags %>
 <%= stylesheet_link_tag "lexxy", "tailwind", media: "all", "data-turbo-track": "reload" %>
 <%= render "payments_dependencies" %>

@@ -24,7 +24,7 @@ nav.menu-component {
 
       /* Section headers */
       > h2.menu-section-heading {
-        color: var(--text-muted);
+        color: var(--muted-foreground);
         font-size: var(--text-sm);
         font-weight: 600;
         padding: 12px 24px 4px 24px;

@@ -1,5 +1,5 @@
 <h2 class="h3"><%= t(".title") %></h2>
-<p class="mt-2 mb-4 text-sm text-muted"><%= t(".description") %></p>
+<p class="mt-2 mb-4 text-sm text-muted-foreground"><%= t(".description") %></p>
 
 <%= form_with url: account_transfer_path(account), method: :patch, class: "max-w-md", data: { turbo_confirm: t(".are_you_sure") } do |form| %>
   <%= render SelectComponent.new(

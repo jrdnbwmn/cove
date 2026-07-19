@@ -45,7 +45,7 @@
 <hr>
 
 <h2 class="h4"><%= t(".two_factor.title") %></h2>
-<p class="mt-2 mb-4 text-sm text-muted"><%= t(".two_factor.description") %></p>
+<p class="mt-2 mb-4 text-sm text-muted-foreground"><%= t(".two_factor.description") %></p>
 <% if current_user.otp_required_for_login? %>
   <div>
     <%= render ButtonComponent.new(

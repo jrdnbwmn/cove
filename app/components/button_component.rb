@@ -17,6 +17,7 @@ class ButtonComponent < ViewComponent::Base
   # @param icon_only [Boolean] Whether this is an icon-only button (no text)
   # @param full_width [Boolean] Whether button should take full width
   # @param href [String] If provided, renders as an anchor tag instead of button
+  # @param target [String] Target browsing context when rendering an anchor
   # @param type [String] Button type attribute: "button" (default), "submit", "reset"
   # @param classes [String] Additional CSS classes for the wrapper
   # @param data [Hash] Data attributes for the button
@@ -33,6 +34,7 @@ class ButtonComponent < ViewComponent::Base
     icon_only: false,
     full_width: false,
     href: nil,
+    target: nil,
     type: "button",
     classes: nil,
     data: {}
@@ -50,6 +52,7 @@ class ButtonComponent < ViewComponent::Base
     @icon_only = icon_only
     @full_width = full_width
     @href = href
+    @target = target
     @type = type
     @classes = classes
     @data = data
@@ -79,6 +82,8 @@ class ButtonComponent < ViewComponent::Base
     if @href.present?
       attrs[:href] = @href
       attrs[:role] = "button"
+      attrs[:target] = @target if @target.present?
+      attrs[:rel] = "noopener" if @target == "_blank"
       attrs[:"aria-disabled"] = @disabled if @disabled
     else
       attrs[:type] = @type

@@ -27,7 +27,7 @@
     <% dropdown.with_item_divider %>
     <% dropdown.with_item_custom(unstyled: true) do %>
       <%= link_to t(".admin"), madmin_root_path, target: :_blank,
-        class: "flex items-center gap-2 rounded-md px-2 py-1.5 text-left text-sm text-neutral-700 focus:bg-neutral-100 focus:outline-hidden dark:text-neutral-100 dark:focus:bg-neutral-700/50",
+        class: "flex items-center gap-2 rounded-md px-2 py-1.5 text-left text-sm text-muted-foreground focus:bg-muted focus:outline-hidden dark:text-neutral-100 dark:focus:bg-neutral-700/50",
         role: "menuitem", tabindex: "-1", data: {turbo: false, ui_menu_target: "item"} %>
     <% end %>
   <% end %>
@@ -36,6 +36,6 @@
   <% dropdown.with_item_custom unstyled: true do %>
     <%= button_to t(".sign_out"), destroy_user_session_path, method: :delete,
       form: {class: "w-full"},
-      class: "flex w-full items-center rounded-md px-2 py-1.5 text-left text-sm text-neutral-700 focus:bg-neutral-100 focus:outline-hidden dark:text-neutral-100 dark:focus:bg-neutral-700/50" %>
+      class: "flex w-full items-center rounded-md px-2 py-1.5 text-left text-sm text-muted-foreground focus:bg-muted focus:outline-hidden dark:text-neutral-100 dark:focus:bg-neutral-700/50" %>
   <% end %>
 <% end %>

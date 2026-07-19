@@ -16,6 +16,17 @@ class Users::RegistrationsControllerTest < ActionDispatch::IntegrationTest
     end
   end
 
+  class ThemePickerTest < Users::RegistrationsControllerTest
+    test "edit registration does not render a theme picker" do
+      sign_in users(:one)
+
+      get edit_user_registration_path
+
+      assert_response :success
+      assert_not_includes response.body, 'name="user[theme]"'
+    end
+  end
+
   class BasicRegistrationTest < Users::RegistrationsControllerTest
     test "successfully registration form render" do
       get new_user_registration_path

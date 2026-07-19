@@ -9,7 +9,7 @@
   </div>
 
   <div class="shrink-0 mt-3 sm:mt-0 sm:text-right">
-    <%= switch_account_button @account, label: t(".switch"), class: "inline-flex items-center justify-center gap-1.5 font-medium whitespace-nowrap transition-all duration-100 ease-in-out select-none focus-visible:outline-2 focus-visible:outline-offset-2 disabled:cursor-not-allowed disabled:opacity-50 px-3.5 py-2 text-sm rounded-[var(--radius)] border border-black/10 bg-white/90 text-neutral-800 shadow-xs hover:bg-neutral-50 focus-visible:outline-neutral-600 dark:border-white/10 dark:bg-neutral-700/50 dark:text-neutral-50 dark:hover:bg-neutral-700/75 dark:focus-visible:outline-neutral-200", form_class: "inline-block" unless current_account == @account %>
+    <%= switch_account_button @account, label: t(".switch"), class: "inline-flex items-center justify-center gap-1.5 font-medium whitespace-nowrap transition-all duration-100 ease-in-out select-none focus-visible:outline-2 focus-visible:outline-offset-2 disabled:cursor-not-allowed disabled:opacity-50 px-3.5 py-2 text-sm rounded-[var(--radius)] border border-black/10 bg-white/90 text-neutral-800 shadow-xs hover:bg-muted focus-visible:outline-neutral-600 dark:border-white/10 dark:bg-neutral-700/50 dark:text-neutral-50 dark:hover:bg-neutral-700/75 dark:focus-visible:outline-neutral-200", form_class: "inline-block" unless current_account == @account %>
     <%= render ButtonComponent.new(text: t(".edit_account"), variant: :secondary, href: edit_account_path(@account)) if !@account.personal? && account_admin?(@account, current_user) %>
   </div>
 </div>
@@ -80,7 +80,7 @@
         <% end %>
         <% row.with_cell(align: :right) do %>
           <div class="flex gap-2 justify-end">
-            <%= button_to t(".resend_invite"), resend_account_account_invitation_path(@account, account_invitation), class: "inline-flex items-center justify-center gap-1.5 font-medium whitespace-nowrap transition-all duration-100 ease-in-out select-none focus-visible:outline-2 focus-visible:outline-offset-2 disabled:cursor-not-allowed disabled:opacity-50 px-3.5 py-2 text-sm rounded-[var(--radius)] border border-black/10 bg-white/90 text-neutral-800 shadow-xs hover:bg-neutral-50 focus-visible:outline-neutral-600 dark:border-white/10 dark:bg-neutral-700/50 dark:text-neutral-50 dark:hover:bg-neutral-700/75 dark:focus-visible:outline-neutral-200" if account_admin?(@account, current_user) %>
+            <%= button_to t(".resend_invite"), resend_account_account_invitation_path(@account, account_invitation), class: "inline-flex items-center justify-center gap-1.5 font-medium whitespace-nowrap transition-all duration-100 ease-in-out select-none focus-visible:outline-2 focus-visible:outline-offset-2 disabled:cursor-not-allowed disabled:opacity-50 px-3.5 py-2 text-sm rounded-[var(--radius)] border border-black/10 bg-white/90 text-neutral-800 shadow-xs hover:bg-muted focus-visible:outline-neutral-600 dark:border-white/10 dark:bg-neutral-700/50 dark:text-neutral-50 dark:hover:bg-neutral-700/75 dark:focus-visible:outline-neutral-200" if account_admin?(@account, current_user) %>
             <%= render ButtonComponent.new(text: t(".copy_link"), variant: :secondary, size: :sm, data: {controller: "clipboard", clipboard_text: account_invitation_url(account_invitation)}) if account_admin?(@account, current_user) %>
             <%= render ButtonComponent.new(text: t(".edit"), variant: :secondary, size: :sm, href: edit_account_account_invitation_path(@account, account_invitation)) if account_admin?(@account, current_user) %>
           </div>

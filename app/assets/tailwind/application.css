@@ -3,6 +3,7 @@
 @plugin "@tailwindcss/forms";
 @plugin "@tailwindcss/typography";
 
+/* AIDEV-NOTE: Keep this explicit variant so inert dark: utilities never fall back to prefers-color-scheme. */
 @variant dark (&:where(.dark, .dark *));
 @variant hotwire-native (html.hotwire-native &);
 @variant not-hotwire-native (html:not(.hotwire-native) &);
@@ -24,7 +25,6 @@
   --color-gray-950: var(--color-neutral-950);
 }
 
-@import "./themes/dark.css" layer(theme);
 @import "./themes/light.css" layer(theme);
 @import "./theme/_tokens.css";
 
@@ -51,5 +51,7 @@
 @import "./components/wells.css" layer(components);
 @import "./components/braintree.css" layer(components);
 @import "./rails_blocks/base.css" layer(components);
+/* AIDEV-NOTE: These reference control rules must override generated utilities. */
+@import "./rails_blocks/form_controls.css";
 @import "./components/tom_select.css" layer(components);
 @import "./components/lexxy.css";

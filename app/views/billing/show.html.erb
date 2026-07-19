@@ -11,7 +11,7 @@
     <%= render partial: "billing/subscriptions/subscription", collection: @subscriptions %>
   <% else %>
     <div class="mb-8 flex items-center gap-4">
-      <div class="flex-1 text-muted"><%= t ".not_subscribed" %></div>
+      <div class="flex-1 text-muted-foreground"><%= t ".not_subscribed" %></div>
       <%= render ButtonComponent.new(text: t(".choose_plan"), href: pricing_path) %>
     </div>
   <% end %>
@@ -20,5 +20,5 @@
   <%= render partial: "info" %>
   <%= render partial: "charges" %>
 <% else %>
-  <p class="text-muted"><%= t(".contact_admin", account: current_account.name) %></p>
+  <p class="text-muted-foreground"><%= t(".contact_admin", account: current_account.name) %></p>
 <% end %>

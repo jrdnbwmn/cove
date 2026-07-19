@@ -13,12 +13,12 @@
     <% card.with_body do %>
       <div class="mb-6">
         <p class="font-semibold text-foreground"><%= t ".description", product: Jumpstart.config.application_name %></p>
-        <p class="mt-2 text-lg text-muted"><%= l Time.at(@invoice.period_end).to_date, format: :long %></p>
+        <p class="mt-2 text-lg text-muted-foreground"><%= l Time.at(@invoice.period_end).to_date, format: :long %></p>
       </div>
 
       <div class="overflow-x-auto">
         <table class="min-w-full divide-y divide-black/10 text-sm dark:divide-white/10">
-          <thead class="text-left text-muted">
+          <thead class="text-left text-muted-foreground">
             <tr>
               <th class="p-3 font-medium"><%= t ".line_items.description" %></th>
               <th class="p-3 text-right font-medium"><%= t ".line_items.quantity" %></th>
@@ -31,7 +31,7 @@
               <tr>
                 <td class="p-3">
                   <%= tag.div line_item.description, class: "font-medium text-foreground" %>
-                  <div class="mt-1 text-xs text-muted">
+                  <div class="mt-1 text-xs text-muted-foreground">
                     <%= l Time.at(line_item.period.start).to_date, format: :long %> -
                     <%= l Time.at(line_item.period.end).to_date, format: :long %>
                   </div>

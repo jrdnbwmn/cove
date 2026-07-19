@@ -411,50 +411,6 @@ form.inline {
   }
 }
 
-.form-checkbox,
-[type="checkbox"],
-.form-radio,
-[type='radio'] {
-  background-color: var(--base-bg-base);
-  border: 1px solid var(--base-border-secondary);
-  cursor: pointer;
-  margin-bottom: 0;
-
-  &:focus,
-  &:focus-visible {
-    outline: 2px solid var(--base-border-focus);
-    outline-offset: 2px;
-  }
-
-  &:checked {
-    background-color: var(--bg-primary);
-  }
-
-  &:not(:checked):hover {
-    border: 2px solid var(--border-primary);
-  }
-
-  &:disabled {
-    border: 1px solid var(--border-disabled);
-    background-color: var(--bg-disabled-selected);
-    cursor: not-allowed;
-
-    &:checked,
-    &:checked:hover {
-      border: 4px solid var(--bg-disabled-selected);
-    }
-
-    &:hover {
-      border: 1px solid var(--border-disabled);
-    }
-  }
-}
-
-.form-checkbox,
-[type="checkbox"] {
-  border-radius: 4px;
-}
-
 /*File Inputs*/
 .file-input-group {
   p.label {
@@ -569,13 +525,6 @@ form.inline {
   --hw-selection-chip-font-size: 0.875rem;
 
   --hw-visual-viewport-height: 100vh;
-}
-
-.dark {
-  --hw-component-bg-color: var(--base-bg-low);
-  --hw-border-color: var(--border-secondary);
-  --hw-option-bg-color: var(--base-bg-low);
-  --hw-active-bg-color: var(--bg-primary);
 }
 
 .hw-combobox {

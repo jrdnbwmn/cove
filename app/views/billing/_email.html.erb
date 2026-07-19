@@ -2,7 +2,7 @@
 
 <div class="mb-8">
   <%= form_with model: current_account, url: billing_path do |f| %>
-    <p class="mb-4 text-muted"><%= t ".description" %></p>
+    <p class="mb-4 text-muted-foreground"><%= t ".description" %></p>
 
     <div class="flex flex-wrap items-end gap-3">
       <%= render FormFieldComponent.new(

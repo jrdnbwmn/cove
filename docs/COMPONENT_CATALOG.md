@@ -52,6 +52,7 @@ outline, ghost, and destructive variants.
 | `icon_only` | `Boolean` | `false` | Renders an icon-only control. |
 | `full_width` | `Boolean` | `false` | Makes the control span its container width. |
 | `href` | `String` | `nil` | Renders an anchor instead of a button. |
+| `target` | `String` | `nil` | Target browsing context when rendering an anchor; `_blank` adds `rel="noopener"`. |
 | `type` | `String` | `"button"` | Native button type when rendering a button. |
 | `classes` | `String` | `nil` | Additional CSS classes. |
 | `data` | `Hash` | `{}` | HTML data attributes. |

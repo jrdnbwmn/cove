@@ -18,39 +18,9 @@ main {
   }
 }
 
-a {
-  color: var(--base-text);
-  font-weight: var(--font-weight-medium);
-  text-decoration: underline;
-  text-underline-offset: 6px;
-  text-decoration-color: #27272a33;
-
-  &:hover,
-  &:focus {
-    text-decoration-color: currentColor;
-  }
-}
-
-@supports (color:color-mix(in lab,red,red)) {
-  a {
-    -webkit-text-decoration-color: color-mix(in oklab,var(--base-text),transparent 80%);
-    text-decoration-color: color-mix(in oklab, var(--base-text), transparent 80%);
-  }
-}
-
 hr {
   margin-block: calc(var(--spacing) * 8);
   border-color: var(--divider-color);
-}
-
-ul {
-  list-style-type: disc;
-  list-style-position: inside;
-}
-
-ol {
-  list-style-type: decimal;
-  list-style-position: inside;
 }
 
 .table {

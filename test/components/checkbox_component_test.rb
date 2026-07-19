@@ -9,6 +9,12 @@ class CheckboxComponentTest < ViewComponent::TestCase
     assert_text "Receive product updates"
   end
 
+  test "uses the Rails Blocks checkbox class" do
+    render_inline(CheckboxComponent.new(label: "Receive product updates", name: "preferences[product_updates]"))
+
+    assert_selector "input[type='checkbox'].rounded"
+  end
+
   test "renders a safe HTML label" do
     view_helpers = ActionController::Base.helpers
     label_html = view_helpers.safe_join(["I agree to the ", view_helpers.link_to("Terms of Service", "/terms")])

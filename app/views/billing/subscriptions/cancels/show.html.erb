@@ -11,7 +11,7 @@
     <% end %>
 
     <% card.with_body do %>
-      <div class="space-y-4 text-muted">
+      <div class="space-y-4 text-muted-foreground">
         <div class="font-semibold text-foreground"><%= t ".description", product: Jumpstart.config.application_name %></div>
         <div><%= t ".help_html", link: mail_to(Jumpstart.config.support_email, t(".contact_us"), subject: t(".subject", product: Jumpstart.config.application_name), class: "font-medium text-primary underline") %></div>
         <div><%= @subscription.metered? ? t(".cancel_immediately") : t(".active_until") %></div>
