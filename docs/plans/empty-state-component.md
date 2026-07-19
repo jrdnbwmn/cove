@@ -7,10 +7,10 @@
 
 | Task | Description | Assign | Done |
 | ---- | ----------- | ------ | ---- |
-| 1 | Build `EmptyStateComponent` (`.rb` + `.html.erb`) + component test | Master | |
-| 2 | Add `EmptyStateComponentPreview` (5 required + 2 bonus variants) | Clone | |
-| 3 | Add "Empty State" kitchen sink section + update kitchen sink test | Clone | |
-| 4 | Update `docs/COMPONENT_CATALOG.md` (Quick Reference + Details) | Clone | |
+| 1 | Build `EmptyStateComponent` (`.rb` + `.html.erb`) + component test | Master | ✅ |
+| 2 | Add `EmptyStateComponentPreview` (5 required + 2 bonus variants) | Clone | ✅ |
+| 3 | Add "Empty State" kitchen sink section + update kitchen sink test | Clone | ✅ |
+| 4 | Update `docs/COMPONENT_CATALOG.md` (Quick Reference + Details) | Clone | ✅ |
 
 ## Prerequisites
 

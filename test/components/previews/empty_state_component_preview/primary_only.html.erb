@@ -1,0 +1,11 @@
+<%= render EmptyStateComponent.new(title: "No team members yet") do |c| %>
+  <% c.with_icon do %>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" class="w-full h-full">
+      <path stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" d="M3 12h4l2 3h6l2-3h4" />
+      <path stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" d="M5.5 6h13a1 1 0 0 1 .97.757l1.5 6A1 1 0 0 1 20 14H4a1 1 0 0 1-.97-1.243l1.5-6A1 1 0 0 1 5.5 6Z" />
+    </svg>
+  <% end %>
+  <% c.with_primary_action do %>
+    <%= render ButtonComponent.new(text: "Invite teammate", href: "#") %>
+  <% end %>
+<% end %>

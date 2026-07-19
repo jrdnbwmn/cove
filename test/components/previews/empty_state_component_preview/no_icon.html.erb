@@ -1,0 +1,5 @@
+<%= render EmptyStateComponent.new(title: "No notifications", description: "You're all caught up. New notifications will appear here.") do |c| %>
+  <% c.with_primary_action do %>
+    <%= render ButtonComponent.new(text: "Refresh", href: "#") %>
+  <% end %>
+<% end %>
