@@ -28,6 +28,7 @@
 | `PlanCardComponent` | Renders a billing plan, price, features, and caller-supplied actions inside a card. | `plan` | `PlanCardComponentPreview` |
 | `AvatarComponent` | Renders a user or account image with accessible initials fallback and optional online status. | `alt`, `src`, `fallback`, `size`, `status` | `AvatarComponentPreview` |
 | `TableComponent` | Renders a responsive, accessible data table with row and column slots. | `striped`, `hoverable`, `density`, `sticky_header` | `TableComponentPreview` |
+| `EmptyStateComponent` | Renders a centered "nothing here" placeholder with optional icon and actions. | `title`, `description`, `size`, `bordered`, `heading_level` | `EmptyStateComponentPreview` |
 
 ## Component Details
 
@@ -687,6 +688,50 @@ custom markup. The standard API uses `with_column`, `with_row`, and each row's
   <% table.with_column(label: "Name") %>
   <% table.with_row do |row| %>
     <% row.with_cell(primary: true) { current_user.name } %>
+  <% end %>
+<% end %>
+```
+
+### EmptyStateComponent
+
+**Purpose:** Renders a centered "nothing here" placeholder for "no records
+yet" onboarding, empty search/filter results, and other blank sections. Bare
+by default, with an opt-in bordered "well" treatment.
+
+**Arguments:**
+
+| Argument | Type | Default | Description |
+| --- | --- | --- | --- |
+| `title` | `String` | required | Heading text. |
+| `description` | `String` | `nil` | Optional supporting text below the title. |
+| `size` | `Symbol` | `:md` | Scales icon, text, and padding: `:sm`, `:md`, or `:lg`. Invalid values fall back to `:md`. |
+| `bordered` | `Boolean` | `false` | Wraps the content in a dashed bordered well (`border-dashed`, `rounded-xl`). |
+| `heading_level` | `Integer` | `2` | Sets the title's heading tag, `1`..`6`. Invalid values fall back to `2`. |
+| `classes` | `String` | `nil` | Additional wrapper classes. |
+
+**Slots:** `with_icon` accepts raw SVG/illustration markup, rendered inside a
+muted rounded-full backdrop with `aria-hidden="true"` (decorative only).
+`with_primary_action` and `with_secondary_action` typically hold a
+`ButtonComponent`; `with_secondary_action` can be used alone without a
+primary action.
+
+**Sizes:**
+
+| Size | Icon | Title | Description | Vertical padding |
+| --- | --- | --- | --- | --- |
+| `:sm` | ~32px | `text-base` | `text-sm` | `py-8` |
+| `:md` (default) | ~48px | `text-lg` | `text-sm` | `py-12` |
+| `:lg` | ~64px | `text-xl` | `text-base` | `py-16` |
+
+**Preview:** `EmptyStateComponentPreview`
+
+**Usage:**
+
+```erb
+<%= render EmptyStateComponent.new(title: "No projects yet", description: "Create your first project to get started.") do |c| %>
+  <% c.with_icon do %><svg>…</svg><% end %>
+  <% c.with_primary_action do %>
+    <%= render ButtonComponent.new(text: "New project", href: new_project_path) %>
   <% end %>
 <% end %>
 ```

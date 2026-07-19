@@ -1,0 +1,20 @@
+<div class="<%= wrapper_classes %>">
+  <% if icon? %>
+    <div class="<%= icon_wrapper_classes %>" aria-hidden="true">
+      <%= icon %>
+    </div>
+  <% end %>
+
+  <%= content_tag heading_tag, @title, class: title_classes %>
+
+  <% if @description.present? %>
+    <p class="<%= description_classes %>"><%= @description %></p>
+  <% end %>
+
+  <% if primary_action? || secondary_action? %>
+    <div class="<%= action_row_classes %>">
+      <%= primary_action %>
+      <%= secondary_action %>
+    </div>
+  <% end %>
+</div>
