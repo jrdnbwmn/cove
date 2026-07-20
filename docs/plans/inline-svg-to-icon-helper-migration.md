@@ -12,7 +12,7 @@
 | 3 | Breadcrumb-separator views | Master | ✅ |
 | 4 | Heading/action views | Master | ✅ |
 | 5 | Billing / checkout / dev views | Master | ✅ |
-| 6 | Final sweep + full test suite | Master | |
+| 6 | Final sweep + full test suite | Master | ✅ |
 
 ## Prerequisites
 
