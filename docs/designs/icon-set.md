@@ -1,5 +1,6 @@
 > Ticket: COV-27
 > Branch: jrdnbwmn/cov-27-icon-set
+> Plan created: docs/plans/icon-set.md
 
 # Feature: Icon set for the design system (rails_icons + Lucide)
 
