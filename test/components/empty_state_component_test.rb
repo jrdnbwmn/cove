@@ -28,12 +28,13 @@ class EmptyStateComponentTest < ViewComponent::TestCase
     assert_selector "[aria-hidden='true']"
   end
 
-  test "constrains slot SVGs within the icon backdrop" do
-    component = EmptyStateComponent.new(title: "No projects yet")
+  test "preserves full-size classes passed to the icon slot" do
+    render_inline(EmptyStateComponent.new(title: "No projects yet")) do |c|
+      c.with_icon { '<svg class="w-full h-full"></svg>'.html_safe }
+    end
 
-    assert_includes component.icon_wrapper_classes, "shrink-0"
-    assert_includes component.icon_wrapper_classes, "overflow-hidden"
-    assert_includes component.icon_wrapper_classes, "[&>svg]:size-1/2"
+    assert_selector "[aria-hidden='true'] > svg.w-full.h-full"
+    assert_no_selector "[aria-hidden='true'][class*='size-1']"
   end
 
   test "omits action row when no action slots are given" do
