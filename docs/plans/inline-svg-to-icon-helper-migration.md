@@ -11,7 +11,7 @@
 | 2 | Other components (badge, breadcrumb, button, pagination, plan-card, switch, ui-modal) | Master | ✅ |
 | 3 | Breadcrumb-separator views | Master | ✅ |
 | 4 | Heading/action views | Master | ✅ |
-| 5 | Billing / checkout / dev views | Master | |
+| 5 | Billing / checkout / dev views | Master | ✅ |
 | 6 | Final sweep + full test suite | Master | |
 
 ## Prerequisites
@@ -122,7 +122,7 @@
 ### Task 5 [Master]: Billing / checkout / dev views
 
 **In scope — swap SVGs per mapping in these 3 views:**
-- `app/views/billing/_charges.html.erb` → `receipt`, `rotate-ccw`
+- `app/views/billing/_charges.html.erb` → `download` (both PDF-download links)
 - `app/views/checkouts/show.html.erb` → `check`, `circle-question-mark`
 - `app/views/dev/kitchen_sink/show.html.erb` → `folder`, `search` (EmptyState examples)
 
