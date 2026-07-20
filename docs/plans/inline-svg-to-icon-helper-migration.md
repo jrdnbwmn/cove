@@ -10,7 +10,7 @@
 | 1 | Nav & chrome components (navbar, sidebar, dropdown) | Master | ✅ |
 | 2 | Other components (badge, breadcrumb, button, pagination, plan-card, switch, ui-modal) | Master | ✅ |
 | 3 | Breadcrumb-separator views | Master | ✅ |
-| 4 | Heading/action views | Master | |
+| 4 | Heading/action views | Master | ✅ |
 | 5 | Billing / checkout / dev views | Master | |
 | 6 | Final sweep + full test suite | Master | |
 
@@ -103,10 +103,10 @@
 ### Task 4 [Master]: Heading / action views
 
 **In scope — swap SVGs per mapping in these 7 views:**
-- `app/views/accounts/new.html.erb` → `building-2`
-- `app/views/accounts/show.html.erb` → `users`
-- `app/views/api_tokens/new.html.erb` → `key-round`
-- `app/views/api_tokens/show.html.erb` → `key-round`, `copy`
+- `app/views/accounts/new.html.erb` → `chevron-right`
+- `app/views/accounts/show.html.erb` → `shield-check`
+- `app/views/api_tokens/new.html.erb` → `chevron-right`
+- `app/views/api_tokens/show.html.erb` → `chevron-right`, `copy`
 - `app/views/application/_account_menu.html.erb` → `users`
 - `app/views/application/_navbar.html.erb` → `menu`
 - `app/views/application/_notifications.html.erb` → `bell`
