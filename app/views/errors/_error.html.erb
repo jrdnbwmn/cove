@@ -1,0 +1,4 @@
+<%= render EmptyStateComponent.new(title: title, description: description, size: :lg) do |empty_state| %>
+  <% empty_state.with_icon { icon(local_assigns[:icon]) } %>
+  <% empty_state.with_primary_action { render ButtonComponent.new(text: "Back to home", href: root_path) } %>
+<% end %>
