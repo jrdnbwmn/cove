@@ -7,7 +7,7 @@
 
 | Task | Description | Assign | Done |
 | ---- | ----------- | ------ | ---- |
-| 1 | Add regression tests for all five static pages | Master | |
+| 1 | Add regression tests for all five static pages | Master | ✅ |
 | 2 | Establish the standalone page pattern in `400.html` | Master | |
 | 3 | Restyle the 422 page | subagent | |
 | 4 | Restyle the 404 and 500 fallback pages | subagent | |
