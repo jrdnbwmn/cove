@@ -1,3 +1,4 @@
+> Plan created: docs/plans/static-error-pages.md
 > Ticket: COV-20
 > Branch: jrdnbwmn/feature/cov-20-static-error-pages
 
