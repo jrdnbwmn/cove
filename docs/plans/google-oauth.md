@@ -7,10 +7,10 @@
 
 | Task | Description | Assign | Done |
 | ---- | ----------- | ------ | ---- |
-| 1 | Enable `google-oauth2` provider + bundle | Master | |
-| 2 | Store production Google credentials + delete scratch file | Master | |
-| 3 | Add test-env credentials so provider registers in test | Master | |
-| 4 | Integration tests: sign-up, returning login, button render | Master | |
+| 1 | Enable `google-oauth2` provider + bundle | Master | ✅ |
+| 2 | Store production Google credentials + delete scratch file | Master | ✅ |
+| 3 | Add test-env credentials so provider registers in test | Master | ✅ |
+| 4 | Integration tests: sign-up, returning login, button render | Master | ✅ |
 
 ## Prerequisites
 
