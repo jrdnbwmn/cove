@@ -3,7 +3,7 @@
   <head>
     <%= render "head" %>
   </head>
-  <body data-controller="bridge--menu-button <%= "bridge--notification-token" if user_signed_in? %>">
+  <body data-controller="turbo-resilience bridge--menu-button <%= "bridge--notification-token" if user_signed_in? %>">
     <header>
       <%= impersonation_banner %>
       <%= render "flash" %>
@@ -15,5 +15,6 @@
     </main>
 
     <%= render "footer" unless hotwire_native_app? %>
+    <%= render "turbo_resilience_templates" %>
   </body>
 </html>

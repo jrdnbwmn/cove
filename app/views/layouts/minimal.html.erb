@@ -4,7 +4,7 @@
     <%= render "head" %>
   </head>
 
-  <body>
+  <body data-controller="turbo-resilience">
     <header>
       <%= impersonation_banner %>
       <%= render "flash" %>
@@ -20,5 +20,6 @@
     <main>
       <%= content_for?(:content) ? yield(:content) : yield %>
     </main>
+    <%= render "turbo_resilience_templates" %>
   </body>
 </html>

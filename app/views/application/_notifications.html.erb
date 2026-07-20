@@ -24,7 +24,7 @@
 
     <% dropdown.with_item_custom(unstyled: true) do %>
       <%= turbo_frame_tag "notifications", class: "block text-sm divide-y divide-(--divider-color)", loading: :lazy, target: :_top, src: nav_notifications_path, data: {notifications_target: "list"} do %>
-        <p class="p-4">Loading...</p>
+        <%= render LoadingIndicatorComponent.new(text: t("notifications.loading"), classes: "p-4") %>
       <% end %>
     <% end %>
   <% end %>

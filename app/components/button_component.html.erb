@@ -1,15 +1,32 @@
 <%= content_tag(tag_name, **tag_attributes) do %>
-  <% if @loading %>
-    <%= loading_spinner %>
-  <% elsif @icon.present? && (@icon_position == :left || @icon_only) %>
-    <span class="<%= icon_classes %>"><%= @icon.html_safe %></span>
-  <% end %>
+  <% if pending_state? %>
+    <span class="when-enabled">
+      <% if @icon.present? && (@icon_position == :left || @icon_only) %>
+        <span class="<%= icon_classes %>"><%= @icon.html_safe %></span>
+      <% end %>
 
-  <% if @text.present? && !@icon_only %>
-    <%= @text %>
-  <% end %>
+      <% if @text.present? && !@icon_only %>
+        <%= @text %>
+      <% end %>
 
-  <% if @icon.present? && @icon_position == :right && !@icon_only && !@loading %>
-    <span class="<%= icon_classes %>"><%= @icon.html_safe %></span>
+      <% if @icon.present? && @icon_position == :right && !@icon_only %>
+        <span class="<%= icon_classes %>"><%= @icon.html_safe %></span>
+      <% end %>
+    </span>
+    <span class="when-disabled"><%= loading_spinner %><%= pending_label %></span>
+  <% else %>
+    <% if @loading %>
+      <%= loading_spinner %>
+    <% elsif @icon.present? && (@icon_position == :left || @icon_only) %>
+      <span class="<%= icon_classes %>"><%= @icon.html_safe %></span>
+    <% end %>
+
+    <% if @text.present? && !@icon_only %>
+      <%= @text %>
+    <% end %>
+
+    <% if @icon.present? && @icon_position == :right && !@icon_only && !@loading %>
+      <span class="<%= icon_classes %>"><%= @icon.html_safe %></span>
+    <% end %>
   <% end %>
 <% end %>

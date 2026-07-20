@@ -1,3 +1,3 @@
 # What's Next
 
-No pending work. Last completed: COV-20 restyled all five boot-independent static error pages with self-contained Cove fallback designs and added regression coverage.
+No pending work. Last completed: COV-22 added Turbo transport-failure recovery, configurable frame and form deadlines, pending submit-button state, and resilient notification loading on `jrdnbwmn/feature/cov-22-turbo-timeouts`.

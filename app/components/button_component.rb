@@ -45,6 +45,7 @@ class ButtonComponent < ViewComponent::Base
     @size = SIZES.include?(size) ? size : :md
     @style = STYLES.include?(style) ? style : :basic
     @pill = pill
+    @explicitly_disabled = disabled
     @disabled = disabled || loading
     @loading = loading
     @icon = icon
@@ -104,6 +105,14 @@ class ButtonComponent < ViewComponent::Base
 
   def loading_spinner
     helpers.icon("loader-circle", class: "animate-spin #{icon_classes}")
+  end
+
+  def pending_state?
+    @href.blank? && @type == "submit" && !@loading && !@explicitly_disabled
+  end
+
+  def pending_label
+    @data[:disable_with].presence || @data["disable_with"].presence || I18n.t("turbo_resilience.button.working")
   end
 
   private

@@ -22,6 +22,7 @@ class ApplicationSystemTestCase < ActionDispatch::SystemTestCase
 
   include Warden::Test::Helpers
   include TrixSystemTestHelper
+  include TurboResilienceSystemHelper
 
   def switch_account(account)
     visit test_switch_account_url(account)
