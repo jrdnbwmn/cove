@@ -7,7 +7,7 @@
 
 | Task | Description | Assign | Done |
 | ---- | ----------- | ------ | ---- |
-| 1 | App-owned `ErrorsController` + JSON jbuilders + JSON request tests | Master | |
+| 1 | App-owned `ErrorsController` + JSON jbuilders + JSON request tests | Master | ✅ |
 | 2 | Bare `error` layout + shared `_error` partial | Master | |
 | 3 | Two HTML error views + HTML request tests | Master | |
 
@@ -31,8 +31,9 @@
 
 - Create `app/controllers/errors_controller.rb`:
   - `class ErrorsController < ActionController::Base` (NOT `ApplicationController` — this is what makes the 500 page dependency-free by construction)
-  - `layout "error"`
-  - `#not_found` and `#internal_server_error` actions with the engine's exact `respond_to` blocks (`format.json { render status: ... }` / `format.any { render status: ..., formats: :html }`)
+  - `layout false`; each HTML response explicitly renders `layout: "error"`, because Rails 8.1 also applies an explicit controller layout to Jbuilder responses
+  - `#not_found` and `#internal_server_error` actions with the engine's `respond_to` logic (`format.json { render status: ... }` / `format.any { render status: ..., formats: :html, layout: "error" }`)
+- Update `Jumpstart::AccountMiddleware` to bypass only `/404` and `/500` (with optional format), since the test-only path-tenancy middleware otherwise handles those reserved error routes as nonexistent account IDs.
 - Copy JSON jbuilders verbatim from `lib/jumpstart/app/views/errors/`:
   - `app/views/errors/not_found.json.jbuilder` → `json.error "Not found"`
   - `app/views/errors/internal_server_error.json.jbuilder` → `json.error "Internal server error"`

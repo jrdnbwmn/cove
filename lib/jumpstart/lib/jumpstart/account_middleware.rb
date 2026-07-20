@@ -18,6 +18,8 @@ module Jumpstart
     # http://example.com/12345-account/projects
     def call(env)
       request = ActionDispatch::Request.new env
+      return @app.call(request.env) if request.path.match?(%r{\A/(404|500)(?:\.[^/]+)?\z})
+
       _, account_id, request_path = request.path.split("/", 3)
 
       if INT_MATCHER.match?(account_id) || UUID_MATCHER.match?(account_id)
