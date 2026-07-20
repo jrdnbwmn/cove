@@ -42,6 +42,23 @@ en:
   reveal: "Reveal"
   try_again_later: "Try again later."
 
+  turbo_resilience:
+    button:
+      working: "Working..."
+    frame:
+      title: "We couldn't load this content"
+      description: "Check your connection, then try again."
+      retry: "Try again"
+    form_timeout:
+      title: "This request is taking longer than expected"
+      description: "It may still have completed. Check the result before trying again."
+    form_network_error:
+      title: "We couldn't complete this request"
+      description: "Check your connection and verify the result before trying again."
+    global_network_error:
+      title: "We lost the connection"
+      description: "Check your connection and try again."
+
   account_mailer:
     invite:
       subject: "%{inviter} invited you to %{account}"

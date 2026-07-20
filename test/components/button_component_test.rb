@@ -22,4 +22,25 @@ class ButtonComponentTest < ViewComponent::TestCase
 
     assert_selector 'a[href="https://example.com"][target="_blank"][rel~="noopener"]', text: "Read the Docs"
   end
+
+  test "renders a submit button with its custom pending label" do
+    render_inline(ButtonComponent.new(text: "Save changes", type: "submit", data: {disable_with: "Saving..."}))
+
+    assert_selector "button[type='submit'] .when-enabled", text: "Save changes"
+    assert_selector "button[type='submit'] .when-disabled", text: "Saving..."
+    assert_selector "button[type='submit'] .when-disabled svg.animate-spin"
+  end
+
+  test "renders a submit button with the fallback pending label" do
+    render_inline(ButtonComponent.new(text: "Save changes", type: "submit"))
+
+    assert_selector "button[type='submit'] .when-disabled", text: "Working..."
+  end
+
+  test "does not render pending state markup for non-submit buttons" do
+    render_inline(ButtonComponent.new(text: "Open menu", type: "button"))
+
+    assert_no_selector ".when-enabled"
+    assert_no_selector ".when-disabled"
+  end
 end

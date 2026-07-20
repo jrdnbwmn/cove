@@ -16,7 +16,7 @@ class Jumpstart::AccountsTest < ActionDispatch::IntegrationTest
       Jumpstart.config.stub(:account_types, "both") do
         get edit_account_path(@account)
         assert_response :success
-        assert_select "button", I18n.t("helpers.submit.update", model: Account.model_name.human)
+        assert_select "button .when-enabled", I18n.t("helpers.submit.update", model: Account.model_name.human)
       end
     end
 

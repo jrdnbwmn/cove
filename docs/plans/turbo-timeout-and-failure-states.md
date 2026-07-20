@@ -7,7 +7,7 @@
 
 | Task | Description | Assign | Done |
 | ---- | ----------- | ------ | ---- |
-| 1 | Add pending-state behavior to `ButtonComponent` | Master | |
+| 1 | Add pending-state behavior to `ButtonComponent` | Master | ✅ |
 | 2 | Install server-rendered resilience templates in customer layouts | Master | |
 | 3 | Handle frame network failures, missing frames, and retries | Master | |
 | 4 | Add configurable deadlines for remote frames | Master | |
