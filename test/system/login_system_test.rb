@@ -55,7 +55,7 @@ class LoginSystemTest < ApplicationSystemTestCase
   end
 
   def assert_alert(message)
-    assert_selector "#flash .border-amber-200", text: message
+    assert_selector "#flash .border-red-200", text: message
   end
 
   def login_with_email_and_password(email, password)
