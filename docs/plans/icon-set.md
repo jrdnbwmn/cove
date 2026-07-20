@@ -9,7 +9,7 @@
 | ---- | ----------- | ------ | ---- |
 | 1 | Install rails_icons + Lucide, configure default library, enable `icon` in ViewComponents, vendor SVGs | Master | ✅ |
 | 2 | Swap `AlertComponent` variant icons to `icon` helper calls | Master | ✅ |
-| 3 | Prove the pattern: kitchen-sink `icon "inbox"` + EmptyState slot preview | Clone | |
+| 3 | Prove the pattern: kitchen-sink `icon "inbox"` + EmptyState slot preview | Clone | ✅ |
 | 4 | Document Icons usage in `COMPONENT_CATALOG.md` | Clone | |
 | 5 | Produce icon inventory audit doc (backlog for follow-up migration) | Master | |
 
