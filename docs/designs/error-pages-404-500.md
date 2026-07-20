@@ -1,5 +1,6 @@
 > Ticket: COV-19
 > Branch: jrdnbwmn/cov-19-error-pages
+> Plan created: docs/plans/error-pages-404-500.md
 
 # Feature: Rebuild 404 + 500 error pages with design-system components
 
