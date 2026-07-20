@@ -1,3 +1,5 @@
+> Plan created: docs/plans/turbo-timeout-and-failure-states.md
+
 > Ticket: COV-22
 > Branch: jrdnbwmn/feature/cov-22-turbo-timeouts
 
