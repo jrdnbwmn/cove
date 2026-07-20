@@ -1,5 +1,6 @@
 > Ticket: COV-21
 > Branch: jrdnbwmn/cov-21-inline-error-flash-alertcomponent
+> Plan created: docs/plans/inline-error-and-flash-consistency.md
 
 # Feature: Inline error + flash message consistency (AlertComponent)
 
