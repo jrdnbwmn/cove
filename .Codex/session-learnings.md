@@ -263,3 +263,6 @@ For this plan, removing dark-mode activation safely requires three boundaries in
 
 ## Catchup 2026-07-18 (wrap-up)
 Nothing notable.
+
+## Catchup 2026-07-20 (COV-28 wrap-up)
+Nothing notable.

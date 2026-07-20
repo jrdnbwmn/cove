@@ -35,7 +35,7 @@ class EmptyStateComponent < ViewComponent::Base
 
   def icon_wrapper_classes
     [
-      "flex items-center justify-center rounded-full bg-neutral-100 dark:bg-neutral-800 text-neutral-400",
+      "flex shrink-0 items-center justify-center overflow-hidden rounded-full bg-neutral-100 text-neutral-400 dark:bg-neutral-800",
       icon_size_classes
     ].join(" ")
   end

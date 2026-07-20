@@ -91,7 +91,7 @@ class DropdownComponent
     attr_reader :text, :icon
 
     def render_chevron_icon
-      %(<svg xmlns="http://www.w3.org/2000/svg" class="transform-gpu size-3" width="12" height="12" viewBox="0 0 12 12"><g fill="currentColor"><path d="m4.25,11c-.192,0-.384-.073-.53-.22-.293-.293-.293-.768,0-1.061l3.72-3.72-3.72-3.72c-.293-.293-.293-.768,0-1.061s.768-.293,1.061,0l4.25,4.25c.293.293.293.768,0,1.061l-4.25,4.25c-.146.146-.338.22-.53.22Z" stroke-width="0"></path></g></svg>).html_safe
+      icon("chevron-right", class: "transform-gpu size-3")
     end
   end
 end

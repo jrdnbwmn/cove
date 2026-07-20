@@ -127,31 +127,11 @@ class PaginationComponent < ViewComponent::Base
 
   # Icons
   def prev_icon
-    tag.svg(
-      xmlns: "http://www.w3.org/2000/svg",
-      class: icon_size_class,
-      width: "18",
-      height: "18",
-      viewBox: "0 0 18 18"
-    ) do
-      tag.g(fill: "currentColor") do
-        tag.path(d: "M11.5607 3.93934C11.9512 4.32986 11.9512 4.96303 11.5607 5.35355L7.91421 9L11.5607 12.6464C11.9512 13.037 11.9512 13.6701 11.5607 14.0607C11.1701 14.4512 10.537 14.4512 10.1464 14.0607L5.79289 9.70711C5.40237 9.31658 5.40237 8.68342 5.79289 8.29289L10.1464 3.93934C10.537 3.54882 11.1701 3.54882 11.5607 3.93934Z")
-      end
-    end
+    icon("chevron-left", class: icon_size_class)
   end
 
   def next_icon
-    tag.svg(
-      xmlns: "http://www.w3.org/2000/svg",
-      class: icon_size_class,
-      width: "18",
-      height: "18",
-      viewBox: "0 0 18 18"
-    ) do
-      tag.g(fill: "currentColor") do
-        tag.path(d: "M6.43934 14.0607C6.04882 13.6701 6.04882 13.037 6.43934 12.6464L10.0858 9L6.43934 5.35355C6.04882 4.96303 6.04882 4.32986 6.43934 3.93934C6.82986 3.54882 7.46303 3.54882 7.85355 3.93934L12.2071 8.29289C12.5976 8.68342 12.5976 9.31658 12.2071 9.70711L7.85355 14.0607C7.46303 14.4512 6.82986 14.4512 6.43934 14.0607Z")
-      end
-    end
+    icon("chevron-right", class: icon_size_class)
   end
 
   private

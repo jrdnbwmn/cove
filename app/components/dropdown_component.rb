@@ -173,10 +173,10 @@ class DropdownComponent < ViewComponent::Base
   private
 
   def render_chevron_icon
-    %(<svg xmlns="http://www.w3.org/2000/svg" class="size-2.5 transition-transform duration-200 [[data-state=open]_&]:rotate-180" width="12" height="12" viewBox="0 0 12 12"><g fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" stroke="currentColor"><polyline points="1.75 4.25 6 8.5 10.25 4.25"></polyline></g></svg>).html_safe
+    icon("chevron-down", class: "size-2.5 transition-transform duration-200 [[data-state=open]_&]:rotate-180")
   end
 
   def render_kebab_icon
-    %(<svg viewBox="0 0 16 16" class="size-3.5 sm:size-4" fill="currentColor"><path d="M8 2a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM8 6.5a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM9.5 12.5a1.5 1.5 0 1 0-3 0 1.5 1.5 0 0 0 3 0Z"></path></svg>).html_safe
+    icon("ellipsis", class: "size-3.5 sm:size-4")
   end
 end
