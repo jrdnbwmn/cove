@@ -28,6 +28,14 @@ class EmptyStateComponentTest < ViewComponent::TestCase
     assert_selector "[aria-hidden='true']"
   end
 
+  test "constrains slot SVGs within the icon backdrop" do
+    component = EmptyStateComponent.new(title: "No projects yet")
+
+    assert_includes component.icon_wrapper_classes, "shrink-0"
+    assert_includes component.icon_wrapper_classes, "overflow-hidden"
+    assert_includes component.icon_wrapper_classes, "[&>svg]:size-1/2"
+  end
+
   test "omits action row when no action slots are given" do
     render_inline(EmptyStateComponent.new(title: "No projects yet"))
 

@@ -710,7 +710,9 @@ by default, with an opt-in bordered "well" treatment.
 | `classes` | `String` | `nil` | Additional wrapper classes. |
 
 **Slots:** `with_icon` accepts raw SVG/illustration markup, rendered inside a
-muted rounded-full backdrop with `aria-hidden="true"` (decorative only).
+muted rounded-full backdrop with `aria-hidden="true"` (decorative only). Direct
+SVGs are constrained to half the backdrop size so they remain centered and do
+not overflow the circle.
 `with_primary_action` and `with_secondary_action` typically hold a
 `ButtonComponent`; `with_secondary_action` can be used alone without a
 primary action.
