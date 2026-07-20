@@ -1,5 +1,6 @@
 > Ticket: COV-5
 > Branch: jrdnbwmn/feature/cov-5-implement-google-oauth
+> Plan created: docs/plans/google-oauth.md
 
 # Feature: Google OAuth Sign-In
 
