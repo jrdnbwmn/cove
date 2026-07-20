@@ -16,18 +16,9 @@
     <div class="<%= thumb_classes %>">
       <% if @show_icons %>
         <!-- X icon for unchecked state -->
-        <svg xmlns="http://www.w3.org/2000/svg" class="<%= icon_size_classes %> text-neutral-400 transition-all duration-150 ease-in-out group-has-[:checked]:opacity-0 dark:text-neutral-500" viewBox="0 0 20 20">
-          <g fill="currentColor">
-            <line x1="7" y1="7" x2="13" y2="13" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></line>
-            <line x1="7" y1="13" x2="13" y2="7" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></line>
-          </g>
-        </svg>
+        <%= icon "x", class: "#{icon_size_classes} text-neutral-400 transition-all duration-150 ease-in-out group-has-[:checked]:opacity-0 dark:text-neutral-500" %>
         <!-- Checkmark icon for checked state -->
-        <svg xmlns="http://www.w3.org/2000/svg" class="absolute <%= icon_size_classes %> text-neutral-700 transition-all duration-150 ease-in-out opacity-0 group-has-[:checked]:opacity-100 dark:text-neutral-100" viewBox="0 0 20 20">
-          <g fill="currentColor">
-            <polyline points="6.5 10.5 8.75 13 13.5 7" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></polyline>
-          </g>
-        </svg>
+        <%= icon "check", class: "absolute #{icon_size_classes} text-neutral-700 transition-all duration-150 ease-in-out opacity-0 group-has-[:checked]:opacity-100 dark:text-neutral-100" %>
       <% end %>
     </div>
   </div>

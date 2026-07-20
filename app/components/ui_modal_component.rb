@@ -118,23 +118,7 @@ class UiModalComponent < ViewComponent::Base
   end
 
   def render_close_icon
-    tag.svg(
-      xmlns: "http://www.w3.org/2000/svg",
-      class: "size-4",
-      width: "24",
-      height: "24",
-      viewBox: "0 0 24 24",
-      fill: "none",
-      stroke: "currentColor",
-      "stroke-width": "2",
-      "stroke-linecap": "round",
-      "stroke-linejoin": "round"
-    ) do
-      safe_join([
-        tag.line(x1: "18", x2: "6", y1: "6", y2: "18"),
-        tag.line(x1: "6", x2: "18", y1: "6", y2: "18")
-      ])
-    end
+    icon("x", class: "size-4")
   end
 
   attr_reader :title, :show_close_button, :prevent_dismiss, :lazy_load, :trigger_text

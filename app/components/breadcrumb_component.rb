@@ -88,32 +88,11 @@ class BreadcrumbComponent < ViewComponent::Base
   end
 
   def home_icon_svg
-    tag.svg(
-      xmlns: "http://www.w3.org/2000/svg",
-      class: "size-4 shrink-0",
-      width: "18",
-      height: "18",
-      viewBox: "0 0 18 18"
-    ) do
-      tag.g(fill: "currentColor") do
-        tag.path(d: "M7.94127 1.36281C8.56694 0.887445 9.4333 0.886569 10.0591 1.36312L15.3088 5.35287C15.7448 5.68398 16 6.20008 16 6.746V14.25C16 15.7692 14.7692 17 13.25 17H10.75V13.251C10.75 12.699 10.302 12.251 9.75 12.251H8.25C7.698 12.251 7.25 12.699 7.25 13.251V17H4.75C3.23079 17 2 15.7692 2 14.25V6.746C2 6.19867 2.2559 5.68346 2.69155 5.3526L7.94127 1.36281Z")
-      end
-    end
+    icon("house", class: "size-4 shrink-0")
   end
 
   def chevron_svg
-    tag.svg(
-      xmlns: "http://www.w3.org/2000/svg",
-      class: "size-4 shrink-0 #{separator_classes}",
-      viewBox: "0 0 20 20",
-      fill: "currentColor"
-    ) do
-      tag.path(
-        "fill-rule": "evenodd",
-        d: "M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z",
-        "clip-rule": "evenodd"
-      )
-    end
+    icon("chevron-right", class: "size-4 shrink-0 #{separator_classes}")
   end
 
   def render_item_icon(icon_html)
