@@ -8,7 +8,7 @@
 | Task | Description | Assign | Done |
 | ---- | ----------- | ------ | ---- |
 | 1 | App-owned `ErrorsController` + JSON jbuilders + JSON request tests | Master | ✅ |
-| 2 | Bare `error` layout + shared `_error` partial | Master | |
+| 2 | Bare `error` layout + shared `_error` partial | Master | ✅ |
 | 3 | Two HTML error views + HTML request tests | Master | |
 
 ## Prerequisites
