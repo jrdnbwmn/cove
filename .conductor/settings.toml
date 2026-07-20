@@ -56,3 +56,6 @@ icon = "test-tube"
 [scripts.run.rubocop]
 command = "export PATH=\"$HOME/.local/share/mise/shims:$PATH\"; bin/rubocop"
 icon = "wrench"
+
+[mcp]
+disabled_servers = ["linear-server"]
