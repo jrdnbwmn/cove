@@ -63,7 +63,10 @@ The basic primary variant uses the shared `bg-primary` and
 `text-primary-foreground` design tokens.
 
 **States:** Supports disabled and loading states. Loading shows a spinner and
-disables the control.
+disables the control. Submit buttons also use Turbo's native disabled state to
+swap their normal content for a spinner and a pending label; pass
+`data: {disable_with: "Saving..."}` to customize that label (otherwise it is
+localized as "Working...").
 
 **Preview:** `ButtonComponentPreview`
 
