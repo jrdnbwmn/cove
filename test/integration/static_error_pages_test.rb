@@ -14,21 +14,21 @@ class StaticErrorPagesTest < ActiveSupport::TestCase
       status: "422",
       heading: "Your request couldn't be completed.",
       description: "This page may have expired. Return home and try again.",
-      icon: "clock",
+      icon: "path[d='M12 6v6l4 2']",
       home_action: true
     },
     "404.html" => {
       status: "404",
       heading: "Page not found",
       description: "Sorry, the page you're looking for doesn't exist or may have moved.",
-      icon: "compass",
+      icon: "circle",
       home_action: true
     },
     "500.html" => {
       status: "500",
       heading: "Something went wrong",
       description: "Sorry, we had a problem loading this page. Please try again.",
-      icon: "server",
+      icon: "path[d='m13 6-4 6h6l-4 6']",
       home_action: true
     },
     "406-unsupported-browser.html" => {
