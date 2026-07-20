@@ -7,7 +7,7 @@
 
 | Task | Description | Assign | Done |
 | ---- | ----------- | ------ | ---- |
-| 1 | Nav & chrome components (navbar, sidebar, dropdown) | Master | |
+| 1 | Nav & chrome components (navbar, sidebar, dropdown) | Master | ✅ |
 | 2 | Other components (badge, breadcrumb, button, pagination, plan-card, switch, ui-modal) | Master | |
 | 3 | Breadcrumb-separator views | Master | |
 | 4 | Heading/action views | Master | |

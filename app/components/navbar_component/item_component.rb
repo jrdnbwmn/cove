@@ -54,19 +54,7 @@ class NavbarComponent
     end
 
     def chevron_icon
-      tag.svg(
-        class: "h-3 w-3 transition-transform duration-200 group-data-[state=open]:rotate-180",
-        fill: "none",
-        stroke: "currentColor",
-        viewBox: "0 0 24 24"
-      ) do
-        tag.path(
-          "stroke-linecap": "round",
-          "stroke-linejoin": "round",
-          "stroke-width": "2",
-          d: "M19 9l-7 7-7-7"
-        )
-      end
+      icon("chevron-down", class: "size-3 transition-transform duration-200 group-data-[state=open]:rotate-180")
     end
   end
 end
