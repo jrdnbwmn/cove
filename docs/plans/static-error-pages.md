@@ -12,7 +12,7 @@
 | 3 | Restyle the 422 page | subagent | ✅ |
 | 4 | Restyle the 404 and 500 fallback pages | subagent | ✅ |
 | 5 | Restyle the unsupported-browser page | subagent | ✅ |
-| 6 | Run full automated and browser verification | Master | |
+| 6 | Run full automated and browser verification | Master | ✅ |
 
 ## Prerequisites
 
