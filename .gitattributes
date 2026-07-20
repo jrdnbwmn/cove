@@ -1,0 +1,2 @@
+# Vendored Lucide SVGs are synced from the rails_icons source library.
+app/assets/svg/icons/lucide/** linguist-vendored -diff
