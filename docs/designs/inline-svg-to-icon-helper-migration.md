@@ -1,5 +1,5 @@
 > Ticket: COV-28
-> Branch: jrdnbwmn/cov-28-migrate-inline-svgs
+> Branch: feature/cov-28-migrate-inline-svgs
 > Plan created: docs/plans/inline-svg-to-icon-helper-migration.md
 
 # Feature: Migrate hand-pasted inline SVGs to the icon helper

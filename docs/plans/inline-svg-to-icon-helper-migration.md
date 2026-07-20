@@ -1,5 +1,5 @@
 > Ticket: COV-28
-> Branch: jrdnbwmn/cov-28-migrate-inline-svgs
+> Branch: feature/cov-28-migrate-inline-svgs
 
 # Plan: Migrate hand-pasted inline SVGs to the icon helper
 
@@ -19,7 +19,7 @@
 - Design: `docs/designs/inline-svg-to-icon-helper-migration.md`
 - Mapping reference: `docs/designs/icon-inventory.md`
 - Prototype: None (Lucide is the visual reference)
-- Feature branch `jrdnbwmn/cov-28-migrate-inline-svgs` exists ✓
+- Feature branch `feature/cov-28-migrate-inline-svgs` exists ✓
 
 ## Shared mechanics (applies to every task)
 
