@@ -37,7 +37,7 @@
 </template>
 
 <template id="turbo-resilience-global-network-error-template">
-  <div data-turbo-resilience-notice role="alert">
+  <div data-turbo-resilience-notice data-turbo-resilience-global-notice role="alert">
     <%= render AlertComponent.new(
       title: t("turbo_resilience.global_network_error.title"),
       description: t("turbo_resilience.global_network_error.description"),

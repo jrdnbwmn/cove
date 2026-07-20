@@ -179,6 +179,25 @@ class TurboResilienceSystemTest < ApplicationSystemTestCase
     assert_no_selector "[data-turbo-resilience-notice]", wait: 0.2
   end
 
+  test "page navigation failures show a global resilience notice" do
+    visit root_path
+
+    dispatch_global_fetch_error
+
+    assert_selector "#flash [data-turbo-resilience-global-notice][role='alert']", text: I18n.t("turbo_resilience.global_network_error.title")
+  end
+
+  test "standalone stream failures replace only the prior global resilience notice" do
+    visit root_path
+    page.execute_script("document.querySelector('#flash').insertAdjacentHTML('beforeend', '<div data-test-rails-flash>Saved</div>')")
+
+    dispatch_global_fetch_error
+    dispatch_global_fetch_error
+
+    assert_selector "#flash [data-turbo-resilience-global-notice]", count: 1
+    assert_selector "#flash [data-test-rails-flash]", text: "Saved"
+  end
+
   teardown do
     restore_turbo_resilience_fetch
   end
@@ -211,5 +230,9 @@ class TurboResilienceSystemTest < ApplicationSystemTestCase
     fill_in "user[password]", with: UNIQUE_PASSWORD
     find("input[name='user[terms_of_service]']").click
     find("form button[type='submit']").click
+  end
+
+  def dispatch_global_fetch_error
+    page.execute_script("document.dispatchEvent(new Event('turbo:fetch-request-error', {bubbles: true}))")
   end
 end

@@ -12,8 +12,8 @@
 | 3 | Handle frame network failures, missing frames, and retries | Master | ✅ |
 | 4 | Add configurable deadlines for remote frames | Master | ✅ |
 | 5 | Handle form deadlines and network failures | Master | ✅ |
-| 6 | Replace the notifications frame's loading text | subagent | |
-| 7 | Handle global failures and run regression verification | Master | |
+| 6 | Replace the notifications frame's loading text | subagent | ✅ |
+| 7 | Handle global failures and run regression verification | Master | ✅ |
 
 ## Prerequisites
 

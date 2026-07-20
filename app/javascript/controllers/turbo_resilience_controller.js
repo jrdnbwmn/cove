@@ -71,7 +71,12 @@ export default class extends Controller {
     }
 
     const form = this.formFrom(event.target)
-    if (form) this.showFormFailure(form, "turbo-resilience-form-network-error-template")
+    if (form) {
+      this.showFormFailure(form, "turbo-resilience-form-network-error-template")
+      return
+    }
+
+    this.showGlobalFailure()
   }
 
   handleFrameMissing(event) {
@@ -178,6 +183,14 @@ export default class extends Controller {
 
   removeFormNotice(form) {
     form.nextElementSibling?.matches("[data-turbo-resilience-notice]") && form.nextElementSibling.remove()
+  }
+
+  showGlobalFailure() {
+    const flash = document.getElementById("flash")
+    if (!flash) return
+
+    flash.querySelector("[data-turbo-resilience-global-notice]")?.remove()
+    flash.append(this.templateContent("turbo-resilience-global-network-error-template"))
   }
 
   timeoutFor(element) {
