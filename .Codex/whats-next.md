@@ -1,3 +1,3 @@
 # What's Next
 
-No pending work. Last completed: COV-28 migrated all in-scope inline SVGs to the icon helper, including the final EmptyState icon-size regression fix.
+No pending work. Last completed: COV-20 restyled all five boot-independent static error pages with self-contained Cove fallback designs and added regression coverage.
