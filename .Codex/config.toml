@@ -1,0 +1,5 @@
+[mcp_servers.sites-design-picker]
+command = "node"
+args = ["./mcp/server.mjs"]
+cwd = "/Users/jordan/.codex/plugins/cache/openai-bundled/sites/0.1.30/."
+enabled = false
