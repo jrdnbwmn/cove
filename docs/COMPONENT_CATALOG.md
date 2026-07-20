@@ -736,6 +736,36 @@ primary action.
 <% end %>
 ```
 
+## Icons
+
+`rails_icons` provides the `icon` helper in views and ViewComponent templates.
+Lucide is the configured default library, so render an icon by name without
+specifying a library. Icons render as inline SVG and inherit `currentColor`.
+
+**Usage:**
+
+```erb
+<%= icon "inbox" %>
+<%= icon "inbox", class: "size-5" %>
+<%= icon "inbox", class: "size-5", stroke_width: 1.5 %>
+```
+
+Size icons with Tailwind utility classes such as `class: "size-5"`. Pass
+`stroke_width:` when an icon needs a different Lucide stroke weight.
+
+**Component slots:** Pass the helper output directly into a component slot. For
+example, `EmptyStateComponent` accepts an icon through its `with_icon` slot:
+
+```erb
+<%= render EmptyStateComponent.new(title: "No projects yet") do |c| %>
+  <% c.with_icon { icon "inbox", class: "w-full h-full" } %>
+<% end %>
+```
+
+Heroicons can be added later with one command,
+`mise exec -- rails generate rails_icons:install --library=heroicons`; that
+secondary library is intentionally deferred.
+
 ## On-demand component policy
 
 When a feature needs a generic primitive not already in this catalog, install
