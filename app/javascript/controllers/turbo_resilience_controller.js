@@ -76,6 +76,7 @@ export default class extends Controller {
       return
     }
 
+    event.preventDefault()
     this.showGlobalFailure()
   }
 

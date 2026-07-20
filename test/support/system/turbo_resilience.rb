@@ -27,6 +27,22 @@ module TurboResilienceSystemHelper
     page.execute_script("window.__turboResilienceFetchOutcomes = arguments[0]", outcomes)
   end
 
+  def stub_turbo_visit_fetch(path)
+    page.execute_script(<<~JAVASCRIPT, path)
+      window.__turboResilienceOriginalFetch = window.fetch
+      window.__turboResilienceVisitPath = arguments[0]
+      window.fetch = (input, options) => {
+        const url = new URL(typeof input === "string" ? input : input.url, window.location.href)
+
+        if (url.pathname !== window.__turboResilienceVisitPath) {
+          return window.__turboResilienceOriginalFetch(input, options)
+        }
+
+        return Promise.reject(new TypeError("Network request failed"))
+      }
+    JAVASCRIPT
+  end
+
   def stub_user_form_fetch(*outcomes)
     page.execute_script(<<~JAVASCRIPT, outcomes)
       window.__turboResilienceOriginalFetch = window.fetch
@@ -58,6 +74,10 @@ module TurboResilienceSystemHelper
     page.evaluate_script("window.__turboResilienceFormFetchCount")
   end
 
+  def set_user_form_fetch_outcomes(*outcomes)
+    page.execute_script("window.__turboResilienceFormFetchOutcomes = arguments[0]", outcomes)
+  end
+
   def restore_turbo_resilience_fetch
     page.execute_script(<<~JAVASCRIPT)
       if (window.__turboResilienceOriginalFetch) {
@@ -66,6 +86,7 @@ module TurboResilienceSystemHelper
         delete window.__turboResilienceFetchOutcomes
         delete window.__turboResilienceFormFetchOutcomes
         delete window.__turboResilienceFormFetchCount
+        delete window.__turboResilienceVisitPath
       }
     JAVASCRIPT
   end

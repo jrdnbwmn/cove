@@ -120,6 +120,20 @@ class TurboResilienceSystemTest < ApplicationSystemTestCase
     assert_selector "turbo-frame#notifications button:not([disabled])", text: I18n.t("turbo_resilience.frame.retry")
   end
 
+  test "a successful frame retry clears the resilience failure" do
+    login_as users(:one), scope: :user
+    visit root_path
+    stub_notifications_frame_fetch("reject")
+
+    open_notifications
+    assert_selector "turbo-frame#notifications [data-turbo-resilience-notice]"
+    set_notifications_frame_fetch_outcomes({body: "<turbo-frame id='notifications'>Loaded notifications</turbo-frame>"})
+    click_button I18n.t("turbo_resilience.frame.retry")
+
+    assert_selector "turbo-frame#notifications", text: "Loaded notifications"
+    assert_no_selector "turbo-frame#notifications [data-turbo-resilience-notice]"
+  end
+
   test "form deadlines restore the submit control without resubmitting" do
     visit new_user_registration_path
     set_registration_form_timeout("50")
@@ -179,20 +193,40 @@ class TurboResilienceSystemTest < ApplicationSystemTestCase
     assert_no_selector "[data-turbo-resilience-notice]", wait: 0.2
   end
 
-  test "page navigation failures show a global resilience notice" do
-    visit root_path
+  test "a successful form submission clears its prior resilience failure" do
+    visit new_user_registration_path
+    stub_user_form_fetch("reject")
 
-    dispatch_global_fetch_error
+    submit_registration
+    assert_selector "form + [data-turbo-resilience-notice]"
+    set_user_form_fetch_outcomes({
+      status: 422,
+      contentType: "text/vnd.turbo-stream.html",
+      body: "<turbo-stream action='append' target='flash'><template></template></turbo-stream>"
+    })
+
+    submit_registration
+
+    assert_no_selector "form + [data-turbo-resilience-notice]", wait: 0.2
+  end
+
+  test "failed Turbo page navigation shows a global resilience notice" do
+    visit root_path
+    stub_turbo_visit_fetch("/privacy")
+
+    page.execute_script("Turbo.visit('/privacy')")
 
     assert_selector "#flash [data-turbo-resilience-global-notice][role='alert']", text: I18n.t("turbo_resilience.global_network_error.title")
   end
 
-  test "standalone stream failures replace only the prior global resilience notice" do
+  test "failed standalone Turbo Stream visits preserve Rails flashes and replace prior notices" do
     visit root_path
+    stub_turbo_visit_fetch("/terms")
     page.execute_script("document.querySelector('#flash').insertAdjacentHTML('beforeend', '<div data-test-rails-flash>Saved</div>')")
 
-    dispatch_global_fetch_error
-    dispatch_global_fetch_error
+    page.execute_script("Turbo.visit('/terms', {acceptsStreamResponse: true})")
+    assert_selector "#flash [data-turbo-resilience-global-notice]"
+    page.execute_script("Turbo.visit('/terms', {acceptsStreamResponse: true})")
 
     assert_selector "#flash [data-turbo-resilience-global-notice]", count: 1
     assert_selector "#flash [data-test-rails-flash]", text: "Saved"
@@ -230,9 +264,5 @@ class TurboResilienceSystemTest < ApplicationSystemTestCase
     fill_in "user[password]", with: UNIQUE_PASSWORD
     find("input[name='user[terms_of_service]']").click
     find("form button[type='submit']").click
-  end
-
-  def dispatch_global_fetch_error
-    page.execute_script("document.dispatchEvent(new Event('turbo:fetch-request-error', {bubbles: true}))")
   end
 end
