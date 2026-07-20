@@ -107,6 +107,12 @@ Routes are modularized in `config/routes/`:
 - `config/routes/` - Modular route definitions
 - `app/components/` - View components for reusable UI
 
+## Current Project Decisions
+
+- Dark mode is intentionally disabled. Keep the inert Tailwind `@variant dark`
+  declaration so existing `dark:` utilities stay inactive; do not restore theme
+  wiring or a system-preference fallback without an explicit product decision.
+
 ## Development Notes
 
 - **Current account** available via `current_account` helper in controllers/views
@@ -114,3 +120,68 @@ Routes are modularized in `config/routes/`:
 - **Billing features** conditionally loaded based on `Jumpstart.config.payments_enabled?`
 - **Background jobs** configurable between SolidQueue and Sidekiq
 - **Multi-database** setup with separate databases for cache, jobs, and cable
+
+## Known Gotchas
+
+### Environment
+- The shell used by coding agents in this checkout doesn't pick up mise's Ruby
+  shims by default — `bin/rails` fails against system Ruby (2.6.10) with a
+  `Bundler::GemfileError` about an invalid `windows` platform, then a missing
+  bundler version. Prepend the shims dir before any `bin/rails`/`bin/rubocop`
+  command: `export PATH="$HOME/.local/share/mise/shims:$PATH"`. Confirm with
+  `ruby -v` (should report 4.0.5, matching `.ruby-version`) before trusting
+  test/migration output.
+- Don't run RuboCop directly on `.erb` paths — it parses them as Ruby and
+  fails. Use the project-wide `bin/rubocop` command instead.
+- `ApplicationController.render` isn't usable for smoke-testing authenticated
+  views — the app layout expects Devise/Warden state it doesn't have. Use a
+  temporary Rails/Puma server plus curl against `/dev/kitchen_sink` or
+  `/lookbook` instead.
+
+### System tests
+- `bin/rails test:system TEST=path/to/test.rb -n /pattern/` is unreliable in
+  this checkout (incompatible syntax / deprecation warning on `-n`). Run a
+  specific test with the positional file argument and `-i` instead, e.g.
+  `bin/rails test:system test/system/foo_test.rb -i "test name"`.
+- This Capybara version does not reliably resolve `click_button` against
+  `aria-label` attributes. Use CSS attribute selectors
+  (`find("[aria-label='...']").click`) instead.
+
+### Design-system components
+- `DropdownComponent#with_item_link` has no `data_turbo` option — passing one
+  is silently unsupported. For a non-Turbo link (e.g. `target: :_blank`,
+  `data: { turbo: false }`), use `with_item_custom` instead.
+- `CheckboxComponent` doesn't render Rails' hidden unchecked-value field the
+  way `f.check_box` does. When replacing `f.check_box` with it, add an
+  explicit hidden `"0"` field immediately before the checkbox or the param
+  will be missing entirely when unchecked.
+- `ButtonComponent`'s `href` expects a literal URL string (e.g.
+  `api_token_path(record)`) — it does not do polymorphic routing on a record.
+- A component that calls app helpers (e.g. `PlanCardComponent` + `PlanHelper`)
+  must `include` the helper module itself — Lookbook preview rendering
+  doesn't reliably expose `helpers.*` through the component's render context.
+- A caller block yielded into a layout partial does NOT inherit that
+  partial's lazy-i18n scope — `t('.foo')` inside the block resolves relative
+  to the calling view, not the layout. Verify translation keys explicitly
+  when migrating views that render through `layout: "..." do ... end`.
+- Before installing a component from Rails Blocks, check for name collisions
+  in both `app/components/` and `lib/jumpstart/app/components/` — several
+  Jumpstart-engine components (`ToastComponent`, `ModalComponent`,
+  `TabsComponent`) only live under the `lib/` path and are easy to miss.
+- Pagination previews/tests using `Pagy::Offset` need a `Pagy::Request`, or
+  the link helpers can't derive a base URL.
+- `importmap pin --download` isn't supported by this project's importmap CLI;
+  use the plain `importmap pin` form.
+
+### CSS / Tailwind
+- Tailwind v4 compiles variants with nested CSS rules. Don't use naive CSSOM
+  traversal with `Element.matches()` to identify the winning rule — nested
+  `CSSStyleRule`s can be skipped. Search the compiled Tailwind CSS text
+  instead.
+- The app still has legacy Jumpstart token styles alongside newer
+  RailsBlocks/Tailwind styles. If native controls look wrong, first check for
+  competing bare `[type="checkbox"]` or `[type="radio"]` rules before
+  changing the component.
+- Braintree's dark-mode selector is a mixed `:is(.dark .braintree-placeholder,
+  .braintree-heading)` rule — it is not fully dark-mode-only. Preserve the
+  light-mode `.braintree-heading` branch when stripping dark-mode CSS.
