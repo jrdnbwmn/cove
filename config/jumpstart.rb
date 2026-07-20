@@ -10,7 +10,7 @@ Jumpstart.config = Jumpstart::Configuration.new({"application_name" => "Cove",
  "apns" => false,
  "fcm" => false,
  "integrations" => [],
- "omniauth_providers" => [],
+ "omniauth_providers" => ["google-oauth2"],
  "payment_processors" => ["stripe"],
  "multitenancy" => [],
  "gems" => []})
