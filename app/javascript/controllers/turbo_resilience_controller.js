@@ -5,23 +5,31 @@ const DEFAULT_TIMEOUT = 15000
 export default class extends Controller {
   connect() {
     this.frameStates = new Map()
+    this.formStates = new Map()
     this.handleBeforeFetchRequest = this.handleBeforeFetchRequest.bind(this)
     this.handleFetchRequestError = this.handleFetchRequestError.bind(this)
     this.handleFrameMissing = this.handleFrameMissing.bind(this)
     this.handleFrameLoad = this.handleFrameLoad.bind(this)
+    this.handleSubmitStart = this.handleSubmitStart.bind(this)
+    this.handleSubmitEnd = this.handleSubmitEnd.bind(this)
 
     document.addEventListener("turbo:before-fetch-request", this.handleBeforeFetchRequest)
     document.addEventListener("turbo:fetch-request-error", this.handleFetchRequestError)
     document.addEventListener("turbo:frame-missing", this.handleFrameMissing)
     document.addEventListener("turbo:frame-load", this.handleFrameLoad)
+    document.addEventListener("turbo:submit-start", this.handleSubmitStart)
+    document.addEventListener("turbo:submit-end", this.handleSubmitEnd)
   }
 
   disconnect() {
     this.clearAllFrameTimers()
+    this.clearAllFormTimers()
     document.removeEventListener("turbo:before-fetch-request", this.handleBeforeFetchRequest)
     document.removeEventListener("turbo:fetch-request-error", this.handleFetchRequestError)
     document.removeEventListener("turbo:frame-missing", this.handleFrameMissing)
     document.removeEventListener("turbo:frame-load", this.handleFrameLoad)
+    document.removeEventListener("turbo:submit-start", this.handleSubmitStart)
+    document.removeEventListener("turbo:submit-end", this.handleSubmitEnd)
   }
 
   handleBeforeFetchRequest(event) {
@@ -57,9 +65,13 @@ export default class extends Controller {
 
   handleFetchRequestError(event) {
     const frame = this.frameFrom(event.target)
-    if (!frame) return
+    if (frame) {
+      this.showFrameFailure(frame)
+      return
+    }
 
-    this.showFrameFailure(frame)
+    const form = this.formFrom(event.target)
+    if (form) this.showFormFailure(form, "turbo-resilience-form-network-error-template")
   }
 
   handleFrameMissing(event) {
@@ -76,6 +88,38 @@ export default class extends Controller {
 
     this.clearFrameTimer(this.frameStates.get(frame))
     this.frameStates.delete(frame)
+  }
+
+  handleSubmitStart(event) {
+    const form = this.formFrom(event.target)
+    if (!form) return
+
+    this.removeFormNotice(form)
+    const existingState = this.formStates.get(form)
+    this.clearFormTimer(existingState)
+
+    const timeout = this.timeoutFor(form)
+    const state = {
+      submission: event.detail.formSubmission,
+      submitter: event.detail.formSubmission.submitter,
+      timeoutId: null,
+      resilienceFailure: false
+    }
+    if (timeout !== null) state.timeoutId = window.setTimeout(() => this.handleFormTimeout(form), timeout)
+    this.formStates.set(form, state)
+  }
+
+  handleSubmitEnd(event) {
+    const form = this.formFrom(event.target)
+    if (!form) return
+
+    const state = this.formStates.get(form)
+    this.clearFormTimer(state)
+
+    if (state?.resilienceFailure) return
+
+    this.removeFormNotice(form)
+    this.formStates.delete(form)
   }
 
   showFrameFailure(frame) {
@@ -108,6 +152,34 @@ export default class extends Controller {
     this.showFrameFailure(frame)
   }
 
+  handleFormTimeout(form) {
+    const state = this.formStates.get(form)
+    if (!state?.submission) return
+
+    state.resilienceFailure = true
+    state.submission.stop()
+    state.submitter?.removeAttribute("disabled")
+    this.showFormNotice(form, "turbo-resilience-form-timeout-template")
+  }
+
+  showFormFailure(form, templateId) {
+    const state = this.formStates.get(form) || {submission: null, timeoutId: null}
+    this.clearFormTimer(state)
+    state.resilienceFailure = true
+    this.formStates.set(form, state)
+    this.showFormNotice(form, templateId)
+  }
+
+  showFormNotice(form, templateId) {
+    this.removeFormNotice(form)
+    const notice = this.templateContent(templateId).firstElementChild
+    form.insertAdjacentElement("afterend", notice)
+  }
+
+  removeFormNotice(form) {
+    form.nextElementSibling?.matches("[data-turbo-resilience-notice]") && form.nextElementSibling.remove()
+  }
+
   timeoutFor(element) {
     const value = element.dataset.turboResilienceTimeout
     if (value === "false") return null
@@ -127,11 +199,26 @@ export default class extends Controller {
     this.frameStates?.forEach((state) => this.clearFrameTimer(state))
   }
 
+  clearFormTimer(state) {
+    if (state?.timeoutId === null || state?.timeoutId === undefined) return
+
+    window.clearTimeout(state.timeoutId)
+    state.timeoutId = null
+  }
+
+  clearAllFormTimers() {
+    this.formStates?.forEach((state) => this.clearFormTimer(state))
+  }
+
   templateContent(id) {
     return document.getElementById(id).content.cloneNode(true)
   }
 
   frameFrom(element) {
     return element?.tagName === "TURBO-FRAME" ? element : null
+  }
+
+  formFrom(element) {
+    return element?.tagName === "FORM" ? element : null
   }
 }

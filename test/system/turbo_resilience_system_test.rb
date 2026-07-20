@@ -120,6 +120,65 @@ class TurboResilienceSystemTest < ApplicationSystemTestCase
     assert_selector "turbo-frame#notifications button:not([disabled])", text: I18n.t("turbo_resilience.frame.retry")
   end
 
+  test "form deadlines restore the submit control without resubmitting" do
+    visit new_user_registration_path
+    set_registration_form_timeout("50")
+    stub_user_form_fetch("pending")
+
+    submit_registration
+
+    assert_selector "form button[disabled] .when-disabled", text: I18n.t("devise.registrations.new.submitting")
+    assert_selector "form + [data-turbo-resilience-notice][role='alert']", text: I18n.t("turbo_resilience.form_timeout.title")
+    assert_no_selector "form button[disabled]"
+    assert_equal 1, user_form_fetch_count
+  end
+
+  test "form network failures show a local notice" do
+    visit new_user_registration_path
+    stub_user_form_fetch("reject")
+
+    submit_registration
+
+    assert_selector "form + [data-turbo-resilience-notice][role='alert']", text: I18n.t("turbo_resilience.form_network_error.title")
+    assert_no_selector "form button[disabled]"
+  end
+
+  test "forms can opt out of deadlines" do
+    visit new_user_registration_path
+    set_registration_form_timeout("false")
+    stub_user_form_fetch("pending")
+
+    submit_registration
+
+    assert_no_selector "form + [data-turbo-resilience-notice]", wait: 0.2
+  end
+
+  test "form deadlines show the fallback pending label" do
+    visit new_user_session_path
+    set_registration_form_timeout("50")
+    stub_user_form_fetch("pending")
+
+    fill_in "user[email]", with: users(:one).email
+    fill_in "user[password]", with: UNIQUE_PASSWORD
+    find("form button[type='submit']").click
+
+    assert_selector "form button[disabled] .when-disabled", text: I18n.t("turbo_resilience.button.working")
+    assert_selector "form + [data-turbo-resilience-notice][role='alert']", text: I18n.t("turbo_resilience.form_timeout.title")
+  end
+
+  test "resolved HTTP form responses do not show a resilience notice" do
+    visit new_user_registration_path
+    stub_user_form_fetch({
+      status: 422,
+      contentType: "text/vnd.turbo-stream.html",
+      body: "<turbo-stream action='append' target='flash'><template></template></turbo-stream>"
+    })
+
+    submit_registration
+
+    assert_no_selector "[data-turbo-resilience-notice]", wait: 0.2
+  end
+
   teardown do
     restore_turbo_resilience_fetch
   end
@@ -140,5 +199,17 @@ class TurboResilienceSystemTest < ApplicationSystemTestCase
 
   def set_notifications_frame_timeout(value)
     page.execute_script("document.querySelector('turbo-frame#notifications').dataset.turboResilienceTimeout = arguments[0]", value)
+  end
+
+  def set_registration_form_timeout(value)
+    page.execute_script("document.querySelector('form').dataset.turboResilienceTimeout = arguments[0]", value)
+  end
+
+  def submit_registration
+    fill_in "user[name]", with: "New User"
+    fill_in "user[email]", with: "new-user@example.com"
+    fill_in "user[password]", with: UNIQUE_PASSWORD
+    find("input[name='user[terms_of_service]']").click
+    find("form button[type='submit']").click
   end
 end
