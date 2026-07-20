@@ -7,8 +7,8 @@
 
 | Task | Description | Assign | Done |
 | ---- | ----------- | ------ | ---- |
-| 1 | Rewrite `_flash.html.erb` to map all four flash keys → AlertComponent variants; update system-test selectors | Master | |
-| 2 | Add integration tests: flash key→variant mapping + form error summary | Master | |
+| 1 | Rewrite `_flash.html.erb` to map all four flash keys → AlertComponent variants; update system-test selectors | Master | ✅ |
+| 2 | Add integration tests: flash key→variant mapping + form error summary | Master | ✅ |
 
 ## Prerequisites
 
