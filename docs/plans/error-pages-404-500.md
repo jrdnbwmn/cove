@@ -9,7 +9,7 @@
 | ---- | ----------- | ------ | ---- |
 | 1 | App-owned `ErrorsController` + JSON jbuilders + JSON request tests | Master | ✅ |
 | 2 | Bare `error` layout + shared `_error` partial | Master | ✅ |
-| 3 | Two HTML error views + HTML request tests | Master | |
+| 3 | Two HTML error views + HTML request tests | Master | ✅ |
 
 ## Prerequisites
 
@@ -31,6 +31,7 @@
 
 - Create `app/controllers/errors_controller.rb`:
   - `class ErrorsController < ActionController::Base` (NOT `ApplicationController` — this is what makes the 500 page dependency-free by construction)
+  - Include only `SvgHelper`, which the bare controller needs for the app-logo helper in its self-contained layout
   - `layout false`; each HTML response explicitly renders `layout: "error"`, because Rails 8.1 also applies an explicit controller layout to Jbuilder responses
   - `#not_found` and `#internal_server_error` actions with the engine's `respond_to` logic (`format.json { render status: ... }` / `format.any { render status: ..., formats: :html, layout: "error" }`)
 - Update `Jumpstart::AccountMiddleware` to bypass only `/404` and `/500` (with optional format), since the test-only path-tenancy middleware otherwise handles those reserved error routes as nonexistent account IDs.
@@ -85,9 +86,9 @@
 
 - `app/views/errors/not_found.html.erb` → `render "error", title: "Page not found", description: "Sorry, the page you're looking for doesn't exist or may have moved.", icon: "compass"` (confirm final microcopy/icon at build — `compass` is the pick)
 - `app/views/errors/internal_server_error.html.erb` → `render "error", title: "Something went wrong", description: "Sorry, we had a problem loading this page. Please try again.", icon: "server-crash"` (confirm final microcopy/icon at build)
-- Add HTML request tests to `test/integration/errors_test.rb`:
-  - `get "/404"` → `assert_response :not_found`; body includes the 404 title and a "Back to home" link to `root_path`
-  - `get "/500"` → `assert_response :internal_server_error`; body includes the 500 title and the "Back to home" link
+- Add HTML request tests to `test/integration/errors_test.rb` through `Rails.application.routes` (the configured `exceptions_app`, bypassing `public/404.html` and `public/500.html`, which ordinary request middleware serves first):
+  - `get "/404"` → 404; body includes the 404 title and a "Back to home" link to `root_path`
+  - `get "/500"` → 500; body includes the 500 title and the "Back to home" link
   - Optionally assert the body does NOT include theme/importmap markers (proves the bare layout), mirroring `test/integration/public_test.rb`
 
 **NOT in scope:**

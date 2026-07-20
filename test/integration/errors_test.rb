@@ -20,4 +20,30 @@ class ErrorsTest < ActionDispatch::IntegrationTest
 
     assert_redirected_to root_path
   end
+
+  test "renders the not found page" do
+    response = error_response_for("/404")
+
+    assert_equal 404, response.status
+    assert_includes response.body, "Page not found"
+    assert_includes response.body, %(href="#{root_path}")
+    assert_not_includes response.body, 'type="importmap"'
+  end
+
+  test "renders the internal server error page" do
+    response = error_response_for("/500")
+
+    assert_equal 500, response.status
+    assert_includes response.body, "Something went wrong"
+    assert_includes response.body, %(href="#{root_path}")
+    assert_not_includes response.body, 'type="importmap"'
+  end
+
+  private
+
+  def error_response_for(path)
+    session = ActionDispatch::Integration::Session.new(Rails.application.routes)
+    session.get(path)
+    session.response
+  end
 end

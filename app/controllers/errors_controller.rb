@@ -1,4 +1,5 @@
 class ErrorsController < ActionController::Base
+  helper SvgHelper
   layout false
 
   def not_found
