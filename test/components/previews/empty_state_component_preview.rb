@@ -7,6 +7,10 @@ class EmptyStateComponentPreview < ViewComponent::Preview
     render_with_template
   end
 
+  def with_lucide_icon
+    render_with_template
+  end
+
   def primary_only
     render_with_template
   end

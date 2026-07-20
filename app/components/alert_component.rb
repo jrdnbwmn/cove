@@ -86,56 +86,11 @@ class AlertComponent < ViewComponent::Base
     return @custom_icon.html_safe if @custom_icon.present?
 
     case @variant
-    when :success then success_icon
-    when :error then error_icon
-    when :warning then warning_icon
-    when :info, :neutral then info_icon
+    when :success then icon("circle-check", class: "size-[18px]")
+    when :error then icon("circle-alert", class: "size-[18px]")
+    when :warning then icon("triangle-alert", class: "size-[18px]")
+    when :info, :neutral then icon("info", class: "size-[18px]")
     else ""
-    end
-  end
-
-  private
-
-  def svg_group_attrs
-    {fill: "none", "stroke-linecap": "round", "stroke-linejoin": "round", "stroke-width": "1.5", stroke: "currentColor"}
-  end
-
-  def success_icon
-    tag.svg(xmlns: "http://www.w3.org/2000/svg", width: "18", height: "18", viewBox: "0 0 18 18") do
-      tag.g(**svg_group_attrs) do
-        concat tag.circle(cx: "9", cy: "9", r: "7.25")
-        concat tag.polyline(points: "5.75 9.25 8 11.75 12.25 6.25")
-      end
-    end
-  end
-
-  def error_icon
-    tag.svg(xmlns: "http://www.w3.org/2000/svg", width: "18", height: "18", viewBox: "0 0 18 18") do
-      tag.g(**svg_group_attrs) do
-        concat tag.circle(cx: "9", cy: "9", r: "7.25")
-        concat tag.path(d: "M9 5.75V9.25")
-        concat tag.path(d: "M9 12.5C8.448 12.5 8 12.05 8 11.5C8 10.95 8.448 10.5 9 10.5C9.552 10.5 10 10.95 10 11.5C10 12.05 9.552 12.5 9 12.5Z", fill: "currentColor", "data-stroke": "none", stroke: "none")
-      end
-    end
-  end
-
-  def warning_icon
-    tag.svg(xmlns: "http://www.w3.org/2000/svg", width: "18", height: "18", viewBox: "0 0 18 18") do
-      tag.g(**svg_group_attrs) do
-        concat tag.path(d: "M7.63796 3.48996L2.21295 12.89C1.60795 13.9399 2.36395 15.25 3.57495 15.25H14.425C15.636 15.25 16.392 13.9399 15.787 12.89L10.362 3.48996C9.75696 2.44996 8.24296 2.44996 7.63796 3.48996Z")
-        concat tag.path(d: "M9 6.75V9.75")
-        concat tag.path(d: "M9 13.5C8.448 13.5 8 13.05 8 12.5C8 11.95 8.448 11.5 9 11.5C9.552 11.5 10 11.9501 10 12.5C10 13.0499 9.552 13.5 9 13.5Z", fill: "currentColor", "data-stroke": "none", stroke: "none")
-      end
-    end
-  end
-
-  def info_icon
-    tag.svg(xmlns: "http://www.w3.org/2000/svg", width: "18", height: "18", viewBox: "0 0 18 18") do
-      tag.g(**svg_group_attrs) do
-        concat tag.path(d: "M9 16.25C13.004 16.25 16.25 13.004 16.25 9C16.25 4.996 13.004 1.75 9 1.75C4.996 1.75 1.75 4.996 1.75 9C1.75 13.004 4.996 16.25 9 16.25Z")
-        concat tag.path(d: "M9 12.75V9.25C9 8.9739 8.7761 8.75 8.5 8.75H7.75")
-        concat tag.path(d: "M9 6.75C8.448 6.75 8 6.301 8 5.75C8 5.199 8.448 4.75 9 4.75C9.552 4.75 10 5.199 10 5.75C10 6.301 9.552 6.75 9 6.75Z", fill: "currentColor", "data-stroke": "none", stroke: "none")
-      end
     end
   end
 end

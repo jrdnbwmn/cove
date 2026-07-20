@@ -1,0 +1,5 @@
+<%= render EmptyStateComponent.new(title: "No inbox messages", description: "New messages will appear here.") do |c| %>
+  <% c.with_icon do %>
+    <%= icon "inbox", class: "w-full h-full" %>
+  <% end %>
+<% end %>
