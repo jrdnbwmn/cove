@@ -1,6 +1,10 @@
+<% flash_variants = { notice: :info, success: :success, alert: :error, error: :error } %>
 <div id="flash" data-turbo-temporary>
-  <%= render AlertComponent.new(title: alert, variant: :warning) if alert %>
-  <%= render AlertComponent.new(title: notice, variant: :info) if notice %>
+  <% flash_variants.each do |key, variant| %>
+    <% if flash[key].is_a?(String) && flash[key].present? %>
+      <%= render AlertComponent.new(title: flash[key], variant: variant) %>
+    <% end %>
+  <% end %>
 </div>
 
 <div id="toasts" data-turbo-temporary>
