@@ -1,6 +1,6 @@
 module TurboResilienceSystemHelper
   def stub_notifications_frame_fetch(*outcomes)
-    page.execute_script(<<~JAVASCRIPT, outcomes.to_json)
+    page.execute_script(<<~JAVASCRIPT, outcomes)
       window.__turboResilienceFetchOutcomes = arguments[0]
       window.__turboResilienceOriginalFetch = window.fetch
       window.fetch = (input, options) => {
@@ -10,7 +10,8 @@ module TurboResilienceSystemHelper
           return window.__turboResilienceOriginalFetch(input, options)
         }
 
-        const outcome = window.__turboResilienceFetchOutcomes.shift() || "reject"
+        const outcomes = window.__turboResilienceFetchOutcomes
+        const outcome = outcomes[0] === "pending" ? outcomes[0] : outcomes.shift() || "reject"
         if (outcome === "pending") return new Promise(() => {})
         if (outcome === "reject") return Promise.reject(new TypeError("Network request failed"))
 
