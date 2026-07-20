@@ -9,7 +9,7 @@
 | ---- | ----------- | ------ | ---- |
 | 1 | Nav & chrome components (navbar, sidebar, dropdown) | Master | ✅ |
 | 2 | Other components (badge, breadcrumb, button, pagination, plan-card, switch, ui-modal) | Master | ✅ |
-| 3 | Breadcrumb-separator views | Master | |
+| 3 | Breadcrumb-separator views | Master | ✅ |
 | 4 | Heading/action views | Master | |
 | 5 | Billing / checkout / dev views | Master | |
 | 6 | Final sweep + full test suite | Master | |
