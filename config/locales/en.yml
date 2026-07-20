@@ -560,6 +560,7 @@ en:
       preferences: "Update subscription preferences"
 
   notifications:
+    loading: "Loading notifications..."
     index:
       title: "Notifications"
       empty_placeholder: "Nothing to see here — yet."

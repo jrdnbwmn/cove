@@ -71,10 +71,13 @@ class AppShellSystemTest < ApplicationSystemTestCase
   test "signed in user can open notifications" do
     login_as users(:one), scope: :user
     visit root_path
+    stub_notifications_frame_fetch("pending")
 
     find("button[aria-label='Notifications']").click
 
     assert_selector "dialog[open] turbo-frame#notifications"
+    assert_selector "dialog[open] turbo-frame#notifications > .inline-flex.items-center", text: I18n.t("notifications.loading")
+    assert_selector "dialog[open] turbo-frame#notifications svg"
   end
 
   test "development user can open the development menu" do
