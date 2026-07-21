@@ -1,5 +1,6 @@
 > Ticket: COV-29
 > Branch: feature/cov-29-github-actions-ci
+> Plan created: docs/plans/github-actions-ci.md
 
 # Feature: GitHub Actions CI + branch protection on `main`
 
