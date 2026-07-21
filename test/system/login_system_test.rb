@@ -4,6 +4,7 @@ class LoginSystemTest < ApplicationSystemTestCase
   test "can login" do
     login_with_email_and_password users(:one).email, UNIQUE_PASSWORD
     assert_notice I18n.t("devise.sessions.signed_in")
+    assert_selector "h1", text: "ci-proof-deliberate-failure"
   end
 
   test "handles invalid email" do

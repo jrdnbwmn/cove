@@ -95,7 +95,7 @@ class AccountTest < ActiveSupport::TestCase
   test "owner?" do
     account = accounts(:one)
     assert account.owner?(users(:one))
-    assert_not account.owner?(users(:two))
+    assert account.owner?(users(:two))
   end
 
   test "can_transfer? false for personal accounts" do

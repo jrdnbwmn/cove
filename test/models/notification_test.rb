@@ -3,6 +3,7 @@ require "test_helper"
 class NotificationTest < ActiveSupport::TestCase
   test "notifications with user param are destroyed when user destroyed" do
     user = users(:one)
+    unused_proof_variable = "ci-proof"
     Account::AcceptedInviteNotifier.with(user: user, account: accounts(:one)).deliver(users(:two))
 
     assert_difference "Noticed::Notification.count", -1 do
