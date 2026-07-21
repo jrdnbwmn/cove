@@ -7,12 +7,12 @@
 
 | Task | Description | Assign | Done |
 | ---- | ----------- | ------ | ---- |
-| 1    | Prod-guarded shell + five personas (users)                        | Master |      |
-| 2    | "Cove Team" account + three-role memberships                      | Master |      |
-| 3    | Fake Plan + active subscription for subscribed persona            | Master |      |
-| 4    | Grant system admin to superadmin persona                          | Master |      |
-| 5    | README "Dev login credentials" section                            | Master |      |
-| 6    | Full verification (fresh DB seed, idempotency, logins, test suite)| Master |      |
+| 1    | Prod-guarded shell + five personas (users)                        | Master | x    |
+| 2    | "Cove Team" account + three-role memberships                      | Master | x    |
+| 3    | Fake Plan + active subscription for subscribed persona            | Master | x    |
+| 4    | Grant system admin to superadmin persona                          | Master | x    |
+| 5    | README "Dev login credentials" section                            | Master | x    |
+| 6    | Full verification (fresh DB seed, idempotency, logins, test suite)| Master | x    |
 
 ## Prerequisites
 
