@@ -7,7 +7,7 @@
 
 | Task | Description | Assign | Done |
 | ---- | ----------- | ------ | ---- |
-| 1 | Add `### Test data` subsection to `AGENTS.md` + confirm suite green | Master | |
+| 1 | Add `### Test data` subsection to `AGENTS.md` + confirm suite green | Master | ✅ |
 
 ## Prerequisites
 

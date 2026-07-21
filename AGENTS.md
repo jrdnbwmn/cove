@@ -90,6 +90,34 @@ end
 - **WebMock** configured to disable external HTTP requests
 - **Test database** reset between runs
 
+### Test data
+
+**Fixtures-only.** Test data lives in `test/fixtures/<table>.yml` (Minitest
+fixtures, the Jumpstart/Rails default). Every new model gets a fixture file
+with a small, named, hand-written set of records.
+
+- **No FactoryBot, no Faker, no new gems.** Values are hand-written literals.
+  If a slice believes it genuinely needs a factory library, stop and raise it
+  as a product decision first — do not add it unilaterally.
+- **Naming.** Use generic labels `one` and `two` for the baseline records,
+  plus intent-named labels for records that exist to exercise a specific state
+  (e.g. `subscribed`, `invited`, `admin`, `hidden`). This matches the existing
+  `accounts.yml` / `users.yml` style and lets fixtures double as a readable
+  data catalog.
+- **Associations by label, never IDs.** Reference other fixtures by their
+  fixture name (`owner: one`, `account: company`, `user: two`). Rails resolves
+  the label to the record's id at load time. Never hard-code numeric ids.
+- **Literals by default; ERB only for computed values.** Prefer plain literal
+  values. Use ERB only where a literal can't express the value — e.g.
+  timestamps (`<%= Time.current %>`) or derived secrets
+  (`<%= Devise::Encryptor.digest(User, UNIQUE_PASSWORD) %>`), as `users.yml`
+  already does. Don't use ERB to generate fake/random data.
+- **Signing in / switching accounts in tests.** Reuse the existing helpers —
+  don't reinvent them:
+  - `sign_in(user)` (Devise) in integration and system tests.
+  - `switch_account(account)` (defined in `test_helper.rb` and
+    `application_system_test_case.rb`) to set the current account.
+
 ## Routes Organization
 
 Routes are modularized in `config/routes/`:
