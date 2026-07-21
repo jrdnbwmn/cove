@@ -1,5 +1,6 @@
 > Ticket: COV-24
 > Branch: jrdnbwmn/cov-24-fixtures-test-convention
+> Plan created: docs/plans/test-data-convention.md
 
 # Feature: Fixtures-only test-data convention
 
