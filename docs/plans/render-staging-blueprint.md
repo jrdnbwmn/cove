@@ -7,8 +7,8 @@
 
 | Task | Phase | Checkpoint | Description | Assign | Done |
 | ---- | ----- | ---------- | ----------- | ------ | ---- |
-| 1    | 1     | 1          | Rewrite `render.yaml` (staging active + prod commented) | Master |      |
-| 2    | 1     | 1          | Strip migrations/flag from `bin/render-build.sh`        | Master |      |
+| 1    | 1     | 1          | Rewrite `render.yaml` (staging active + prod commented) | Master | ✅   |
+| 2    | 1     | 1          | Strip migrations/flag from `bin/render-build.sh`        | Master | ✅   |
 
 ## Prerequisites
 
