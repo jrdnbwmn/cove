@@ -1,5 +1,6 @@
 > Ticket: COV-25
 > Branch: jrdnbwmn/cov-25-dev-seeds
+> Plan created: docs/plans/baseline-dev-seeds.md
 
 # Feature: Baseline dev/demo seeds (db/seeds.rb)
 
