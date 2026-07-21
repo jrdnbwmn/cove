@@ -7,13 +7,13 @@
 
 | Task | Description | Assign | Done |
 | ---- | ----------- | ------ | ---- |
-| 1 | Owner adds `RAILS_MASTER_KEY` repo secret | Master (user action) | |
-| 2 | Local eager-load pre-flight (`zeitwerk:check` + `CI=true`) | Master | |
-| 3 | Write `.github/workflows/ci.yml` (five jobs) | Master | |
-| 4 | Push branch, open PR, iterate until all five jobs green | Master | |
-| 5 | Owner merges; owner enables branch protection on `main` | Master (user action) | |
-| 6 | Proof PR — verify the three failure paths block merge | Master | |
-| 7 | Verify `git push origin main` is refused + `bin/ci` clean locally | Master | |
+| 1 | Owner adds `RAILS_MASTER_KEY` repo secret | Master (user action) | ✅ |
+| 2 | Local eager-load pre-flight (`zeitwerk:check` + `CI=true`) | Master | ✅ |
+| 3 | Write `.github/workflows/ci.yml` (five jobs) | Master | ✅ |
+| 4 | Push branch, open PR, iterate until all five jobs green | Master | ✅ |
+| 5 | Owner merges; owner enables branch protection on `main` | Master (user action) | ✅ |
+| 6 | Proof PR — verify the three failure paths block merge | Master | ✅ |
+| 7 | Verify `git push origin main` is refused + `bin/ci` clean locally | Master | ✅ |
 
 Every task is Master. There is exactly one source file in this change and the
 rest is GitHub-side verification that needs judgment on live CI output —
