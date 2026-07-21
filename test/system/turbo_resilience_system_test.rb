@@ -174,7 +174,7 @@ class TurboResilienceSystemTest < ApplicationSystemTestCase
 
     fill_in "user[email]", with: users(:one).email
     fill_in "user[password]", with: UNIQUE_PASSWORD
-    find("form button[type='submit']").click
+    find("form button[type='submit']:not([data-turbo])").click
 
     assert_selector "form button[disabled] .when-disabled", text: I18n.t("turbo_resilience.button.working")
     assert_selector "form + [data-turbo-resilience-notice][role='alert']", text: I18n.t("turbo_resilience.form_timeout.title")
@@ -263,6 +263,6 @@ class TurboResilienceSystemTest < ApplicationSystemTestCase
     fill_in "user[email]", with: "new-user@example.com"
     fill_in "user[password]", with: UNIQUE_PASSWORD
     find("input[name='user[terms_of_service]']").click
-    find("form button[type='submit']").click
+    find("form button[type='submit']:not([data-turbo])").click
   end
 end

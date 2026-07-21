@@ -62,12 +62,12 @@ class LoginSystemTest < ApplicationSystemTestCase
     visit new_user_session_path
     fill_in "user[email]", with: email
     fill_in "user[password]", with: password
-    find("button[type=submit]").click
+    find("button[type=submit]:not([data-turbo])").click
   end
 
   def submit_otp(otp)
     assert_selector "h1", text: I18n.t("users.two_factor.title")
     fill_in "otp_attempt", with: otp
-    find("button[type=submit]").click
+    find("button[type=submit]:not([data-turbo])").click
   end
 end
