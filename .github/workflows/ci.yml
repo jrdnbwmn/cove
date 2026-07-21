@@ -34,9 +34,9 @@ jobs:
       - run: bin/brakeman --quiet --no-pager --exit-on-warn --exit-on-error
 
   # AIDEV-NOTE: No apt packages and no setup-chrome action needed here or in
-  # test/system/seeds: pg and tailwindcss-ruby ship precompiled x86_64-linux
-  # binaries in Gemfile.lock, and ubuntu-latest ships Chrome for Selenium
-  # Manager to resolve.
+  # system/seeds (aside from system's libvips step below): pg and
+  # tailwindcss-ruby ship precompiled x86_64-linux binaries in Gemfile.lock,
+  # and ubuntu-latest ships Chrome for Selenium Manager to resolve.
   test:
     runs-on: ubuntu-latest
     services:
@@ -83,6 +83,11 @@ jobs:
       - uses: ruby/setup-ruby@v1
         with:
           bundler-cache: true
+      # AIDEV-NOTE: ruby-vips (Gemfile) binds to the native libvips C
+      # library, which ubuntu-latest does not ship. Unlike pg and
+      # tailwindcss-ruby, this dependency isn't satisfied by a precompiled
+      # gem platform entry.
+      - run: sudo apt-get update && sudo apt-get install -y --no-install-recommends libvips
       - run: bin/rails db:test:prepare
       - run: bin/rails test:system
       - uses: actions/upload-artifact@v4
