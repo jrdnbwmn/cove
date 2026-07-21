@@ -165,6 +165,20 @@ Routes are modularized in `config/routes/`:
   views — the app layout expects Devise/Warden state it doesn't have. Use a
   temporary Rails/Puma server plus curl against `/dev/kitchen_sink` or
   `/lookbook` instead.
+- Running `bin/rails db:migrate` (or `db:drop db:create db:migrate`) locally
+  regenerates `db/schema.rb`, `db/cable_schema.rb`, `db/cache_schema.rb`, and
+  `db/queue_schema.rb` with reordered columns and a bumped
+  `ActiveRecord::Schema[8.1]` annotation (committed files say `[8.0]`), even
+  when no migration content changed — a pre-existing drift between the
+  committed schema dumps and the locked Rails 8.1.3 dumper, not something
+  caused by app changes. After any local migration/seed verification, `git
+  diff` those four files and `git checkout --` them if the only changes are
+  reordering/version bump, so the noise doesn't get committed.
+- `User` does not include Devise `:confirmable` (see
+  `lib/jumpstart/app/models/user/authenticatable.rb`), even though the
+  `users` table has a `confirmed_at` column that seeds/fixtures set.
+  `user.confirmed?` is not a valid method — check `confirmed_at.present?`
+  instead.
 
 ### System tests
 - `bin/rails test:system TEST=path/to/test.rb -n /pattern/` is unreliable in
