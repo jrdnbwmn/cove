@@ -16,10 +16,13 @@ by a clone.
 `RAILS_MASTER_KEY` is the **only** secret to set manually on Render, on the
 `cove-staging` service. It equals the contents of `config/credentials/staging.key`.
 
-Everything else in `render.yaml` is already wired: `RAILS_ENV` / `RACK_ENV` /
-`SOLID_QUEUE_IN_PUMA` are literals, and the DB URLs come from `fromDatabase`.
-Stripe and Google secrets live *inside* the credentials file itself, so they
-need no additional Render env vars.
+Everything else in `render.yaml` is already wired: `RAILS_ENV`, `RACK_ENV`,
+`WEB_CONCURRENCY=0`, and `DATABASE_URL`. `WEB_CONCURRENCY=0` keeps Puma in
+single mode so the free 512MB instance can run Rails without exhausting memory.
+Do not add `SOLID_QUEUE_IN_PUMA` on free-tier staging: it starts the Solid Queue
+supervisor, dispatcher, and worker alongside Puma. Stripe and Google secrets
+live *inside* the credentials file itself, so they need no additional Render
+env vars.
 
 ## Manual steps
 

@@ -18,6 +18,10 @@ services:
         value: staging
       - key: RACK_ENV
         value: staging
+      # Render defaults WEB_CONCURRENCY to 1, which starts Puma in cluster mode.
+      # Keep the free-tier service in single mode to fit within its 512MB limit.
+      - key: WEB_CONCURRENCY
+        value: "0"
       # Left off: the free plan's 512MB cap can't absorb the embedded
       # Supervisor + Dispatcher + Worker processes on top of Puma, and this
       # app has no custom background jobs yet to justify running them.
