@@ -7,9 +7,9 @@
 
 | Task | Phase | Checkpoint | Description | Assign | Done |
 | ---- | ----- | ---------- | ----------- | ------ | ---- |
-| 1    | 1     | 1          | Scaffold staging + production credential files | Master | |
-| 2    | 1     | 1          | Fix `staging.rb` URL options | Master | |
-| 3    | 1     | 1          | Verify `.gitignore`, boot-verify staging host, write handoff note | Master | |
+| 1    | 1     | 1          | Scaffold staging + production credential files | Master | ✅ |
+| 2    | 1     | 1          | Fix `staging.rb` URL options | Master | ✅ |
+| 3    | 1     | 1          | Verify `.gitignore`, boot-verify staging host, write handoff note | Master | ✅ |
 
 ## Prerequisites
 

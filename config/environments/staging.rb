@@ -19,6 +19,7 @@ Rails.application.configure do
   config.public_file_server.headers = {"cache-control" => "public, max-age=#{1.year.to_i}"}
 
   # Enable serving of images, stylesheets, and JavaScripts from an asset server.
+  # Left unset: assets are served same-origin, no separate CDN/asset host for staging.
   # config.asset_host = "http://assets.example.com"
 
   # Store uploaded files on the local file system (see config/storage.yml for options).
@@ -58,7 +59,8 @@ Rails.application.configure do
   # config.action_mailer.raise_delivery_errors = false
 
   # Set host to be used by links generated in mailer templates.
-  config.action_mailer.default_url_options = {host: Jumpstart.config.domain}
+  config.action_mailer.default_url_options = {host: "staging.covehomeschool.com"}
+  config.action_controller.default_url_options = {host: "staging.covehomeschool.com"}
 
   # Specify outgoing SMTP server. Remember to add smtp/* credentials via rails credentials:edit.
   # config.action_mailer.smtp_settings = {
