@@ -19,6 +19,7 @@ class TeamInvitationSystemTest < ApplicationSystemTestCase
     visit account_invitation_path(invitation)
     find("button[type=submit]", text: I18n.t("account_invitations.show.accept")).click
 
+    assert_current_path accounts_path
     assert account.users.reload.include?(invitee)
   end
 end
