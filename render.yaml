@@ -1,88 +1,90 @@
-# Example Render configuration. You will need to adjust this for the different services you run.
+# Staging blueprint. Production is defined below but commented out until the
+# cutover ticket provisions it.
 services:
   - type: web
-    name: rails
+    name: cove-staging
     plan: free
     runtime: ruby
     region: oregon # the region must be consistent across all services for the internal keys to be read
+    branch: main
+    autoDeploy: true
     buildCommand: "./bin/render-build.sh"
-    startCommand: bundle exec rails s
+    preDeployCommand: bundle exec rails db:prepare
+    startCommand: bundle exec rails server
     healthCheckPath: "/up"
     envVars:
       - key: RAILS_MASTER_KEY
         sync: false
+      - key: RAILS_ENV
+        value: staging
+      - key: RACK_ENV
+        value: staging
       - key: SOLID_QUEUE_IN_PUMA
         value: true
       - key: DATABASE_URL
         fromDatabase:
-          name: primary
+          name: cove-staging-db
           property: connectionString
       - key: CABLE_DATABASE_URL
         fromDatabase:
-          name: solid_cable
+          name: cove-staging-db
           property: connectionString
       - key: CACHE_DATABASE_URL
         fromDatabase:
-          name: solid_cache
+          name: cove-staging-db
           property: connectionString
       - key: QUEUE_DATABASE_URL
         fromDatabase:
-          name: solid_queue
+          name: cove-staging-db
           property: connectionString
-      # Uncomment the following config if you want to use Redis
-      # - key: REDIS_URL
-      #   fromService:
-      #     type: redis
-      #     name: redis
-      #     property: connectionString
 
-  # Uncomment the following blueprint if you want to use Redis
-  # - type: redis
-  #   name: redis
+  # Production is dormant until the cutover ticket. Whether to enable
+  # autoDeploy for production is a decision for that ticket, not this one.
+  # - type: web
+  #   name: cove-production
+  #   plan: basic-256mb
+  #   runtime: ruby
   #   region: oregon # the region must be consistent across all services for the internal keys to be read
-  #   ipAllowList: [] # only allow internal connections
-  #   plan: free # optional (defaults to starter)
-  #   maxmemoryPolicy: noeviction # optional (defaults to allkeys-lru)
-
-  # Uncomment the following blueprint if you want to enable a Sidekiq worker
-  # - type: worker
-  #   name: sidekiq-worker
-  #   env: ruby
-  #   plan: starter # no free option for bg workers
-  #   region: oregon # the region must be consistent across all services for the internal keys to be read
-  #   buildCommand: "./bin/render-build.sh --skip-migrate"
-  #   startCommand: bundle exec sidekiq -e production
+  #   branch: main
+  #   autoDeploy: false
+  #   buildCommand: "./bin/render-build.sh"
+  #   preDeployCommand: bundle exec rails db:prepare
+  #   startCommand: bundle exec rails server
+  #   healthCheckPath: "/up"
   #   envVars:
-  #     - key: DATABASE_URL
-  #       fromDatabase:
-  #         name: postgres
-  #         property: connectionString
-  #     - key: REDIS_URL
-  #       fromService:
-  #         name: redis
-  #         type: redis
-  #         property: connectionString
   #     - key: RAILS_MASTER_KEY
   #       sync: false
+  #     - key: RAILS_ENV
+  #       value: production
+  #     - key: RACK_ENV
+  #       value: production
+  #     - key: SOLID_QUEUE_IN_PUMA
+  #       value: true
+  #     - key: DATABASE_URL
+  #       fromDatabase:
+  #         name: cove-production-db
+  #         property: connectionString
+  #     - key: CABLE_DATABASE_URL
+  #       fromDatabase:
+  #         name: cove-production-db
+  #         property: connectionString
+  #     - key: CACHE_DATABASE_URL
+  #       fromDatabase:
+  #         name: cove-production-db
+  #         property: connectionString
+  #     - key: QUEUE_DATABASE_URL
+  #       fromDatabase:
+  #         name: cove-production-db
+  #         property: connectionString
 
-# Render's "free" databases are deleted after 30 days unless upgraded and only one per workspace. Instead, default to the smallest paid size.
+# Render's "free" databases are deleted after 30 days unless upgraded and only one per workspace.
 databases:
-  - name: primary
-    plan: basic-256mb
+  - name: cove-staging-db
+    plan: free
     region: oregon # the region must be consistent across all services for the internal keys to be read
     ipAllowList: [] # only allow internal connections
 
-  - name: solid_cable
-    plan: basic-256mb
-    region: oregon # the region must be consistent across all services for the internal keys to be read
-    ipAllowList: [] # only allow internal connections
-
-  - name: solid_cache
-    plan: basic-256mb
-    region: oregon # the region must be consistent across all services for the internal keys to be read
-    ipAllowList: [] # only allow internal connections
-
-  - name: solid_queue
-    plan: basic-256mb
-    region: oregon # the region must be consistent across all services for the internal keys to be read
-    ipAllowList: [] # only allow internal connections
+  # - name: cove-production-db
+  #   plan: basic-256mb
+  #   region: oregon # the region must be consistent across all services for the internal keys to be read
+  #   ipAllowList: [] # only allow internal connections
