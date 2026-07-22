@@ -9,7 +9,7 @@ services:
     branch: main
     autoDeploy: true
     buildCommand: "./bin/render-build.sh"
-    startCommand: bundle exec rails server
+    startCommand: bundle exec rails db:prepare && bundle exec rails server
     healthCheckPath: "/up"
     envVars:
       - key: RAILS_MASTER_KEY
