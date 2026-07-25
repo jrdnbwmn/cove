@@ -73,3 +73,7 @@ bower.json
 # Claude Code local session state
 /CLAUDE.local.md
 /.claude/
+
+# Ignore key files for decrypting credentials and more.
+/config/credentials/*.key
+
