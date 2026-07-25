@@ -51,7 +51,10 @@ Rails.application.configure do
   config.cache_store = :solid_cache_store
 
   # Replace the default in-process and non-durable queuing backend for Active Job.
-  config.active_job.queue_adapter = Jumpstart.config.queue_adapter
+  # AIDEV-NOTE: Hardcoded to run jobs synchronously in the web request, avoiding the
+  # 512MB free-tier memory pressure that running an embedded worker process caused
+  # (see commit #29).
+  config.active_job.queue_adapter = :inline
   config.solid_queue.connects_to = {database: {writing: :queue}}
 
   # Ignore bad email addresses and do not raise email delivery errors.

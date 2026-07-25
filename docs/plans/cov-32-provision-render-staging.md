@@ -7,7 +7,7 @@
 
 | Task | Phase | Checkpoint | Description | Assign | Done |
 | ---- | ----- | ---------- | ----------- | ------ | ---- |
-| 1 | 1 | 1 | Set staging Active Job adapter to `:inline` + test | Master | |
+| 1 | 1 | 1 | Set staging Active Job adapter to `:inline` + test | Master | ✅ |
 | 2 | 2 | 2 | Confirm preconditions (render.yaml on main, credentials, key) | Master | |
 | 3 | 2 | 2 | Create Render blueprint, load `RAILS_MASTER_KEY`, first deploy | Master | |
 | 4 | 3 | 3 | Add `staging` CNAME + managed TLS (AC #1) | Master | |
