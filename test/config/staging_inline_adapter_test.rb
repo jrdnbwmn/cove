@@ -8,4 +8,10 @@ class StagingInlineAdapterTest < Minitest::Test
     refute_match(/Jumpstart\.config\.queue_adapter/, staging_config)
     refute_match(/SOLID_QUEUE_IN_PUMA/, staging_config)
   end
+
+  def test_staging_does_not_attempt_unconfigured_outbound_email_delivery
+    staging_config = File.read(File.expand_path("../../config/environments/staging.rb", __dir__))
+
+    assert_match(/config\.action_mailer\.perform_deliveries\s*=\s*false/, staging_config)
+  end
 end
