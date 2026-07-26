@@ -13,7 +13,7 @@
 | 4 | 3 | 3 | Add `staging` CNAME + managed TLS (AC #1) | Master | ✅ |
 | 5 | 3 | 3 | Add Google OAuth staging redirect URI | Master | ✅ |
 | 6 | 3 | 3 | Add Stripe test-mode webhook + signing secret | Master | ✅ |
-| 7 | 4 | 4 | Verify auto-deploy from `main` (AC #4) | Master | |
+| 7 | 4 | 4 | Verify auto-deploy from `main` (AC #4) | Master | ✅ |
 | 8 | 4 | 4 | By-hand skeleton walk (AC #2, #3, #5) | Master | |
 | 9 | 4 | 4 | Day-25 Postgres-recreate reminder (AC #6) | Master | |
 
