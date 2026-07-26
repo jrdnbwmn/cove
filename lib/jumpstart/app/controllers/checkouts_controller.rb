@@ -65,7 +65,6 @@ class CheckoutsController < ApplicationController
     args = {
       allow_promotion_codes: true,
       automatic_tax: {enabled: @plan.taxed?},
-      consent_collection: {terms_of_service: :required},
       customer_update: {address: :auto},
       locale: I18n.locale.to_s,
       mode: :subscription,
@@ -75,6 +74,8 @@ class CheckoutsController < ApplicationController
       subscription_data: subscription_data,
       ui_mode: :embedded_page
     }
+    # AIDEV-NOTE: Stripe requires live account activation before a Terms URL can be configured.
+    args[:consent_collection] = {terms_of_service: :required} unless Rails.env.staging?
     args[:quantity] = current_account.per_unit_quantity if @plan.charge_per_unit?
     @checkout_session = payment_processor.checkout(**args)
   end
