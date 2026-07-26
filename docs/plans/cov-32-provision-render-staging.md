@@ -8,11 +8,11 @@
 | Task | Phase | Checkpoint | Description | Assign | Done |
 | ---- | ----- | ---------- | ----------- | ------ | ---- |
 | 1 | 1 | 1 | Set staging Active Job adapter to `:inline` + test | Master | ✅ |
-| 2 | 2 | 2 | Confirm preconditions (render.yaml on main, credentials, key) | Master | |
-| 3 | 2 | 2 | Create Render blueprint, load `RAILS_MASTER_KEY`, first deploy | Master | |
-| 4 | 3 | 3 | Add `staging` CNAME + managed TLS (AC #1) | Master | |
-| 5 | 3 | 3 | Add Google OAuth staging redirect URI | Master | |
-| 6 | 3 | 3 | Add Stripe test-mode webhook + signing secret | Master | |
+| 2 | 2 | 2 | Confirm preconditions (render.yaml on main, credentials, key) | Master | ✅ |
+| 3 | 2 | 2 | Create Render blueprint, load `RAILS_MASTER_KEY`, first deploy | Master | ✅ |
+| 4 | 3 | 3 | Add `staging` CNAME + managed TLS (AC #1) | Master | ✅ |
+| 5 | 3 | 3 | Add Google OAuth staging redirect URI | Master | ✅ |
+| 6 | 3 | 3 | Add Stripe test-mode webhook + signing secret | Master | ✅ |
 | 7 | 4 | 4 | Verify auto-deploy from `main` (AC #4) | Master | |
 | 8 | 4 | 4 | By-hand skeleton walk (AC #2, #3, #5) | Master | |
 | 9 | 4 | 4 | Day-25 Postgres-recreate reminder (AC #6) | Master | |
@@ -144,7 +144,7 @@ so there is no clone work to fan out.
 
 **In scope:**
 
-- Confirm the Pay engine's live mounted webhook path before saving (expected `https://staging.covehomeschool.com/pay/webhooks/stripe` — verify against the running app since routes aren't in `config/routes/`).
+- Confirm the Pay engine's live mounted webhook path before saving. The verified route is `https://staging.covehomeschool.com/webhooks/stripe` (`/pay/webhooks/stripe` returns 404).
 - Stripe dashboard in **Test mode** → Developers → Webhooks → Add endpoint at that URL; subscribe to the checkout/subscription/invoice/customer events Pay expects (user login).
 - Copy the endpoint's signing secret → put it in `staging.yml.enc` under the Stripe config the Pay gem reads (user-entered); commit encrypted change and redeploy so the secret is live.
 

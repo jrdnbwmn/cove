@@ -113,9 +113,9 @@ No changes.
 
 ### 5. Stripe test-mode webhook
 - Stripe dashboard in **Test mode** → Developers → Webhooks → Add endpoint:
-  URL `https://staging.covehomeschool.com/pay/webhooks/stripe` (confirm the
-  Pay engine's mounted path live before saving). Subscribe to the events Pay
-  expects (checkout/subscription/invoice/customer events).
+  URL `https://staging.covehomeschool.com/webhooks/stripe` (verified against
+  the live Pay engine route; `/pay/webhooks/stripe` returns 404). Subscribe to
+  the events Pay expects (checkout/subscription/invoice/customer events).
 - Copy the endpoint's **signing secret** → put it in `staging.yml.enc` under
   the Stripe config the Pay gem reads → redeploy so the new secret is live.
 
