@@ -1,3 +1,5 @@
+> Plan created: docs/plans/cov-33-honeybadger-monitoring.md
+
 > Ticket: COV-33
 > Branch: feature/cov-33-add-honeybadger-error-tracking
 
