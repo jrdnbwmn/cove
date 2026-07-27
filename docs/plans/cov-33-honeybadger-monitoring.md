@@ -343,7 +343,7 @@ which is exactly why staging has no raiseable URL today).
      `config/initializers/filter_parameter_logging.rb`,
      `config/credentials/staging.yml.enc`,
      `test/config/honeybadger_config_test.rb`, plus docs.
-   - `git diff origin/main... | grep -iE 'hbp_|api_key: [A-Za-z0-9]'` → no hits.
+   - `git diff origin/main... -- . ':(exclude)docs/**' | grep -iE 'hbp_|api_key: [A-Za-z0-9]'` → no hits.
 
 > **Checkpoint 3 review:** this is a single-task checkpoint. Run
 > **review-changes-mini** covering Task 7 once its work is finished.
