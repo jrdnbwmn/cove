@@ -11,7 +11,7 @@ class HoneybadgerConfigTest < Minitest::Test
   def test_api_key_is_read_from_credentials_and_never_committed
     config = YAML.load_file(File.expand_path("../../config/honeybadger.yml", __dir__))
 
-    assert_match(/credentials\.dig\(:honeybadger, :api_key\)/, config.fetch("api_key"))
+    assert_match(/\A<%=\s*Rails\.application\.credentials\.dig\(:honeybadger, :api_key\)\s*%>\z/, config.fetch("api_key"))
   end
 
   def test_honeybadger_integration_is_enabled
