@@ -180,6 +180,25 @@ Routes are modularized in `config/routes/`:
   `user.confirmed?` is not a valid method — check `confirmed_at.present?`
   instead.
 
+### Jumpstart configuration
+- Don't run the Jumpstart config generator (`Jumpstart.config.save`, or Save in
+  the `/jumpstart` UI) to turn on an integration. It bundles three actions and
+  only one is wanted: `copy_configs` copies a template from `lib/templates/`
+  (wanted); `write_config` regenerates `config/jumpstart.rb` through
+  `pretty_inspect`, reformatting/reordering the whole file; and
+  `update_procfiles` **creates a root `Procfile`**, which this repo
+  deliberately does not have — deploy start commands live in `render.yaml`'s
+  `startCommand`, and a `Procfile` would state a different, migration-less
+  start command. Instead: hand-edit the array in `config/jumpstart.rb` and copy
+  the template file yourself.
+- Integration predicates (`Jumpstart.config.honeybadger?`, `.sentry?`, …) are
+  auto-defined from the `INTEGRATIONS` hash in
+  `lib/jumpstart/lib/jumpstart/configuration.rb`, driven solely by the
+  `integrations` array — and `Gemfile.jumpstart` already carries a
+  `gem "..." if Jumpstart.config.x?` line for every supported integration. So
+  adding the name to the array plus `bundle install` is the entire gem install;
+  there is no "Gemfile entry to generate."
+
 ### System tests
 - `bin/rails test:system TEST=path/to/test.rb -n /pattern/` is unreliable in
   this checkout (incompatible syntax / deprecation warning on `-n`). Run a
