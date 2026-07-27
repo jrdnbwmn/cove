@@ -2,6 +2,9 @@
 Rails.application.routes.draw do
   draw :jumpstart
 
+  # TEMPORARY — remove before opening the PR. Verifies COV-33 wiring.
+  get "dev/boom", to: proc { raise "COV-33 Honeybadger smoke test" } if Rails.env.staging?
+
   # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.
   # Can be used by load balancers and uptime monitors to verify that the app is live.
   get "up" => "rails/health#show", :as => :rails_health_check
