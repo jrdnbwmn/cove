@@ -7,9 +7,9 @@
 
 | Task | Phase | Checkpoint | Description | Assign | Done |
 | ---- | ----- | ---------- | ----------- | ------ | ---- |
-| 1 | 1 | 1 | Write `test/config/honeybadger_config_test.rb` (red) | Master | |
-| 2 | 1 | 1 | Add `config/honeybadger.yml`, flip integrations flag, bundle | Master | |
-| 3 | 1 | 1 | `AIDEV-NOTE` in filter_parameter_logging.rb | Master | |
+| 1 | 1 | 1 | Write `test/config/honeybadger_config_test.rb` (red) | Master | ✅ |
+| 2 | 1 | 1 | Add `config/honeybadger.yml`, flip integrations flag, bundle | Master | ✅ |
+| 3 | 1 | 1 | `AIDEV-NOTE` in filter_parameter_logging.rb | Master | ✅ |
 | 4 | 2 | 2 | Honeybadger account + project + API key → `staging.yml.enc` | Master | |
 | 5 | 2 | 2 | Temp boom route, repoint Render to branch, verify AC #1/#2 | Master | |
 | 6 | 2 | 2 | Uptime check on `/up` with verified email alerting (AC #3) | Master | |
