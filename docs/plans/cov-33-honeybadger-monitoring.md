@@ -13,7 +13,7 @@
 | 4 | 2 | 2 | Honeybadger account + project + API key → `staging.yml.enc` | Master | ✅ |
 | 5 | 2 | 2 | Temp boom route, repoint Render to branch, verify AC #1/#2 | Master | ✅ |
 | 6 | 2 | 2 | Uptime check on `/up` with verified email alerting (AC #3) | Master | ✅ |
-| 7 | 3 | 3 | Repoint Render to main, delete boom route, final gates | Master | |
+| 7 | 3 | 3 | Repoint Render to main, delete boom route, final gates | Master | ✅ |
 
 All tasks are Master. This ticket is config + ops: every code task touches shared
 infra (`config/jumpstart.rb`, `Gemfile.lock`, `config/routes.rb`) or requires
