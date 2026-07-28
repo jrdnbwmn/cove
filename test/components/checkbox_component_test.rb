@@ -15,6 +15,18 @@ class CheckboxComponentTest < ViewComponent::TestCase
     assert_selector "input[type='checkbox'].rounded"
   end
 
+  test "uses the application primary color tokens" do
+    render_inline(CheckboxComponent.new(label: "Receive product updates"))
+
+    assert_selector "input[type='checkbox'].accent-primary.text-primary.focus\\:ring-primary-foreground"
+  end
+
+  test "passes data attributes to the checkbox input" do
+    render_inline(CheckboxComponent.new(label: "Receive product updates", data: {controller: "preferences", action: "change->preferences#save"}))
+
+    assert_selector "input[data-controller='preferences'][data-action='change->preferences#save']"
+  end
+
   test "renders a safe HTML label" do
     view_helpers = ActionController::Base.helpers
     label_html = view_helpers.safe_join(["I agree to the ", view_helpers.link_to("Terms of Service", "/terms")])

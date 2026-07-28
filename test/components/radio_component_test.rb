@@ -9,6 +9,12 @@ class RadioComponentTest < ViewComponent::TestCase
     assert_text "Starter"
   end
 
+  test "uses the application primary color tokens" do
+    render_inline(RadioComponent.new(label: "Starter"))
+
+    assert_selector "input[type='radio'].accent-primary.text-primary.focus\\:ring-primary-foreground"
+  end
+
   test "renders the disabled preview" do
     render_preview(:disabled)
 

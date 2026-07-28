@@ -6,7 +6,7 @@
 | --- | --- | --- | --- |
 | `ButtonComponent` | Renders an action button or link with visual variants, sizes, and states. | `text`, `variant`, `size`, `style`, `href` | `ButtonComponentPreview` |
 | `FormFieldComponent` | Wraps a labeled raw form control with helper, error, required, and layout states. | `label`, `name`, `size`, `variant`, `error` | `FormFieldComponentPreview` |
-| `CheckboxComponent` | Renders a labeled checkbox with optional supporting text and validation state. | `label`, `name`, `checked`, `disabled`, `error` | `CheckboxComponentPreview` |
+| `CheckboxComponent` | Renders a labeled checkbox with optional supporting text and validation state. | `label`, `name`, `checked`, `disabled`, `error`, `data` | `CheckboxComponentPreview` |
 | `RadioComponent` | Renders a labeled radio option with optional supporting text and validation state. | `label`, `name`, `value`, `checked`, `disabled` | `RadioComponentPreview` |
 | `SwitchComponent` | Renders a toggle switch with label, status, and validation state. | `label`, `name`, `checked`, `show_icons`, `disabled` | `SwitchComponentPreview` |
 | `SelectComponent` | Renders a locally enhanced single or multiple select. | `name`, `options`, `selected`, `multiple`, `error` | `SelectComponentPreview` |
@@ -128,7 +128,8 @@ required, disabled, and error states.
 
 **Arguments:** `label` is required. Use `name`, `value`, `checked`, `disabled`,
 `label_html` (an HTML-safe buffer for labels that contain links), `required`, `description`, `size`, `indeterminate`, `error`, `classes`,
-`input_classes`, and `label_classes` to configure its form and visual state.
+`input_classes`, `label_classes`, and `data` (input data attributes, including
+Stimulus targets and actions) to configure its form and visual state.
 
 **States:** Supports checked, disabled, required, indeterminate, description,
 and error states.
