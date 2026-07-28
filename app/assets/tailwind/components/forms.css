@@ -1,4 +1,3 @@
-/* AIDEV-NOTE: This file reads Jumpstart's --bg-primary/--text-on-primary token family; COV-4–6 will migrate it to the new _tokens.css palette. */
 .form-group {
   margin-bottom: 24px;
   position: relative;
@@ -28,8 +27,8 @@
 
   &:focus,
   &:focus-visible {
-    box-shadow: inset 0 0 0 1px var(--border-primary-hover);
-    border: 1px solid var(--border-primary-hover);
+    box-shadow: inset 0 0 0 1px var(--primary);
+    border: 1px solid var(--primary);
   }
 
   &.error {
@@ -71,8 +70,8 @@ select {
 
   &:focus,
   &:focus-visible {
-    box-shadow: inset 0 0 0 1px var(--border-primary-hover);
-    border: 1px solid var(--border-primary-hover);
+    box-shadow: inset 0 0 0 1px var(--primary);
+    border: 1px solid var(--primary);
   }
 }
 
@@ -94,8 +93,8 @@ select[multiple] {
 
   &:focus,
   &:focus-visible {
-    box-shadow: inset 0 0 0 1px var(--border-primary-hover);
-    border: 1px solid var(--border-primary-hover);
+    box-shadow: inset 0 0 0 1px var(--primary);
+    border: 1px solid var(--primary);
   }
 
   &.error {
@@ -277,7 +276,7 @@ form.inline {
       + label,
       + div label {
         &::before {
-          background: var(--bg-primary);
+          background: var(--primary);
         }
 
         &::after {
@@ -353,7 +352,7 @@ form.inline {
   &:has( [type="checkbox"]:checked) label,
   &:has( [type="radio"]:checked) label {
     &::before {
-      background: var(--bg-primary);
+      background: var(--primary);
     }
 
     &::after {

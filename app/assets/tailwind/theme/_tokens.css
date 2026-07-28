@@ -11,6 +11,7 @@
 }
 
 /* AIDEV-NOTE: Rebrand by editing --primary and --primary-foreground here only. */
+/* AIDEV-NOTE: COV-36 mapped form focus rings to --primary (not --ring, which is too light to meet WCAG 2.4.11). Any rebrand must keep --primary at >= 3:1 contrast against white or focus indicators become invisible. */
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);

@@ -7,13 +7,13 @@
 
 | Task | Phase | Checkpoint | Description | Assign | Done |
 | ---- | ----- | ---------- | ----------- | ------ | ---- |
-| 1 | 1 | 1 | Guard test + migrate `buttons.css`, `pills.css` (sets the MIX pattern) | Master | |
-| 2 | 1 | 2 | Migrate `forms.css`, `tabs.css` | Clone | |
-| 3 | 1 | 2 | Migrate `nav.css`, `top_nav.css`, `docs.css` | Clone | |
-| 4 | 1 | 3 | Migrate `pagination.css`, `typography.css`, `wells.css`, `notifications.css` | Clone | |
-| 5 | 1 | 3 | Migrate `alert.css` (the documented exception) | Clone | |
-| 6 | 2 | 4 | Delete 7 dead tokens from `light.css`; contrast-floor note in `_tokens.css` | Master | |
-| 7 | 2 | 4 | Visual verification across `/jumpstart/docs` + rebrand proof | Master | |
+| 1 | 1 | 1 | Guard test + migrate `buttons.css`, `pills.css` (sets the MIX pattern) | Master | ✅ |
+| 2 | 1 | 2 | Migrate `forms.css`, `tabs.css` | Clone | ✅ |
+| 3 | 1 | 2 | Migrate `nav.css`, `top_nav.css`, `docs.css` | Clone | ✅ |
+| 4 | 1 | 3 | Migrate `pagination.css`, `typography.css`, `wells.css`, `notifications.css` | Clone | ✅ |
+| 5 | 1 | 3 | Migrate `alert.css` (the documented exception) | Clone | ✅ |
+| 6 | 2 | 4 | Delete 7 dead tokens from `light.css`; contrast-floor note in `_tokens.css` | Master | ✅ |
+| 7 | 2 | 4 | Visual verification across `/jumpstart/docs` + rebrand proof | Master | ✅ |
 
 ## Prerequisites
 

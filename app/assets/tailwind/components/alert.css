@@ -1,4 +1,4 @@
-/* AIDEV-NOTE: This file reads Jumpstart's --bg-primary/--text-on-primary token family; COV-4–6 will migrate it to the new _tokens.css palette. */
+/* AIDEV-NOTE: COV-36 mapped this file's body copy to --foreground, not --primary: alerts already carry a semantic colour, so brand-tinted text inside a danger alert would fight it. Alerts intentionally do not rebrand. */
 .alert,
 .banner {
   background: var(--base-bg-base);
@@ -48,7 +48,7 @@
   }
 
   li {
-    color: var(--text-primary);
+    color: var(--foreground);
     font-weight: 400;
   }
 
