@@ -141,7 +141,7 @@ button[disabled]        .when-enabled { display: none; }
   color: var(--primary-foreground);
 
   &:hover {
-    background: color-mix(in oklab, var(--primary) 90%, transparent);
+    background: var(--primary-hover);
     color: var(--primary-foreground);
   }
 
@@ -156,9 +156,9 @@ button[disabled]        .when-enabled { display: none; }
     border: 1px solid var(--primary);
 
     &:hover {
-      background: color-mix(in oklab, var(--primary) 90%, transparent);
+      background: var(--primary-hover);
       color: var(--primary-foreground);
-      border: 1px solid color-mix(in oklab, var(--primary) 90%, transparent);
+      border: 1px solid var(--primary-hover);
     }
   }
 }

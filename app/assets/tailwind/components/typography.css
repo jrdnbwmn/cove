@@ -55,7 +55,7 @@ h6, .h6 {
 
   &:hover,
   &:focus {
-    color: color-mix(in oklab, var(--primary) 90%, transparent);
+    color: var(--primary-hover);
   }
 }
 

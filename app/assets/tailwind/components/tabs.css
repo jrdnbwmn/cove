@@ -43,8 +43,8 @@
       color: var(--primary);
 
       &:hover {
-        color: color-mix(in oklab, var(--primary) 90%, transparent);
-        border-bottom: 2px solid color-mix(in oklab, var(--primary) 90%, transparent);
+        color: var(--primary-hover);
+        border-bottom: 2px solid var(--primary-hover);
       }
 
       &:focus-visible,
