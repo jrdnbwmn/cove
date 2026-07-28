@@ -1,4 +1,3 @@
-/* AIDEV-NOTE: This file reads Jumpstart's --bg-primary/--text-on-primary token family; COV-4–6 will migrate it to the new _tokens.css palette. */
 /* Menu component */
 nav.menu-component {
   max-width: 275px;
@@ -160,7 +159,7 @@ nav.menu-component {
       position: relative;
 
       &::before {
-        background-color: var(--border-primary);
+        background-color: var(--primary);
         bottom: 0;
         content: "";
         width: 4px;
@@ -185,10 +184,10 @@ nav.menu-component {
     }
 
     &.active {
-      color: var(--text-primary);
+      color: var(--primary);
 
       .icon {
-        color: var(--text-primary);
+        color: var(--primary);
       }
     }
   }
@@ -213,8 +212,8 @@ nav.menu-component {
     display: block;
     width: 100%;
     padding: 8px 12px;
-    background-color: var(--bg-primary);
-    color: var(--text-on-primary);
+    background-color: var(--primary);
+    color: var(--primary-foreground);
     font-size: 14px;
     font-weight: 600;
     line-height: 20px;
@@ -370,7 +369,7 @@ nav.menu-component {
         position: relative;
 
         &::before {
-          background-color: var(--border-primary);
+          background-color: var(--primary);
           bottom: 0;
           content: "";
           width: 4px;
@@ -463,7 +462,7 @@ nav.menu-component {
         text-overflow: ellipsis;
 
         &.active {
-          color: var(--text-primary);
+          color: var(--primary);
           font-weight: 600;
         }
       }

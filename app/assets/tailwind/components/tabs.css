@@ -1,4 +1,3 @@
-/* AIDEV-NOTE: This file reads Jumpstart's --bg-primary/--text-on-primary token family; COV-4–6 will migrate it to the new _tokens.css palette. */
 .tab-nav {
   display: none;
   margin-bottom: 16px;
@@ -40,19 +39,19 @@
     }
 
     &[data-active="true"]{
-      border-bottom: 2px solid var(--border-primary-hover);
-      color: var(--text-primary);
+      border-bottom: 2px solid var(--primary);
+      color: var(--primary);
 
       &:hover {
-        color: var(--text-primary-hover);
-        border-bottom: 2px solid var(--border-primary-hover);
+        color: var(--primary-hover);
+        border-bottom: 2px solid var(--primary-hover);
       }
 
       &:focus-visible,
       &:focus {
         border-radius: 8px;
-        border: 2px solid var(--border-primary-hover);
-        color: var(--text-primary);
+        border: 2px solid var(--primary);
+        color: var(--primary);
       }
     }
   }
