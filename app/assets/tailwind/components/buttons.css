@@ -252,6 +252,9 @@ button[disabled]        .when-enabled { display: none; }
 
   &.btn-icon {
     background: var(--base-bg-lowest);
+    /* AIDEV-NOTE: COV-36 mapped this to --border, not --primary: btn-link is a
+       neutral/text-colored button, so a brand-tinted border here would be
+       inconsistent with the rest of the variant. */
     border: 1px solid var(--border);
 
     &:focus,
