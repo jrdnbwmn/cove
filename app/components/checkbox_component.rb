@@ -19,6 +19,7 @@ class CheckboxComponent < ViewComponent::Base
   # @param classes [String] Additional CSS classes for the wrapper
   # @param input_classes [String] Additional CSS classes for the input element
   # @param label_classes [String] Additional CSS classes for the label element
+  # @param data [Hash] Data attributes for the input element, including Stimulus targets and actions
   def initialize(
     label:,
     label_html: nil,
@@ -34,7 +35,8 @@ class CheckboxComponent < ViewComponent::Base
     error: nil,
     classes: nil,
     input_classes: nil,
-    label_classes: nil
+    label_classes: nil,
+    data: {}
   )
     super()
     @label = label
@@ -52,6 +54,7 @@ class CheckboxComponent < ViewComponent::Base
     @classes = classes
     @input_classes = input_classes
     @label_classes = label_classes
+    @data = data || {}
   end
 
   def wrapper_classes
@@ -109,7 +112,7 @@ class CheckboxComponent < ViewComponent::Base
   end
 
   def input_data_attributes
-    attrs = {}
+    attrs = @data.deep_dup
     attrs[:indeterminate] = true if @indeterminate
     attrs
   end
@@ -121,9 +124,8 @@ class CheckboxComponent < ViewComponent::Base
   end
 
   def base_input_classes
-    "rounded border-neutral-300 text-neutral-900 focus:ring-neutral-500 focus:ring-offset-0 " \
-      "dark:border-neutral-600 dark:bg-neutral-800 dark:text-neutral-100 dark:focus:ring-neutral-400 " \
-      "dark:checked:bg-neutral-600 dark:checked:border-neutral-500"
+    "rounded border-neutral-300 accent-primary text-primary focus:ring-primary-foreground focus:ring-offset-0 " \
+      "dark:border-neutral-600 dark:bg-neutral-800 dark:focus:ring-primary-foreground"
   end
 
   def size_input_classes
