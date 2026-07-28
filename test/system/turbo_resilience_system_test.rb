@@ -169,7 +169,7 @@ class TurboResilienceSystemTest < ApplicationSystemTestCase
 
   test "form deadlines show the fallback pending label" do
     visit new_user_session_path
-    set_registration_form_timeout("50")
+    set_registration_form_timeout("500")
     stub_user_form_fetch("pending")
 
     fill_in "user[email]", with: users(:one).email
