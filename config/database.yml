@@ -14,16 +14,13 @@
 #
 
 <%
-  # Render's free plan provisions a single Postgres instance for staging, so
-  # CACHE_DATABASE_URL/QUEUE_DATABASE_URL/CABLE_DATABASE_URL are identical to
-  # DATABASE_URL. Rails treats an identical URL as the same database for every
-  # role, so cache/queue/cable would silently never get their schema loaded
-  # (db:prepare thinks the shared database is already initialized once primary
-  # has run). Swap in a distinct database name per role so each gets its own
-  # database on that same shared server instead.
+  # Render provisions a single Postgres instance per environment, so cache,
+  # queue, and cable roles must use distinct database names on the same server.
+  # Otherwise Rails treats every role as the primary database and skips their
+  # schema setup when db:prepare initializes primary first.
   require "uri"
 
-  def staging_role_database_url(database_name)
+  def role_database_url(database_name)
     return nil unless ENV["DATABASE_URL"]
 
     uri = URI.parse(ENV["DATABASE_URL"])
@@ -105,15 +102,15 @@ staging:
 
   cache:
     <<: *default
-    url: <%= staging_role_database_url("jumpstart_staging_cache") %>
+    url: <%= role_database_url("jumpstart_staging_cache") %>
     migrations_paths: db/cache_migrate
   queue:
     <<: *default
-    url: <%= staging_role_database_url("jumpstart_staging_queue") %>
+    url: <%= role_database_url("jumpstart_staging_queue") %>
     migrations_paths: db/queue_migrate
   cable:
     <<: *default
-    url: <%= staging_role_database_url("jumpstart_staging_cable") %>
+    url: <%= role_database_url("jumpstart_staging_cable") %>
     migrations_paths: db/cable_migrate
 
 # As with config/credentials.yml, you never want to store sensitive information,
@@ -145,19 +142,16 @@ production:
     # Or set DATABASE_URL to override
 
   cache:
-    <<: *primary_production
-    database: jumpstart_production_cache
+    <<: *default
+    url: <%= role_database_url("jumpstart_production_cache") %>
     migrations_paths: db/cache_migrate
-    # Or set CACHE_DATABASE_URL to override
 
   queue:
-    <<: *primary_production
-    database: jumpstart_production_queue
+    <<: *default
+    url: <%= role_database_url("jumpstart_production_queue") %>
     migrations_paths: db/queue_migrate
-    # Or set QUEUE_DATABASE_URL to override
 
   cable:
-    <<: *primary_production
-    database: jumpstart_production_cable
+    <<: *default
+    url: <%= role_database_url("jumpstart_production_cable") %>
     migrations_paths: db/cable_migrate
-    # Or set CABLE_DATABASE_URL to override
