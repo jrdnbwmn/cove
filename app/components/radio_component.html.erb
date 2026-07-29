@@ -2,13 +2,12 @@
   <input
     type="radio"
     id="<%= @id %>"
-    <% if @name.present? %>name="<%= @name %>"<% end %>
-    <% if @value.present? %>value="<%= @value %>"<% end %>
+    <% if @name.present? %> name="<%= @name %>"<% end %>
+    <% if @value.present? %> value="<%= @value %>"<% end %>
     class="<%= input_classes %>"
-    <% if @checked %>checked<% end %>
-    <% if @disabled %>disabled<% end %>
-    <% if @required %>required<% end %>
-  >
+    <% if @checked %> checked<% end %>
+    <% if @disabled %> disabled<% end %>
+    <% if @required %> required<% end %>>
 
   <div class="<%= text_content_classes %>">
     <label for="<%= @id %>" class="<%= label_classes %>">

@@ -28,6 +28,7 @@ jobs:
         with:
           bundler-cache: true
       - run: bin/rubocop -f github
+      - run: bin/erb_lint --lint-all -f compact
 
   security:
     runs-on: ubuntu-latest
@@ -40,9 +41,10 @@ jobs:
       - run: bin/importmap audit
       - run: bin/brakeman --quiet --no-pager --exit-on-warn --exit-on-error
 
-  # AIDEV-NOTE: No setup-chrome action needed here: pg and
-  # tailwindcss-ruby ship precompiled x86_64-linux binaries in Gemfile.lock,
-  # and ubuntu-latest ships Chrome for Selenium Manager to resolve.
+  # AIDEV-NOTE: Every job that boots Rails must install libvips. Active
+  # Storage loads its Vips transformer during boot, while ruby-vips only
+  # provides the Ruby binding. pg and tailwindcss-ruby ship precompiled
+  # x86_64-linux binaries in Gemfile.lock.
   test:
     runs-on: ubuntu-latest
     services:

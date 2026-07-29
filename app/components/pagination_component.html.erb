@@ -31,7 +31,7 @@
           <% end %>
           <%= hidden_field_tag limit_key, @pagy.limit %>
           <label class="text-xs text-neutral-500 dark:text-neutral-300 mr-2">Jump to Page</label>
-          <%= number_field_tag page_key, @pagy.page, min: 1, max: @pagy.pages, class: "w-fit rounded-l-md border border-black/10 bg-white pl-2 leading-7 text-sm dark:border-white/10 dark:bg-white/10 dark:text-white focus-visible:outline-neutral-600 dark:focus-visible:outline-neutral-200" %>
+          <%= number_field_tag page_key, @pagy.page, min: 1, max: @pagy.pages, autocomplete: "off", class: "w-fit rounded-l-md border border-black/10 bg-white pl-2 leading-7 text-sm dark:border-white/10 dark:bg-white/10 dark:text-white focus-visible:outline-neutral-600 dark:focus-visible:outline-neutral-200" %>
           <%= submit_tag "Go", class: "cursor-pointer rounded-r-md border border-l-0 border-black/10 bg-white px-2.5 py-1 text-sm font-medium text-neutral-800 hover:bg-neutral-50 dark:border-white/10 dark:bg-white/10 dark:text-white dark:hover:bg-white/20" %>
         <% end %>
       <% end %>

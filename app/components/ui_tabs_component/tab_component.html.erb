@@ -5,8 +5,7 @@
   data-ui-tabs-target="tab"
   data-action="click->ui-tabs#change:prevent"
   role="tab"
-  <% if disabled %>disabled aria-disabled="true"<% end %>
->
+  <% if disabled %> disabled aria-disabled="true"<% end %>>
   <% if icon.present? %>
     <%= icon.html_safe %>
   <% end %>

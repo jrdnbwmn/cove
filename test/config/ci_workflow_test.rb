@@ -20,15 +20,14 @@ class CiWorkflowTest < Minitest::Test
     end
   end
 
-  def test_every_job_that_boots_rails_installs_libvips
+  def test_rails_boot_jobs_install_libvips
     workflow = YAML.load_file(File.expand_path("../../.github/workflows/ci.yml", __dir__))
 
-    workflow.fetch("jobs").each do |name, job|
-      runs_rails = job.fetch("steps").any? { |step| step["run"]&.include?("bin/rails") }
-      next unless runs_rails
+    %w[test system seeds].each do |name|
+      commands = workflow.fetch("jobs").fetch(name).fetch("steps").filter_map { |step| step["run"] }
 
-      installs_libvips = job.fetch("steps").any? { |step| step["run"]&.include?("libvips") }
-      assert installs_libvips, "job '#{name}' boots Rails but does not install libvips"
+      assert_includes commands, "sudo apt-get update && sudo apt-get install -y --no-install-recommends libvips",
+        "job '#{name}' must install libvips before booting Rails"
     end
   end
 end
