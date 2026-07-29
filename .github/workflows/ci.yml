@@ -40,8 +40,7 @@ jobs:
       - run: bin/importmap audit
       - run: bin/brakeman --quiet --no-pager --exit-on-warn --exit-on-error
 
-  # AIDEV-NOTE: No apt packages and no setup-chrome action needed here or in
-  # system/seeds (aside from system's libvips step below): pg and
+  # AIDEV-NOTE: No setup-chrome action needed here: pg and
   # tailwindcss-ruby ship precompiled x86_64-linux binaries in Gemfile.lock,
   # and ubuntu-latest ships Chrome for Selenium Manager to resolve.
   test:
@@ -63,6 +62,7 @@ jobs:
       - uses: ruby/setup-ruby@v1
         with:
           bundler-cache: true
+      - run: sudo apt-get update && sudo apt-get install -y --no-install-recommends libvips
       - run: bin/rails db:test:prepare
       - run: bin/rails test
 
@@ -121,5 +121,6 @@ jobs:
       - uses: ruby/setup-ruby@v1
         with:
           bundler-cache: true
+      - run: sudo apt-get update && sudo apt-get install -y --no-install-recommends libvips
       - run: bin/rails db:test:prepare
       - run: bin/rails db:seed:replant

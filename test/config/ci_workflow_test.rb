@@ -19,4 +19,16 @@ class CiWorkflowTest < Minitest::Test
       assert_equal "test", job_env.fetch("RAILS_ENV"), "job '#{name}': #{FAILURE_MESSAGE}"
     end
   end
+
+  def test_every_job_that_boots_rails_installs_libvips
+    workflow = YAML.load_file(File.expand_path("../../.github/workflows/ci.yml", __dir__))
+
+    workflow.fetch("jobs").each do |name, job|
+      runs_rails = job.fetch("steps").any? { |step| step["run"]&.include?("bin/rails") }
+      next unless runs_rails
+
+      installs_libvips = job.fetch("steps").any? { |step| step["run"]&.include?("libvips") }
+      assert installs_libvips, "job '#{name}' boots Rails but does not install libvips"
+    end
+  end
 end
