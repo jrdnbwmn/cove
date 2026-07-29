@@ -61,7 +61,7 @@ Rails.application.configure do
   # Ignore bad email addresses and do not raise email delivery errors.
   # Set this to true and configure the email server for immediate delivery to raise delivery errors.
   # config.action_mailer.raise_delivery_errors = false
-  # AIDEV-NOTE: Staging has no email provider, so mail jobs run inline without
+  # AIDEV-NOTE: Staging has no email provider, so mail jobs run asynchronously without
   # attempting localhost SMTP until outbound email is explicitly provisioned.
   config.action_mailer.perform_deliveries = false
 
