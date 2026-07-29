@@ -39,11 +39,14 @@ class DatabaseConfigurationTest < Minitest::Test
 
   def rendered_configuration(database_url)
     previous_database_url = ENV["DATABASE_URL"]
+    previous_db_host = ENV["DB_HOST"]
     database_url ? ENV["DATABASE_URL"] = database_url : ENV.delete("DATABASE_URL")
+    ENV.delete("DB_HOST")
 
     rendered = ERB.new(File.read(File.expand_path("../../config/database.yml", __dir__))).result
     YAML.load(rendered, aliases: true)
   ensure
     previous_database_url ? ENV["DATABASE_URL"] = previous_database_url : ENV.delete("DATABASE_URL")
+    previous_db_host ? ENV["DB_HOST"] = previous_db_host : ENV.delete("DB_HOST")
   end
 end
