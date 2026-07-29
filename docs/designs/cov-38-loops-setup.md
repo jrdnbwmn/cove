@@ -209,7 +209,7 @@ Status as of this document.
 | 2 | `loops api-key` reports a valid key | **Done** — `{"success": true, "teamName": "Cove"}` |
 | 3 | SPF, DKIM, DMARC live at Namecheap and verified in the Loops dashboard | **Done** — "All records verified for mail.covehomeschool.com" |
 | 4 | `dig TXT` and the DKIM selectors return expected values | **Done** — all 7 records verified independently, below |
-| 5 | Smoke test: create a transactional email, then delete it | **Remaining** |
+| 5 | Smoke test: create a transactional email, then delete it | **Done** — created `cov-38 smoke`, confirmed it listed, then deleted it in the Loops dashboard and confirmed the list returned to `[]` |
 | 6 | Attachment-enablement request sent; reply or pending status recorded | **Sent** 2026-07-28, reply pending |
 | 7 | Findings note records limits with evidence | **Done** — see Findings |
 | 8 | Domain decision recorded with reasoning, cost, and reversal path | **Done** — see Decision 1 |
@@ -307,9 +307,9 @@ Stripe/Google pattern established by COV-31.
 
 ```bash
 loops transactional create -n "cov-38 smoke" --team cove-production
-loops transactional list                      # confirm it exists
-loops transactional delete <id> --team cove-production
-loops transactional list                      # confirm [] again
+loops transactional list --team cove-production  # confirm it exists
+# Delete the draft in the Loops dashboard; the CLI has no transactional delete verb.
+loops transactional list --team cove-production  # confirm [] again
 ```
 
 This proves the verified domain actually unblocks transactional creation —
