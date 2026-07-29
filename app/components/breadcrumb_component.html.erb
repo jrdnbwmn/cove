@@ -14,8 +14,7 @@
           <button
             type="button"
             class="<%= link_classes %> <%= @variant == :with_icons ? 'ml-1' : '' %>"
-            aria-label="Show hidden breadcrumb items"
-          >
+            aria-label="Show hidden breadcrumb items">
             ...
           </button>
         </li>
@@ -35,8 +34,7 @@
             class="<%= current_classes %> <%= @variant == :with_icons ? 'ml-1 flex items-center gap-1' : '' %>"
             aria-current="page"
             <% if current_style %> style="<%= current_style %>"<% end %>
-            <% if @current_max_width.present? %> title="<%= item[:label] %>"<% end %>
-          >
+            <% if @current_max_width.present? %> title="<%= item[:label] %>"<% end %>>
             <% if item[:icon].present? %>
               <%= render_item_icon(item[:icon]) %>
             <% end %>
@@ -58,8 +56,7 @@
 
           <a
             href="<%= item[:href] || '#' %>"
-            class="<%= link_classes %> <%= @variant == :with_icons && !first_item?(index) ? 'ml-1' : '' %> <%= @variant == :with_background && !first_item?(index) ? '' : '' %>"
-          >
+            class="<%= link_classes %> <%= @variant == :with_icons && !first_item?(index) ? 'ml-1' : '' %> <%= @variant == :with_background && !first_item?(index) ? '' : '' %>">
             <% if show_home_icon_for_item?(item, index) %>
               <%= home_icon_svg %>
               <span class="sr-only"><%= item[:label] %></span>

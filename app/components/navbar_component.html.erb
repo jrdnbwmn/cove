@@ -24,8 +24,7 @@
             data-align="end"
             data-action="click->navbar#toggleMenu pointerenter->navbar#handlePointerEnter pointermove->navbar#handlePointerMove pointerleave->navbar#handlePointerLeave keydown->navbar#handleTriggerKeydown"
             data-state="closed"
-            class="<%= mobile_menu_button_classes %>"
-          >
+            class="<%= mobile_menu_button_classes %>">
             <%= hamburger_icon %>
           </button>
         </li>
@@ -41,8 +40,7 @@
       data-navbar-target="viewport"
       data-action="pointerenter->navbar#cancelClose pointerleave->navbar#handlePointerLeave"
       data-state="closed"
-      class="<%= viewport_classes %>"
-    >
+      class="<%= viewport_classes %>">
       <!-- Indicator Arrow -->
       <div data-navbar-target="indicator" class="<%= indicator_classes %>">
         <div class="h-2 w-2 rotate-45 border-t border-l border-neutral-200 bg-white dark:border-neutral-700 dark:bg-neutral-800"></div>

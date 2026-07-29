@@ -3,13 +3,12 @@
     <input
       type="checkbox"
       id="<%= @id %>"
-      <% if @name.present? %>name="<%= @name %>"<% end %>
+      <% if @name.present? %> name="<%= @name %>"<% end %>
       value="<%= @value %>"
       class="sr-only peer"
-      <% if @checked %>checked<% end %>
-      <% if @disabled %>disabled<% end %>
-      <% if @required %>required<% end %>
-    >
+      <% if @checked %> checked<% end %>
+      <% if @disabled %> disabled<% end %>
+      <% if @required %> required<% end %>>
     <!-- Track -->
     <div class="<%= track_classes %>"></div>
     <!-- Thumb -->

@@ -2,14 +2,13 @@
   <input
     type="checkbox"
     id="<%= @id %>"
-    <% if @name.present? %>name="<%= @name %>"<% end %>
+    <% if @name.present? %> name="<%= @name %>"<% end %>
     value="<%= @value %>"
     class="<%= input_classes %>"
-    <% if @checked %>checked <% end %>
-    <% if @disabled %>disabled <% end %>
-    <% if @required %>required <% end %>
-    <%= tag.attributes(data: input_data_attributes) if input_data_attributes.present? %>
-  >
+    <% if @checked %> checked <% end %>
+    <% if @disabled %> disabled <% end %>
+    <% if @required %> required <% end %>
+    <%= tag.attributes(data: input_data_attributes) if input_data_attributes.present? %>>
 
   <div class="<%= text_content_classes %>">
     <label for="<%= @id %>" class="<%= label_classes %>">
