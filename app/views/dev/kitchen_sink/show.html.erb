@@ -14,7 +14,7 @@
       <div class="mt-6 grid gap-8 md:grid-cols-2">
         <%= render FormFieldComponent.new(label: "Display name", name: "profile[display_name]", helper_text: "Shown to collaborators.", required: true) do |component| %>
           <% component.with_input do %>
-            <input class="form-control" id="profile_display_name" name="profile[display_name]" type="text">
+            <input autocomplete="nickname" class="form-control" id="profile_display_name" name="profile[display_name]" type="text">
           <% end %>
         <% end %>
 
@@ -28,13 +28,13 @@
 
         <%= render FormFieldComponent.new(label: "Email", name: "user[email]", error: "Email is invalid.", variant: :floating) do |component| %>
           <% component.with_input do %>
-            <input class="form-control error" id="user_email" name="user[email]" type="email">
+            <input autocomplete="email" class="form-control error" id="user_email" name="user[email]" type="email">
           <% end %>
         <% end %>
 
         <%= render FormFieldComponent.new(label: "Account ID", name: "account[id]", disabled: true, size: :md) do |component| %>
           <% component.with_input do %>
-            <input class="form-control" disabled id="account_id" name="account[id]" type="text" value="ACC-123">
+            <input autocomplete="off" class="form-control" disabled id="account_id" name="account[id]" type="text" value="ACC-123">
           <% end %>
         <% end %>
       </div>

@@ -28,6 +28,7 @@ jobs:
         with:
           bundler-cache: true
       - run: bin/rubocop -f github
+      - run: bin/erb_lint --lint-all -f compact
 
   security:
     runs-on: ubuntu-latest
