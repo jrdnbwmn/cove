@@ -7,9 +7,9 @@
 
 | Task | Phase | Checkpoint | Description | Assign | Done |
 | ---- | ----- | ---------- | ----------- | ------ | ---- |
-| 1 | 1 | 1 | `database.yml`: generalize role URL helper, wire production cache/queue/cable | Master | |
-| 2 | 1 | 1 | Job adapters: production `:solid_queue` fallback, staging `:inline` → `:async` | Clone | |
-| 3 | 1 | 1 | `render.yaml` production block: plan, concurrency, env vars, dormant-block test | Clone | |
+| 1 | 1 | 1 | `database.yml`: generalize role URL helper, wire production cache/queue/cable | Master | ✅ |
+| 2 | 1 | 1 | Job adapters: production `:solid_queue` fallback, staging `:inline` → `:async` | Clone | ✅ |
+| 3 | 1 | 1 | `render.yaml` production block: plan, concurrency, env vars, dormant-block test | Clone | ✅ |
 
 ## Prerequisites
 

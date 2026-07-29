@@ -32,44 +32,44 @@ services:
           name: cove-staging-db
           property: connectionString
 
-  # Production is dormant until the cutover ticket. Whether to enable
-  # autoDeploy for production is a decision for that ticket, not this one.
-  # - type: web
-  #   name: cove-production
-  #   plan: basic-256mb
-  #   runtime: ruby
-  #   region: oregon # the region must be consistent across all services for the internal keys to be read
-  #   branch: main
-  #   autoDeploy: false
-  #   buildCommand: "./bin/render-build.sh"
-  #   preDeployCommand: bundle exec rails db:prepare
-  #   startCommand: bundle exec rails server
-  #   healthCheckPath: "/up"
-  #   envVars:
-  #     - key: RAILS_MASTER_KEY
-  #       sync: false
-  #     - key: RAILS_ENV
-  #       value: production
-  #     - key: RACK_ENV
-  #       value: production
-  #     - key: SOLID_QUEUE_IN_PUMA
-  #       value: true
-  #     - key: DATABASE_URL
-  #       fromDatabase:
-  #         name: cove-production-db
-  #         property: connectionString
-  #     - key: CABLE_DATABASE_URL
-  #       fromDatabase:
-  #         name: cove-production-db
-  #         property: connectionString
-  #     - key: CACHE_DATABASE_URL
-  #       fromDatabase:
-  #         name: cove-production-db
-  #         property: connectionString
-  #     - key: QUEUE_DATABASE_URL
-  #       fromDatabase:
-  #         name: cove-production-db
-  #         property: connectionString
+  # >>> production (dormant)
+  # services:
+  #   # Production is dormant until the cutover ticket. Whether to enable
+  #   # autoDeploy for production is a decision for that ticket, not this one.
+  #   - type: web
+  #     name: cove-production
+  #     plan: starter
+  #     runtime: ruby
+  #     region: oregon # the region must be consistent across all services for the internal keys to be read
+  #     branch: main
+  #     autoDeploy: false
+  #     buildCommand: "./bin/render-build.sh"
+  #     preDeployCommand: bundle exec rails db:prepare
+  #     startCommand: bundle exec rails server
+  #     healthCheckPath: "/up"
+  #     envVars:
+  #       - key: RAILS_MASTER_KEY
+  #         sync: false
+  #       - key: RAILS_ENV
+  #         value: production
+  #       - key: RACK_ENV
+  #         value: production
+  #       # Render defaults WEB_CONCURRENCY to 1, which starts Puma in cluster mode.
+  #       - key: WEB_CONCURRENCY
+  #         value: "0"
+  #       - key: SOLID_QUEUE_IN_PUMA
+  #         value: "true"
+  #       - key: DATABASE_URL
+  #         fromDatabase:
+  #           name: cove-production-db
+  #           property: connectionString
+  #   # `starter` is 512MB, the same ceiling staging OOM'd against, but commit
+  #   # b85d959 disabled embedded Solid Queue before 88cd7f3 pinned WEB_CONCURRENCY=0.
+  #   # Staging therefore ran cluster-mode Puma plus supervisor, dispatcher, and worker.
+  #   # Single-mode Puma with an embedded worker on 512MB has never been tested.
+  #   # Escape hatch: split a type: worker service running `bundle exec rake
+  #   # solid_queue:start` (about $7/month more) if cutover OOMs.
+  # <<<
 
 # Render's "free" databases are deleted after 30 days unless upgraded and only one per workspace.
 databases:
