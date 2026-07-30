@@ -22,7 +22,7 @@ current custom SVGs — so each batch is reviewed in the running app before movi
 on.
 
 The mapping comes from the COV-27 inventory doc
-(`docs/designs/icon-inventory.md`). For every swap, preserve the location's
+(`docs/designs/done/icon-inventory.md`; retired to `done/` by COV-61). For every swap, preserve the location's
 existing **size** (map `width`/`height` and existing `size-*` classes to the
 appropriate `class: "size-*"`), **color** (`currentColor` is inherited, so keep
 the surrounding text-color classes), **visibility/state toggling**
@@ -61,7 +61,7 @@ each batch is one commit + one live-review checkpoint:
 ## Prototype
 
 None. Visual reference for target icons is Lucide (the configured library) plus
-the per-location mapping in `docs/designs/icon-inventory.md`.
+the per-location mapping in `docs/designs/done/icon-inventory.md`.
 
 ## Data Model
 
