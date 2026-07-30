@@ -10,7 +10,7 @@
 | 1 | 1 | 1 | Generate + store + verify `cove-production` and `cove-staging` keys | Master | ✅ |
 | 2 | 1 | 1 | Retire the unnamed `e858` key and clean up local CLI state | Master | ✅ |
 | 3 | 1 | 1 | Transactional smoke test (AC #5) + correct the runbook's delete step | Master | ✅ |
-| 4 | 2 | 2 | Record the `help@loops.so` reply (or pending status) and close the AC table | Master | |
+| 4 | 2 | 2 | Record the `help@loops.so` reply (or pending status) and close the AC table | Master | ✅ |
 
 Every task is Master. This ticket ships no app code — it is sequential, browser-
 and CLI-driven ops requiring user logins and secret handling, so there is nothing

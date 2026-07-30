@@ -45,29 +45,30 @@ behaviour rather than operating its own MTA.
 | API keys per team | **Multiple** | Settings → API — "Generate keys for specific tasks or integrations" |
 | Free plan contacts | 1,000 subscribed | Settings → Billing |
 | Free plan sends | 4,000 per rolling 30 days | Settings → Billing |
-| Rate limit | 10 req/sec per team (per docs; confirmation requested) | COV-37 §Rate limit |
+| Transactional and contact-update rate limit | 10 requests/sec | `help@loops.so`, 2026-07-29 |
+| Content API rate limit | 60 requests/min for `/v1/campaigns`, `/v1/workflows`, and `/v1/transactional_email`; response headers report remaining capacity | `help@loops.so`, 2026-07-29 |
 
 The "teams per account: multiple" answer resolves the ticket's stated
 unknown #4, and it is the one that mattered — a transactional/marketing split
 would **not** have forced a paid plan the way the ticket feared. The split was
 declined on other grounds (see Decision 1).
 
-### Unresolved — awaiting `help@loops.so`
+### Support reply — resolved 2026-07-29
 
-A single support email was sent 2026-07-28 by the author covering all four.
-**Reply pending.**
+`help@loops.so` confirmed the following:
 
-1. **Do transactional sends draw down the free plan's 4,000/30 days?** The
-   billing page says only "the sum of emails sent from your Loops account,"
-   which does not distinguish transactional from marketing. The ticket assumed
-   "transactional included at no charge"; **the dashboard does not say that.**
-   This is the one open answer that could change a decision — see Open
-   Questions.
-2. **Attachment enablement** on `POST /v1/transactional`. Requested for
-   optionality only; COV-37 removed the dependency by choosing a linked receipt
-   over an attached PDF.
-3. **CC/BCC eligibility** on transactional sends.
-4. **Daily preview/test-send cap.**
+1. **Attachments are enabled** for Cove's account. They remain optional because
+   COV-37 uses a linked receipt rather than an attached PDF.
+2. **Transactional and marketing sends both count** against the same 4,000-send
+   free-plan allowance, measured on a rolling 30-day window.
+3. **CC/BCC is supported**, with one recipient enabled by default; additional
+   recipients require a request to Loops support. The user must enable CC/BCC
+   in Settings → Sending before use.
+4. **Preview sends are capped at 100 per day.**
+5. **Rate limits:** transactional sending and contact updates allow 10 requests
+   per second; content endpoints (`/v1/campaigns`, `/v1/workflows`, and
+   `/v1/transactional_email`) allow 60 requests per minute. Loops includes
+   response headers that show remaining capacity.
 
 ### Incidental discoveries worth carrying forward
 
@@ -210,7 +211,7 @@ Status as of this document.
 | 3 | SPF, DKIM, DMARC live at Namecheap and verified in the Loops dashboard | **Done** — "All records verified for mail.covehomeschool.com" |
 | 4 | `dig TXT` and the DKIM selectors return expected values | **Done** — all 7 records verified independently, below |
 | 5 | Smoke test: create a transactional email, then delete it | **Done** — created `cov-38 smoke`, confirmed it listed, then deleted it in the Loops dashboard and confirmed the list returned to `[]` |
-| 6 | Attachment-enablement request sent; reply or pending status recorded | **Sent** 2026-07-28, reply pending |
+| 6 | Attachment-enablement request sent; reply or pending status recorded | **Done** — support replied 2026-07-29; attachments enabled, with send accounting, CC/BCC, preview, and rate-limit details recorded in Findings |
 | 7 | Findings note records limits with evidence | **Done** — see Findings |
 | 8 | Domain decision recorded with reasoning, cost, and reversal path | **Done** — see Decision 1 |
 | 9 | No API key value appears in any committed file | **Held** — keys referenced by name and last-4 only |
@@ -336,13 +337,11 @@ transactional/marketing domain decision with its reversal cost.
 
 ## Open Questions
 
-1. **Does transactional count against the free plan's 4,000 sends/30 days?**
-   Awaiting `help@loops.so`. If **yes**, the free plan's headroom is smaller
-   than the ticket assumed and the eleven transactional triggers in COV-37 draw
-   from the same budget as any future campaign — worth re-checking before COV-53
-   creates an audience. If **no**, nothing changes. Cove's volume is low enough
-   that this is unlikely to bite soon either way, but the assumption should not
-   go unrecorded.
+1. **Resolved — transactional counts against the free plan's 4,000 sends/30
+   days.** Marketing and transactional sends share the same rolling 30-day
+   allowance. **Carry forward to COV-53:** before it creates an audience or
+   campaign, budget its planned sends together with COV-37's eleven
+   transactional triggers and check Loops' rate-limit response headers.
 2. **Should local template authoring use a third key rather than the production
    key?** Decision 4 creates two keys, both destined for server credentials. But
    COV-40/41/42 author templates from the author's laptop via the CLI, which
