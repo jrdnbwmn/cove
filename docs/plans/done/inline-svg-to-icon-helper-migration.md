@@ -17,7 +17,7 @@
 ## Prerequisites
 
 - Design: `docs/designs/inline-svg-to-icon-helper-migration.md`
-- Mapping reference: `docs/designs/icon-inventory.md`
+- Mapping reference: `docs/designs/done/icon-inventory.md`
 - Prototype: None (Lucide is the visual reference)
 - Feature branch `feature/cov-28-migrate-inline-svgs` exists ✓
 
