@@ -78,8 +78,8 @@ en:
         marketing_updates: "Cove updates"
         marketing_description: "Receive occasional product news and homeschooling resources by email."
         marketing_opt_out_protected:
-          user_loops: "You unsubscribed through email preferences. You can't currently restore this subscription from Cove."
-          mailing_list_unsubscribe: "You unsubscribed through email preferences. You can't currently restore this subscription from Cove."
+          user_loops: &loops_unsubscribed "You unsubscribed through email preferences. You can't currently restore this subscription from Cove."
+          mailing_list_unsubscribe: *loops_unsubscribed
           hard_bounce: "We couldn't deliver email to this address. Update your email before subscribing again."
           spam_report: "Marketing updates are unavailable because a previous message was reported as spam."
         save_marketing_preferences: "Save marketing preferences"
