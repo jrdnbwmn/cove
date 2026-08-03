@@ -69,6 +69,32 @@
 
 <hr>
 
+<h2 class="h3"><%= t(".marketing_preferences") %></h2>
+<% marketing_opt_out_protected = current_user.marketing_opt_out_protected? %>
+<%= form_with url: marketing_preference_path, scope: :marketing_preference, method: :patch, class: "mt-4 max-w-md" do %>
+  <%= hidden_field_tag "marketing_preference[subscribed]", "0", id: nil %>
+  <%= render SwitchComponent.new(
+    label: t(".marketing_updates"),
+    name: "marketing_preference[subscribed]",
+    checked: current_user.marketing_subscribed?,
+    disabled: marketing_opt_out_protected,
+    description: t(".marketing_description"),
+    classes: "mb-4"
+  ) %>
+
+  <% if marketing_opt_out_protected %>
+    <p class="mb-4 text-sm text-muted-foreground"><%= t(".marketing_opt_out_protected.#{current_user.marketing_opt_out_reason}") %></p>
+  <% end %>
+
+  <%= render ButtonComponent.new(
+    text: t(".save_marketing_preferences"),
+    type: "submit",
+    disabled: marketing_opt_out_protected
+  ) %>
+<% end %>
+
+<hr>
+
 <h2 class="h3"><%= t(".cancel_my_account") %></h2>
 <p class="mt-2 mb-4 text-sm text-muted-foreground"><%= t(".cancel_my_account_description") %></p>
 <div class="mt-2">

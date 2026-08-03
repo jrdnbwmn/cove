@@ -7,13 +7,13 @@
 
 | Task | Phase | Checkpoint | Description | Assign | Done |
 | ---- | ----- | ---------- | ----------- | ------ | ---- |
-| 1 | 1 | 1 | Add nullable marketing-consent columns | Master | |
-| 2 | 1 | 1 | Implement consent state and transitions | Master | |
-| 3 | 2 | 2 | Capture consent during ordinary registration | Master | |
-| 4 | 2 | 2 | Render and verify the registration control | subagent | |
-| 5 | 3 | 3 | Add the authenticated preference endpoint | Master | |
-| 6 | 3 | 3 | Add Marketing preferences to account settings | subagent | |
-| 7 | 3 | 3 | Run integrated verification and final review | Master | |
+| 1 | 1 | 1 | Add nullable marketing-consent columns | Master | ✅ |
+| 2 | 1 | 1 | Implement consent state and transitions | Master | ✅ |
+| 3 | 2 | 2 | Capture consent during ordinary registration | Master | ✅ |
+| 4 | 2 | 2 | Render and verify the registration control | subagent | ✅ |
+| 5 | 3 | 3 | Add the authenticated preference endpoint | Master | ✅ |
+| 6 | 3 | 3 | Add Marketing preferences to account settings | subagent | ✅ |
+| 7 | 3 | 3 | Run integrated verification and final review | Master | ✅ |
 
 ## Prerequisites
 

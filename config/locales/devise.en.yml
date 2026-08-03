@@ -74,6 +74,15 @@ en:
         cancel_my_account_confirm_description_html: This will permanently erase all data associated with your account. This action cannot be undone.<br/><br/>To verify, type your email address to confirm and delete your account.
         currently_waiting_confirmation_for_email: 'Currently waiting confirmation for: %{email}'
         leave_blank_if_you_don_t_want_to_change_it: Leave blank if you don't want to change it
+        marketing_preferences: "Marketing preferences"
+        marketing_updates: "Cove updates"
+        marketing_description: "Receive occasional product news and homeschooling resources by email."
+        marketing_opt_out_protected:
+          user_loops: "You unsubscribed through email preferences. You can't currently restore this subscription from Cove."
+          mailing_list_unsubscribe: "You unsubscribed through email preferences. You can't currently restore this subscription from Cove."
+          hard_bounce: "We couldn't deliver email to this address. Update your email before subscribing again."
+          spam_report: "Marketing updates are unavailable because a previous message was reported as spam."
+        save_marketing_preferences: "Save marketing preferences"
         unhappy: Unhappy?
         update: Update
         we_need_your_current_password_to_confirm_your_changes: We need your current password to confirm your changes
@@ -87,6 +96,7 @@ en:
         terms_html: "I accept the %{terms} &amp; %{privacy}"
         terms_of_service: "terms of service"
         privacy_policy: "privacy policy"
+        marketing_opt_in: "Send me occasional Cove updates and homeschooling resources."
         submitting: "Submitting..."
         title: "Sign up"
       signed_up: "Welcome! You have signed up successfully."

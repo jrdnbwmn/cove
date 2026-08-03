@@ -16,6 +16,7 @@ class Users::RegistrationsController < Devise::RegistrationsController
       # Use name/email from the invite if not already provided. Email defaults to "" so it must use a presence check.
       resource.name ||= invite.name
       resource.email = resource.email.presence || invite.email
+      resource.marketing_opt_in = false
 
     # Build and display account fields in registration form if needed
     elsif Jumpstart.config.register_with_account?

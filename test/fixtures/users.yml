@@ -96,3 +96,29 @@ subscribed:
   accepted_privacy_at: <%= Time.current %>
   time_zone: "Central Time (US & Canada)"
   confirmed_at: <%= Time.current %>
+
+marketing_subscribed:
+  email: marketing-subscribed@example.com
+  first_name: Marketing
+  last_name: Subscribed
+  encrypted_password: <%= Devise::Encryptor.digest(User, UNIQUE_PASSWORD) %>
+  accepted_terms_at: <%= Time.current %>
+  accepted_privacy_at: <%= Time.current %>
+  time_zone: "Central Time (US & Canada)"
+  confirmed_at: <%= Time.current %>
+  marketing_opt_in_at: <%= Time.current %>
+  marketing_opt_in_source: registration
+
+marketing_unsubscribed:
+  email: marketing-unsubscribed@example.com
+  first_name: Marketing
+  last_name: Unsubscribed
+  encrypted_password: <%= Devise::Encryptor.digest(User, UNIQUE_PASSWORD) %>
+  accepted_terms_at: <%= Time.current %>
+  accepted_privacy_at: <%= Time.current %>
+  time_zone: "Central Time (US & Canada)"
+  confirmed_at: <%= Time.current %>
+  marketing_opt_in_at: <%= 1.day.ago %>
+  marketing_opt_in_source: registration
+  marketing_opt_out_at: <%= Time.current %>
+  marketing_opt_out_reason: user_app

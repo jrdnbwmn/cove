@@ -571,6 +571,11 @@ en:
     empty_description: "We'll let you know when you have new notifications."
     see_more: "See more notifications"
 
+  marketing_preferences:
+    updated: "Your marketing preferences have been updated."
+    invalid: "Choose whether you want to receive marketing updates."
+    protected: "You can't restore this marketing subscription from Cove."
+
   activerecord:
     attributes:
       api_token:

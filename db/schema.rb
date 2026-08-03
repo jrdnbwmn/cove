@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_04_18_192532) do
+ActiveRecord::Schema[8.0].define(version: 2026_08_03_200832) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -341,6 +341,10 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_18_192532) do
     t.boolean "otp_required_for_login"
     t.string "otp_secret"
     t.integer "last_otp_timestep"
+    t.datetime "marketing_opt_in_at"
+    t.string "marketing_opt_in_source"
+    t.datetime "marketing_opt_out_at"
+    t.string "marketing_opt_out_reason"
     t.text "otp_backup_codes"
     t.jsonb "preferences"
     t.virtual "name", type: :string, as: "(((first_name)::text || ' '::text) || (COALESCE(last_name, ''::character varying))::text)", stored: true

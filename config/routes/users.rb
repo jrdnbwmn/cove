@@ -10,6 +10,8 @@ devise_scope :user do
   get "session/otp", to: "sessions#otp"
 end
 
+resource :marketing_preference, only: :update
+
 namespace :account do
   resource :password
 end
