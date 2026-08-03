@@ -1,5 +1,3 @@
-require "digest"
-
 class LoopsClient < ApplicationClient
   BASE_URI = "https://app.loops.so/api"
 
