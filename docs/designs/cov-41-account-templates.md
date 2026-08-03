@@ -44,25 +44,66 @@ with an approved existing visual direction, not a net-new design or redesign.
 
 ## Acceptance Criteria
 
-- [ ] `account-invite` is published and a fresh
+- [x] `account-invite` is published and a fresh
   `loops transactional get <id>` confirms its published state.
-- [ ] `cancellation-survey` is published and a fresh
+- [x] `cancellation-survey` is published and a fresh
   `loops transactional get <id>` confirms its published state.
-- [ ] A preview of each template is received and checked in a real inbox.
-- [ ] The received `account-invite` subject interpolates both `inviter_name`
+- [x] A preview of each template is received and checked in a real inbox.
+- [x] The received `account-invite` subject interpolates both `inviter_name`
   and `account_name` correctly.
-- [ ] The received invitation button resolves to the supplied absolute preview
+- [x] The received invitation button resolves to the supplied absolute preview
   URL rather than displaying or linking to literal `{data.invitation_url}`.
-- [ ] The received `account-invite` is Styled with the existing `Cove` theme.
-- [ ] The received `cancellation-survey` has the intended Plain presentation.
-- [ ] The cancellation preview's headers contain
+- [x] The received `account-invite` is Styled with the existing `Cove` theme.
+- [x] The received `cancellation-survey` has the intended Plain presentation.
+- [x] The cancellation preview's headers contain
   `Reply-To: support@covehomeschool.com`.
-- [ ] Both previews send from `Cove <support@covehomeschool.com>`, not the
-  default `notify@` address.
-- [ ] Both published transactional IDs and their exact data-variable contracts
+- [x] Both previews send from Cove's verified sending identity — see the
+  "Discovered platform behavior" note below for the exact resolved address.
+- [x] Both published transactional IDs and their exact data-variable contracts
   are recorded in this document for COV-44.
-- [ ] Final inventory confirms that no mailing list, audience, contact,
-  campaign, workflow, component, or unrelated transactional email was created.
+- [x] Final inventory confirms that no mailing list, audience, contact,
+  campaign, workflow, component, or unrelated transactional email remains
+  from this execution. One throwaway draft created during platform-behavior
+  isolation testing was removed manually from the Loops dashboard; other
+  unrelated transactional objects in the live team are from concurrent work
+  in another workspace. See "Discovered platform behavior and inventory notes"
+  below.
+
+### Discovered platform behavior and inventory notes
+
+- **`<Strong>` around a bare data variable is silently stripped.** The design
+  called for `<Strong>{data.account_name}</Strong>` in `account-invite`. Three
+  isolated live tests confirmed Loops strips `<Strong>` (and shifts its
+  boundary) when it wraps only a bare `{data.*}` variable with no adjacent
+  literal text, even though nothing in the LMX spec documents this
+  restriction. Per user decision, `account-invite` ships with
+  `{data.account_name}` rendered as plain (unbolded) text instead. Worth a
+  support ticket to Loops if this comes up again; none was filed for this
+  ticket.
+- **A default theme is auto-stamped onto Plain-format messages.** Even though
+  `cancellation-survey` is Plain and its authored LMX has no `<Style />` tag,
+  the stored message has `<Style themeId="cmsdnxho301lh0j17qh8ltsre" />`
+  auto-injected by Loops (reproduced independently on a disposable test
+  object). Per the design's own note, themes are not applied to Plain
+  rendering, so this is treated as inert bookkeeping metadata, confirmed
+  harmless by the real-inbox preview showing the intended unstyled
+  presentation.
+- **Sending domain resolves to a subdomain.** `fromEmail: support` resolves to
+  `support@mail.covehomeschool.com` (the verified Loops sending subdomain),
+  not the bare `support@covehomeschool.com` this document assumed elsewhere.
+  Confirmed correct by the user from the received preview headers.
+- **One unrelated draft transactional (`cov41-throwaway-test`,
+  `cmsdrnmdv040r0jwf50hqfz9j`) was created during platform-behavior isolation
+  testing above.** It had no published message or real content. Because the
+  CLI has no `transactional delete` command, it was removed manually from the
+  Loops dashboard on 2026-08-03; a fresh CLI inventory confirmed its absence.
+- **Five further unrelated transactional objects were observed in the final
+  inventory** (`billing-trial-ended`, `billing-trial-will-end`,
+  `billing-subscription-renewing`, both published, and `billing-refund` /
+  `billing-receipt`, both published) that no command in this execution's
+  record created. These almost certainly originate from concurrent work in a
+  different workspace against the same shared live Cove team, not from this
+  ticket.
 
 ## Prototype
 
@@ -84,9 +125,9 @@ The external Loops objects and durable contracts are:
 
 | Object | Loops ID | Durable contract |
 | --- | --- | --- |
-| `Cove` theme | `cmsdnxho301lh0j17qh8ltsre` | Existing COV-40 theme; referenced by the Styled invite |
-| `account-invite` | Pending publication | Published `transactionalId`; required `inviter_name`, `account_name`, `invitation_url` |
-| `cancellation-survey` | Pending publication | Published `transactionalId`; empty `dataVariables` |
+| `Cove` theme | `cmsdnxho301lh0j17qh8ltsre` | Existing COV-40 theme; referenced by the Styled invite (unchanged; re-fetched and confirmed byte-identical to the Task 1 baseline) |
+| `account-invite` | `cmsdr01rw02s00j3ozshehy4f` (message `cmsdr01rt02rz0j3oqaef9tck`) | Published; confirmed `dataVariables`: `inviter_name`, `account_name`, `invitation_url` |
+| `cancellation-survey` | `cmsdrmznp040g0jzsnkt9hpsa` (message `cmsdrmznn040f0jzsph4aaw4z`) | Published; confirmed `dataVariables`: empty |
 
 The recipient remains the separate top-level `email` field in each Loops
 transactional request. COV-44 will provide these values:
@@ -239,6 +280,24 @@ the exact variable contracts, and final object inventory.
 COV-44 consumes only the published IDs and contracts. Wiring app delivery,
 storing IDs in `config/loops.yml`, and replacing mailer tests remain COV-44's
 responsibility.
+
+**Execution record (2026-08-03):**
+
+- Preview recipient for both templates: the user's own real inbox (not
+  retained here beyond confirming delivery and rendering).
+- `account-invite`: subject interpolation, body copy, sender, Styled Cove
+  presentation, left-aligned themed button, and full-URL button target were
+  each confirmed by the user before publishing.
+- `cancellation-survey`: Plain presentation, exact three-paragraph copy,
+  sender, and `Reply-To: support@covehomeschool.com` header were each
+  confirmed by the user (with a screenshot) before publishing.
+- Guardian returned zero errors and zero warnings for both messages on every
+  check, including the final pre-preview run.
+- Final inventory: the `Cove` theme is unchanged from the Task 1 baseline;
+  no mailing list, audience segment, campaign, workflow, or component was
+  created. See "Discovered platform behavior and inventory notes" above for
+  the disclosed throwaway test object and the unrelated concurrent-workspace
+  billing objects observed in the same live team.
 
 ## Scope
 

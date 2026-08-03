@@ -7,12 +7,12 @@
 
 | Task | Phase | Checkpoint | Description | Assign | Done |
 | ---- | ----- | ---------- | ----------- | ------ | ---- |
-| 1 | 1 | 1 | Verify the CLI credential, shared theme, and duplicate-safe live state | Master | |
-| 2 | 2 | 2 | Author and Guardian-check the `account-invite` draft | Master | |
-| 3 | 2 | 2 | Preview, inspect, and publish `account-invite` | Master | |
-| 4 | 3 | 3 | Author and Guardian-check the `cancellation-survey` draft | Master | |
-| 5 | 3 | 3 | Preview, inspect, and publish `cancellation-survey` | Master | |
-| 6 | 4 | 4 | Record the durable COV-44 handoff and final inventory | Master | |
+| 1 | 1 | 1 | Verify the CLI credential, shared theme, and duplicate-safe live state | Master | ✅ |
+| 2 | 2 | 2 | Author and Guardian-check the `account-invite` draft | Master | ✅ |
+| 3 | 2 | 2 | Preview, inspect, and publish `account-invite` | Master | ✅ |
+| 4 | 3 | 3 | Author and Guardian-check the `cancellation-survey` draft | Master | ✅ |
+| 5 | 3 | 3 | Preview, inspect, and publish `cancellation-survey` | Master | ✅ |
+| 6 | 4 | 4 | Record the durable COV-44 handoff and final inventory | Master | ✅ |
 
 Every task remains with Master. This is sequential external-service work
 involving live Loops objects, revision coordination, and user-owned inbox
