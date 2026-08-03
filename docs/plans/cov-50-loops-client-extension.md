@@ -7,10 +7,10 @@
 
 | Task | Phase | Checkpoint | Description | Assign | Done |
 | ---- | ----- | ---------- | ----------- | ------ | ---- |
-| 1 | 1 | 1 | Add the throttling seam and contact-write methods | Master | |
-| 2 | 1 | 1 | Add contact lookup, deletion, and suppression methods | subagent | |
-| 3 | 1 | 1 | Add mailing-list and event methods with endpoint-local conflict handling | subagent | |
-| 4 | 1 | 2 | Prove cross-endpoint errors, throttling, and full regression safety | Master | |
+| 1 | 1 | 1 | Add the throttling seam and contact-write methods | Master | ✅ |
+| 2 | 1 | 1 | Add contact lookup, deletion, and suppression methods | subagent | ✅ |
+| 3 | 1 | 1 | Add mailing-list and event methods with endpoint-local conflict handling | subagent | ✅ |
+| 4 | 1 | 2 | Prove cross-endpoint errors, throttling, and full regression safety | Master | ✅ |
 
 ## Prerequisites
 
