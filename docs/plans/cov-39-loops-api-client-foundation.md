@@ -9,7 +9,7 @@
 | ---- | ----- | ---------- | ----------- | ------ | ---- |
 | 1 | 1 | 1 | Build and test the transactional Loops API client | Master | ✅ |
 | 2 | 1 | 1 | Add and wire the retrying Action Mailer delivery job | Master | ✅ |
-| 3 | 2 | 2 | Add staging and production Loops credentials safely | Master | |
+| 3 | 2 | 2 | Add staging and production Loops credentials safely | Master | ✅ |
 
 ## Prerequisites
 
