@@ -1,0 +1,47 @@
+graph TD
+  App[Cove Rails application]
+
+  App --> Controllers[app/controllers]
+  Controllers --> ApplicationController[ApplicationController]
+  Controllers --> MarketingPreferencesController[MarketingPreferencesController]
+  Controllers --> DevControllers[dev/]
+  Controllers --> Concerns[concerns/]
+
+  App --> Models[app/models]
+  Models --> User[User]
+  Models --> Account[Account]
+  Models --> Current[Current]
+  Models --> UserConcerns[user/]
+  UserConcerns --> MarketingConsent[MarketingConsent]
+
+  App --> Views[app/views]
+  Views --> DeviseViews[devise/registrations]
+  Views --> AccountViews[account/]
+  Views --> DashboardViews[dashboard/]
+  Views --> PublicViews[public/]
+  Views --> UserViews[users/]
+
+  App --> Components[app/components]
+  Components --> FormComponents[form and input components]
+  Components --> NavigationComponents[navigation components]
+  Components --> FeedbackComponents[alert, toast, modal, tooltip]
+
+  App --> JavaScript[app/javascript]
+  JavaScript --> Stimulus[controllers/]
+  JavaScript --> Channels[channels/]
+
+  App --> Configuration[config]
+  Configuration --> Routes[routes.rb]
+  Configuration --> RouteModules[routes/]
+  RouteModules --> UserRoutes[users.rb]
+  RouteModules --> AccountRoutes[accounts.rb]
+  RouteModules --> BillingRoutes[billing.rb]
+  RouteModules --> ApiRoutes[api.rb]
+
+  App --> Database[db]
+  Database --> Migrations[migrate/]
+  Database --> Schema[schema.rb]
+
+  MarketingPreferencesController --> User
+  MarketingPreferencesController --> DeviseViews
+  User --> MarketingConsent

@@ -1,0 +1,42 @@
+graph LR
+  Root[/] --> PublicController[PublicController#index]
+  AuthRoot[/ authenticated] --> DashboardController[DashboardController#show]
+  Health[/up] --> RailsHealth[Rails health check]
+
+  subgraph Authentication and user settings
+    Devise[Devise user routes] --> Registrations[Users::RegistrationsController]
+    Devise --> Sessions[Users::SessionsController]
+    Devise --> Passwords[Users::PasswordsController]
+    MarketingPreference[PATCH /marketing_preference] --> MarketingPreferences[MarketingPreferencesController#update]
+    AccountPassword[/account/password] --> AccountPasswords[Account::PasswordsController]
+    TwoFactor[/user/two_factor] --> TwoFactorController[Users::TwoFactorController]
+    Mentions[/users/mentions] --> MentionsController[Users::MentionsController#index]
+    Notifications[/notifications] --> NotificationsController[Users::NotificationsController]
+    Agreements[/agreements] --> AgreementsController[Users::AgreementsController]
+    ApiTokens[/api_tokens] --> ApiTokensController[ApiTokensController]
+  end
+
+  subgraph Accounts and billing
+    Accounts[/accounts] --> AccountsController[AccountsController]
+    Accounts --> AccountUsers[AccountUsersController]
+    Accounts --> AccountInvitations[Accounts::AccountInvitationsController]
+    Pricing[/pricing] --> PricingController[PricingController]
+    Checkout[/checkout] --> CheckoutController[CheckoutController]
+    Billing[/billing] --> BillingController[BillingController]
+    Subscriptions[/billing/subscriptions] --> SubscriptionsController[Billing::SubscriptionsController]
+  end
+
+  subgraph API v1 JSON
+    ApiAuth[/api/v1/auth] --> ApiAuthController[Api::V1::AuthController]
+    ApiMe[/api/v1/me] --> ApiMeController[Api::V1::MeController]
+    ApiAccounts[/api/v1/accounts] --> ApiAccountsController[Api::V1::AccountsController]
+    ApiUsers[/api/v1/users] --> ApiUsersController[Api::V1::UsersController]
+    ApiNotificationTokens[/api/v1/notification_tokens] --> ApiNotificationTokensController[Api::V1::NotificationTokensController]
+  end
+
+  subgraph Shared application routes
+    Announcements[/announcements] --> AnnouncementsController[AnnouncementsController]
+    StaticPages[/about, /terms, /privacy] --> PublicController
+    Error404[/404] --> ErrorsController[ErrorsController#not_found]
+    Error500[/500] --> ErrorsController
+  end

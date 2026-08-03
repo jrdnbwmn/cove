@@ -1,0 +1,56 @@
+erDiagram
+  USER {
+    bigint id PK
+    string email
+    datetime marketing_opt_in_at
+    string marketing_opt_in_source
+    datetime marketing_opt_out_at
+    string marketing_opt_out_reason
+  }
+
+  ACCOUNT {
+    bigint id PK
+    bigint owner_id FK
+    boolean personal
+  }
+
+  ACCOUNT_USER {
+    bigint id PK
+    bigint account_id FK
+    bigint user_id FK
+    string role
+  }
+
+  ACCOUNT_INVITATION {
+    bigint id PK
+    bigint account_id FK
+    bigint invited_by_id FK
+  }
+
+  API_TOKEN {
+    bigint id PK
+    bigint user_id FK
+  }
+
+  CONNECTED_ACCOUNT {
+    bigint id PK
+    bigint owner_id FK
+    string owner_type
+  }
+
+  NOTIFICATION_TOKEN {
+    bigint id PK
+    bigint user_id FK
+  }
+
+  USER ||--o{ ACCOUNT_USER : memberships
+  ACCOUNT ||--o{ ACCOUNT_USER : members
+  USER ||--o{ ACCOUNT : owns
+  ACCOUNT ||--o{ ACCOUNT_INVITATION : invitations
+  USER o|--o{ ACCOUNT_INVITATION : invites
+  USER ||--o{ API_TOKEN : api_tokens
+  USER ||--o{ CONNECTED_ACCOUNT : connected_accounts
+  USER ||--o{ NOTIFICATION_TOKEN : notification_tokens
+
+  %% MarketingConsent is a User concern. Consent state is stored on users,
+  %% rather than in a separate record, to keep one current preference per user.
