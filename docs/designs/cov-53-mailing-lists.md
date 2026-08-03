@@ -46,20 +46,20 @@ rebrand rather than using the existing Jumpstart placeholder.
 
 ## Acceptance Criteria
 
-- [ ] One `Cove updates` list exists in the Cove Loops team with the approved
+- [x] One `Cove updates` list exists in the Cove Loops team with the approved
       description.
-- [ ] Before any other work,
+- [x] Before any other work,
       `loops api-key --team cove-cli -o json` reports `teamName: Cove`.
-- [ ] `loops lists list --team cove-cli -o json` returns the list's ID, name,
+- [x] `loops lists list --team cove-cli -o json` returns the list's ID, name,
       description, and `isPublic: true`.
-- [ ] The contact-free Preference Center preview renders the public list's name,
+- [x] The contact-free Preference Center preview renders the public list's name,
       description, and subscription control correctly.
-- [ ] The sending footer contains `Cove` and the physical business address
+- [x] The sending footer contains `Cove` and the physical business address
       `307 N 990 E, Salem, UT 84653`.
-- [ ] The generated list ID and verification findings are recorded in this
+- [x] The generated list ID and verification findings are recorded in this
       document.
-- [ ] The Loops Audience count is unchanged; this ticket creates no contacts.
-- [ ] No email is sent while configuring or verifying this ticket.
+- [x] The Loops Audience count is unchanged; this ticket creates no contacts.
+- [x] No email is sent while configuring or verifying this ticket.
 
 ## Prototype
 
@@ -142,8 +142,9 @@ model or settings UI (COV-49/COV-50); email sends.
 ## Open Questions
 
 1. **Does the Loops dashboard provide a contact-free Preference Center preview
-   in Cove's current account?** The execution flow checks this directly. If it
-   does not, work stops rather than creating a test contact.
+   in Cove's current account?** Yes. Settings → Lists provides a selectable
+   preview that simulates an example contact; it rendered `Cove updates`, the
+   approved description, and a subscription toggle without creating a contact.
 2. **When a contact unsubscribes from a public mailing list in the Loops
    Preference Center, can that same contact later rejoin it themselves? If so,
    what webhook event is emitted?** Current Loops documentation says Cove/the
@@ -163,12 +164,12 @@ To be completed during execution:
 
 | Check | Result |
 | --- | --- |
-| Audience count before | Pending |
-| List ID | Pending |
-| CLI list response | Pending |
-| Preference Center preview | Pending |
-| Company/footer address | Pending |
-| Audience count after | Pending |
+| Audience count before | 0 contacts (`No matching contacts`) |
+| List ID | `cmsdo8ncl02wc0j0j4rxwhy4l` |
+| CLI list response | Verified: exact name and description; `isPublic: true` |
+| Preference Center preview | Verified contact-free simulation rendered the list, exact description, and subscription toggle |
+| Company/footer address | Verified `Cove`; corrected address to `307 N 990 E, Salem, UT 84653` |
+| Audience count after | 0 contacts (`No matching contacts`) |
 
 ## More Info
 

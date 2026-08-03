@@ -7,9 +7,9 @@
 
 | Task | Phase | Checkpoint | Description | Assign | Done |
 | ---- | ----- | ---------- | ----------- | ------ | ---- |
-| 1 | 1 | 1 | Validate the dedicated credential and capture the Audience/list baseline | Master | |
-| 2 | 1 | 1 | Configure the public list and verify the Preference Center and footer | Master | |
-| 3 | 1 | 1 | Verify saved state through the CLI and document the findings | Master | |
+| 1 | 1 | 1 | Validate the dedicated credential and capture the Audience/list baseline | Master | ✅ |
+| 2 | 1 | 1 | Configure the public list and verify the Preference Center and footer | Master | ✅ |
+| 3 | 1 | 1 | Verify saved state through the CLI and document the findings | Master | ✅ |
 
 All tasks remain with Master because they mutate one shared external Loops team,
 require a user-authenticated dashboard session, and must run sequentially to
