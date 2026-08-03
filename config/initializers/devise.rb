@@ -46,7 +46,7 @@ Devise.setup do |config|
   config.mailer_sender = Jumpstart.config.default_from_email
 
   # Configure the class responsible to send e-mails.
-  # config.mailer = 'Devise::Mailer'
+  config.mailer = "LoopsDeviseMailer"
 
   # Configure the parent class responsible to send e-mails.
   config.parent_mailer = "ApplicationMailer"

@@ -7,11 +7,11 @@
 
 | Task | Phase | Checkpoint | Description | Assign | Done |
 | ---- | ----- | ---------- | ----------- | ------ | ---- |
-| 1 | 1 | 1 | Add and register the generic Loops delivery method | Master | |
-| 2 | 1 | 1 | Build the bodyless Devise mailer and template configuration | subagent | |
-| 3 | 1 | 2 | Wire and verify the two Devise authentication flows | Master | |
-| 4 | 1 | 2 | Select Loops for production delivery | Master | |
-| 5 | 1 | 2 | Run integrated verification and final review | Master | |
+| 1 | 1 | 1 | Add and register the generic Loops delivery method | Master | ✅ |
+| 2 | 1 | 1 | Build the bodyless Devise mailer and template configuration | subagent | ✅ |
+| 3 | 1 | 2 | Wire and verify the two Devise authentication flows | Master | ✅ |
+| 4 | 1 | 2 | Select Loops for production delivery | Master | ✅ |
+| 5 | 1 | 2 | Run integrated verification and final review | Master | ✅ |
 
 ## Prerequisites
 
