@@ -32,21 +32,21 @@ transactional IDs, data-variable contracts, and operational verification.
 
 ## Acceptance Criteria
 
-- [ ] A dedicated `cove-cli` API key resolves to the Cove team and remains only
+- [x] A dedicated `cove-cli` API key resolves to the Cove team and remains only
   in the local keyring.
-- [ ] The shared `Cove` theme is created in Loops and its `themeId` is recorded
+- [x] The shared `Cove` theme is created in Loops and its `themeId` is recorded
   in this document.
-- [ ] `reset-password` is previewed in a real inbox and published;
+- [x] `reset-password` is previewed in a real inbox and published;
   `loops transactional get <id>` confirms the published state.
-- [ ] `password-changed` is previewed in a real inbox and published;
+- [x] `password-changed` is previewed in a real inbox and published;
   `loops transactional get <id>` confirms the published state.
-- [ ] The reset preview button is a real clickable absolute URL, not literal
+- [x] The reset preview button is a real clickable absolute URL, not literal
   `{data.reset_password_url}` text.
-- [ ] Both emails render acceptably with images blocked and in their plain-text
+- [x] Both emails render acceptably with images blocked and in their plain-text
   alternatives.
-- [ ] Both published `transactionalId` values and the exact `dataVariables`
+- [x] Both published `transactionalId` values and the exact `dataVariables`
   contracts are recorded in this document for COV-43.
-- [ ] No mailing list, audience, contact, or other unrelated Loops object is
+- [x] No mailing list, audience, contact, or other unrelated Loops object is
   created.
 
 ## Prototype
@@ -63,9 +63,9 @@ The external Loops objects and durable contracts are:
 
 | Object | Loops ID | Durable contract |
 | --- | --- | --- |
-| `Cove` theme | Pending execution | Shared theme referenced by `themeId` in LMX |
-| `reset-password` | Pending execution | Published `transactionalId`; required `recipient_email`, `reset_password_url` |
-| `password-changed` | Pending execution | Published `transactionalId`; required `recipient_email` |
+| `Cove` theme | `cmsdnxho301lh0j17qh8ltsre` | Shared theme referenced by `themeId` in LMX |
+| `reset-password` | `cmsdnzduk02k40jx72rv3uwe2` | Published `transactionalId`; required `recipient_email`, `reset_password_url` |
+| `password-changed` | `cmsdo8ixv001e0j1zu027i3s7` | Published `transactionalId`; required `recipient_email` |
 
 `email` remains the separate top-level recipient field in the Loops
 transactional send request. `recipient_email` is intentionally repeated in
@@ -92,6 +92,23 @@ address are fixed Loops/template settings rather than send-time variables:
 The dedicated `cove-cli` key is an operational credential, not application
 configuration. It is retained locally for COV-41 and COV-42 and is never written
 to the repository or transcript.
+
+### Execution verification (2026-08-03)
+
+- Preview recipient: `jordan.d.bowman@gmail.com` (inbox content not retained).
+- `reset-password` Guardian passed with no errors or warnings. Its approved
+  preview confirmed styled rendering, images-blocked rendering, the generated
+  plain-text alternative, and its button's complete staging reset URL.
+- `password-changed` Guardian passed with no errors or warnings. Its approved
+  preview confirmed styled rendering, images-blocked rendering, and the
+  generated plain-text alternative.
+- Fresh `transactional get` reads confirmed both IDs above are published and
+  returned exactly these `dataVariables` contracts:
+  - `reset-password`: `recipient_email`, `reset_password_url`
+  - `password-changed`: `recipient_email`
+- Final inventories confirmed exactly one `Cove` theme and exactly the two
+  intended transactional emails. This workflow created no contacts, audiences,
+  lists, campaigns, workflows, or other unrelated Loops objects.
 
 ## Screens / Flows
 

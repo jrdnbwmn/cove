@@ -13,7 +13,7 @@
 | 4 | 2 | 2 | Preview, inspect, and publish `reset-password` | Master | ✅ |
 | 5 | 3 | 3 | Author and validate the `password-changed` draft | Master | ✅ |
 | 6 | 3 | 3 | Preview, inspect, and publish `password-changed` | Master | ✅ |
-| 7 | 4 | 4 | Record the durable COV-43 handoff and final verification | Master | |
+| 7 | 4 | 4 | Record the durable COV-43 handoff and final verification | Master | ✅ |
 
 Every task remains with Master. This is sequential, external-service work
 involving a user-owned login, secret entry, inbox inspection, live Loops
