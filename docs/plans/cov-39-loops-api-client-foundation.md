@@ -147,6 +147,11 @@ the retry rationale in `docs/designs/cov-37-loops-architecture.md`.
 handoff" section, `.gitignore`, `.conductor/settings.toml`, and
 `docs/designs/done/cov-38-loops-setup.md`.
 
+**Deferred production follow-up:** COV-62 owns production credential recovery
+or rotation, Render provisioning, and adding the production Loops key. COV-39
+completed the verified staging credential work without modifying
+`production.yml.enc`.
+
 **In scope:**
 
 - Keep all decryption keys and Loops API-key values in the user's terminal/editor;
