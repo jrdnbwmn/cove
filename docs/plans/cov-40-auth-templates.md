@@ -9,8 +9,8 @@
 | ---- | ----- | ---------- | ----------- | ------ | ---- |
 | 1 | 1 | 1 | Create and verify the dedicated CLI credential; snapshot live state | Master | ✅ |
 | 2 | 1 | 1 | Create and verify the shared `Cove` theme | Master | ✅ |
-| 3 | 2 | 2 | Author and validate the `reset-password` draft | Master | |
-| 4 | 2 | 2 | Preview, inspect, and publish `reset-password` | Master | |
+| 3 | 2 | 2 | Author and validate the `reset-password` draft | Master | ✅ |
+| 4 | 2 | 2 | Preview, inspect, and publish `reset-password` | Master | ✅ |
 | 5 | 3 | 3 | Author and validate the `password-changed` draft | Master | |
 | 6 | 3 | 3 | Preview, inspect, and publish `password-changed` | Master | |
 | 7 | 4 | 4 | Record the durable COV-43 handoff and final verification | Master | |
