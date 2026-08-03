@@ -39,10 +39,14 @@ class LoopsClient < ApplicationClient
 
   def handle_response(response)
     case response.code
-    when "400" then raise self.class::BadRequest, response.body
-    when "409" then raise self.class::Conflict, response.body
-    when "413" then raise self.class::PayloadTooLarge, response.body
-    else super
+    when "400"
+      raise self.class::BadRequest, response.body
+    when "409"
+      raise self.class::Conflict, response.body
+    when "413"
+      raise self.class::PayloadTooLarge, response.body
+    else
+      super
     end
   end
 end
