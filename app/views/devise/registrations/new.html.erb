@@ -74,6 +74,16 @@
       classes: "mb-6"
     ) %>
 
+    <% unless @account_invitation %>
+      <%= hidden_field_tag "user[marketing_opt_in]", "0" %>
+      <%= render CheckboxComponent.new(
+        label: t(".marketing_opt_in"),
+        name: "user[marketing_opt_in]",
+        checked: resource.marketing_opt_in,
+        classes: "mb-6"
+      ) %>
+    <% end %>
+
     <%= render ButtonComponent.new(
       text: t('.sign_up'),
       type: "submit",
