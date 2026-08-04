@@ -8,6 +8,8 @@ class Jumpstart::SubscriptionsTest < ActionDispatch::IntegrationTest
   end
 
   class AdminUsers < Jumpstart::SubscriptionsTest
+    include ActiveJob::TestHelper
+
     # Applies to personal and team accounts
 
     setup do
@@ -76,6 +78,51 @@ class Jumpstart::SubscriptionsTest < ActionDispatch::IntegrationTest
       patch billing_subscription_resume_path(subscription)
       assert_redirected_to billing_path
       assert subscription.reload.active?
+    end
+
+    test "cancelling a subscription schedules one delayed Loops cancellation-survey delivery" do
+      @account.set_payment_processor :fake_processor, allow_fake: true
+      subscription = @account.payment_processor.subscribe
+      captured_request = nil
+      stub = stub_request(:post, "https://app.loops.so/api/v1/transactional")
+        .with do |request|
+          captured_request = request
+          true
+        end
+        .to_return(status: 200, body: {success: true}.to_json)
+      original_delivery_method = AccountMailer.delivery_method
+      AccountMailer.delivery_method = :loops
+
+      travel_to Time.current.change(usec: 0) do
+        scheduled_at = 1.hour.from_now
+
+        assert_enqueued_jobs 1, only: LoopsMailDeliveryJob do
+          assert_enqueued_with(job: LoopsMailDeliveryJob, at: scheduled_at) do
+            Jumpstart.config.stub(:payments_enabled?, true) do
+              delete billing_subscription_cancel_path(subscription)
+            end
+          end
+        end
+
+        assert_redirected_to billing_path
+        assert subscription.reload.canceled?
+        assert_not_requested stub
+
+        perform_enqueued_jobs(only: LoopsMailDeliveryJob, at: scheduled_at)
+      end
+
+      assert_requested stub, times: 1
+
+      body = JSON.parse(captured_request.body)
+      assert_equal @admin.email, body["email"]
+      assert_equal "cmsdrmznp040g0jzsnkt9hpsa", body["transactionalId"]
+      assert_equal({}, body["dataVariables"])
+      expected_key = LoopsClient.client.idempotency_key(
+        "cmsdrmznp040g0jzsnkt9hpsa", @admin.email, body["dataVariables"]
+      )
+      assert_equal expected_key, captured_request.headers["Idempotency-Key"]
+    ensure
+      AccountMailer.delivery_method = original_delivery_method
     end
   end
 
