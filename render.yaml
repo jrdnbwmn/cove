@@ -14,6 +14,8 @@ services:
     envVars:
       - key: RAILS_MASTER_KEY
         sync: false
+      - key: STAGING_EMAIL_RECIPIENT_ALLOWLIST
+        sync: false
       - key: RAILS_ENV
         value: staging
       - key: RACK_ENV

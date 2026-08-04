@@ -10,10 +10,11 @@ class JobAdapterTest < Minitest::Test
     refute_match(/SOLID_QUEUE_IN_PUMA/, staging_config)
   end
 
-  def test_staging_does_not_attempt_unconfigured_outbound_email_delivery
+  def test_staging_keeps_guarded_live_delivery_separate_from_its_async_adapter
     staging_config = File.read(File.expand_path("../../config/environments/staging.rb", __dir__))
 
-    assert_match(/config\.action_mailer\.perform_deliveries\s*=\s*false/, staging_config)
+    assert_match(/config\.action_mailer\.perform_deliveries\s*=\s*true/, staging_config)
+    assert_match(/config\.action_mailer\.interceptors\s*=\s*\["StagingEmailRecipientGuard"\]/, staging_config)
   end
 
   def test_production_uses_solid_queue_when_jumpstart_has_no_adapter
