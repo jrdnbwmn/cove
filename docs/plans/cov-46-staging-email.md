@@ -10,7 +10,7 @@
 | 1 | 1 | 1 | Build and test the fail-closed recipient interceptor | Master | ✅ |
 | 2 | 1 | 1 | Enable guarded Loops delivery in staging | Master | ✅ |
 | 3 | 1 | 1 | Declare the Render allowlist input without committing values | Master | ✅ |
-| 4 | 1 | 2 | Audit staging users and configure the private allowlist | Master | |
+| 4 | 1 | 2 | Audit staging users and configure the private allowlist | Master | ✅ |
 | 5 | 1 | 2 | Deploy the feature commit and prove allowed/blocked delivery | Master | |
 | 6 | 1 | 2 | Remove smoke wiring, restore Render, and run final gates | Master | |
 
