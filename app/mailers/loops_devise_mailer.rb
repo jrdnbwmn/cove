@@ -1,6 +1,8 @@
 # AIDEV-NOTE: Loops owns the body/subject for these two notifications; the
 # vendored Devise ERB views are intentionally unreachable via `body: ""`.
 class LoopsDeviseMailer < Devise::Mailer
+  include LoopsTransactional
+
   def reset_password_instructions(record, token, opts = {})
     @token = token
     transactional_id = loops_transactional_id(:reset_password_instructions)
@@ -25,11 +27,5 @@ class LoopsDeviseMailer < Devise::Mailer
       "X-Loops-Data-Variables": data_variables.to_json,
       body: ""
     ))
-  end
-
-  private
-
-  def loops_transactional_id(name)
-    Rails.application.config_for(:loops).transactional.fetch(name)
   end
 end

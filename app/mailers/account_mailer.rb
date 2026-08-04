@@ -1,6 +1,8 @@
 # AIDEV-NOTE: Loops owns the body/subject for these notifications; the vendored
 # account-mailer ERB views are intentionally unreachable via `body: ""`.
 class AccountMailer < ApplicationMailer
+  include LoopsTransactional
+
   def invite
     account_invitation = params[:account_invitation]
     inviter = account_invitation.invited_by || User.new(name: "Someone")
@@ -30,11 +32,5 @@ class AccountMailer < ApplicationMailer
       "X-Loops-Data-Variables": {}.to_json,
       body: ""
     )
-  end
-
-  private
-
-  def loops_transactional_id(name)
-    Rails.application.config_for(:loops).transactional.fetch(name)
   end
 end
