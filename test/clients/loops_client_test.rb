@@ -51,6 +51,54 @@ class LoopsClientTest < ActiveSupport::TestCase
     assert_operator first_key.length, :<=, 100
   end
 
+  test "uses the canonical data-variable key when a transactional seed is not supplied" do
+    assert_equal(
+      @client.idempotency_key(@transactional_id, @email, @data_variables),
+      @client.idempotency_key(@transactional_id, @email, @data_variables, nil)
+    )
+  end
+
+  test "uses a stable recipient-specific key when a transactional seed is supplied" do
+    seed = "charge:ch_123"
+
+    first_key = @client.idempotency_key(@transactional_id, @email, @data_variables, seed)
+    replay_key = @client.idempotency_key(@transactional_id, @email, {invoice_number: "INV-123", name: "Jordan"}, seed)
+    other_recipient_key = @client.idempotency_key(@transactional_id, "other@example.com", @data_variables, seed)
+    other_seed_key = @client.idempotency_key(@transactional_id, @email, @data_variables, "charge:ch_456")
+
+    assert_equal first_key, replay_key
+    assert_not_equal first_key, other_recipient_key
+    assert_not_equal first_key, other_seed_key
+    assert_operator first_key.length, :<=, 100
+  end
+
+  test "forwards Loops attachment objects with a seeded transactional request" do
+    attachments = [{filename: "receipt.pdf", contentType: "application/pdf", data: "JVBERi0xLjQ="}]
+    seed = "charge:ch_123"
+    expected_key = @client.idempotency_key(@transactional_id, @email, @data_variables, seed)
+    stub = stub_request(:post, "https://app.loops.so/api/v1/transactional")
+      .with(
+        body: {
+          email: @email,
+          transactionalId: @transactional_id,
+          addToAudience: false,
+          dataVariables: @data_variables,
+          attachments: attachments
+        }.to_json,
+        headers: {"Idempotency-Key" => expected_key}
+      )
+      .to_return(status: 200, body: {success: true}.to_json)
+
+    assert @client.send_transactional(
+      email: @email,
+      transactional_id: @transactional_id,
+      data_variables: @data_variables,
+      idempotency_seed: seed,
+      attachments: attachments
+    )
+    assert_requested stub, times: 1
+  end
+
   test "treats an idempotency conflict as a successful duplicate send" do
     stub_request(:post, "https://app.loops.so/api/v1/transactional").to_return(status: 409)
 
