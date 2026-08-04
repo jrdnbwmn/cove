@@ -1,3 +1,7 @@
+# AIDEV-NOTE: Three public methods (not the usual single-`call` service
+# shape) by design — this is the single owner of Loops contact payload
+# construction across sync, delete, and backfill-readiness, per the COV-51
+# design doc.
 class LoopsContactSynchronizer
   class ConfigurationError < StandardError; end
   class ProductionRequired < ConfigurationError; end
@@ -11,7 +15,7 @@ class LoopsContactSynchronizer
     @client_factory = client_factory
   end
 
-  def sync(user, intent:)
+  def sync(user, intent:, previously_consented: nil)
     return unless contact_sync_allowed?
 
     case intent.to_sym
@@ -26,7 +30,7 @@ class LoopsContactSynchronizer
 
       client.update_contact(**unsubscribed_attributes(user))
     when :email_change
-      return unless user.marketing_opt_in_at.present?
+      return unless previously_consented.nil? ? user.marketing_opt_in_at.present? : previously_consented
 
       client.update_contact(email: user.email, user_id: user.id.to_s)
     else

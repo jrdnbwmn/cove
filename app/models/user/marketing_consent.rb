@@ -104,7 +104,12 @@ module User::MarketingConsent
     elsif saved_change_to_marketing_opt_out_at? && marketing_opt_out_reason == "user_app"
       LoopsContactSyncJob.perform_later(id, "opt_out")
     elsif saved_change_to_email? && marketing_opt_in_at_before_last_save.present?
-      LoopsContactSyncJob.perform_later(id, "email_change")
+      # AIDEV-NOTE: previously_consented is snapshotted here, not re-derived by
+      # the job, because a hard-bounce reset can null marketing_opt_in_at in
+      # this same save (see clear_hard_bounce_after_email_change) — by the
+      # time the job reloads the user, live state would wrongly look
+      # never-consented.
+      LoopsContactSyncJob.perform_later(id, "email_change", previously_consented: true)
     end
   end
 

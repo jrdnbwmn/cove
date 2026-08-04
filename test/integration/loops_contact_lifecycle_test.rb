@@ -54,13 +54,29 @@ class LoopsContactLifecycleTest < ActiveSupport::TestCase
     consenting = users(:marketing_subscribed)
     never_consented = users(:one)
 
-    assert_enqueued_with(job: LoopsContactSyncJob, args: [consenting.id, "email_change"]) do
+    assert_enqueued_with(job: LoopsContactSyncJob, args: [consenting.id, "email_change", {previously_consented: true}]) do
       consenting.update!(email: "changed-consenting@example.com")
     end
 
     assert_no_enqueued_jobs only: LoopsContactSyncJob do
       never_consented.update!(email: "changed-never@example.com")
     end
+  end
+
+  test "hard-bounce email reset still enqueues effective email maintenance" do
+    user = users(:marketing_subscribed)
+    user.withdraw_marketing_consent(reason: "hard_bounce")
+
+    assert_enqueued_with(job: LoopsContactSyncJob, args: [user.id, "email_change", {previously_consented: true}]) do
+      user.update!(email: "post-bounce@example.com")
+    end
+    assert_nil user.reload.marketing_opt_in_at
+
+    synchronizer = RecordingSynchronizer.new
+    LoopsContactSynchronizer.stub(:new, synchronizer) do
+      LoopsContactSyncJob.perform_now(user.id, "email_change", previously_consented: true)
+    end
+    assert_equal [[user, "email_change"]], synchronizer.sync_calls
   end
 
   test "a simultaneous opt-in and email change does not enqueue redundant work" do
@@ -121,7 +137,7 @@ class LoopsContactLifecycleTest < ActiveSupport::TestCase
       @deletion_calls = []
     end
 
-    def sync(user, intent:)
+    def sync(user, intent:, previously_consented: nil)
       sync_calls << [user, intent]
     end
 

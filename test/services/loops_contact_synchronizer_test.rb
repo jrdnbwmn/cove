@@ -110,6 +110,25 @@ class LoopsContactSynchronizerTest < ActiveSupport::TestCase
     assert_equal [{email: user.email, user_id: user.id.to_s}], client.updates
   end
 
+  test "email change honors a snapshotted previously_consented flag over live state" do
+    client = RecordingClient.new
+    user = users(:marketing_subscribed)
+    user.update!(marketing_opt_in_at: nil, marketing_opt_in_source: nil, marketing_opt_out_at: nil, marketing_opt_out_reason: nil)
+
+    build_synchronizer(client:).sync(user, intent: :email_change, previously_consented: true)
+
+    assert_equal [{email: user.email, user_id: user.id.to_s}], client.updates
+  end
+
+  test "email change with no snapshot and no live consent history sends nothing" do
+    client = RecordingClient.new
+    user = users(:one)
+
+    build_synchronizer(client:).sync(user, intent: :email_change)
+
+    assert_empty client.updates
+  end
+
   test "stale and protected consent intents do not write" do
     client = RecordingClient.new
     synchronizer = build_synchronizer(client:)
