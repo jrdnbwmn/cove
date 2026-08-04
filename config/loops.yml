@@ -1,4 +1,17 @@
 shared:
+  contact_sync_mailing_list_id: cmsdo8ncl02wc0j0j4rxwhy4l
   transactional:
     reset_password_instructions: cmsdnzduk02k40jx72rv3uwe2
     password_change: cmsdo8ixv001e0j1zu027i3s7
+
+development:
+  contact_sync_enabled: false
+
+test:
+  contact_sync_enabled: false
+
+staging:
+  contact_sync_enabled: false
+
+production:
+  contact_sync_enabled: true

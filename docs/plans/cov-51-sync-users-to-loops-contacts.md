@@ -7,8 +7,8 @@
 
 | Task | Phase | Checkpoint | Description | Assign | Done |
 | ---- | ----- | ---------- | ----------- | ------ | ---- |
-| 1 | 1 | 1 | Add production-only configuration and intent-aware synchronization | Master | |
-| 2 | 1 | 1 | Connect user lifecycle and deletion events to retryable jobs | Master | |
+| 1 | 1 | 1 | Add production-only configuration and intent-aware synchronization | Master | ✅ |
+| 2 | 1 | 1 | Connect user lifecycle and deletion events to retryable jobs | Master | ✅ |
 | 3 | 2 | 2 | Add the resumable, throttled contact backfill job | subagent | |
 | 4 | 2 | 2 | Add guarded dry-run and enqueue operations | subagent | |
 | 5 | 3 | 3 | Run integrated verification and final review | Master | |

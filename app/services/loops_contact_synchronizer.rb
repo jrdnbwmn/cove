@@ -1,0 +1,111 @@
+class LoopsContactSynchronizer
+  class ConfigurationError < StandardError; end
+  class ProductionRequired < ConfigurationError; end
+  class ContactSyncDisabled < ConfigurationError; end
+  class MailingListMissing < ConfigurationError; end
+
+  def initialize(config: Rails.application.config_for(:loops), environment: Rails.env, client: nil, client_factory: -> { LoopsClient.client })
+    @config = config
+    @environment = environment
+    @client = client
+    @client_factory = client_factory
+  end
+
+  def sync(user, intent:)
+    return unless contact_sync_allowed?
+
+    case intent.to_sym
+    when :opt_in
+      ensure_mailing_list_configured!
+      return unless current_app_opt_in?(user)
+
+      client.update_contact(**subscribed_attributes(user))
+    when :opt_out
+      ensure_mailing_list_configured!
+      return unless current_app_opt_out?(user)
+
+      client.update_contact(**unsubscribed_attributes(user))
+    when :email_change
+      return unless user.marketing_opt_in_at.present?
+
+      client.update_contact(email: user.email, user_id: user.id.to_s)
+    else
+      raise ArgumentError, "unknown contact sync intent: #{intent}"
+    end
+  end
+
+  def delete(user_id)
+    return unless contact_sync_allowed?
+
+    client.delete_contact(user_id: user_id.to_s)
+  rescue LoopsClient::NotFound
+    nil
+  end
+
+  def ensure_backfill_ready!
+    raise ProductionRequired, "Loops contact backfill requires production" unless production?
+    raise ContactSyncDisabled, "Loops contact sync is disabled" unless contact_sync_enabled?
+    raise MailingListMissing, "Loops contact sync mailing list is not configured" if mailing_list_id.blank?
+
+    true
+  end
+
+  private
+
+  attr_reader :config, :environment, :client_factory
+
+  def client
+    @client ||= client_factory.call
+  end
+
+  def contact_sync_allowed?
+    production? && contact_sync_enabled?
+  end
+
+  def production?
+    environment.production?
+  end
+
+  def contact_sync_enabled?
+    config.contact_sync_enabled == true
+  end
+
+  def mailing_list_id
+    config.contact_sync_mailing_list_id
+  end
+
+  def current_app_opt_in?(user)
+    return false unless user.marketing_subscribed?
+    return false if user.marketing_opt_in_source == "loops"
+
+    true
+  end
+
+  def current_app_opt_out?(user)
+    return false if user.marketing_subscribed?
+    return false unless user.marketing_opt_out_reason == "user_app"
+
+    true
+  end
+
+  def ensure_mailing_list_configured!
+    raise MailingListMissing, "Loops contact sync mailing list is not configured" if mailing_list_id.blank?
+  end
+
+  def subscribed_attributes(user)
+    {
+      email: user.email,
+      user_id: user.id.to_s,
+      subscribed: true,
+      mailing_lists: {mailing_list_id => true}
+    }
+  end
+
+  def unsubscribed_attributes(user)
+    {
+      user_id: user.id.to_s,
+      subscribed: false,
+      mailing_lists: {mailing_list_id => false}
+    }
+  end
+end
