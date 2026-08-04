@@ -65,7 +65,8 @@ class LoopsDelivery
   end
 
   def billing_transactional_id?(transactional_id)
-    BILLING_TRANSACTIONAL_KEYS.map { |key| Rails.application.config_for(:loops).transactional.fetch(key) }.include?(transactional_id)
+    transactional = Rails.application.config_for(:loops).transactional
+    BILLING_TRANSACTIONAL_KEYS.map { |key| transactional.fetch(key) }.include?(transactional_id)
   end
 
   def recipients(mail)
@@ -89,9 +90,9 @@ class LoopsDelivery
         contentType: attachment.mime_type,
         data: Base64.strict_encode64(data)
       }
+    rescue InvalidAttachment
+      raise
     rescue => e
-      raise e if e.is_a?(InvalidAttachment)
-
       raise InvalidAttachment, "attachment could not be encoded: #{e.message}"
     end
   end

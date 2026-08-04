@@ -18,7 +18,7 @@ module Pay
           transaction_id: pay_charge.processor_id,
           charged_at: I18n.l(pay_charge.created_at, format: :long)
         },
-        pay_charge.processor_id,
+        seed_for(pay_charge.processor_id),
         include_billing_info: true
       )
     end
@@ -34,7 +34,7 @@ module Pay
           transaction_id: pay_charge.processor_id,
           charged_at: I18n.l(pay_charge.created_at, format: :long)
         },
-        "#{pay_charge.processor_id}:#{pay_charge.amount_refunded}",
+        seed_for(pay_charge.processor_id, pay_charge.amount_refunded),
         include_billing_info: true
       )
     end
@@ -46,7 +46,7 @@ module Pay
       loops_mail(
         :subscription_renewing,
         {renews_on: I18n.l(renewal_date.to_date, format: :long), manage_subscription_url: billing_url},
-        "#{subscription.processor_id}:#{renewal_date.iso8601}"
+        seed_for(subscription.processor_id, renewal_date.iso8601)
       )
     end
 
@@ -56,7 +56,7 @@ module Pay
       loops_mail(
         :payment_action_required,
         {confirm_payment_url: pay.payment_url(payment_intent_id)},
-        payment_intent_id
+        seed_for(payment_intent_id)
       )
     end
 
@@ -66,7 +66,7 @@ module Pay
       loops_mail(
         :payment_failed,
         {update_billing_url: billing_url},
-        "#{invoice.id}:#{invoice.attempt_count}"
+        seed_for(invoice.id, invoice.attempt_count)
       )
     end
 
@@ -82,7 +82,7 @@ module Pay
 
     def loops_mail(action, data_variables, seed, include_billing_info: false)
       if include_billing_info
-        billing_info = params.fetch(:pay_customer).owner.extra_billing_info.to_s.first(500)
+        billing_info = inline_billing_info
         data_variables[:extra_billing_info] = billing_info if billing_info.present?
       end
 
@@ -94,15 +94,23 @@ module Pay
       )
     end
 
+    def inline_billing_info
+      params.fetch(:pay_customer).owner.extra_billing_info.to_s.first(500)
+    end
+
     def mail_arguments
       instance_exec(&Pay.mail_arguments)
+    end
+
+    def seed_for(*parts)
+      parts.join(":")
     end
 
     def trial_mail(action)
       subscription = params.fetch(:pay_subscription)
       trial_end = subscription.trial_ends_at
 
-      loops_mail(action, {manage_subscription_url: billing_url}, "#{subscription.processor_id}:#{trial_end.iso8601}")
+      loops_mail(action, {manage_subscription_url: billing_url}, seed_for(subscription.processor_id, trial_end.iso8601))
     end
   end
 end
