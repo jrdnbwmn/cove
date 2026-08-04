@@ -14,6 +14,15 @@ graph TD
   Models --> UserConcerns[user/]
   UserConcerns --> MarketingConsent[MarketingConsent]
 
+  App --> Jobs[app/jobs]
+  Jobs --> LoopsContactSyncJob[LoopsContactSyncJob]
+  Jobs --> LoopsContactDeletionJob[LoopsContactDeletionJob]
+  Jobs --> LoopsContactBackfillJob[LoopsContactBackfillJob]
+  Jobs --> LoopsRetryable[concerns/loops_retryable]
+
+  App --> Services[app/services]
+  Services --> LoopsContactSynchronizer[LoopsContactSynchronizer]
+
   App --> Views[app/views]
   Views --> DeviseViews[devise/registrations]
   Views --> AccountViews[account/]
@@ -32,6 +41,7 @@ graph TD
 
   App --> Configuration[config]
   Configuration --> Routes[routes.rb]
+  Configuration --> LoopsConfig[loops.yml]
   Configuration --> RouteModules[routes/]
   RouteModules --> UserRoutes[users.rb]
   RouteModules --> AccountRoutes[accounts.rb]
@@ -42,6 +52,19 @@ graph TD
   Database --> Migrations[migrate/]
   Database --> Schema[schema.rb]
 
+  App --> Tasks[lib/tasks]
+  Tasks --> LoopsContactsTask[loops_contacts.rake]
+
   MarketingPreferencesController --> User
   MarketingPreferencesController --> DeviseViews
   User --> MarketingConsent
+  MarketingConsent --> LoopsContactSyncJob
+  MarketingConsent --> LoopsContactDeletionJob
+  LoopsContactSyncJob --> LoopsContactSynchronizer
+  LoopsContactDeletionJob --> LoopsContactSynchronizer
+  LoopsContactBackfillJob --> LoopsContactSynchronizer
+  LoopsContactSyncJob --> LoopsRetryable
+  LoopsContactDeletionJob --> LoopsRetryable
+  LoopsContactBackfillJob --> LoopsRetryable
+  LoopsContactSynchronizer --> LoopsConfig
+  LoopsContactsTask --> LoopsContactBackfillJob
