@@ -4,3 +4,10 @@ shared:
     password_change: cmsdo8ixv001e0j1zu027i3s7
     invite: cmsdr01rw02s00j3ozshehy4f
     cancellation_reason: cmsdrmznp040g0jzsnkt9hpsa
+    receipt: cmsdrk6tf03rb0jzw194l0rl5
+    refund: cmsdrk8f603rc0jzn1pmslh4m
+    subscription_renewing: cmsdru6vf04dv0j15pwbonmxs
+    payment_action_required: cmsdrxthi04p90jzc3bwkq7kj
+    payment_failed: cmsdrxtnb04qk0j3oclaszs7k
+    subscription_trial_will_end: cmsdru71a04c50jzw6rqtt95u
+    subscription_trial_ended: cmsdru76v04ep0jw7xrbb236w
