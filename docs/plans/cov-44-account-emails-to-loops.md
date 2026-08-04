@@ -7,8 +7,8 @@
 
 | Task | Phase | Checkpoint | Description | Assign | Done |
 | ---- | ----- | ---------- | ----------- | ------ | ---- |
-| 1 | 1 | 1 | Add the account transactional mappings | Master | |
-| 2 | 1 | 1 | Build the bodyless Loops-backed AccountMailer | Master | |
+| 1 | 1 | 1 | Add the account transactional mappings | Master | ✅ |
+| 2 | 1 | 1 | Build the bodyless Loops-backed AccountMailer | Master | ✅ |
 | 3 | 1 | 2 | Verify the account invitation delivery boundary | subagent | |
 | 4 | 1 | 2 | Verify delayed cancellation delivery | subagent | |
 | 5 | 1 | 2 | Remove the obsolete preview and run final verification | Master | |

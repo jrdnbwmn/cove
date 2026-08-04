@@ -2,3 +2,5 @@ shared:
   transactional:
     reset_password_instructions: cmsdnzduk02k40jx72rv3uwe2
     password_change: cmsdo8ixv001e0j1zu027i3s7
+    invite: cmsdr01rw02s00j3ozshehy4f
+    cancellation_reason: cmsdrmznp040g0jzsnkt9hpsa
