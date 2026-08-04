@@ -7,14 +7,14 @@
 
 | Task | Phase | Checkpoint | Description | Assign | Done |
 | ---- | ----- | ---------- | ----------- | ------ | ---- |
-| 1 | 1 | 1 | Revalidate credentials, theme, and live Loops inventory | Master | |
-| 2 | 1 | 1 | Author and validate receipt and refund drafts | Master | |
-| 3 | 1 | 1 | Preview, approve, publish, and verify receipt and refund | Master | |
-| 4 | 2 | 2 | Author and validate renewal and trial drafts | Master | |
-| 5 | 2 | 2 | Preview, approve, publish, and verify renewal and trial emails | Master | |
-| 6 | 3 | 3 | Author and validate payment-recovery drafts | Master | |
-| 7 | 3 | 3 | Preview, approve, publish, and verify payment-recovery emails | Master | |
-| 8 | 4 | 4 | Record the durable COV-45 handoff and final verification | Master | |
+| 1 | 1 | 1 | Revalidate credentials, theme, and live Loops inventory | Master | ✅ |
+| 2 | 1 | 1 | Author and validate receipt and refund drafts | Master | ✅ |
+| 3 | 1 | 1 | Preview, approve, publish, and verify receipt and refund | Master | ✅ |
+| 4 | 2 | 2 | Author and validate renewal and trial drafts | Master | ✅ |
+| 5 | 2 | 2 | Preview, approve, publish, and verify renewal and trial emails | Master | ✅ |
+| 6 | 3 | 3 | Author and validate payment-recovery drafts | Master | ✅ |
+| 7 | 3 | 3 | Preview, approve, publish, and verify payment-recovery emails | Master | ✅ |
+| 8 | 4 | 4 | Record the durable COV-45 handoff and final verification | Master | ✅ |
 
 Every task remains with Master. Execution mutates shared live Loops objects,
 coordinates revision IDs, and pauses for user-owned inbox inspection. Parallel

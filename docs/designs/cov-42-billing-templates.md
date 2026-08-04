@@ -38,35 +38,35 @@ net-new image-generation workflow is intentionally skipped.
 
 ## Acceptance Criteria
 
-- [ ] `billing-receipt` is previewed, published, and confirmed by a fresh
+- [x] `billing-receipt` is previewed, published, and confirmed by a fresh
   transactional-email read.
-- [ ] `billing-refund` is previewed, published, and confirmed by a fresh
+- [x] `billing-refund` is previewed, published, and confirmed by a fresh
   transactional-email read.
-- [ ] `billing-subscription-renewing` is previewed, published, and confirmed by
+- [x] `billing-subscription-renewing` is previewed, published, and confirmed by
   a fresh transactional-email read.
-- [ ] `billing-payment-action-required` is previewed, published, and confirmed
+- [x] `billing-payment-action-required` is previewed, published, and confirmed
   by a fresh transactional-email read.
-- [ ] `billing-payment-failed` is previewed, published, and confirmed by a
+- [x] `billing-payment-failed` is previewed, published, and confirmed by a
   fresh transactional-email read.
-- [ ] `billing-trial-will-end` is previewed, published, and confirmed by a fresh
+- [x] `billing-trial-will-end` is previewed, published, and confirmed by a fresh
   transactional-email read.
-- [ ] `billing-trial-ended` is previewed, published, and confirmed by a fresh
+- [x] `billing-trial-ended` is previewed, published, and confirmed by a fresh
   transactional-email read.
-- [ ] Received previews use the existing Cove theme and render correctly on
+- [x] Received previews use the existing Cove theme and render correctly on
   desktop/mobile and in their generated plain-text alternatives.
-- [ ] Received subjects preserve the literal `[Cove] ` prefix and contain no
+- [x] Received subjects preserve the literal `Cove: ` prefix and contain no
   unresolved variables.
-- [ ] Receipt and refund previews render correctly both with and without
+- [x] Receipt and refund previews render correctly both with and without
   `extra_billing_info`, using `dataVariablesFallbacks` with an empty-string
   fallback.
-- [ ] Currency values arrive preformatted and render as expected, including a
+- [x] Currency values arrive preformatted and render as expected, including a
   `$10.00` sample that proves cents are not displayed as whole dollars.
-- [ ] Every received CTA is a working absolute HTTPS URL.
-- [ ] The receipt uses the existing generated PDF attachment path and does not
+- [x] Every received CTA is a working absolute HTTPS URL.
+- [x] The receipt uses the existing generated PDF attachment path and does not
   include `receipt_url`.
-- [ ] All seven published transactional IDs and exact data contracts are
+- [x] All seven published transactional IDs and exact data contracts are
   recorded in this document for COV-45.
-- [ ] No contact, audience, mailing list, campaign, workflow, or unrelated
+- [x] No contact, audience, mailing list, campaign, workflow, or unrelated
   Loops object is created.
 
 ## Prototype
@@ -91,17 +91,18 @@ Do not create another theme or a reusable Loops component for this group.
 
 ### Transactional contracts
 
-Replace the pending ID values after publishing.
+All seven published and confirmed by fresh `transactional get` reads on
+2026-08-04.
 
 | Template | Published transactional ID | Required data variables | Optional data variables |
 | --- | --- | --- | --- |
-| `billing-receipt` | Pending | `amount`, `charged_to`, `transaction_id`, `charged_at` | `extra_billing_info` |
-| `billing-refund` | Pending | `amount_refunded`, `charged_to`, `transaction_id`, `charged_at` | `extra_billing_info` |
-| `billing-subscription-renewing` | Pending | `renews_on`, `manage_subscription_url` | None |
-| `billing-payment-action-required` | Pending | `confirm_payment_url` | None |
-| `billing-payment-failed` | Pending | `update_billing_url` | None |
-| `billing-trial-will-end` | Pending | `manage_subscription_url` | None |
-| `billing-trial-ended` | Pending | `manage_subscription_url` | None |
+| `billing-receipt` | `cmsdrk6tf03rb0jzw194l0rl5` | `amount`, `charged_to`, `transaction_id`, `charged_at` | `extra_billing_info` |
+| `billing-refund` | `cmsdrk8f603rc0jzn1pmslh4m` | `amount_refunded`, `charged_to`, `transaction_id`, `charged_at` | `extra_billing_info` |
+| `billing-subscription-renewing` | `cmsdru6vf04dv0j15pwbonmxs` | `renews_on`, `manage_subscription_url` | None |
+| `billing-payment-action-required` | `cmsdrxthi04p90jzc3bwkq7kj` | `confirm_payment_url` | None |
+| `billing-payment-failed` | `cmsdrxtnb04qk0j3oclaszs7k` | `update_billing_url` | None |
+| `billing-trial-will-end` | `cmsdru71a04c50jzw6rqtt95u` | `manage_subscription_url` | None |
+| `billing-trial-ended` | `cmsdru76v04ep0jw7xrbb236w` | `manage_subscription_url` | None |
 
 `email` remains the separate top-level recipient field in the Loops
 transactional send request. No template variable duplicates it.
@@ -148,13 +149,13 @@ Subjects are literal strings, not data variables:
 
 | Template | Subject |
 | --- | --- |
-| `billing-receipt` | `[Cove] Payment receipt` |
-| `billing-refund` | `[Cove] Payment refunded` |
-| `billing-subscription-renewing` | `[Cove] Your upcoming subscription renewal` |
-| `billing-payment-action-required` | `[Cove] Confirm your payment` |
-| `billing-payment-failed` | `[Cove] Action Required – Your payment failed` |
-| `billing-trial-will-end` | `[Cove] Your trial is ending soon` |
-| `billing-trial-ended` | `[Cove] Your trial has ended` |
+| `billing-receipt` | `Cove: Payment receipt` |
+| `billing-refund` | `Cove: Payment refunded` |
+| `billing-subscription-renewing` | `Cove: Your upcoming subscription renewal` |
+| `billing-payment-action-required` | `Cove: Confirm your payment` |
+| `billing-payment-failed` | `Cove: Action Required – Your payment failed` |
+| `billing-trial-will-end` | `Cove: Your trial is ending soon` |
+| `billing-trial-ended` | `Cove: Your trial has ended` |
 
 ### Receipt attachment contract
 
@@ -338,7 +339,7 @@ never an audience-adding option.
 This is nine preview sends, below the team's 100-preview rolling 24-hour cap.
 Batch the previews and inspect each batch before publishing. Verify:
 
-- literal subject with the `[Cove] ` prefix
+- literal subject with the `Cove: ` prefix
 - theme, hierarchy, spacing, and mobile rendering
 - generated plain-text alternative
 - `$10.00`-style formatted currency
@@ -393,7 +394,7 @@ Resolved during design:
 - Attach the Pay-generated receipt PDF because Cove's Loops account has
   attachments enabled and the representative payload is far below the current
   4 MB request limit. Do not add `receipt_url`.
-- Preserve the existing `[Cove] ` subject prefix and bake in literal `Cove`
+- Preserve the `Cove: ` subject prefix and bake in literal `Cove`
   rather than adding a data variable for a constant.
 - Preserve the Pay source copy. Do not add an expiry hint to payment action
   required, and do not claim a fixed renewal lead time.
@@ -450,3 +451,42 @@ Operational constraints:
 - Preview endpoints do not exercise attachments. Actual attachment forwarding
   is implemented and tested in COV-45; COV-42 validates template content,
   account enablement, and representative payload size.
+
+## Execution Record (COV-45 handoff)
+
+All seven templates were previewed, approved, published, and confirmed by
+fresh reads on 2026-08-03/2026-08-04. Preview recipient: Cove internal
+preview inbox (redacted).
+
+- Receipt/refund: four states (with/without `extra_billing_info`) previewed
+  and approved 2026-08-03. `$10.00` rendered as dollars and cents, not whole
+  dollars.
+- Renewal/trial: three states previewed and approved 2026-08-03, including a
+  localized long-date renewal sample and a clickable absolute HTTPS
+  `manage_subscription_url` (`https://cove-staging.onrender.com/billing`).
+- Payment recovery: two states previewed and approved 2026-08-03/08-04, using
+  the same staging URL for `confirm_payment_url` and `update_billing_url`; the
+  payment-failed subject's en dash rendered correctly.
+- All subjects use the `Cove: ` prefix (changed from an originally-planned
+  `[Cove] ` bracket prefix per product decision during execution) and no
+  unresolved `{data.*}` variables appeared in any preview.
+- Guardian returned zero errors and zero warnings on every draft before every
+  preview and before every publish.
+
+Incident during execution: after the first five templates published
+successfully, `transactional publish` on the remaining two began failing with
+a 422 (`Your sending domain is not verified`), which later escalated to
+`email-messages get` failing account-wide with `No sending domain configured
+for this team` — including on objects published under prior, unrelated tickets
+(e.g. `password-changed`). Root cause per Loops support: an outbound email was
+flagged as potential spam, which automatically disabled the account to protect
+sending reputation. Loops support re-enabled the account; both remaining
+templates then published successfully on the next attempt with no further
+changes needed. No draft content, LMX, or CLI usage caused this.
+
+Final live-state comparison against the Task 1 baseline: exactly the seven
+`billing-*` transactional emails were added; the `Cove` theme, lists,
+campaigns, and workflows are unchanged. One unrelated transactional email,
+`cancellation-survey`, appeared in the team's inventory during the execution
+window; it was not created, modified, or touched by any command in this
+ticket's execution.
