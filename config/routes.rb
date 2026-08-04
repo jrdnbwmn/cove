@@ -19,6 +19,15 @@ Rails.application.routes.draw do
   # Public marketing homepage
   root to: "public#index"
 
+  if Rails.env.staging?
+    # TEMPORARY COV-46: proves the guard rejects a fixed non-allowlisted recipient before Loops.
+    get "cov-46-blocked-email-smoke", to: ->(_env) {
+      recipient = Struct.new(:email).new("cov-46-blocked@example.invalid")
+      LoopsDeviseMailer.password_change(recipient).deliver_now
+      [204, {}, []]
+    }
+  end
+
   if Rails.env.local?
     mount Lookbook::Engine, at: "/lookbook" if defined?(Lookbook::Engine)
     get "dev/kitchen_sink", to: "dev/kitchen_sink#show"
