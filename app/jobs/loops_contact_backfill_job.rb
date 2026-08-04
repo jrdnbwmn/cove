@@ -1,10 +1,8 @@
 class LoopsContactBackfillJob < ApplicationJob
+  include LoopsRetryable
+
   BATCH_SIZE = 100
   THROTTLE_INTERVAL = 0.2
-
-  retry_on LoopsClient::RateLimit, LoopsClient::InternalError,
-    Net::OpenTimeout, Net::ReadTimeout, SocketError, Errno::ECONNREFUSED,
-    Errno::ECONNRESET, wait: :polynomially_longer
 
   def perform(cursor = nil)
     build_synchronizer.ensure_backfill_ready!
@@ -20,6 +18,9 @@ class LoopsContactBackfillJob < ApplicationJob
     throttler = -> { pause(THROTTLE_INTERVAL) }
     synchronizer = build_synchronizer(client: build_client(throttler:))
 
+    # AIDEV-NOTE: Per-ID reload is deliberate, not N+1 to fix — each user must
+    # reflect current consent at write time so a stale/reordered lifecycle
+    # change can't be overwritten by this batch.
     user_ids.each do |user_id|
       user = User.find_by(id: user_id)
       synchronizer.sync(user, intent: :opt_in) if user
