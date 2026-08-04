@@ -25,6 +25,10 @@ module User::MarketingConsent
 
     before_validation :capture_registration_marketing_consent, on: :create
     before_validation :clear_hard_bounce_after_email_change
+
+    after_create_commit :enqueue_contact_opt_in, if: :current_app_marketing_opt_in?
+    after_update_commit :enqueue_contact_sync
+    after_destroy_commit :enqueue_contact_deletion
   end
 
   class_methods do
@@ -84,5 +88,32 @@ module User::MarketingConsent
     self.marketing_opt_in_source = nil
     self.marketing_opt_out_at = nil
     self.marketing_opt_out_reason = nil
+  end
+
+  def enqueue_contact_opt_in
+    LoopsContactSyncJob.perform_later(id, "opt_in")
+  end
+
+  def current_app_marketing_opt_in?
+    marketing_subscribed? && marketing_opt_in_source != "loops"
+  end
+
+  def enqueue_contact_sync
+    if saved_change_to_marketing_opt_in_at? && marketing_subscribed? && marketing_opt_in_source != "loops"
+      LoopsContactSyncJob.perform_later(id, "opt_in")
+    elsif saved_change_to_marketing_opt_out_at? && marketing_opt_out_reason == "user_app"
+      LoopsContactSyncJob.perform_later(id, "opt_out")
+    elsif saved_change_to_email? && marketing_opt_in_at_before_last_save.present?
+      # AIDEV-NOTE: previously_consented is snapshotted here, not re-derived by
+      # the job, because a hard-bounce reset can null marketing_opt_in_at in
+      # this same save (see clear_hard_bounce_after_email_change) — by the
+      # time the job reloads the user, live state would wrongly look
+      # never-consented.
+      LoopsContactSyncJob.perform_later(id, "email_change", previously_consented: true)
+    end
+  end
+
+  def enqueue_contact_deletion
+    LoopsContactDeletionJob.perform_later(id.to_s)
   end
 end
