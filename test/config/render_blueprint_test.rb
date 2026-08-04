@@ -11,6 +11,15 @@ class RenderBlueprintTest < Minitest::Test
     refute environment_variables.key?("SOLID_QUEUE_IN_PUMA")
   end
 
+  def test_staging_declares_a_private_recipient_allowlist
+    blueprint = YAML.load_file(File.expand_path("../../render.yaml", __dir__))
+    service = blueprint.fetch("services").find { |entry| entry["name"] == "cove-staging" }
+    allowlist = service.fetch("envVars").find { |entry| entry["key"] == "STAGING_EMAIL_RECIPIENT_ALLOWLIST" }
+
+    assert_equal false, allowlist.fetch("sync")
+    refute allowlist.key?("value")
+  end
+
   def test_dormant_production_blueprint_is_valid_and_ready_for_cutover
     service = dormant_production_service
     environment_variables = service.fetch("envVars").to_h { |entry| [entry.fetch("key"), entry] }

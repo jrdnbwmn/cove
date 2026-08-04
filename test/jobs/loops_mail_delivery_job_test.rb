@@ -16,4 +16,12 @@ class LoopsMailDeliveryJobTest < ActiveSupport::TestCase
     assert_includes retryable_exceptions, Net::OpenTimeout
     assert_includes retryable_exceptions, Net::ReadTimeout
   end
+
+  test "does not retry staging policy rejections" do
+    retryable_exceptions = LoopsMailDeliveryJob.rescue_handlers.filter_map do |exception_name, _handler|
+      exception_name.safe_constantize
+    end
+
+    refute_includes retryable_exceptions, StagingEmailRecipientGuard::BlockedRecipient
+  end
 end

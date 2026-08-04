@@ -61,22 +61,18 @@ Rails.application.configure do
   # Ignore bad email addresses and do not raise email delivery errors.
   # Set this to true and configure the email server for immediate delivery to raise delivery errors.
   # config.action_mailer.raise_delivery_errors = false
-  # AIDEV-NOTE: Staging has no email provider, so mail jobs run asynchronously without
-  # attempting localhost SMTP until outbound email is explicitly provisioned.
-  config.action_mailer.perform_deliveries = false
+  # AIDEV-NOTE: Outbound staging email is live only for exact allowlisted recipients.
+  # Set perform_deliveries = false as the emergency kill switch.
+  config.action_mailer.delivery_method = :loops
+  config.action_mailer.perform_deliveries = true
+  config.action_mailer.interceptors = ["StagingEmailRecipientGuard"]
+  config.after_initialize do
+    StagingEmailRecipientGuard.configure!(ENV["STAGING_EMAIL_RECIPIENT_ALLOWLIST"])
+  end
 
   # Set host to be used by links generated in mailer templates.
   config.action_mailer.default_url_options = {host: "staging.covehomeschool.com"}
   config.action_controller.default_url_options = {host: "staging.covehomeschool.com"}
-
-  # Specify outgoing SMTP server. Remember to add smtp/* credentials via rails credentials:edit.
-  # config.action_mailer.smtp_settings = {
-  #   user_name: Rails.application.credentials.dig(:smtp, :user_name),
-  #   password: Rails.application.credentials.dig(:smtp, :password),
-  #   address: "smtp.example.com",
-  #   port: 587,
-  #   authentication: :plain
-  # }
 
   # Enable locale fallbacks for I18n (makes lookups for any locale fall back to
   # the I18n.default_locale when a translation cannot be found).
@@ -95,6 +91,4 @@ Rails.application.configure do
   # ]
   # Skip DNS rebinding protection for the default health check endpoint.
   # config.host_authorization = { exclude: ->(request) { request.path == "/up" } }
-
-  config.action_mailer.smtp_settings = Jumpstart.config.smtp_settings
 end
