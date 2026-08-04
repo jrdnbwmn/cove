@@ -85,15 +85,18 @@ class LoopsClient < ApplicationClient
     true
   end
 
-  def send_transactional(email:, transactional_id:, data_variables: {})
+  def send_transactional(email:, transactional_id:, data_variables: {}, idempotency_seed: nil, attachments: [])
+    body = {
+      email: email,
+      transactionalId: transactional_id,
+      addToAudience: false,
+      dataVariables: data_variables
+    }
+    body[:attachments] = attachments if attachments.present?
+
     post "/v1/transactional",
-      body: {
-        email: email,
-        transactionalId: transactional_id,
-        addToAudience: false,
-        dataVariables: data_variables
-      },
-      headers: {"Idempotency-Key" => idempotency_key(transactional_id, email, data_variables)}
+      body: body,
+      headers: {"Idempotency-Key" => idempotency_key(transactional_id, email, data_variables, idempotency_seed)}
     true
   rescue Conflict
     Rails.logger.info("[Loops] duplicate transactional send suppressed for #{transactional_id}")
@@ -101,12 +104,11 @@ class LoopsClient < ApplicationClient
   end
 
   # AIDEV-NOTE: Do not include retry-varying values such as Time.current or SecureRandom in data_variables.
-  def idempotency_key(transactional_id, email, data_variables)
-    Digest::SHA256.hexdigest([
-      transactional_id,
-      email,
-      data_variables.transform_keys(&:to_s).sort.to_h.to_json
-    ].join(":"))
+  def idempotency_key(transactional_id, email, data_variables, idempotency_seed = nil)
+    key_parts = [transactional_id, email]
+    key_parts << (idempotency_seed.presence || data_variables.transform_keys(&:to_s).sort.to_h.to_json)
+
+    Digest::SHA256.hexdigest(key_parts.join(":"))
   end
 
   def handle_response(response)

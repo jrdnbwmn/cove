@@ -13,12 +13,33 @@ class LoopsDeviseMailerTest < ActiveSupport::TestCase
     @token = "raw-reset-token"
   end
 
-  test "config/loops.yml exposes exactly the two checked-in transactional mappings" do
+  test "config/loops.yml exposes every checked-in transactional mapping" do
     transactional = Rails.application.config_for(:loops).transactional
 
     assert_equal "cmsdnzduk02k40jx72rv3uwe2", transactional[:reset_password_instructions]
     assert_equal "cmsdo8ixv001e0j1zu027i3s7", transactional[:password_change]
-    assert_equal %i[reset_password_instructions password_change], transactional.keys
+    assert_equal "cmsdr01rw02s00j3ozshehy4f", transactional[:invite]
+    assert_equal "cmsdrmznp040g0jzsnkt9hpsa", transactional[:cancellation_reason]
+    assert_equal "cmsdrk6tf03rb0jzw194l0rl5", transactional[:receipt]
+    assert_equal "cmsdrk8f603rc0jzn1pmslh4m", transactional[:refund]
+    assert_equal "cmsdru6vf04dv0j15pwbonmxs", transactional[:subscription_renewing]
+    assert_equal "cmsdrxthi04p90jzc3bwkq7kj", transactional[:payment_action_required]
+    assert_equal "cmsdrxtnb04qk0j3oclaszs7k", transactional[:payment_failed]
+    assert_equal "cmsdru71a04c50jzw6rqtt95u", transactional[:subscription_trial_will_end]
+    assert_equal "cmsdru76v04ep0jw7xrbb236w", transactional[:subscription_trial_ended]
+    assert_equal %i[
+      reset_password_instructions
+      password_change
+      invite
+      cancellation_reason
+      receipt
+      refund
+      subscription_renewing
+      payment_action_required
+      payment_failed
+      subscription_trial_will_end
+      subscription_trial_ended
+    ].sort, transactional.keys.sort
   end
 
   test "reset_password_instructions carries the Loops transactional id header" do
