@@ -10,8 +10,8 @@
 | 1 | 1 | 1 | Add seven billing template IDs | Master | ✅ |
 | 2 | 1 | 1 | Extend Loops client for seeds and attachments | Master | ✅ |
 | 3 | 1 | 1 | Fan out and validate Loops mail delivery | Master | ✅ |
-| 4 | 2 | 2 | Add receipt and refund Pay mail actions | Master | |
-| 5 | 2 | 2 | Add subscription and payment Pay mail actions | Master | |
+| 4 | 2 | 2 | Add receipt and refund Pay mail actions | Master | ✅ |
+| 5 | 2 | 2 | Add subscription and payment Pay mail actions | Master | ✅ |
 
 ## Prerequisites
 
