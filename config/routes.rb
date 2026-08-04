@@ -22,7 +22,7 @@ Rails.application.routes.draw do
   if Rails.env.staging?
     # TEMPORARY COV-46: proves the guard rejects a fixed non-allowlisted recipient before Loops.
     get "cov-46-blocked-email-smoke", to: ->(_env) {
-      recipient = Struct.new(:email).new("cov-46-blocked@example.invalid")
+      recipient = User.new(email: "cov-46-blocked@example.invalid")
       LoopsDeviseMailer.password_change(recipient).deliver_now
       [204, {}, []]
     }

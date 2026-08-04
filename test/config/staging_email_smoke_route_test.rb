@@ -6,6 +6,7 @@ class StagingEmailSmokeRouteTest < Minitest::Test
 
     assert_match(/if Rails\.env\.staging\?/, routes)
     assert_match(/TEMPORARY.*cov-46-blocked@example\.invalid/m, routes)
+    assert_match(/User\.new\(email: "cov-46-blocked@example\.invalid"\)/, routes)
     assert_match(/LoopsDeviseMailer\.password_change/, routes)
   end
 end
