@@ -62,6 +62,25 @@ class LoopsContactSynchronizerTest < ActiveSupport::TestCase
     assert_equal [{email: user.email, user_id: user.id.to_s, subscribed: true, mailing_lists: {LIST_ID => true}}], client.updates
   end
 
+  test "current opt-in makes one exact Loops update request" do
+    user = users(:marketing_subscribed)
+    request = stub_request(:put, "https://app.loops.so/api/v1/contacts/update")
+      .with(
+        body: {
+          email: user.email,
+          userId: user.id.to_s,
+          subscribed: true,
+          mailingLists: {LIST_ID => true}
+        }.to_json,
+        headers: {"Authorization" => "Bearer test-token"}
+      )
+      .to_return(status: 200, body: {success: true}.to_json)
+
+    synchronizer_with_http_client.sync(user, intent: :opt_in)
+
+    assert_requested request, times: 1
+  end
+
   test "current app opt-out sends the minimal unsubscribed list payload" do
     client = RecordingClient.new
     user = users(:marketing_unsubscribed)
@@ -69,6 +88,17 @@ class LoopsContactSynchronizerTest < ActiveSupport::TestCase
     build_synchronizer(client:).sync(user, intent: :opt_out)
 
     assert_equal [{user_id: user.id.to_s, subscribed: false, mailing_lists: {LIST_ID => false}}], client.updates
+  end
+
+  test "current app opt-out makes one exact Loops update request" do
+    user = users(:marketing_unsubscribed)
+    request = stub_request(:put, "https://app.loops.so/api/v1/contacts/update")
+      .with(body: {userId: user.id.to_s, subscribed: false, mailingLists: {LIST_ID => false}}.to_json)
+      .to_return(status: 200, body: {success: true}.to_json)
+
+    synchronizer_with_http_client.sync(user, intent: :opt_out)
+
+    assert_requested request, times: 1
   end
 
   test "email change sends the current email and identifier without consent fields" do
@@ -107,6 +137,16 @@ class LoopsContactSynchronizerTest < ActiveSupport::TestCase
     assert_nil build_synchronizer(client: missing_client).delete(users(:one).id)
   end
 
+  test "deletion posts one plain string user ID and accepts a missing contact" do
+    user = users(:one)
+    request = stub_request(:post, "https://app.loops.so/api/v1/contacts/delete")
+      .with(body: {userId: user.id.to_s}.to_json)
+      .to_return(status: 404)
+
+    assert_nil synchronizer_with_http_client.delete(user.id)
+    assert_requested request, times: 1
+  end
+
   private
 
   def build_synchronizer(environment: "production", config: self.config, client: nil, client_factory: nil)
@@ -123,5 +163,9 @@ class LoopsContactSynchronizerTest < ActiveSupport::TestCase
       result.contact_sync_enabled = enabled
       result.contact_sync_mailing_list_id = list_id
     end
+  end
+
+  def synchronizer_with_http_client
+    build_synchronizer(client: LoopsClient.new(token: "test-token"))
   end
 end
