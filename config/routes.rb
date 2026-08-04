@@ -19,6 +19,23 @@ Rails.application.routes.draw do
   # Public marketing homepage
   root to: "public#index"
 
+  constraints ->(_request) { Rails.env.staging? } do
+    namespace :staging do
+      scope :verification, controller: :verification do
+        post :status
+        post :audit
+        post :create_plan
+        post :invite
+        post :subscription_renewing
+        post :subscription_trial_will_end
+        post :subscription_trial_ended
+        post :cancellation_reason
+        post :enqueue_failure
+        post :cleanup
+      end
+    end
+  end
+
   if Rails.env.local?
     mount Lookbook::Engine, at: "/lookbook" if defined?(Lookbook::Engine)
     get "dev/kitchen_sink", to: "dev/kitchen_sink#show"
