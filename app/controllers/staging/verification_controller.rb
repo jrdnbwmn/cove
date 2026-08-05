@@ -22,14 +22,13 @@ class Staging::VerificationController < ApplicationController
     price_id = params[:price_id].to_s
     return render_unprocessable("A Stripe price identifier is required") unless price_id.start_with?("price_")
 
-    plan = Plan.find_or_create_by!(name: verification_plan_name) do |record|
-      record.amount = 9900
-      record.currency = "usd"
-      record.interval = "year"
-      record.trial_period_days = 0
-      record.hidden = false
-      record.stripe_id = price_id
+    plan = Plan.find_or_initialize_by(name: verification_plan_name)
+    if plan.new_record?
+      plan.assign_attributes(amount: 9900, currency: "usd", interval: "year", trial_period_days: 0, hidden: false)
     end
+    plan.stripe_id = price_id
+    plan.save!
+
     render json: {created: plan.previously_new_record?, plan_id: plan.id}
   end
 

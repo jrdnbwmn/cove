@@ -77,6 +77,20 @@ class VerificationBridgeTest < ActionDispatch::IntegrationTest
     assert_equal "year", plan.interval
   end
 
+  test "replaces the COV-47 plan Stripe price when a corrected price is supplied" do
+    Plan.create!(name: "COV-47 Verification (Yearly)", amount: 9900, currency: "usd", interval: "year", stripe_id: "price_stale")
+    sign_in @operator
+
+    with_staging_environment do
+      assert_no_difference -> { Plan.where(name: "COV-47 Verification (Yearly)").count } do
+        post "#{BASE_PATH}/create_plan", params: {price_id: "price_corrected"}
+      end
+    end
+
+    assert_response :success
+    assert_equal "price_corrected", Plan.find_by!(name: "COV-47 Verification (Yearly)").stripe_id
+  end
+
   test "rejects a plan identifier that is not a Stripe price" do
     sign_in @operator
 
