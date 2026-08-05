@@ -13,9 +13,9 @@
 | 4 | 2 | 2 | Event processor (mapping, identity, ordering guards) | Master | ✅ |
 | 5 | 2 | 2 | `LoopsWebhookEventJob` | Master | ✅ |
 | 6 | 2 | 2 | `POST /webhooks/loops` controller + route | Master | ✅ |
-| 7 | 3 | 3 | 30-day pruning job + `config/recurring.yml` | Clone | |
-| 8 | 3 | 3 | End-to-end + regression tests | Clone | |
-| 9 | 3 | 3 | Production credential + dashboard registration (manual) | Master | |
+| 7 | 3 | 3 | 30-day pruning job + `config/recurring.yml` | Clone | ✅ |
+| 8 | 3 | 3 | End-to-end + regression tests | Clone | ✅ |
+| 9 | 3 | 3 | Production credential + dashboard registration (manual) | Master | ✅ |
 
 ## Prerequisites
 
