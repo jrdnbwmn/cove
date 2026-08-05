@@ -10,9 +10,9 @@
 | 1 | 1 | 1 | `loops_webhook_events` table + model | Master | ✅ |
 | 2 | 1 | 1 | HMAC-SHA256 signature verifier | Master | ✅ |
 | 3 | 1 | 1 | Opt-out severity + `record_loops_opt_out` + narrowed grant | Master | ✅ |
-| 4 | 2 | 2 | Event processor (mapping, identity, ordering guards) | Master | |
-| 5 | 2 | 2 | `LoopsWebhookEventJob` | Master | |
-| 6 | 2 | 2 | `POST /webhooks/loops` controller + route | Master | |
+| 4 | 2 | 2 | Event processor (mapping, identity, ordering guards) | Master | ✅ |
+| 5 | 2 | 2 | `LoopsWebhookEventJob` | Master | ✅ |
+| 6 | 2 | 2 | `POST /webhooks/loops` controller + route | Master | ✅ |
 | 7 | 3 | 3 | 30-day pruning job + `config/recurring.yml` | Clone | |
 | 8 | 3 | 3 | End-to-end + regression tests | Clone | |
 | 9 | 3 | 3 | Production credential + dashboard registration (manual) | Master | |
