@@ -165,6 +165,31 @@ class VerificationBridgeTest < ActionDispatch::IntegrationTest
     assert_not subscription.reload.canceled?
   end
 
+  test "removes the operator account's stripe customer so a fresh one is created" do
+    stale_customer = Pay::Customer.create!(owner: @operator.personal_account, processor: :stripe, processor_id: "cus_stale", default: true)
+    sign_in @operator
+
+    with_staging_environment do
+      post "#{BASE_PATH}/reset_stripe_customer"
+    end
+
+    assert_response :success
+    assert_equal 1, json_response.fetch("removed_count")
+    assert_nil Pay::Customer.find_by(id: stale_customer.id)
+  end
+
+  test "reset_stripe_customer leaves other processors' customers alone" do
+    sign_in @operator
+
+    with_staging_environment do
+      post "#{BASE_PATH}/reset_stripe_customer"
+    end
+
+    assert_response :success
+    assert_equal 0, json_response.fetch("removed_count")
+    assert Pay::Customer.exists?(pay_customers(:subscribed).id)
+  end
+
   test "uses the operator account and fixed mailer actions without recipient or model selection" do
     sign_in @operator
     subscription = pay_subscriptions(:subscribed)
@@ -240,6 +265,7 @@ class VerificationBridgeTest < ActionDispatch::IntegrationTest
       enqueue_failure
       cleanup
       clear_stray_subscription
+      reset_stripe_customer
     ].map { |action| "#{BASE_PATH}/#{action}" }
   end
 

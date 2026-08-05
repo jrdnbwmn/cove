@@ -33,6 +33,7 @@ Rails.application.routes.draw do
         post :enqueue_failure
         post :cleanup
         post :clear_stray_subscription
+        post :reset_stripe_customer
       end
     end
   end

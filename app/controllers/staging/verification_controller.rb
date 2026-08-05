@@ -88,6 +88,15 @@ class Staging::VerificationController < ApplicationController
     render json: {canceled_count: canceled.size}
   end
 
+  # AIDEV-NOTE: Staging-only escape hatch for a local Pay::Customer whose processor_id
+  # points at a Stripe customer from a since-corrected/mismatched Stripe account. Destroys
+  # it so the next checkout creates a fresh customer against the current credentials.
+  def reset_stripe_customer
+    removed = current_account.pay_customers.where(processor: :stripe).destroy_all
+
+    render json: {removed_count: removed.size}
+  end
+
   private
 
   def operator!
