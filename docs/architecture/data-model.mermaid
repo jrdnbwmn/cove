@@ -43,6 +43,15 @@ erDiagram
     bigint user_id FK
   }
 
+  LOOPS_WEBHOOK_EVENT {
+    bigint id PK
+    string webhook_id
+    string event_name
+    datetime event_time
+    jsonb payload
+    datetime processed_at
+  }
+
   USER ||--o{ ACCOUNT_USER : memberships
   ACCOUNT ||--o{ ACCOUNT_USER : members
   USER ||--o{ ACCOUNT : owns
@@ -54,3 +63,8 @@ erDiagram
 
   %% MarketingConsent is a User concern. Consent state is stored on users,
   %% rather than in a separate record, to keep one current preference per user.
+
+  %% LOOPS_WEBHOOK_EVENT has no FK to USER: LoopsWebhookEventProcessor
+  %% resolves the user from the payload's contactIdentity (userId/email) at
+  %% processing time, not via a stored association. webhook_id is uniquely
+  %% indexed for replay dedupe (30-day retention outlives Loops' 24h retries).
