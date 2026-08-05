@@ -111,6 +111,64 @@ class LoopsContactLifecycleTest < ActiveSupport::TestCase
     assert_equal [user.id.to_s], deletion_synchronizer.deletion_calls
   end
 
+  test "consenting registration enqueues the signed-up event after the contact sync runs" do
+    user = build_user(marketing_opt_in: "1")
+    user.save!
+
+    perform_enqueued_jobs(only: LoopsContactSyncJob)
+
+    assert_enqueued_with(job: LoopsEventJob, args: [user.id, "user_signed_up"])
+  end
+
+  test "non-consenting registration never reaches the contact sync or event jobs" do
+    user = build_user(marketing_opt_in: "0")
+
+    assert_no_enqueued_jobs only: [LoopsContactSyncJob, LoopsEventJob] do
+      user.save!
+    end
+  end
+
+  test "settings opt-in by an existing user does not enqueue the signed-up event" do
+    user = users(:one)
+
+    perform_enqueued_jobs(only: LoopsContactSyncJob) do
+      user.grant_marketing_consent(source: "settings")
+    end
+
+    assert_no_enqueued_jobs only: LoopsEventJob
+  end
+
+  test "registration survives a Loops 500 on the event send" do
+    user = build_user(marketing_opt_in: "1")
+    stub_request(:post, "https://app.loops.so/api/v1/events/send").to_return(status: 500)
+
+    # Emission is two `perform_later` hops off the request path, so the
+    # request itself never touches Loops and cannot be blocked by it.
+    assert_nothing_raised { user.save! }
+
+    # AIDEV-NOTE: forces the emitter's production+contact_sync_enabled gate
+    # open so the stubbed HTTP request is genuinely exercised; the real
+    # LoopsClient (default client_factory) is still used so WebMock's 500
+    # reaches LoopsRetryable's retry_on for real. LoopsEventJob is performed
+    # directly with `perform_now`, outside any `perform_enqueued_jobs` block,
+    # so retry_on's own re-enqueue on failure is queued rather than executed
+    # inline recursively — matching how SolidQueue actually schedules retries
+    # asynchronously in production, rather than the test adapter's inline
+    # draining exhausting all attempts synchronously in one call stack.
+    production_emitter = LoopsEventEmitter.new(
+      config: Rails.application.config_for(:loops, env: "production"),
+      environment: ActiveSupport::StringInquirer.new("production")
+    )
+
+    LoopsEventEmitter.stub(:new, production_emitter) do
+      perform_enqueued_jobs(only: LoopsContactSyncJob)
+
+      assert_nothing_raised do
+        LoopsEventJob.perform_now(user.id, "user_signed_up")
+      end
+    end
+  end
+
   test "contact jobs retry transient failures and leave permanent failures unhandled" do
     [LoopsContactSyncJob, LoopsContactDeletionJob].each do |job|
       retryable = job.rescue_handlers.filter_map { |exception_name, _| exception_name.safe_constantize }
