@@ -1,3 +1,9 @@
+production:
+  loops_webhook_event_pruning:
+    class: LoopsWebhookEventPruningJob
+    queue: background
+    schedule: every day
+
 # production:
 #   periodic_cleanup:
 #     class: CleanSoftDeletedRecordsJob

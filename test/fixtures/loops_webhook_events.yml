@@ -1,0 +1,21 @@
+one:
+  webhook_id: wh_one
+  event_name: contact.unsubscribed
+  event_time: <%= Time.current %>
+  payload: {}
+  processed_at: <%= Time.current %>
+
+unprocessed:
+  webhook_id: wh_unprocessed
+  event_name: email.hardBounced
+  event_time: <%= Time.current %>
+  payload: {}
+  processed_at:
+
+stale:
+  webhook_id: wh_stale
+  event_name: email.spamReported
+  event_time: <%= 31.days.ago %>
+  payload: {}
+  processed_at: <%= 31.days.ago %>
+  created_at: <%= 31.days.ago %>
