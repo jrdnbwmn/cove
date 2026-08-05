@@ -7,10 +7,10 @@
 
 | Task | Phase | Checkpoint | Description | Assign | Done |
 | ---- | ----- | ---------- | ----------- | ------ | ---- |
-| 1 | 1 | 1 | `LoopsEventEmitter` service + tests | Master | |
-| 2 | 1 | 1 | `LoopsEventJob` + tests | Clone | |
-| 3 | 1 | 2 | Chain event enqueue off `LoopsContactSyncJob` + tests | Master | |
-| 4 | 1 | 2 | End-to-end lifecycle coverage + AC verification | Clone | |
+| 1 | 1 | 1 | `LoopsEventEmitter` service + tests | Master | ✅ |
+| 2 | 1 | 1 | `LoopsEventJob` + tests | Clone | ✅ |
+| 3 | 1 | 2 | Chain event enqueue off `LoopsContactSyncJob` + tests | Master | ✅ |
+| 4 | 1 | 2 | End-to-end lifecycle coverage + AC verification | Clone | ✅ |
 
 ## Prerequisites
 
