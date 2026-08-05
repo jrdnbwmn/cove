@@ -1,19 +1,13 @@
 require "test_helper"
 
 class LoopsWebhookSignatureTest < ActiveSupport::TestCase
-  SECRET = "whsec_#{Base64.strict_encode64("test-signing-key")}"
-
-  def sign(secret, webhook_id, timestamp, payload)
-    key = Base64.decode64(secret.split("_")[1])
-    digest = OpenSSL::HMAC.digest("SHA256", key, "#{webhook_id}.#{timestamp}.#{payload}")
-    Base64.strict_encode64(digest)
-  end
+  SECRET = LOOPS_WEBHOOK_TEST_SECRET
 
   test "validates a correctly computed signature" do
     webhook_id = "wh_1"
     timestamp = "1700000000"
     payload = '{"eventName":"contact.unsubscribed"}'
-    signature = sign(SECRET, webhook_id, timestamp, payload)
+    signature = sign_loops_webhook(webhook_id, timestamp, payload)
 
     verifier = LoopsWebhookSignature.new(secret: SECRET)
 
@@ -24,7 +18,7 @@ class LoopsWebhookSignatureTest < ActiveSupport::TestCase
     webhook_id = "wh_1"
     timestamp = "1700000000"
     payload = "{}"
-    signature = sign(SECRET, webhook_id, timestamp, payload)
+    signature = sign_loops_webhook(webhook_id, timestamp, payload)
 
     verifier = LoopsWebhookSignature.new(secret: SECRET)
     header = "v1,wrongsignature v1,#{signature}"
@@ -41,7 +35,7 @@ class LoopsWebhookSignatureTest < ActiveSupport::TestCase
   test "rejects a tampered body" do
     webhook_id = "wh_1"
     timestamp = "1700000000"
-    signature = sign(SECRET, webhook_id, timestamp, "{}")
+    signature = sign_loops_webhook(webhook_id, timestamp, "{}")
 
     verifier = LoopsWebhookSignature.new(secret: SECRET)
 
@@ -51,7 +45,7 @@ class LoopsWebhookSignatureTest < ActiveSupport::TestCase
   test "rejects a tampered webhook id" do
     timestamp = "1700000000"
     payload = "{}"
-    signature = sign(SECRET, "wh_1", timestamp, payload)
+    signature = sign_loops_webhook("wh_1", timestamp, payload)
 
     verifier = LoopsWebhookSignature.new(secret: SECRET)
 
@@ -61,7 +55,7 @@ class LoopsWebhookSignatureTest < ActiveSupport::TestCase
   test "rejects a tampered timestamp" do
     webhook_id = "wh_1"
     payload = "{}"
-    signature = sign(SECRET, webhook_id, "1700000000", payload)
+    signature = sign_loops_webhook(webhook_id, "1700000000", payload)
 
     verifier = LoopsWebhookSignature.new(secret: SECRET)
 

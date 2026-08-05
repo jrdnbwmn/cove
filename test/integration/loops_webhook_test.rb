@@ -3,34 +3,14 @@ require "test_helper"
 class LoopsWebhookTest < ActionDispatch::IntegrationTest
   include ActiveJob::TestHelper
 
-  SECRET = "whsec_#{Base64.strict_encode64("test-signing-key")}"
   COVE_MAILING_LIST_ID = "cmsdo8ncl02wc0j0j4rxwhy4l"
 
   setup { clear_enqueued_jobs }
 
-  def sign(webhook_id, timestamp, payload)
-    key = Base64.decode64(SECRET.split("_")[1])
-    digest = OpenSSL::HMAC.digest("SHA256", key, "#{webhook_id}.#{timestamp}.#{payload}")
-    "v1,#{Base64.strict_encode64(digest)}"
-  end
-
-  def post_webhook(webhook_id:, body:, signature: nil, timestamp: "1700000000")
-    signature ||= sign(webhook_id, timestamp, body)
-
-    post "/webhooks/loops",
-      params: body,
-      headers: {
-        "Webhook-Id" => webhook_id,
-        "Webhook-Timestamp" => timestamp,
-        "Webhook-Signature" => signature,
-        "Content-Type" => "application/json"
-      }
-  end
-
   def receive_and_process(webhook_id:, body:)
-    LoopsWebhookSignature.stub(:secret, SECRET) do
+    LoopsWebhookSignature.stub(:secret, LOOPS_WEBHOOK_TEST_SECRET) do
       assert_no_enqueued_jobs only: LoopsContactSyncJob do
-        post_webhook(webhook_id:, body:)
+        post_loops_webhook(webhook_id:, body:)
         assert_response :ok
         perform_enqueued_jobs only: LoopsWebhookEventJob
       end
@@ -153,11 +133,11 @@ class LoopsWebhookTest < ActionDispatch::IntegrationTest
       "contactIdentity" => {"userId" => user.id.to_s}
     }.to_json
 
-    LoopsWebhookSignature.stub(:secret, SECRET) do
+    LoopsWebhookSignature.stub(:secret, LOOPS_WEBHOOK_TEST_SECRET) do
       assert_no_enqueued_jobs only: LoopsContactSyncJob do
-        post_webhook(webhook_id: "wh_order_a_bounce", body: bounce_body)
+        post_loops_webhook(webhook_id: "wh_order_a_bounce", body: bounce_body)
         assert_response :ok
-        post_webhook(webhook_id: "wh_order_a_unsubscribed", body: unsubscribed_body)
+        post_loops_webhook(webhook_id: "wh_order_a_unsubscribed", body: unsubscribed_body)
         assert_response :ok
         perform_enqueued_jobs only: LoopsWebhookEventJob
       end
@@ -184,11 +164,11 @@ class LoopsWebhookTest < ActionDispatch::IntegrationTest
       "contactIdentity" => {"userId" => user.id.to_s}
     }.to_json
 
-    LoopsWebhookSignature.stub(:secret, SECRET) do
+    LoopsWebhookSignature.stub(:secret, LOOPS_WEBHOOK_TEST_SECRET) do
       assert_no_enqueued_jobs only: LoopsContactSyncJob do
-        post_webhook(webhook_id: "wh_order_b_unsubscribed", body: unsubscribed_body)
+        post_loops_webhook(webhook_id: "wh_order_b_unsubscribed", body: unsubscribed_body)
         assert_response :ok
-        post_webhook(webhook_id: "wh_order_b_bounce", body: bounce_body)
+        post_loops_webhook(webhook_id: "wh_order_b_bounce", body: bounce_body)
         assert_response :ok
         perform_enqueued_jobs only: LoopsWebhookEventJob
       end
@@ -206,9 +186,9 @@ class LoopsWebhookTest < ActionDispatch::IntegrationTest
       "contactIdentity" => {"userId" => "999999999", "email" => "no-such-user-#{SecureRandom.hex(4)}@example.com"}
     }.to_json
 
-    LoopsWebhookSignature.stub(:secret, SECRET) do
+    LoopsWebhookSignature.stub(:secret, LOOPS_WEBHOOK_TEST_SECRET) do
       assert_difference "LoopsWebhookEvent.count", 1 do
-        post_webhook(webhook_id: "wh_unknown_user", body: body)
+        post_loops_webhook(webhook_id: "wh_unknown_user", body: body)
       end
       assert_response :ok
 
