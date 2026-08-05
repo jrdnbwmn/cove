@@ -136,6 +136,35 @@ class VerificationBridgeTest < ActionDispatch::IntegrationTest
     assert Plan.exists?(plans(:personal).id)
   end
 
+  test "force-cancels a stray non-COV-47 subscription immediately" do
+    sign_in @operator
+    subscription = pay_subscriptions(:subscribed)
+
+    with_staging_environment do
+      post "#{BASE_PATH}/clear_stray_subscription"
+    end
+
+    assert_response :success
+    assert_equal 1, json_response.fetch("canceled_count")
+    assert subscription.reload.canceled?
+    assert subscription.ends_at <= Time.current
+  end
+
+  test "clear_stray_subscription leaves the COV-47 plan's own subscription alone" do
+    plan = Plan.create!(name: "COV-47 Verification (Yearly)", amount: 9900, currency: "usd", interval: "year", stripe_id: "price_cov47", fake_processor_id: "price_cov47")
+    subscription = pay_subscriptions(:subscribed)
+    subscription.update!(processor_plan: plan.fake_processor_id)
+    sign_in @operator
+
+    with_staging_environment do
+      post "#{BASE_PATH}/clear_stray_subscription"
+    end
+
+    assert_response :success
+    assert_equal 0, json_response.fetch("canceled_count")
+    assert_not subscription.reload.canceled?
+  end
+
   test "uses the operator account and fixed mailer actions without recipient or model selection" do
     sign_in @operator
     subscription = pay_subscriptions(:subscribed)
@@ -210,6 +239,7 @@ class VerificationBridgeTest < ActionDispatch::IntegrationTest
       cancellation_reason
       enqueue_failure
       cleanup
+      clear_stray_subscription
     ].map { |action| "#{BASE_PATH}/#{action}" }
   end
 

@@ -32,6 +32,7 @@ Rails.application.routes.draw do
         post :cancellation_reason
         post :enqueue_failure
         post :cleanup
+        post :clear_stray_subscription
       end
     end
   end

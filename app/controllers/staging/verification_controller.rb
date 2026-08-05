@@ -78,6 +78,16 @@ class Staging::VerificationController < ApplicationController
     render json: {plans_removed: plan_count, invitations_removed: invitation_count}
   end
 
+  # AIDEV-NOTE: Staging-only escape hatch for a stray, non-COV-47 subscription (e.g. the
+  # seeded fake_processor "Cove Dev Plan") blocking checkout via Pay::Customer#subscribed?.
+  # Force-ends it immediately rather than the UI's cancel-at-period-end.
+  def clear_stray_subscription
+    canceled = current_account.pay_subscriptions.active.reject { |subscription| subscription.plan&.name == verification_plan_name }
+    canceled.each(&:cancel_now!)
+
+    render json: {canceled_count: canceled.size}
+  end
+
   private
 
   def operator!
