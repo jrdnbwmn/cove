@@ -40,7 +40,7 @@ Where it says "staging console," use the corresponding bridge action below.
 | ---- | ----- | ---------- | ----------- | ------ | ---- |
 | 1 | 1 | 1 | Define route/controller contract with failing tests | Master | ✅ |
 | 2 | 1 | 1 | Implement the staging-only authenticated bridge | Master | ✅ |
-| 3 | 1 | 2 | Deploy bridge and configure private Render inputs | Master | |
+| 3 | 1 | 2 | Deploy bridge and configure private Render inputs | Master | ✅ |
 | 4 | 2 | 2 | Run COV-47 through all eleven sends using bridge actions | Master | |
 | 5 | 3 | 3 | Complete dashboard checks and record COV-47 evidence | Master | |
 | 6 | 3 | 3 | Remove bridge, restore staging deployment, and verify | Master | |
