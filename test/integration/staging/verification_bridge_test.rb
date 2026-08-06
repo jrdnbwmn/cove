@@ -179,6 +179,22 @@ class VerificationBridgeTest < ActionDispatch::IntegrationTest
     assert_not subscription.reload.canceled?
   end
 
+  test "immediately cancels the COV-47 verification subscription" do
+    plan = Plan.create!(name: "COV-47 Verification (Yearly)", amount: 9900, currency: "usd", interval: "year", stripe_id: "price_cov47", fake_processor_id: "price_cov47")
+    subscription = pay_subscriptions(:subscribed)
+    subscription.update!(processor_plan: plan.fake_processor_id)
+    sign_in @operator
+
+    with_staging_environment do
+      post "#{BASE_PATH}/cancel_verification_subscription"
+    end
+
+    assert_response :success
+    assert_equal 1, json_response.fetch("canceled_count")
+    assert subscription.reload.canceled?
+    assert subscription.ends_at <= Time.current
+  end
+
   test "removes the operator account's stripe customer so a fresh one is created" do
     stale_customer = Pay::Customer.create!(owner: @operator.personal_account, processor: :stripe, processor_id: "cus_stale", default: true)
     sign_in @operator
@@ -279,6 +295,7 @@ class VerificationBridgeTest < ActionDispatch::IntegrationTest
       enqueue_failure
       cleanup
       clear_stray_subscription
+      cancel_verification_subscription
       reset_stripe_customer
     ].map { |action| "#{BASE_PATH}/#{action}" }
   end

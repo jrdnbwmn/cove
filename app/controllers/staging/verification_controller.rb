@@ -87,6 +87,16 @@ class Staging::VerificationController < ApplicationController
     render json: {canceled_count: canceled.size}
   end
 
+  # AIDEV-NOTE: The UI cancels annual subscriptions at period end, which prevents the
+  # COV-47 failure-path checkout checks. This temporary staging-only action ends only
+  # the named verification subscription after its cancellation-survey job has run.
+  def cancel_verification_subscription
+    canceled = current_account.pay_subscriptions.active.select { |subscription| subscription.plan&.name == verification_plan_name }
+    canceled.each(&:cancel_now!)
+
+    render json: {canceled_count: canceled.size}
+  end
+
   # AIDEV-NOTE: Staging-only escape hatch for a local Pay::Customer whose processor_id
   # points at a Stripe customer from a since-corrected/mismatched Stripe account. Destroys
   # it so the next checkout creates a fresh customer against the current credentials.
