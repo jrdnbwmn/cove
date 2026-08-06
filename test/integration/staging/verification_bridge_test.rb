@@ -208,6 +208,17 @@ class VerificationBridgeTest < ActionDispatch::IntegrationTest
     assert_nil Pay::Customer.find_by(id: stale_customer.id)
   end
 
+  test "links only a Stripe test-clock customer to the operator account" do
+    sign_in @operator
+
+    with_staging_environment do
+      post "#{BASE_PATH}/link_test_clock_customer", params: {customer_id: "cus_test_clock"}
+    end
+
+    assert_response :success
+    assert_equal "cus_test_clock", @operator.personal_account.pay_customers.find_by!(processor: :stripe).processor_id
+  end
+
   test "reset_stripe_customer leaves other processors' customers alone" do
     sign_in @operator
 

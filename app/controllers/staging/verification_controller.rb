@@ -97,6 +97,15 @@ class Staging::VerificationController < ApplicationController
     render json: {canceled_count: canceled.size}
   end
 
+  def link_test_clock_customer
+    customer_id = params[:customer_id].to_s
+    return render_unprocessable("A Stripe customer identifier is required") unless customer_id.start_with?("cus_")
+
+    current_account.pay_customers.where(processor: :stripe).destroy_all
+    customer = Pay::Customer.create!(owner: current_account, processor: :stripe, processor_id: customer_id, default: true)
+    render json: {customer_linked: customer.persisted?}
+  end
+
   # AIDEV-NOTE: Staging-only escape hatch for a local Pay::Customer whose processor_id
   # points at a Stripe customer from a since-corrected/mismatched Stripe account. Destroys
   # it so the next checkout creates a fresh customer against the current credentials.

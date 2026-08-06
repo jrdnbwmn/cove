@@ -34,6 +34,7 @@ Rails.application.routes.draw do
         post :cleanup
         post :clear_stray_subscription
         post :cancel_verification_subscription
+        post :link_test_clock_customer
         post :reset_stripe_customer
       end
     end
