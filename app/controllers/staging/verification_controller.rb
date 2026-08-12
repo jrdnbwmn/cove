@@ -106,6 +106,19 @@ class Staging::VerificationController < ApplicationController
     render json: {customer_linked: customer.persisted?}
   end
 
+  # AIDEV-NOTE: A test-clock subscription is created directly in Stripe, so its
+  # creation and invoice jobs can be processed out of order. Sync it explicitly
+  # before retrying the already-delivered invoice event, then remove this bridge.
+  def sync_test_clock_subscription
+    subscription_id = params[:subscription_id].to_s
+    return render_unprocessable("A Stripe subscription identifier is required") unless subscription_id.start_with?("sub_")
+
+    subscription = Pay::Stripe::Subscription.sync(subscription_id)
+    return render_unprocessable("The Stripe subscription does not belong to this account") unless subscription&.customer&.owner == current_account
+
+    render json: {subscription_linked: true}
+  end
+
   # AIDEV-NOTE: Staging-only escape hatch for a local Pay::Customer whose processor_id
   # points at a Stripe customer from a since-corrected/mismatched Stripe account. Destroys
   # it so the next checkout creates a fresh customer against the current credentials.

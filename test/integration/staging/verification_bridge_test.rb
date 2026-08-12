@@ -219,6 +219,31 @@ class VerificationBridgeTest < ActionDispatch::IntegrationTest
     assert_equal "cus_test_clock", @operator.personal_account.pay_customers.find_by!(processor: :stripe).processor_id
   end
 
+  test "syncs only a Stripe test-clock subscription belonging to the operator account" do
+    customer = Pay::Customer.create!(owner: @operator.personal_account, processor: :stripe, processor_id: "cus_test_clock", default: true)
+    subscription = Pay::Subscription.create!(customer:, name: "COV-47 Verification (Yearly)", processor_id: "sub_test_clock", processor_plan: "price_test_clock", status: "past_due")
+    sign_in @operator
+
+    with_staging_environment do
+      Pay::Stripe::Subscription.stub(:sync, subscription) do
+        post "#{BASE_PATH}/sync_test_clock_subscription", params: {subscription_id: "sub_test_clock"}
+      end
+    end
+
+    assert_response :success
+    assert_equal true, json_response.fetch("subscription_linked")
+  end
+
+  test "rejects a non-Stripe subscription identifier before syncing" do
+    sign_in @operator
+
+    with_staging_environment do
+      post "#{BASE_PATH}/sync_test_clock_subscription", params: {subscription_id: "price_test_clock"}
+    end
+
+    assert_response :unprocessable_content
+  end
+
   test "reset_stripe_customer leaves other processors' customers alone" do
     sign_in @operator
 
