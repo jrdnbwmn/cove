@@ -5,6 +5,17 @@ class SidebarComponent < ViewComponent::Base
   VARIANTS = %i[default bordered minimal].freeze
   POSITIONS = %i[left right].freeze
 
+  # Tailwind can't resolve "open:#{@width}" built via string interpolation —
+  # its build-time scanner only picks up class names that appear literally in
+  # source. Each supported width must have its "open:" variant spelled out
+  # here so the compiler sees it and generates the CSS.
+  WIDTH_OPEN_VARIANTS = {
+    "w-56" => "open:w-56",
+    "w-64" => "open:w-64",
+    "w-72" => "open:w-72",
+    "w-80" => "open:w-80"
+  }.freeze
+
   renders_one :logo
   renders_one :footer
   renders_one :collapsed_footer
@@ -59,7 +70,7 @@ class SidebarComponent < ViewComponent::Base
     @default_collapsed = default_collapsed
     @position = POSITIONS.include?(position) ? position : :left
     @storage_key = storage_key
-    @width = width
+    @width = WIDTH_OPEN_VARIANTS.key?(width) ? width : "w-64"
     @collapsed_width = collapsed_width
     @min_height_class = min_height_class
     @show_mobile_toggle = show_mobile_toggle
@@ -72,18 +83,17 @@ class SidebarComponent < ViewComponent::Base
   end
 
   def sidebar_classes
-    base = "#{@collapsed_width} open:#{@width} group/sidebar relative z-20 h-full shrink-0 overflow-hidden max-md:hidden motion-safe:transition-all motion-safe:duration-300"
+    base = "#{@collapsed_width} #{WIDTH_OPEN_VARIANTS.fetch(@width)} group/sidebar relative z-20 h-full shrink-0 overflow-hidden max-md:hidden motion-safe:transition-all motion-safe:duration-300"
 
-    variant_class = case @variant
-    when :bordered
-      "border-r border-neutral-200 bg-neutral-50 dark:border-neutral-800 dark:bg-neutral-900"
-    when :minimal
-      "bg-white dark:bg-neutral-950"
-    else
-      "border-r border-neutral-200 bg-neutral-50 dark:border-neutral-800 dark:bg-neutral-900"
-    end
+    [base, variant_class_for_sidebar].join(" ")
+  end
 
-    [base, variant_class].join(" ")
+  # Non-collapsible sidebars have no <details> to toggle, so they render at a
+  # fixed width instead of reusing sidebar_classes' collapsed/open pair.
+  def static_sidebar_classes
+    base = "#{@width} relative z-20 h-full shrink-0 overflow-hidden max-md:hidden motion-safe:transition-all motion-safe:duration-300"
+
+    [base, variant_class_for_sidebar].join(" ")
   end
 
   def mobile_panel_classes
@@ -176,4 +186,17 @@ class SidebarComponent < ViewComponent::Base
   end
 
   attr_reader :variant, :position, :storage_key, :width, :collapsed_width, :min_height_class
+
+  private
+
+  def variant_class_for_sidebar
+    case @variant
+    when :bordered
+      "border-r border-neutral-200 bg-neutral-50 dark:border-neutral-800 dark:bg-neutral-900"
+    when :minimal
+      "bg-white dark:bg-neutral-950"
+    else
+      "border-r border-neutral-200 bg-neutral-50 dark:border-neutral-800 dark:bg-neutral-900"
+    end
+  end
 end

@@ -210,6 +210,25 @@ option:hover {
   --fade-end-y-opacity: 0;
 }
 
+/* The toast host is promoted into the native Popover API top layer via JS
+   (ui_toast_controller#ensureGlobalHostVisible) so it renders above dialogs
+   and escapes ancestor overflow/transform contexts. The UA popover
+   stylesheet sets `inset: 0; margin: auto; overflow: auto; max-width/
+   max-height: calc(100% - 2 * ...)` on `:popover-open`, which fights the
+   position-specific Tailwind classes from UiToastComponent#container_classes
+   (e.g. `right-0 bottom-0 mr-4 mb-4`) and clips the toast list to a tiny box
+   before its JS-driven height catches up. This reset lives in the components
+   layer, so it always loses to those utilities (in the utilities layer) per
+   side, leaving only the sides a position variant doesn't set at a neutral
+   auto/0/visible instead of the UA default. */
+[data-controller~="ui-toast"] {
+  inset: auto;
+  margin: 0;
+  overflow: visible;
+  max-width: none;
+  max-height: none;
+}
+
 .toast-item {
   @apply absolute left-0 w-full select-none;
   z-index: var(--toast-z-index, 100);

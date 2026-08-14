@@ -29,7 +29,7 @@
   <div class="flex items-center gap-1">
     <%= blur_secret @api_token.token %>
 
-    <%= button_tag data: {controller: "clipboard tooltip", tooltip_content_value: t(".click_to_copy"), clipboard_text: @api_token.token} do %>
+    <%= button_tag data: {controller: "clipboard ui-tooltip", ui_tooltip_content: t(".click_to_copy"), clipboard_text: @api_token.token} do %>
       <%= icon "copy", class: "size-5" %>
     <% end %>
   </div>

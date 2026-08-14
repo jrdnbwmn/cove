@@ -381,8 +381,9 @@ with the existing locally vendored Floating UI dependency.
 and `tag` to configure the tooltip.
 
 **States:** Supports desktop hover/focus, touch click, keyboard-shortcut, and
-arrow-free variants. It uses `ui-tooltip`, leaving Jumpstart's `tooltip`
-controller intact.
+arrow-free variants. It uses the `ui-tooltip` controller — Jumpstart's
+`tooltip` controller has been removed from the app; this is the only tooltip
+implementation.
 
 **Preview:** `TooltipComponentPreview`
 
@@ -569,7 +570,7 @@ sections and mobile drawer behavior.
 **Variants:** `:default`, `:bordered`, and `:minimal`.
 
 **Dependencies:** Uses the locally installed `sidebar` Stimulus controller and
-the existing Jumpstart tooltip controller for collapsed-item labels.
+the Rails Blocks `ui-tooltip` controller for collapsed-item labels.
 
 **Safety:** Item and section-item `icon` markup is rendered as HTML. Supply
 only static, developer-authored SVG markup.

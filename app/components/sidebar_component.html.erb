@@ -17,7 +17,7 @@
           <!-- Collapsed Sidebar Summary -->
           <summary class="group-open/sidebar:hidden flex <%= min_height_class %> h-full cursor-e-resize list-none flex-col items-start pl-2 pr-1.5">
             <div class="flex h-13 w-full items-center justify-start">
-              <button class="cursor-e-resize flex size-10 items-center justify-center rounded-lg text-neutral-500 hover:bg-neutral-100 focus:outline-none focus-visible:bg-neutral-100 disabled:opacity-50 sm:size-9 dark:text-neutral-400 hover:text-neutral-700 dark:hover:text-neutral-100 dark:hover:bg-neutral-800 dark:focus-visible:bg-neutral-800" data-action="click->sidebar#open" aria-label="Expand sidebar">
+              <button class="cursor-pointer flex size-10 items-center justify-center rounded-lg text-neutral-500 hover:bg-neutral-100 focus:outline-none focus-visible:bg-neutral-100 disabled:opacity-50 sm:size-9 dark:text-neutral-400 hover:text-neutral-700 dark:hover:text-neutral-100 dark:hover:bg-neutral-800 dark:focus-visible:bg-neutral-800" data-action="click->sidebar#open" aria-label="Expand sidebar">
                 <%= icon "panel-left-open", class: "size-4 sm:size-4.5" %>
               </button>
             </div>
@@ -58,7 +58,7 @@
                         <%= logo %>
                       <% end %>
                       <div class="flex">
-                        <button class="flex size-10 cursor-w-resize items-center justify-center rounded-lg text-neutral-500 hover:bg-neutral-100 focus:outline-none focus-visible:bg-neutral-100 disabled:opacity-50 sm:size-9 dark:text-neutral-400 hover:text-neutral-700 dark:hover:text-neutral-100 dark:hover:bg-neutral-800 dark:focus-visible:bg-neutral-800" aria-expanded="true" aria-label="Collapse sidebar" data-state="closed" data-action="click->sidebar#close">
+                        <button class="flex size-10 cursor-pointer items-center justify-center rounded-lg text-neutral-500 hover:bg-neutral-100 focus:outline-none focus-visible:bg-neutral-100 disabled:opacity-50 sm:size-9 dark:text-neutral-400 hover:text-neutral-700 dark:hover:text-neutral-100 dark:hover:bg-neutral-800 dark:focus-visible:bg-neutral-800" aria-expanded="true" aria-label="Collapse sidebar" data-state="closed" data-action="click->sidebar#close">
                           <%= icon "panel-left-close", class: "size-4 sm:size-4.5" %>
                         </button>
                       </div>
@@ -92,7 +92,7 @@
         </details>
       <% else %>
         <!-- Non-collapsible Sidebar -->
-        <div class="<%= sidebar_classes.gsub('group/sidebar', '') %>" data-sidebar-target="desktopSidebar">
+        <div class="<%= static_sidebar_classes %>" data-sidebar-target="desktopSidebar">
           <nav class="<%= nav_classes %>">
             <div class="<%= header_classes %>">
               <div class="px-1.5 sm:px-2">

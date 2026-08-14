@@ -63,14 +63,14 @@ class RadioComponent < ViewComponent::Base
   end
 
   def label_classes
-    base = "font-medium"
+    base = "font-medium !mb-0"
     size_class = label_size_classes
     color_class = if @disabled
       "text-neutral-400 dark:text-neutral-500 cursor-not-allowed"
     elsif @error.present?
-      "text-red-700 dark:text-red-400"
+      "text-red-700 dark:text-red-400 cursor-pointer"
     else
-      "text-neutral-700 dark:text-neutral-300"
+      "text-neutral-700 dark:text-neutral-300 cursor-pointer"
     end
 
     [base, size_class, color_class, @label_classes].compact.reject(&:empty?).join(" ")
@@ -123,7 +123,7 @@ class RadioComponent < ViewComponent::Base
 
   def state_classes
     classes = []
-    classes << "cursor-not-allowed opacity-50" if @disabled
+    classes << (@disabled ? "cursor-not-allowed opacity-50" : "cursor-pointer")
     classes << "border-red-500 dark:border-red-400 focus:ring-red-500" if @error.present?
     classes << "mt-0.5" if supporting_text?
     classes.join(" ")

@@ -31,7 +31,17 @@ class UiToastComponent < ViewComponent::Base
   end
 
   def container_classes
-    base = "fixed z-[99999] w-full px-4 sm:px-0 sm:w-auto pointer-events-none transition-all duration-300 ease-in-out"
+    # AIDEV-NOTE: sm:w-80 (not sm:w-auto) is deliberate. Each .toast-item is
+    # `position: absolute; width: 100%`, so it can't contribute to a
+    # shrink-to-fit ancestor width (out-of-flow content doesn't participate
+    # in auto/fit-content sizing) — with sm:w-auto this container collapsed
+    # to 0 width on screens >=640px, and toast text overflowed past the
+    # right edge instead of wrapping inside the card. sm:w-80 (20rem) gives
+    # the container a definite width matching each item's own sm:max-w-xs
+    # (also 20rem) exactly — a wider container would leave dead space next
+    # to the left-aligned card, making the right/bottom corner margins look
+    # uneven even though position_classes sets them equal.
+    base = "fixed z-[99999] w-full px-4 sm:px-0 sm:w-80 pointer-events-none transition-all duration-300 ease-in-out"
     [base, position_classes, @classes].compact.reject(&:empty?).join(" ")
   end
 
