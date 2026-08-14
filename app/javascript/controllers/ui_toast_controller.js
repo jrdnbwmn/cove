@@ -26,7 +26,12 @@ export default class extends Controller {
   }
 
   updatePositionClasses() {
-    const container = this.containerTarget;
+    // NOTE: position/margin utilities belong on this.element (the host div
+    // that UiToastComponent#container_classes renders them onto server-side)
+    // — not on this.containerTarget (the <ol>). Applying them to the <ol>
+    // as well double-insets it inside the already-positioned host, shrinking
+    // the visible toast and making the corner margins look uneven.
+    const container = this.element;
     // Remove all position classes
     container.classList.remove(
       "right-0",

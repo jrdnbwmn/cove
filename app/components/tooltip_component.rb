@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-# AIDEV-NOTE: Rails Blocks' Tooltip::Component is flat here and uses ui-tooltip
-# so Jumpstart's existing tooltip controller stays untouched.
 class TooltipComponent < ViewComponent::Base
   PLACEMENTS = %w[
     top top-start top-end
