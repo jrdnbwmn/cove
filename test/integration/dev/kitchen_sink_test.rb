@@ -6,6 +6,7 @@ class KitchenSinkTest < ActionDispatch::IntegrationTest
 
     assert_response :success
     assert_select "h1", "Component Kitchen Sink"
+    # 15 = the number of icon swatches in the "Icons" section demo grid
     assert_select "h2 + div svg.size-5", count: 15
     assert_select "button.bg-primary.text-primary-foreground", count: 6
     assert_select ".dark", count: 0

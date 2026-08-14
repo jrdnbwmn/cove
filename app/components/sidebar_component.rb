@@ -115,40 +115,19 @@ class SidebarComponent < ViewComponent::Base
   def nav_classes
     base = "#{@min_height_class} relative flex h-full w-full flex-1 flex-col overflow-y-auto select-none"
 
-    bg_class = case @variant
-    when :minimal
-      "bg-white dark:bg-neutral-950"
-    else
-      "bg-neutral-50 dark:bg-neutral-900"
-    end
-
-    [base, bg_class].join(" ")
+    [base, sidebar_bg_class].join(" ")
   end
 
   def header_classes
     base = "sticky top-0 z-30"
 
-    bg_class = case @variant
-    when :minimal
-      "bg-white dark:bg-neutral-950"
-    else
-      "bg-neutral-50 dark:bg-neutral-900"
-    end
-
-    [base, bg_class].join(" ")
+    [base, sidebar_bg_class].join(" ")
   end
 
   def footer_classes
     base = "sticky bottom-0 z-30 p-1.5 empty:hidden sm:p-2"
 
-    bg_class = case @variant
-    when :minimal
-      "bg-white dark:bg-neutral-950"
-    else
-      "bg-neutral-50 dark:bg-neutral-900"
-    end
-
-    [base, bg_class].join(" ")
+    [base, sidebar_bg_class].join(" ")
   end
 
   def collapsed_footer_classes
@@ -158,14 +137,7 @@ class SidebarComponent < ViewComponent::Base
   def content_classes
     base = "h-full overflow-x-clip overflow-y-auto text-clip whitespace-nowrap"
 
-    bg_class = case @variant
-    when :minimal
-      "bg-white dark:bg-neutral-950"
-    else
-      "bg-neutral-50 dark:bg-neutral-900"
-    end
-
-    [@width.to_s, base, bg_class].join(" ")
+    [@width.to_s, base, sidebar_bg_class].join(" ")
   end
 
   def controller_data
@@ -197,6 +169,15 @@ class SidebarComponent < ViewComponent::Base
       "bg-white dark:bg-neutral-950"
     else
       "border-r border-neutral-200 bg-neutral-50 dark:border-neutral-800 dark:bg-neutral-900"
+    end
+  end
+
+  def sidebar_bg_class
+    case @variant
+    when :minimal
+      "bg-white dark:bg-neutral-950"
+    else
+      "bg-neutral-50 dark:bg-neutral-900"
     end
   end
 end
