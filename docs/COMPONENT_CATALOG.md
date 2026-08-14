@@ -2,33 +2,33 @@
 
 ## Quick Reference
 
-| Component | Purpose | Key args | Preview |
-| --- | --- | --- | --- |
-| `ButtonComponent` | Renders an action button or link with visual variants, sizes, and states. | `text`, `variant`, `size`, `style`, `href` | `ButtonComponentPreview` |
-| `FormFieldComponent` | Wraps a labeled raw form control with helper, error, required, and layout states. | `label`, `name`, `size`, `variant`, `error` | `FormFieldComponentPreview` |
-| `CheckboxComponent` | Renders a labeled checkbox with optional supporting text and validation state. | `label`, `name`, `checked`, `disabled`, `error`, `data` | `CheckboxComponentPreview` |
-| `RadioComponent` | Renders a labeled radio option with optional supporting text and validation state. | `label`, `name`, `value`, `checked`, `disabled` | `RadioComponentPreview` |
-| `SwitchComponent` | Renders a toggle switch with label, status, and validation state. | `label`, `name`, `checked`, `show_icons`, `disabled` | `SwitchComponentPreview` |
-| `SelectComponent` | Renders a locally enhanced single or multiple select. | `name`, `options`, `selected`, `multiple`, `error` | `SelectComponentPreview` |
-| `PasswordComponent` | Renders a password input with visibility toggle and optional guidance. | `name`, `show_strength`, `show_requirements`, `error` | `PasswordComponentPreview` |
-| `AlertComponent` | Renders a titled feedback message with a semantic variant and optional icon. | `title`, `description`, `variant`, `show_icon` | `AlertComponentPreview` |
-| `BadgeComponent` | Renders a small status/tag label with color, size, dot, and remove-button options. | `text`, `variant`, `size`, `pill`, `dot`, `removable` | `BadgeComponentPreview` |
-| `LoadingIndicatorComponent` | Renders a spinner, dots, bars, or progress bar loading indicator. | `type`, `size`, `color`, `text`, `progress` | `LoadingIndicatorComponentPreview` |
-| `SkeletonComponent` | Renders a pulsing placeholder shape while content loads. | `variant`, `width`, `height`, `count` | `SkeletonComponentPreview` |
-| `UiToastComponent` | Provides the Rails Blocks toast container for new app UI. | `position`, `layout`, `auto_dismiss_duration`, `limit` | `UiToastComponentPreview` |
-| `TooltipComponent` | Wraps content with a Rails Blocks tooltip. | `text`, `placement`, `delay`, `trigger`, `kbd` | `TooltipComponentPreview` |
-| `UiModalComponent` | Renders a Rails Blocks dialog without replacing Jumpstart's modal. | `title`, `size`, `prevent_dismiss`, `trigger_text` | `UiModalComponentPreview` |
-| `DropdownComponent` | Renders an accessible, positioned menu with item slots. | `trigger_text`, `placement`, `hover`, `portal` | `DropdownComponentPreview` |
-| `NavbarComponent` | Renders responsive primary navigation with optional dropdown panels. | `variant`, `sticky`, `show_mobile_menu` | `NavbarComponentPreview` |
-| `BreadcrumbComponent` | Renders an accessible page hierarchy trail. | `items`, `separator`, `variant`, `truncate_at` | `BreadcrumbComponentPreview` |
-| `UiTabsComponent` | Renders Rails Blocks tabs without replacing Jumpstart's tabs. | `variant`, `orientation`, `default_tab`, `url_sync` | `UiTabsComponentPreview` |
-| `PaginationComponent` | Renders Pagy navigation in full, compact, or minimal form. | `pagy`, `variant`, `size`, `frame_id` | `PaginationComponentPreview` |
-| `SidebarComponent` | Renders responsive primary navigation with collapsible groups. | `variant`, `collapsible`, `storage_key`, `position` | `SidebarComponentPreview` |
-| `CardComponent` | Renders a content container with optional image, header, body, and footer slots. | `variant`, `padding`, `shadow`, `divide`, `hoverable` | `CardComponentPreview` |
-| `PlanCardComponent` | Renders a billing plan, price, features, and caller-supplied actions inside a card. | `plan` | `PlanCardComponentPreview` |
-| `AvatarComponent` | Renders a user or account image with accessible initials fallback and optional online status. | `alt`, `src`, `fallback`, `size`, `status` | `AvatarComponentPreview` |
-| `TableComponent` | Renders a responsive, accessible data table with row and column slots. | `striped`, `hoverable`, `density`, `sticky_header` | `TableComponentPreview` |
-| `EmptyStateComponent` | Renders a centered "nothing here" placeholder with optional icon and actions. | `title`, `description`, `size`, `bordered`, `heading_level` | `EmptyStateComponentPreview` |
+| Component | Purpose | Key args | Composes | Preview |
+| --- | --- | --- | --- | --- |
+| `ButtonComponent` | Renders an action button or link with visual variants, sizes, and states. | `text`, `variant`, `size`, `style`, `href` | — | `ButtonComponentPreview` |
+| `FormFieldComponent` | Wraps a labeled raw form control with helper, error, required, and layout states. | `label`, `name`, `size`, `variant`, `error` | — | `FormFieldComponentPreview` |
+| `CheckboxComponent` | Renders a labeled checkbox with optional supporting text and validation state. | `label`, `name`, `checked`, `disabled`, `error`, `data` | — | `CheckboxComponentPreview` |
+| `RadioComponent` | Renders a labeled radio option with optional supporting text and validation state. | `label`, `name`, `value`, `checked`, `disabled` | — | `RadioComponentPreview` |
+| `SwitchComponent` | Renders a toggle switch with label, status, and validation state. | `label`, `name`, `checked`, `show_icons`, `disabled` | — | `SwitchComponentPreview` |
+| `SelectComponent` | Renders a locally enhanced single or multiple select. | `name`, `options`, `selected`, `multiple`, `error` | — | `SelectComponentPreview` |
+| `PasswordComponent` | Renders a password input with visibility toggle and optional guidance. | `name`, `show_strength`, `show_requirements`, `error` | — | `PasswordComponentPreview` |
+| `AlertComponent` | Renders a titled feedback message with a semantic variant and optional icon. | `title`, `description`, `variant`, `show_icon` | — | `AlertComponentPreview` |
+| `BadgeComponent` | Renders a small status/tag label with color, size, dot, and remove-button options. | `text`, `variant`, `size`, `pill`, `dot`, `removable` | — | `BadgeComponentPreview` |
+| `LoadingIndicatorComponent` | Renders a spinner, dots, bars, or progress bar loading indicator. | `type`, `size`, `color`, `text`, `progress` | — | `LoadingIndicatorComponentPreview` |
+| `SkeletonComponent` | Renders a pulsing placeholder shape while content loads. | `variant`, `width`, `height`, `count` | — | `SkeletonComponentPreview` |
+| `UiToastComponent` | Provides the Rails Blocks toast container for new app UI. | `position`, `layout`, `auto_dismiss_duration`, `limit` | — | `UiToastComponentPreview` |
+| `TooltipComponent` | Wraps content with a Rails Blocks tooltip. | `text`, `placement`, `delay`, `trigger`, `kbd` | — | `TooltipComponentPreview` |
+| `UiModalComponent` | Renders a Rails Blocks dialog without replacing Jumpstart's modal. | `title`, `size`, `prevent_dismiss`, `trigger_text` | — | `UiModalComponentPreview` |
+| `DropdownComponent` | Renders an accessible, positioned menu with item slots. | `trigger_text`, `placement`, `hover`, `portal` | — | `DropdownComponentPreview` |
+| `NavbarComponent` | Renders responsive primary navigation with optional dropdown panels. | `variant`, `sticky`, `show_mobile_menu` | — | `NavbarComponentPreview` |
+| `BreadcrumbComponent` | Renders an accessible page hierarchy trail. | `items`, `separator`, `variant`, `truncate_at` | — | `BreadcrumbComponentPreview` |
+| `UiTabsComponent` | Renders Rails Blocks tabs without replacing Jumpstart's tabs. | `variant`, `orientation`, `default_tab`, `url_sync` | — | `UiTabsComponentPreview` |
+| `PaginationComponent` | Renders Pagy navigation in full, compact, or minimal form. | `pagy`, `variant`, `size`, `frame_id` | — | `PaginationComponentPreview` |
+| `SidebarComponent` | Renders responsive primary navigation with collapsible groups. | `variant`, `collapsible`, `storage_key`, `position` | — | `SidebarComponentPreview` |
+| `CardComponent` | Renders a content container with optional image, header, body, and footer slots. | `variant`, `padding`, `shadow`, `divide`, `hoverable` | — | `CardComponentPreview` |
+| `PlanCardComponent` | Renders a billing plan, price, features, and caller-supplied actions inside a card. | `plan` | `CardComponent` | `PlanCardComponentPreview` |
+| `AvatarComponent` | Renders a user or account image with accessible initials fallback and optional online status. | `alt`, `src`, `fallback`, `size`, `status` | — | `AvatarComponentPreview` |
+| `TableComponent` | Renders a responsive, accessible data table with row and column slots. | `striped`, `hoverable`, `density`, `sticky_header` | — | `TableComponentPreview` |
+| `EmptyStateComponent` | Renders a centered "nothing here" placeholder with optional icon and actions. | `title`, `description`, `size`, `bordered`, `heading_level` | — | `EmptyStateComponentPreview` |
 
 ## Component Details
 
@@ -562,7 +562,11 @@ sections and mobile drawer behavior.
 
 **Arguments:** Use `variant`, `collapsible`, `default_collapsed`, `position`,
 `storage_key`, `width`, `collapsed_width`, `min_height_class`,
-`show_mobile_toggle`, and `classes` to configure the layout.
+`show_mobile_toggle`, and `classes` to configure the layout. `width` must be
+one of `"w-56"`, `"w-64"` (default), `"w-72"`, or `"w-80"` — Tailwind's
+build-time scanner needs each `open:` variant spelled out literally, so an
+unrecognized value falls back to `"w-64"` rather than silently producing an
+unstyled class.
 
 **Slots:** `with_logo`, `with_item`, `with_section`, `with_footer`, and
 `with_collapsed_footer`.
