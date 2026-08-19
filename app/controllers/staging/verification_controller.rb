@@ -73,8 +73,21 @@ class Staging::VerificationController < ApplicationController
   def cleanup
     plan_count = Plan.where(name: verification_plan_name).destroy_all.count
     invitation_count = AccountInvitation.where(account: current_account, email: current_user.email).destroy_all.count
+    stripe_customers = current_account.pay_customers.where(processor: :stripe)
+    stripe_customer_ids = stripe_customers.ids
+    subscription_count = Pay::Subscription.where(customer_id: stripe_customer_ids).delete_all
+    charge_count = Pay::Charge.where(customer_id: stripe_customer_ids).delete_all
+    payment_method_count = Pay::PaymentMethod.where(customer_id: stripe_customer_ids).delete_all
+    customer_count = stripe_customers.delete_all
 
-    render json: {plans_removed: plan_count, invitations_removed: invitation_count}
+    render json: {
+      plans_removed: plan_count,
+      invitations_removed: invitation_count,
+      subscriptions_removed: subscription_count,
+      charges_removed: charge_count,
+      payment_methods_removed: payment_method_count,
+      customers_removed: customer_count
+    }
   end
 
   # AIDEV-NOTE: Staging-only escape hatch for a stray, non-COV-47 subscription (e.g. the

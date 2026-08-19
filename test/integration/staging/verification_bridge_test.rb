@@ -150,6 +150,24 @@ class VerificationBridgeTest < ActionDispatch::IntegrationTest
     assert Plan.exists?(plans(:personal).id)
   end
 
+  test "cleanup removes only the operator account's local Stripe test records" do
+    operator_customer = Pay::Stripe::Customer.create!(owner: @operator.personal_account, processor: :stripe, processor_id: "cus_operator", default: true)
+    operator_subscription = Pay::Stripe::Subscription.create!(customer: operator_customer, name: "COV-47 Verification (Yearly)", processor_id: "sub_operator", processor_plan: "price_operator", status: "active")
+    other_customer = Pay::Stripe::Customer.create!(owner: accounts(:company), processor: :stripe, processor_id: "cus_other", default: true)
+    other_subscription = Pay::Stripe::Subscription.create!(customer: other_customer, name: "Keep", processor_id: "sub_other", processor_plan: "price_other", status: "active")
+    sign_in @operator
+
+    with_staging_environment do
+      post "#{BASE_PATH}/cleanup"
+    end
+
+    assert_response :success
+    assert_not Pay::Customer.exists?(operator_customer.id)
+    assert_not Pay::Subscription.exists?(operator_subscription.id)
+    assert Pay::Customer.exists?(other_customer.id)
+    assert Pay::Subscription.exists?(other_subscription.id)
+  end
+
   test "force-cancels a stray non-COV-47 subscription immediately" do
     sign_in @operator
     subscription = pay_subscriptions(:subscribed)
