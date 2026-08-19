@@ -102,7 +102,7 @@ class Staging::VerificationController < ApplicationController
     return render_unprocessable("A Stripe customer identifier is required") unless customer_id.start_with?("cus_")
 
     current_account.pay_customers.where(processor: :stripe).destroy_all
-    customer = Pay::Customer.create!(owner: current_account, processor: :stripe, processor_id: customer_id, default: true)
+    customer = Pay::Stripe::Customer.create!(owner: current_account, processor: :stripe, processor_id: customer_id, default: true)
     render json: {customer_linked: customer.persisted?}
   end
 

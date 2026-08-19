@@ -216,7 +216,9 @@ class VerificationBridgeTest < ActionDispatch::IntegrationTest
     end
 
     assert_response :success
-    assert_equal "cus_test_clock", @operator.personal_account.pay_customers.find_by!(processor: :stripe).processor_id
+    customer = @operator.personal_account.pay_customers.find_by!(processor: :stripe)
+    assert_equal "cus_test_clock", customer.processor_id
+    assert_instance_of Pay::Stripe::Customer, customer
   end
 
   test "syncs only a Stripe test-clock subscription belonging to the operator account" do
