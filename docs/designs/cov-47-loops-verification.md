@@ -473,27 +473,27 @@ Fill in as each send lands. Placement is `Inbox`, `Promotions`, or `Spam`.
 
 | # | Email | Tier | Trigger | Sent at | Received at | Placement | Loops message id | Notes |
 | -- | -- | -- | -- | -- | -- | -- | -- | -- |
-| 1 | `reset_password_instructions` | A | UI: forgot password | | | | | |
-| 2 | `password_change` | A | UI: complete reset | | | | | |
-| 3 | `invite` | A | Console: `save_and_send_invite` | | | | | |
-| 4 | `cancellation_reason` | A | UI: cancel, +1h | | | | | |
-| 5 | `receipt` | A | Stripe `charge.succeeded` | | | | | PDF attached? |
-| 6 | `refund` | A | Stripe `charge.refunded` | | | | | |
-| 7 | `payment_failed` | A | Stripe `invoice.payment_failed` | | | | | |
-| 8 | `payment_action_required` | A | Stripe `invoice.payment_action_required` | | | | | `confirm_payment_url` OK? |
-| 9 | `subscription_renewing` | B | Console | | | | | |
-| 10 | `subscription_trial_will_end` | B | Console | | | | | |
-| 11 | `subscription_trial_ended` | B | Console | | | | | |
+| 1 | `reset_password_instructions` | A | UI: forgot password | 2026-08-19 | Received | Not recorded | Not recorded | Reset link opened the form and completed a password change. |
+| 2 | `password_change` | A | UI: complete reset | 2026-08-19 | Received | Not recorded | Not recorded | Received after the password reset completed. |
+| 3 | `invite` | A | Staging verification bridge | 2026-08-19 | Received | Not recorded | Not recorded | Invitation email and link verified; invitation was not accepted. |
+| 4 | `cancellation_reason` | A | UI: cancel, +1h | 2026-08-05 | Received | Not recorded | Not recorded | Received after the scheduled one-hour delay; Plain template intentionally has no theme styling. |
+| 5 | `receipt` | A | Stripe `charge.succeeded` | 2026-08-05 | Received | Not recorded | Not recorded | Received at both controlled addresses; PDF attachment opened successfully. |
+| 6 | `refund` | A | Stripe `charge.refunded` | 2026-08-05 | Received | Not recorded | Not recorded | Refund email received. |
+| 7 | `payment_failed` | A | Stripe `invoice.payment_failed` | 2026-08-06 16:58 (Stripe dashboard) | Received | Not recorded | Not recorded | Both controlled inboxes received it; webhook delivery returned HTTP 200; `update_billing_url` opens staging billing; received again in the fresh 2026-08-19 simulation after Loops repaired its sending-domain state. |
+| 8 | `payment_action_required` | A | Stripe `invoice.payment_action_required` | 2026-08-19 (Stripe test-clock simulation) | Received | Not recorded | Not recorded | Fresh simulation after Loops repair; `confirm_payment_url` check pending. |
+| 9 | `subscription_renewing` | B | Staging verification bridge | 2026-08-19 | Received | Not recorded | Not recorded | "Your upcoming subscription renewal" received. |
+| 10 | `subscription_trial_will_end` | B | Stripe test-clock simulation | 2026-08-19 (Stripe test-clock simulation) | Received | Not recorded | Not recorded | Generated incidentally by the one-day disposable verification trial; Cove's paid plan remains trial-free. |
+| 11 | `subscription_trial_ended` | B | Staging verification bridge | 2026-08-19 | Received | Not recorded | Not recorded | Trial-ended email received. |
 
 ### Link checks
 
 | Check | Result |
 | -- | -- |
-| `reset_password_url` opens the form and changes a password | |
-| `invitation_url` opens the invitation | |
-| `confirm_payment_url` opens Stripe's confirmation page | |
-| Receipt PDF attached and opens | |
-| `update_billing_url` opens staging billing | |
+| `reset_password_url` opens the form and changes a password | Pass — 2026-08-19 |
+| `invitation_url` opens the invitation | Pass — Email 3, 2026-08-19 |
+| `confirm_payment_url` opens Stripe's confirmation page | Pass — Email 8, 2026-08-19 |
+| Receipt PDF attached and opens | Pass — Email 5, 2026-08-05 |
+| `update_billing_url` opens staging billing | Pass — Emails 7, 2026-08-06 and 2026-08-19 |
 | `manage_subscription_url` opens staging billing | |
 
 ### Behaviour checks
@@ -513,6 +513,12 @@ Fill in as each send lands. Placement is `Inbox`, `Promotions`, or `Spam`.
 
 Anything broken gets a line here and a follow-up ticket. Nothing is fixed on this
 branch.
+
+- 2026-08-12: The first Email 8 simulation used card `4000 0025 0000 3155` added
+  through the Stripe Dashboard. Stripe completed a setup flow and the simulated
+  renewal succeeded (`invoice.paid` / `payment_intent.succeeded`), so it did not
+  produce `invoice.payment_action_required` or verify Email 8. Retry with Stripe's
+  always-authenticate subscription/invoice test card (`4000 0027 6000 3184`).
 
 ## Scope
 
