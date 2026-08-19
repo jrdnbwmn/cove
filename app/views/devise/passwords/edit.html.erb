@@ -13,7 +13,6 @@
       id: "user_password",
       autofocus: true,
       autocomplete: "new-password",
-      placeholder: true,
       error: resource.errors[:password].first,
       hint: @minimum_password_length && t("devise.shared.minimum_password_length", count: @minimum_password_length),
       classes: "mb-6"
@@ -24,7 +23,6 @@
       name: "user[password_confirmation]",
       id: "user_password_confirmation",
       autocomplete: "new-password",
-      placeholder: true,
       error: resource.errors[:password_confirmation].first,
       classes: "mb-6"
     ) %>
