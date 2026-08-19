@@ -477,7 +477,7 @@ Fill in as each send lands. Placement is `Inbox`, `Promotions`, or `Spam`.
 | 2 | `password_change` | A | UI: complete reset | 2026-08-19 | Received | Not recorded | Not recorded | Received after the password reset completed. |
 | 3 | `invite` | A | Staging verification bridge | 2026-08-19 | Received | Not recorded | Not recorded | Invitation email and link verified; invitation was not accepted. |
 | 4 | `cancellation_reason` | A | UI: cancel, +1h | 2026-08-05 | Received | Not recorded | Not recorded | Received after the scheduled one-hour delay; Plain template intentionally has no theme styling. |
-| 5 | `receipt` | A | Stripe `charge.succeeded` | 2026-08-05 | Received | Not recorded | Not recorded | Received at both controlled addresses; PDF attachment opened successfully. |
+| 5 | `receipt` | A | Stripe `charge.succeeded` | 2026-08-05; replay check 2026-08-19 20:32 UTC | Received | Not recorded | Not recorded | Received at both controlled addresses; PDF attachment opened successfully. Fresh successful charge on 2026-08-19 received one receipt; replay produced no second receipt. |
 | 6 | `refund` | A | Stripe `charge.refunded` | 2026-08-05 | Received | Not recorded | Not recorded | Refund email received. |
 | 7 | `payment_failed` | A | Stripe `invoice.payment_failed` | 2026-08-06 16:58 (Stripe dashboard) | Received | Not recorded | Not recorded | Both controlled inboxes received it; webhook delivery returned HTTP 200; `update_billing_url` opens staging billing; received again in the fresh 2026-08-19 simulation after Loops repaired its sending-domain state. |
 | 8 | `payment_action_required` | A | Stripe `invoice.payment_action_required` | 2026-08-19 (Stripe test-clock simulation) | Received | Not recorded | Not recorded | Fresh simulation after Loops repair; `confirm_payment_url` check pending. |
@@ -501,10 +501,10 @@ Fill in as each send lands. Placement is `Inbox`, `Promotions`, or `Spam`.
 | Check | Result |
 | -- | -- |
 | Both addresses received the receipt (fan-out) | |
-| Webhook replay produced zero additional emails | |
-| Staging log shows `[Loops] duplicate transactional send suppressed` | |
-| Honeybadger fault raised, with stack trace (fault URL) | |
-| Honeybadger fault occurred exactly once (not retried) | |
+| Webhook replay produced zero additional emails | Pass — `charge.succeeded` replay, 2026-08-19 |
+| Staging log shows `[Loops] duplicate transactional send suppressed` | Pass — 2026-08-19 20:32:36 UTC (`cmsdrk6tf03rb0jzw194l0rl5`) |
+| Honeybadger fault raised, with stack trace (fault URL) | Pass — `LoopsClient::NotFound`, 2026-08-19 14:33 MDT; deliberate nonexistent transactional ID returned "No transactional email found with that ID." |
+| Honeybadger fault occurred exactly once (not retried) | Pass — one occurrence in Honeybadger History at 2026-08-19 14:33 MDT |
 | Loops dashboard: no new contacts | |
 | Loops dashboard: no new audiences | |
 | Loops dashboard: no new mailing lists | |
