@@ -180,6 +180,49 @@ Routes are modularized in `config/routes/`:
   `user.confirmed?` is not a valid method — check `confirmed_at.present?`
   instead.
 
+### Staging (Render) and Stripe credential workflow
+- Render Free-tier services provide no Shell or One-Off Jobs — there's no way
+  to run `bin/rails console` against staging directly. Any console-only
+  operation needed there has to go through a purpose-built, temporary,
+  operator-gated authenticated bridge (removed once its job is done), not an
+  ad hoc console session.
+- Render's masked environment-variable editor doesn't reliably confirm a
+  saved value. Verify env var/config changes landed by checking observable
+  app behavior (a status endpoint, logs) after redeploy, not the editor UI.
+- This checkout has no `config/credentials/staging.key` on disk. Editing/
+  viewing staging credentials requires the real `RAILS_MASTER_KEY` (from
+  Render's env vars) `export`ed in the **same terminal** as the
+  `credentials:edit`/`credentials:show --environment staging` command — a
+  one-off `KEY=... command` prefix does not persist for a later command in
+  the same session. A wrong/malformed key fails differently depending on
+  what boots first: `AEAD authentication tag verification failed` if the key
+  can't decrypt the file at all, or a deeper `key must be 16 bytes` boot
+  failure (from an initializer touching credentials before the command's own
+  output prints) if the key string isn't valid 32-hex-char format — sanity
+  check with `echo -n "$RAILS_MASTER_KEY" | wc -c` (expect `32`) before
+  troubleshooting anything else. No `$EDITOR`/`$VISUAL` is set by default;
+  use `VISUAL="zed --wait" mise exec -- bin/rails credentials:edit
+  --environment staging`.
+- Stripe webhook destination signing secrets can silently drift from what's
+  in credentials with zero errors until an actual delivery is attempted
+  (manifests as HTTP 400, empty body, from `/webhooks/stripe` —
+  `Pay::Webhooks::StripeController` rescuing
+  `Stripe::SignatureVerificationError`). Compare the destination's revealed
+  secret against credentials directly rather than assuming they match.
+- Different Stripe accounts can look identical in casual conversation ("test
+  mode", "sandbox") while being entirely separate. Compare the account id
+  embedded in the publishable key (`pk_test_51<account_id>...`) rather than
+  assuming "test mode" means "the same account." A local `Pay::Customer`/
+  `Pay::Subscription` row's `processor_id`/`processor_plan` can reference an
+  object that doesn't exist for whatever Stripe account credentials
+  currently point at (stale from an earlier session or a mid-flow
+  credentials fix) — this fails late inside
+  `CheckoutsController#set_checkout_session` as `Stripe::InvalidRequestError`,
+  not as a validation error.
+- Specific-commit Render deploys are manual, easy to mis-select from the
+  commit list, and disable auto-deploy. Always confirm the exact deployed
+  SHA after a deploy, not just that "a deploy succeeded."
+
 ### Jumpstart configuration
 - Don't run the Jumpstart config generator (`Jumpstart.config.save`, or Save in
   the `/jumpstart` UI) to turn on an integration. It bundles three actions and
