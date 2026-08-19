@@ -3,17 +3,12 @@
 # construction across sync, delete, and backfill-readiness, per the COV-51
 # design doc.
 class LoopsContactSynchronizer
+  include LoopsContactGate
+
   class ConfigurationError < StandardError; end
   class ProductionRequired < ConfigurationError; end
   class ContactSyncDisabled < ConfigurationError; end
   class MailingListMissing < ConfigurationError; end
-
-  def initialize(config: Rails.application.config_for(:loops), environment: Rails.env, client: nil, client_factory: -> { LoopsClient.client })
-    @config = config
-    @environment = environment
-    @client = client
-    @client_factory = client_factory
-  end
 
   def sync(user, intent:, previously_consented: nil)
     return unless contact_sync_allowed?
@@ -56,33 +51,12 @@ class LoopsContactSynchronizer
 
   private
 
-  attr_reader :config, :environment, :client_factory
-
-  def client
-    @client ||= client_factory.call
-  end
-
   def contact_sync_allowed?
     production? && contact_sync_enabled?
   end
 
-  def production?
-    environment.production?
-  end
-
-  def contact_sync_enabled?
-    config.contact_sync_enabled == true
-  end
-
   def mailing_list_id
     config.contact_sync_mailing_list_id
-  end
-
-  def current_app_opt_in?(user)
-    return false unless user.marketing_subscribed?
-    return false if user.marketing_opt_in_source == "loops"
-
-    true
   end
 
   def current_app_opt_out?(user)

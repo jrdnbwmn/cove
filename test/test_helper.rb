@@ -19,6 +19,8 @@ end
 # Generate a random password so Chrome doesn't warn about passwords in data breaches
 UNIQUE_PASSWORD = Devise.friendly_token
 
+LOOPS_WEBHOOK_TEST_SECRET = "whsec_#{Base64.strict_encode64("test-signing-key")}"
+
 module ActiveSupport
   class TestCase
     # Run tests in parallel with specified workers
@@ -31,6 +33,12 @@ module ActiveSupport
     def json_response
       JSON.decode(response.body)
     end
+
+    def sign_loops_webhook(webhook_id, timestamp, payload, secret: LOOPS_WEBHOOK_TEST_SECRET)
+      key = Base64.decode64(secret.split("_")[1])
+      digest = OpenSSL::HMAC.digest("SHA256", key, "#{webhook_id}.#{timestamp}.#{payload}")
+      Base64.strict_encode64(digest)
+    end
   end
 end
 
@@ -40,6 +48,19 @@ module ActionDispatch
 
     def switch_account(account)
       patch "/accounts/#{account.id}/switch"
+    end
+
+    def post_loops_webhook(webhook_id:, body:, signature: nil, timestamp: "1700000000", secret: LOOPS_WEBHOOK_TEST_SECRET)
+      signature ||= "v1,#{sign_loops_webhook(webhook_id, timestamp, body, secret: secret)}"
+
+      post "/webhooks/loops",
+        params: body,
+        headers: {
+          "Webhook-Id" => webhook_id,
+          "Webhook-Timestamp" => timestamp,
+          "Webhook-Signature" => signature,
+          "Content-Type" => "application/json"
+        }
     end
   end
 end

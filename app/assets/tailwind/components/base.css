@@ -23,6 +23,14 @@ hr {
   border-color: var(--divider-color);
 }
 
+/* Tailwind's preflight resets buttons to the browser default cursor. Restore
+   the pointer cursor app-wide for buttons and tab controls. */
+button:not(:disabled),
+[role="button"]:not([aria-disabled="true"]),
+[role="tab"]:not([aria-disabled="true"]) {
+  cursor: pointer;
+}
+
 .table {
   width: 100%;
 

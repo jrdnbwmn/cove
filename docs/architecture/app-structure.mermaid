@@ -6,6 +6,8 @@ graph TD
   Controllers --> MarketingPreferencesController[MarketingPreferencesController]
   Controllers --> DevControllers[dev/]
   Controllers --> Concerns[concerns/]
+  Controllers --> InboundWebhooksControllers[inbound_webhooks/]
+  InboundWebhooksControllers --> LoopsWebhookController[LoopsController]
 
   App --> Models[app/models]
   Models --> User[User]
@@ -13,15 +15,20 @@ graph TD
   Models --> Current[Current]
   Models --> UserConcerns[user/]
   UserConcerns --> MarketingConsent[MarketingConsent]
+  Models --> LoopsWebhookEvent[LoopsWebhookEvent]
 
   App --> Jobs[app/jobs]
   Jobs --> LoopsContactSyncJob[LoopsContactSyncJob]
   Jobs --> LoopsContactDeletionJob[LoopsContactDeletionJob]
   Jobs --> LoopsContactBackfillJob[LoopsContactBackfillJob]
   Jobs --> LoopsRetryable[concerns/loops_retryable]
+  Jobs --> LoopsWebhookEventJob[LoopsWebhookEventJob]
+  Jobs --> LoopsWebhookEventPruningJob[LoopsWebhookEventPruningJob]
 
   App --> Services[app/services]
   Services --> LoopsContactSynchronizer[LoopsContactSynchronizer]
+  Services --> LoopsWebhookEventProcessor[LoopsWebhookEventProcessor]
+  Services --> LoopsWebhookSignature[LoopsWebhookSignature]
 
   App --> Views[app/views]
   Views --> DeviseViews[devise/registrations]
@@ -47,6 +54,8 @@ graph TD
   RouteModules --> AccountRoutes[accounts.rb]
   RouteModules --> BillingRoutes[billing.rb]
   RouteModules --> ApiRoutes[api.rb]
+  RouteModules --> WebhookRoutes[webhooks.rb]
+  Configuration --> RecurringYml[recurring.yml]
 
   App --> Database[db]
   Database --> Migrations[migrate/]
@@ -68,3 +77,12 @@ graph TD
   LoopsContactBackfillJob --> LoopsRetryable
   LoopsContactSynchronizer --> LoopsConfig
   LoopsContactsTask --> LoopsContactBackfillJob
+  WebhookRoutes --> LoopsWebhookController
+  LoopsWebhookController --> LoopsWebhookSignature
+  LoopsWebhookController --> LoopsWebhookEvent
+  LoopsWebhookController --> LoopsWebhookEventJob
+  LoopsWebhookEventJob --> LoopsWebhookEventProcessor
+  LoopsWebhookEventProcessor --> User
+  LoopsWebhookEventProcessor --> LoopsConfig
+  RecurringYml --> LoopsWebhookEventPruningJob
+  LoopsWebhookEventPruningJob --> LoopsWebhookEvent

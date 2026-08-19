@@ -16,6 +16,17 @@ module User::MarketingConsent
     spam_report
   ].freeze
   PROTECTED_MARKETING_OPT_OUT_REASONS = (MARKETING_OPT_OUT_REASONS - ["user_app"]).freeze
+  # AIDEV-NOTE: higher number wins. Used by record_loops_opt_out to decide
+  # whether a new Loops-originated opt-out reason should overwrite the
+  # existing one; a less severe reason (e.g. a stale unsubscribe event
+  # arriving after a spam report) must never downgrade the recorded reason.
+  LOOPS_OPT_OUT_SEVERITY = {
+    "user_app" => 0,
+    "user_loops" => 1,
+    "mailing_list_unsubscribe" => 2,
+    "hard_bounce" => 3,
+    "spam_report" => 4
+  }.freeze
 
   included do
     attribute :marketing_opt_in, :boolean
@@ -48,7 +59,7 @@ module User::MarketingConsent
   def grant_marketing_consent(source:)
     return self if marketing_subscribed?
 
-    if marketing_opt_out_protected?
+    if marketing_opt_out_protected_against?(source)
       errors.add(:base, :marketing_opt_out_protected)
       return false
     end
@@ -70,7 +81,29 @@ module User::MarketingConsent
     save ? self : false
   end
 
+  # AIDEV-NOTE: the in-app toggle still refuses for all five reasons
+  # (marketing_opt_out_protected? is untouched, so COV-49's copy stays
+  # true); only a Loops-originated resubscribe (source: "loops") may clear
+  # a user_loops/mailing_list_unsubscribe opt-out.
+  def record_loops_opt_out(reason:, occurred_at:)
+    return self if LOOPS_OPT_OUT_SEVERITY.fetch(marketing_opt_out_reason, -1) >= LOOPS_OPT_OUT_SEVERITY.fetch(reason)
+
+    self.marketing_opt_out_reason = reason
+    self.marketing_opt_out_at = [marketing_opt_out_at, occurred_at].compact.min
+
+    save!
+    self
+  end
+
   private
+
+  def marketing_opt_out_protected_against?(source)
+    return false unless marketing_opt_out_protected?
+
+    return true if marketing_opt_out_reason.in?(%w[hard_bounce spam_report])
+
+    source != "loops"
+  end
 
   def capture_registration_marketing_consent
     return unless marketing_opt_in? && !marketing_subscribed?

@@ -34,6 +34,10 @@ graph LR
     ApiNotificationTokens[/api/v1/notification_tokens] --> ApiNotificationTokensController[Api::V1::NotificationTokensController]
   end
 
+  subgraph Inbound webhooks
+    LoopsWebhook[POST /webhooks/loops] --> LoopsWebhookController[InboundWebhooks::LoopsController#create]
+  end
+
   subgraph Shared application routes
     Announcements[/announcements] --> AnnouncementsController[AnnouncementsController]
     StaticPages[/about, /terms, /privacy] --> PublicController

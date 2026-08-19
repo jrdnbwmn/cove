@@ -89,7 +89,7 @@ class UiTabsComponent < ViewComponent::Base
     horizontal_gap = (@variant == :low_contrast) ? "gap-1" : "gap-2"
 
     orientation_classes = if @orientation == :vertical
-      "flex flex-col gap-2 sm:w-48 space-y-1"
+      "flex flex-col gap-1 sm:w-48"
     else
       "relative inline-grid #{horizontal_gap} items-center justify-center w-full"
     end

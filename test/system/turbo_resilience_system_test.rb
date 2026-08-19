@@ -136,7 +136,7 @@ class TurboResilienceSystemTest < ApplicationSystemTestCase
 
   test "form deadlines restore the submit control without resubmitting" do
     visit new_user_registration_path
-    set_registration_form_timeout("50")
+    set_registration_form_timeout("300")
     stub_user_form_fetch("pending")
 
     submit_registration

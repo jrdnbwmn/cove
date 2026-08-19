@@ -3,6 +3,9 @@
 # Default to port 3000 if not specified
 export PORT="${PORT:-3000}"
 
+# Remove stale Overmind socket from previous runs
+rm -f .overmind.sock
+
 if ! command -v overmind 2>&1 >/dev/null; then
   gem install overmind
 fi

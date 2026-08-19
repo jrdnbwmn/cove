@@ -1,6 +1,6 @@
 module BadgesHelper
   # <%= badge "Active", color: "bg-green-100 text-green-800" %>
-  # <%= badge color: "bg-green-100 text-green-800", data: {controller: "tooltip", tooltip_controller_value: "Hello"} do
+  # <%= badge color: "bg-green-100 text-green-800", data: {controller: "ui-tooltip", ui_tooltip_content: "Hello"} do
   #   <svg>...</svg>
   #   Active
   # <% end %>

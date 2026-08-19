@@ -74,9 +74,9 @@ class EmptyStateComponent < ViewComponent::Base
 
   def icon_size_classes
     case @size
-    when :sm then "w-8 h-8 mb-3"
-    when :lg then "w-16 h-16 mb-5"
-    else "w-12 h-12 mb-4" # :md
+    when :sm then "w-8 h-8 mb-3 p-2"
+    when :lg then "w-16 h-16 mb-5 p-4"
+    else "w-12 h-12 mb-4 p-3" # :md
     end
   end
 

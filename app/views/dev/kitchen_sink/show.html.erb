@@ -4,8 +4,19 @@
   <div class="mt-8 divide-y divide-border">
     <section class="py-10 first:pt-0">
       <h2>Buttons</h2>
-      <div class="mt-6 flex flex-wrap gap-6">
-        <%= render ButtonComponent.new(text: "Primary Button") %>
+      <div class="mt-6 flex flex-wrap items-center gap-6">
+        <%= render ButtonComponent.new(text: "Primary", variant: :primary) %>
+        <%= render ButtonComponent.new(text: "Secondary", variant: :secondary) %>
+        <%= render ButtonComponent.new(text: "Outline", variant: :outline) %>
+        <%= render ButtonComponent.new(text: "Ghost", variant: :ghost) %>
+        <%= render ButtonComponent.new(text: "Destructive", variant: :destructive) %>
+      </div>
+
+      <div class="mt-6 flex flex-wrap items-center gap-6">
+        <%= render ButtonComponent.new(text: "Extra small", size: :xs) %>
+        <%= render ButtonComponent.new(text: "Small", size: :sm) %>
+        <%= render ButtonComponent.new(text: "Medium", size: :md) %>
+        <%= render ButtonComponent.new(text: "Large", size: :lg) %>
       </div>
     </section>
 
@@ -24,8 +35,6 @@
           <% end %>
         <% end %>
 
-        <%= render SelectComponent.new(label: "Plan", name: "subscription[plan]", id: "subscription_plan", size: :sm, options: [["Starter", "starter"], ["Team", "team"]]) %>
-
         <%= render FormFieldComponent.new(label: "Email", name: "user[email]", error: "Email is invalid.", variant: :floating) do |component| %>
           <% component.with_input do %>
             <input autocomplete="email" class="form-control error" id="user_email" name="user[email]" type="email">
@@ -43,14 +52,29 @@
         <%= render CheckboxComponent.new(label: "Receive product updates", name: "preferences[product_updates]", checked: true, description: "A checked checkbox with supporting text.") %>
         <%= render RadioComponent.new(label: "Team", name: "plan", value: "team", checked: true, description: "A selected radio option.") %>
         <%= render SwitchComponent.new(label: "Enable weekly summary", name: "preferences[weekly_summary]", checked: true, show_icons: true) %>
+        <%= render SwitchComponent.new(label: "Enable weekly summary", name: "preferences[weekly_summary_default]") %>
         <%= render SelectComponent.new(label: "Plan", name: "subscription[plan]", options: [["Starter", "starter"], ["Team", "team"], ["Enterprise", "enterprise"]]) %>
         <%= render PasswordComponent.new(name: "user[password]", hint: "Use at least 8 characters.") %>
+      </div>
+
+      <div class="mt-8 grid gap-8 md:grid-cols-3">
+        <%= render CheckboxComponent.new(label: "Small", name: "preferences[product_updates_sm]", checked: true, size: :sm) %>
+        <%= render CheckboxComponent.new(label: "Medium", name: "preferences[product_updates_md]", checked: true, size: :md) %>
+        <%= render CheckboxComponent.new(label: "Large", name: "preferences[product_updates_lg]", checked: true, size: :lg) %>
+
+        <%= render RadioComponent.new(label: "Small", name: "plan_sm", value: "team", checked: true, size: :sm) %>
+        <%= render RadioComponent.new(label: "Medium", name: "plan_md", value: "team", checked: true, size: :md) %>
+        <%= render RadioComponent.new(label: "Large", name: "plan_lg", value: "team", checked: true, size: :lg) %>
+
+        <%= render SwitchComponent.new(label: "Small", name: "preferences[weekly_summary_sm]", checked: true, size: :sm) %>
+        <%= render SwitchComponent.new(label: "Medium", name: "preferences[weekly_summary_md]", checked: true, size: :md) %>
+        <%= render SwitchComponent.new(label: "Large", name: "preferences[weekly_summary_lg]", checked: true, size: :lg) %>
       </div>
     </section>
 
     <section class="py-10">
       <h2>Feedback</h2>
-      <div class="grid gap-6 md:grid-cols-2">
+      <div class="mt-6 grid gap-6 md:grid-cols-2">
         <%= render AlertComponent.new(title: "Success! Your changes have been saved", description: "All updates have been applied successfully.", variant: :success) %>
         <%= render AlertComponent.new(title: "Something went wrong", description: "We couldn't process your request.", variant: :error) %>
         <%= render AlertComponent.new(title: "Your plan is expiring soon", variant: :warning) %>
@@ -75,18 +99,16 @@
       </div>
 
       <div class="mt-8 grid max-w-sm gap-3">
-        <%= render SkeletonComponent.new %>
-        <%= render SkeletonComponent.new(variant: :circle) %>
-        <%= render SkeletonComponent.new(variant: :button) %>
         <%= render SkeletonComponent.new(count: 3) %>
       </div>
 
       <div class="mt-8 flex flex-wrap items-center gap-6">
+        <button class="rounded-md border border-border px-3 py-2" type="button" data-controller="toast-preview" data-toast-preview-type-value="success" data-toast-preview-message-value="Changes saved" data-toast-preview-description-value="Your updates have been saved successfully." data-action="click->toast-preview#show">Show success toast</button>
+        <button class="rounded-md border border-border px-3 py-2" type="button" data-controller="toast-preview" data-toast-preview-type-value="error" data-toast-preview-message-value="Something went wrong" data-toast-preview-description-value="We couldn't process your request." data-action="click->toast-preview#show">Show error toast</button>
         <%= render UiToastComponent.new(position: "bottom-right") %>
-        <%= render TooltipComponent.new(text: "Rails Blocks tooltip", placement: "bottom") do %>
+        <%= render TooltipComponent.new(text: "Rails Blocks tooltip", placement: "top") do %>
           <button class="rounded-md border border-border px-3 py-2" type="button">Rails Blocks tooltip</button>
         <% end %>
-        <button class="rounded-md border border-border px-3 py-2" data-controller="tooltip" data-tooltip-content-value="Jumpstart tooltip" type="button">Jumpstart tooltip</button>
       </div>
     </section>
 
@@ -124,6 +146,8 @@
 
         <%= render BreadcrumbComponent.new(items: [{label: "Home", href: "#"}, {label: "Projects", href: "#"}, {label: "Roadmap"}], separator: :chevron, variant: :with_background) %>
 
+        <%= render BreadcrumbComponent.new(items: [{label: "Home", href: "#"}, {label: "Projects", href: "#", icon: icon("folder", class: "size-4")}, {label: "Roadmap"}], variant: :with_icons) %>
+
         <%= render UiTabsComponent.new(variant: :underline) do |tabs| %>
           <% tabs.with_tab(title: "Overview", id: "overview") %>
           <% tabs.with_tab(title: "Activity", id: "activity") %>
@@ -131,24 +155,58 @@
           <% tabs.with_panel do %>Activity content<% end %>
         <% end %>
 
+        <%= render UiTabsComponent.new(orientation: :vertical, variant: :low_contrast) do |tabs| %>
+          <% tabs.with_tab(title: "Settings", id: "settings") %>
+          <% tabs.with_tab(title: "Members", id: "members") %>
+          <% tabs.with_panel do %>Settings content<% end %>
+          <% tabs.with_panel do %>Members content<% end %>
+        <% end %>
+
         <% navigation_pagy = Pagy::Offset.new(count: 30, page: 2, limit: 10, request: Pagy::Request.new(request: request)) %>
         <%= render PaginationComponent.new(pagy: navigation_pagy, request_path: request.path) %>
 
-        <%= render SidebarComponent.new(collapsible: false, show_mobile_toggle: false) do |sidebar| %>
-          <% sidebar.with_item(label: "Dashboard", href: "#", active: true) %>
-          <% sidebar.with_item(label: "Projects", href: "#") %>
-          <% sidebar.with_section(title: "Workspace") do |section| %>
-            <% section.with_item(label: "Roadmap", href: "#", badge: "3") %>
+        <div class="overflow-hidden rounded-lg border border-neutral-200 dark:border-neutral-800">
+        <%= render SidebarComponent.new(show_mobile_toggle: false, min_height_class: "min-h-[500px]") do |sidebar| %>
+          <% sidebar.with_item(label: "New chat", href: "#", icon: icon("square-pen", class: "size-4 sm:size-4.5")) %>
+          <% sidebar.with_item(label: "Search", href: "#", icon: icon("search", class: "size-4 sm:size-4.5")) %>
+          <% sidebar.with_item(label: "Library", href: "#", icon: icon("library", class: "size-4 sm:size-4.5")) %>
+
+          <% sidebar.with_section(title: "Projects") do |section| %>
+            <% section.with_item(label: "New project", href: "#", icon: icon("folder-plus", class: "size-4 sm:size-4.5")) %>
+            <% section.with_item(label: "Rails Blocks", href: "#", icon: icon("folder", class: "size-4 sm:size-4.5")) %>
           <% end %>
+
+          <% sidebar.with_section(title: "Chats") do |section| %>
+            <% section.with_item(label: "How to build a Rails app", href: "#") %>
+            <% section.with_item(label: "Why are gems called gems", href: "#") %>
+            <% section.with_item(label: "How to use Hotwire", href: "#") %>
+          <% end %>
+
+          <% sidebar.with_footer do %>
+            <button class="w-full flex items-center gap-2 rounded-md px-1 sm:px-1.5 py-1 sm:py-1.5 text-left text-sm text-neutral-700 hover:bg-neutral-100 focus-visible:bg-neutral-100 focus:outline-hidden disabled:cursor-not-allowed disabled:opacity-50 dark:text-neutral-100 dark:hover:bg-neutral-700/50 dark:focus-visible:bg-neutral-700/50">
+              <%= render AvatarComponent.new(alt: "Jordan Lee", size: :xs) %>
+              <div class="min-w-0">
+                <div class="truncate text-xs">Jordan Lee</div>
+              </div>
+            </button>
+          <% end %>
+
+          <% sidebar.with_collapsed_footer do %>
+            <button class="w-full flex items-center gap-2 rounded-md px-1 sm:px-1.5 py-1 sm:py-1.5 text-left text-sm text-neutral-700 hover:bg-neutral-100 focus-visible:bg-neutral-100 focus:outline-hidden disabled:cursor-not-allowed disabled:opacity-50 dark:text-neutral-100 dark:hover:bg-neutral-700/50 dark:focus-visible:bg-neutral-700/50">
+              <%= render AvatarComponent.new(alt: "Jordan Lee", size: :xs) %>
+            </button>
+          <% end %>
+
           <p class="p-6 text-sm text-muted-foreground">Sidebar content area</p>
         <% end %>
+        </div>
       </div>
     </section>
 
     <section class="py-10">
       <h2>Data Display</h2>
-      <div class="mt-6 grid gap-6 md:grid-cols-2">
-        <div class="flex items-center gap-4">
+
+        <div class="mt-6 flex items-center gap-4">
           <%= render AvatarComponent.new(alt: "Avery Stone") %>
           <%= render AvatarComponent.new(src: "/icon.svg", alt: "Jordan Lee", size: :lg, status: :online) %>
           <% member_group = AvatarComponent::GroupComponent.new(label: "Project members", remaining_count: 2) %>
@@ -157,17 +215,10 @@
           <%= render member_group %>
         </div>
 
+      <div class="mt-6 grid items-start gap-6 md:grid-cols-2">
         <%= render CardComponent.new.with_content("A default card with standard content padding.") %>
 
-        <%= render CardComponent.new(variant: :elevated, shadow: :lg, hoverable: true).with_content("An elevated card with a hover state.") %>
-
         <%= render CardComponent.new(variant: :well).with_content("A low-emphasis well card.") %>
-
-        <%= render CardComponent.new(divide: true) do |card| %>
-          <% card.with_header { "Project summary" } %>
-          <% card.with_body { "Three tasks are ready." } %>
-          <% card.with_footer { "View project" } %>
-        <% end %>
 
         <% starter_plan = Plan.new(name: "Starter", amount: 1900, interval: "month", description: "A plan-card example with a price, features, and an action.", details: {features: ["Unlimited projects", "Email support"]}) %>
         <%= render PlanCardComponent.new(plan: starter_plan) do %>
@@ -193,6 +244,20 @@
       <h2>Icons</h2>
       <div class="mt-6 flex flex-wrap items-center gap-6">
         <%= icon "inbox", class: "size-5" %>
+        <%= icon "airplay", class: "size-5" %>
+        <%= icon "alarm-clock", class: "size-5" %>
+        <%= icon "anchor", class: "size-5" %>
+        <%= icon "aperture", class: "size-5" %>
+        <%= icon "archive", class: "size-5" %>
+        <%= icon "atom", class: "size-5" %>
+        <%= icon "badge-check", class: "size-5" %>
+        <%= icon "banana", class: "size-5" %>
+        <%= icon "battery-charging", class: "size-5" %>
+        <%= icon "bell-ring", class: "size-5" %>
+        <%= icon "between-horizontal-start", class: "size-5" %>
+        <%= icon "bike", class: "size-5" %>
+        <%= icon "blend", class: "size-5" %>
+        <%= icon "bot", class: "size-5" %>
       </div>
     </section>
 
