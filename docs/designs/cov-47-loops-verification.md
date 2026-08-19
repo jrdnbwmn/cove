@@ -465,6 +465,12 @@ verification; otherwise remove them. Remove the two addresses from
 `STAGING_EMAIL_RECIPIENT_ALLOWLIST` only if staging should go quiet again — COV-46
 made the allowlist the standing safety mechanism, not a temporary one.
 
+**2026-08-19 cleanup decision:** retain the staging verification user, but remove
+its COV-47 subscriptions and test customers. The bridge cleanup removed one local
+plan, invitation, subscription, charge, payment method, and customer. The six
+clearly named COV-47 Stripe sandbox customers were then deleted; archiving the
+Stripe test product completed afterward.
+
 Archive the Stripe test product so it does not appear in future pricing pages.
 
 ## Results
@@ -473,17 +479,17 @@ Fill in as each send lands. Placement is `Inbox`, `Promotions`, or `Spam`.
 
 | # | Email | Tier | Trigger | Sent at | Received at | Placement | Loops message id | Notes |
 | -- | -- | -- | -- | -- | -- | -- | -- | -- |
-| 1 | `reset_password_instructions` | A | UI: forgot password | 2026-08-19 | Received | Not recorded | Not recorded | Reset link opened the form and completed a password change. |
-| 2 | `password_change` | A | UI: complete reset | 2026-08-19 | Received | Not recorded | Not recorded | Received after the password reset completed. |
-| 3 | `invite` | A | Staging verification bridge | 2026-08-19 | Received | Not recorded | Not recorded | Invitation email and link verified; invitation was not accepted. |
-| 4 | `cancellation_reason` | A | UI: cancel, +1h | 2026-08-05 | Received | Not recorded | Not recorded | Received after the scheduled one-hour delay; Plain template intentionally has no theme styling. |
-| 5 | `receipt` | A | Stripe `charge.succeeded` | 2026-08-05; replay check 2026-08-19 20:32 UTC | Received | Not recorded | Not recorded | Received at both controlled addresses; PDF attachment opened successfully. Fresh successful charge on 2026-08-19 received one receipt; replay produced no second receipt. |
-| 6 | `refund` | A | Stripe `charge.refunded` | 2026-08-05 | Received | Not recorded | Not recorded | Refund email received. |
-| 7 | `payment_failed` | A | Stripe `invoice.payment_failed` | 2026-08-06 16:58 (Stripe dashboard) | Received | Not recorded | Not recorded | Both controlled inboxes received it; webhook delivery returned HTTP 200; `update_billing_url` opens staging billing; received again in the fresh 2026-08-19 simulation after Loops repaired its sending-domain state. |
-| 8 | `payment_action_required` | A | Stripe `invoice.payment_action_required` | 2026-08-19 (Stripe test-clock simulation) | Received | Not recorded | Not recorded | Fresh simulation after Loops repair; `confirm_payment_url` check pending. |
-| 9 | `subscription_renewing` | B | Staging verification bridge | 2026-08-19 | Received | Not recorded | Not recorded | "Your upcoming subscription renewal" received. |
-| 10 | `subscription_trial_will_end` | B | Stripe test-clock simulation | 2026-08-19 (Stripe test-clock simulation) | Received | Not recorded | Not recorded | Generated incidentally by the one-day disposable verification trial; Cove's paid plan remains trial-free. |
-| 11 | `subscription_trial_ended` | B | Staging verification bridge | 2026-08-19 | Received | Not recorded | Not recorded | Trial-ended email received. |
+| 1 | `reset_password_instructions` | A | UI: forgot password | 2026-08-19 | Received | Not recorded | Unavailable | Loops Metrics exposes recipient and sent/delivered timestamps, but no per-send message ID. Reset link opened the form and completed a password change. |
+| 2 | `password_change` | A | UI: complete reset | 2026-08-19 | Received | Not recorded | Unavailable | Loops Metrics exposes no per-send message ID. Received after the password reset completed. |
+| 3 | `invite` | A | Staging verification bridge | 2026-08-19 | Received | Not recorded | Unavailable | Loops Metrics exposes no per-send message ID. Invitation email and link verified; invitation was not accepted. |
+| 4 | `cancellation_reason` | A | UI: cancel, +1h | 2026-08-05 | Received | Not recorded | Unavailable | Loops Metrics exposes no per-send message ID. Received after the scheduled one-hour delay; Plain template intentionally has no theme styling. |
+| 5 | `receipt` | A | Stripe `charge.succeeded` | 2026-08-05; replay check 2026-08-19 20:32 UTC | Received | Not recorded | Unavailable | Loops Metrics exposes no per-send message ID. Received at both controlled addresses; PDF attachment opened successfully. Fresh successful charge on 2026-08-19 received one receipt; replay produced no second receipt. |
+| 6 | `refund` | A | Stripe `charge.refunded` | 2026-08-05 | Received | Not recorded | Unavailable | Loops Metrics exposes no per-send message ID. Refund email received. |
+| 7 | `payment_failed` | A | Stripe `invoice.payment_failed` | 2026-08-06 16:58 (Stripe dashboard) | Received | Not recorded | Unavailable | Loops Metrics exposes no per-send message ID. Both controlled inboxes received it; webhook delivery returned HTTP 200; `update_billing_url` opens staging billing; received again in the fresh 2026-08-19 simulation after Loops repaired its sending-domain state. |
+| 8 | `payment_action_required` | A | Stripe `invoice.payment_action_required` | 2026-08-19 (Stripe test-clock simulation) | Received | Not recorded | Unavailable | Loops Metrics exposes no per-send message ID. Fresh simulation after Loops repair; `confirm_payment_url` verified. |
+| 9 | `subscription_renewing` | B | Staging verification bridge | 2026-08-19 | Received | Not recorded | Unavailable | Loops Metrics exposes no per-send message ID. "Your upcoming subscription renewal" received. |
+| 10 | `subscription_trial_will_end` | B | Stripe test-clock simulation | 2026-08-19 (Stripe test-clock simulation) | Received | Not recorded | Unavailable | Loops Metrics exposes no per-send message ID. Generated incidentally by the one-day disposable verification trial; Cove's paid plan remains trial-free. |
+| 11 | `subscription_trial_ended` | B | Staging verification bridge | 2026-08-19 | Received | Not recorded | Unavailable | Loops Metrics exposes no per-send message ID. Trial-ended email received. |
 
 ### Link checks
 
@@ -494,20 +500,20 @@ Fill in as each send lands. Placement is `Inbox`, `Promotions`, or `Spam`.
 | `confirm_payment_url` opens Stripe's confirmation page | Pass — Email 8, 2026-08-19 |
 | Receipt PDF attached and opens | Pass — Email 5, 2026-08-05 |
 | `update_billing_url` opens staging billing | Pass — Emails 7, 2026-08-06 and 2026-08-19 |
-| `manage_subscription_url` opens staging billing | |
+| `manage_subscription_url` opens staging billing | Pass — Email 9, 2026-08-19 |
 
 ### Behaviour checks
 
 | Check | Result |
 | -- | -- |
-| Both addresses received the receipt (fan-out) | |
+| Both addresses received the receipt (fan-out) | Pass — Email 5, 2026-08-05 |
 | Webhook replay produced zero additional emails | Pass — `charge.succeeded` replay, 2026-08-19 |
 | Staging log shows `[Loops] duplicate transactional send suppressed` | Pass — 2026-08-19 20:32:36 UTC (`cmsdrk6tf03rb0jzw194l0rl5`) |
 | Honeybadger fault raised, with stack trace (fault URL) | Pass — `LoopsClient::NotFound`, 2026-08-19 14:33 MDT; deliberate nonexistent transactional ID returned "No transactional email found with that ID." |
 | Honeybadger fault occurred exactly once (not retried) | Pass — one occurrence in Honeybadger History at 2026-08-19 14:33 MDT |
-| Loops dashboard: no new contacts | |
-| Loops dashboard: no new audiences | |
-| Loops dashboard: no new mailing lists | |
+| Loops dashboard: no new contacts | Pass — 2026-08-19 |
+| Loops dashboard: no new audiences | Pass — 2026-08-19 |
+| Loops dashboard: no new mailing lists | Pass — 2026-08-19 |
 
 ### Issues found
 
@@ -537,8 +543,8 @@ the forced Honeybadger failure; the Loops dashboard audit; this document.
    sending domain is cold and placement improves with volume — but a genuinely
    misconfigured template must not be excused as "it'll warm up."
 2. **Whether the Stripe test-mode webhook endpoint already exists** (step 0.5).
-   Unknown at design time; COV-31 established the credentials but says nothing
-   about the endpoint. If missing, creating it is part of Phase 0.
+   Resolved during verification: the dedicated staging endpoint was created and
+   later retained as the standing test-mode webhook destination.
 
 ## More Info
 
