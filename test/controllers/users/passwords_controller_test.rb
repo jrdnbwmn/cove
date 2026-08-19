@@ -21,6 +21,17 @@ class Users::PasswordsControllerTest < ActionDispatch::IntegrationTest
     assert user.reload.valid_password?("new-password")
   end
 
+  test "password reset form does not display boolean placeholder text" do
+    user = users(:one)
+    reset_password_token = user.send(:set_reset_password_token)
+
+    get edit_user_password_path(reset_password_token: reset_password_token)
+
+    assert_response :success
+    assert_select "input#user_password[placeholder='true']", count: 0
+    assert_select "input#user_password_confirmation[placeholder='true']", count: 0
+  end
+
   test "requesting a password reset sends exactly one Loops reset-password request with the expected payload" do
     user = users(:one)
 
