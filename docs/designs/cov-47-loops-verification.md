@@ -525,6 +525,15 @@ branch.
   renewal succeeded (`invoice.paid` / `payment_intent.succeeded`), so it did not
   produce `invoice.payment_action_required` or verify Email 8. Retry with Stripe's
   always-authenticate subscription/invoice test card (`4000 0027 6000 3184`).
+- 2026-08-19: Task 8's password-reset click-through showed the literal text
+  `true` as placeholder content on both password fields in
+  `devise/passwords/edit.html.erb`, from a stray `placeholder: true` option
+  passed to the input component instead of a real placeholder string. Fixed
+  directly on this branch (`fc51cd2`) rather than deferred: one-line, purely
+  cosmetic, no interaction with Loops/billing/webhook plumbing this ticket
+  exists to verify, and covered by a new regression test
+  (`test/controllers/users/passwords_controller_test.rb`). No follow-up ticket
+  opened.
 
 ## Scope
 
