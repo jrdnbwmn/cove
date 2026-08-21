@@ -300,3 +300,39 @@ None.
   missed unsubscribe is a data-integrity and trust problem, not a CAN-SPAM
   exposure, because Loops refuses to send to its own unsubscribes regardless of
   what Cove believes.
+
+## Amendment — 2026-08-21: the reconciliation sweep, and what stands in for it
+
+This design deferred the reconciliation sweep and shipped only the webhook.
+COV-56 was later written assuming a sweep existed, instructing whoever ran the
+first campaign to "run COV-52's reconciliation immediately before sending."
+There is nothing to run — `grep -ri reconcil app lib config test` returns
+nothing, by design.
+
+COV-56 was cancelled and replaced by two tickets: COV-65 (webhook registration)
+and the first campaign send. The send ticket carries this substitute for the
+sweep, recorded here so the reasoning is findable from the design that caused
+it:
+
+1. Confirm the webhook endpoint is registered and fire `testing.testEvent`.
+2. Confirm `loops_webhook_events` has no rows with `processed_at IS NULL`.
+3. Hand-check each opted-in user with `loops contacts find --userId`, comparing
+   Loops' `subscribed` against the app's `marketing_subscribed?`.
+
+Step 3 *is* the sweep, run by hand. At the list sizes Cove will have for its
+first campaigns that is a handful of CLI calls, which is cheaper than the Ruby
+and carries no risk of a paced background job saturating the 10 req/sec budget
+shared with transactional sends.
+
+**Why not build it.** COV-48 Decision 1 established that Loops refuses to send
+to its own unsubscribes regardless of what Cove believes. A stale opt-out
+therefore makes the account settings page lie about the user's state; it does
+not put unwanted mail in anyone's inbox. COV-56 framed the pre-send check as
+"the moment where a stale opt-out becomes a violation" — that is overstated,
+and the framing should not be inherited. The check is for data integrity and
+trust, not compliance.
+
+**Trigger to revisit.** Build the sweep when either the hand-check becomes
+impractical at the current list size, or a webhook outage exceeds Loops'
+24-hour retry window — the one failure mode the retry schedule does not
+self-heal.
