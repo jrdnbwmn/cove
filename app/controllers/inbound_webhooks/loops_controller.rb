@@ -1,5 +1,14 @@
 module InboundWebhooks
   class LoopsController < ApplicationController
+    # AIDEV-NOTE: This endpoint is not registered with Loops. Registration is
+    # manual and dashboard-only (Settings -> Webhooks) and there is one endpoint
+    # per Loops account, so it points at production only. It was never done
+    # because no live production service existed to point at. Until it is, Loops
+    # emits nothing here: every unsubscribe, hard bounce, and spam report is
+    # invisible, and User marketing consent state drifts from Loops' silently
+    # rather than noisily. Registration also requires loops.webhook_secret in
+    # config/credentials/production.yml.enc -- LoopsWebhookSignature fails closed
+    # without it, rejecting every event 401. Tracked in COV-65.
     def create
       webhook_id = request.headers["Webhook-Id"]
       timestamp = request.headers["Webhook-Timestamp"]
