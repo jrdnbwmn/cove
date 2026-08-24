@@ -168,23 +168,23 @@ opt-in six months later. Anyone changing the trigger must change this copy.
 
 ## Acceptance Criteria
 
-- [ ] Workflow exists in Loops, its structure recorded here, including which
+- [x] Workflow exists in Loops, its structure recorded here, including which
       parts are reproducible via `loops workflows` / `loops workflows nodes` and
       which are dashboard-only
-- [ ] Firing `user_signed_up` via `loops events send` against a consenting test
+- [x] Firing `user_signed_up` via `loops events send` against a consenting test
       contact triggers the workflow
-- [ ] The welcome email arrives in a real inbox and renders correctly, including
+- [x] The welcome email arrives in a real inbox and renders correctly, including
       with images blocked and in the plain-text alternative
-- [ ] Elapsed time from event to delivery is recorded
-- [ ] Theme matches COV-40 (`cmsdnxho301lh0j17qh8ltsre`)
-- [ ] Physical address present in the footer
-- [ ] The unsubscribe link works and Loops records the opt-out, confirmed via
+- [x] Elapsed time from event to delivery is recorded
+- [x] Theme matches COV-40 (`cmsdnxho301lh0j17qh8ltsre`)
+- [x] Physical address present in the footer
+- [x] The unsubscribe link works and Loops records the opt-out, confirmed via
       `loops contacts find`
-- [ ] The test contact is deleted; Audience count recorded before and after and
+- [x] The test contact is deleted; Audience count recorded before and after and
       returns to its starting value
-- [ ] The workflow is deactivated pending launch, so provisional copy cannot
+- [x] The workflow is deactivated pending launch, so provisional copy cannot
       reach real signups
-- [ ] No campaign, additional list, additional theme, or other unrelated Loops
+- [x] No campaign, additional list, additional theme, or other unrelated Loops
       object is created
 
 ## Prototype
@@ -298,25 +298,54 @@ launch.
 
 ## Findings
 
-To be completed during execution.
+### Execution verification (2026-08-24)
+
+- `loops api-key --team cove-cli -o json` resolved to `Cove`; the dashboard
+  Audience baseline was `0`.
+- Workflow ID: `cmt7kpi6400so0i2apcxfnsvu`; email-message ID:
+  `cmt7kse7g01qd0izfs6qqce9v`. The final graph is `user_signed_up` event
+  trigger → one `SendEmailAction` → exit, associated with `Cove updates`
+  (`cmsdo8ncl02wc0j0j4rxwhy4l`). It has no timer.
+- CLI reproducibly created the workflow and email node, read the graph and
+  revisions, updated LMX with `contentRevisionId`, sent events/previews, and
+  read/deleted contacts. The Loops dashboard was required to set the event
+  trigger and pause/resume the workflow; Guardian passed with no errors.
+- The event trigger has `reEligible: false`, confirming one-time entry per
+  contact. The first manual fire registered `user_signed_up`; the live send
+  arrived in under one minute at the available minute-level precision.
+- Styled, images-blocked, and plain-text rendering passed in a real inbox. The
+  message matched the shared Cove theme, carried the approved sender/reply-to
+  and copy, and its generated footer contained `307 N 990 E, Salem, UT 84653`
+  and a preference-center link.
+- The first recipient accidentally used the preference center's page-wide
+  unsubscribe control, which produced `subscribed: false` while retaining its
+  list membership. That temporary contact was deleted without attempting to
+  reverse its global unsubscribe.
+- A fresh, separate retry recipient was then used. After turning off only
+  `Cove updates` and saving, `loops contacts find` returned `subscribed: true`
+  with an empty `mailingLists` object, the CLI's representation of no active
+  list memberships. This is the verified list-level opt-out result.
+- Both temporary contacts were deleted. The final dashboard Audience count was
+  `0`, and the workflow remains present in `PausedAndQueueing` state pending
+  JOR-1; it was never deleted.
 
 | Check | Result |
 | --- | --- |
-| `loops api-key --team cove-cli` | |
-| Audience count before | |
-| Workflow ID | |
-| Email message ID | |
-| `user_signed_up` in `event-patterns list` | |
-| CLI-reproducible vs dashboard-only | |
-| Workflow re-entry rule | |
-| Elapsed time, event to inbox | |
-| Styled / images-blocked / plain-text rendering | |
-| Theme continuity with COV-40 | |
-| Physical address in footer | |
-| Unsubscribe link + `contacts find` result | |
-| Test contact deleted | |
-| Audience count after | |
-| Workflow deactivated | |
+| `loops api-key --team cove-cli` | `teamName: Cove` |
+| Audience count before | `0` |
+| Workflow ID | `cmt7kpi6400so0i2apcxfnsvu` |
+| Email message ID | `cmt7kse7g01qd0izfs6qqce9v` |
+| `user_signed_up` in `event-patterns list` | Present |
+| CLI-reproducible vs dashboard-only | CLI: workflow/node/message/contact/event operations; dashboard: trigger and pause/resume |
+| Workflow re-entry rule | One time (`reEligible: false`) |
+| Elapsed time, event to inbox | Under one minute, minute-level precision |
+| Styled / images-blocked / plain-text rendering | Passed |
+| Theme continuity with COV-40 | Passed, `cmsdnxho301lh0j17qh8ltsre` |
+| Physical address in footer | Passed, `307 N 990 E, Salem, UT 84653` |
+| Unsubscribe link + `contacts find` result | Retry passed: `subscribed: true`, no active mailing-list membership |
+| Test contact deleted | Both temporary contacts absent |
+| Audience count after | `0` |
+| Workflow deactivated | Present and `PausedAndQueueing` |
 
 ## More Info
 
