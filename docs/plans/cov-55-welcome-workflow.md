@@ -7,9 +7,9 @@
 
 | Task | Phase | Checkpoint | Description | Assign | Done |
 | ---- | ----- | ---------- | ----------- | ------ | ---- |
-| 1 | 1 | 1 | Validate live state, create the test contact, and register the event pattern | Master | |
-| 2 | 1 | 1 | Create the inactive workflow and author the welcome email in LMX | Master | |
-| 3 | 1 | 1 | Run Guardian and verify the preview in a real inbox | Master | |
+| 1 | 1 | 1 | Validate live state, create the test contact, and register the event pattern | Master | ✅ |
+| 2 | 1 | 1 | Create the inactive workflow and author the welcome email in LMX | Master | ✅ |
+| 3 | 1 | 1 | Run Guardian and verify the preview in a real inbox | Master | ✅ |
 | 4 | 2 | 2 | Activate once, trigger the workflow, and verify delivery and unsubscribe | Master | |
 | 5 | 2 | 2 | Delete the test contact, deactivate the workflow, and document findings | Master | |
 
