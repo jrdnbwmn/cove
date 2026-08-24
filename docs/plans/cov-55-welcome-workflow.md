@@ -283,6 +283,47 @@ precedent
    4–5, after both tasks are complete. If the tasks were executed as a parallel
    batch, the master runs this review only after the whole batch returns.
 
+## Approved Retry Amendment (2026-08-24)
+
+This amendment supersedes the original Task 4 live-send execution steps only.
+The initial verification delivered successfully, but the recipient clicked the
+preference center's page-wide **Unsubscribe** control while `Cove updates`
+remained enabled. The observed result was an audience-wide opt-out
+(`subscribed: false`) rather than the required list-level opt-out. Do not mark
+Task 4 complete from that run.
+
+Retry remains strictly sequential and Master-owned because it mutates the same
+Loops team and needs a different verification recipient.
+
+1. **Contain and reset:** Deactivate `Welcome to Cove` first, then delete only
+   `cov55-verification`. Confirm the contact is absent and the dashboard
+   Audience count returns to the original baseline of `0`. Do not attempt to
+   re-subscribe or otherwise repair the globally unsubscribed email.
+2. **Create one approved fresh verifier:** Require a genuinely different
+   verification inbox (not a `+alias`) and create exactly one subscribed
+   contact with user ID `cov55-list-optout-verification` on `Cove updates`.
+   Confirm the new contact is globally subscribed and list-subscribed before
+   proceeding. This new identity is required because the workflow is
+   one-time-per-contact and the original address may be email-suppressed.
+3. **Re-run the live proof:** Reconfirm the unchanged Draft workflow and clean
+   Guardian/preview evidence, activate it, generate a fresh `signed_up_at`,
+   and fire one `user_signed_up` event without an idempotency key. Record the
+   event and arrival times; inspect all rendering/footer requirements again.
+4. **Perform the correct preference-center action:** In the preference center,
+   turn **Cove updates** off and save that list preference. Do **not** click the
+   page-wide **Unsubscribe** control. Fetch the contact and require
+   `subscribed: true` with `mailingLists[cmsdo8ncl02wc0j0j4rxwhy4l]: false`.
+   Stop on any other shape rather than changing the contact through the API.
+5. **Clean up and document both runs:** Delete only
+   `cov55-list-optout-verification`, confirm Audience returns to `0`, and
+   deactivate (never delete) the workflow. The design Findings must distinguish
+   the initial accidental global opt-out from the retry result; acceptance is
+   complete only for directly observed behavior.
+
+**Not in scope:** Reusing the original email, force-setting subscription state,
+creating more than the one newly approved verifier, adding a second workflow or
+email, changing copy/theme/trigger/re-entry settings, or app-code changes.
+
 ## Task Dependencies
 
 - Strictly sequential: Task 1 → Task 2 → Task 3 → Task 4 → Task 5.
