@@ -2,6 +2,7 @@ require "test_helper"
 
 class Users::RegistrationsControllerTest < ActionDispatch::IntegrationTest
   include InvisibleCaptcha
+  include ActionMailer::TestHelper
 
   setup do
     @user_params = {user:
@@ -14,6 +15,8 @@ class Users::RegistrationsControllerTest < ActionDispatch::IntegrationTest
     if Jumpstart.config.register_with_account?
       @user_params[:user][:owned_accounts_attributes] = [{name: "Test Account"}]
     end
+
+    clear_enqueued_jobs
   end
 
   class ThemePickerTest < Users::RegistrationsControllerTest
@@ -80,6 +83,23 @@ class Users::RegistrationsControllerTest < ActionDispatch::IntegrationTest
       assert_difference "User.count" do
         post user_registration_url, params: @user_params
       end
+    end
+
+    test "successful registration enqueues one account-created email without an inline Loops request" do
+      loops_request = stub_request(:post, "https://app.loops.so/api/v1/transactional")
+        .to_return(status: 500)
+
+      assert_difference "User.count" do
+        assert_enqueued_jobs 1, only: LoopsMailDeliveryJob do
+          assert_enqueued_email_with UserMailer, :account_created,
+            params: ->(params) { params[:user].email == @user_params[:user][:email] } do
+            post user_registration_url, params: @user_params
+          end
+        end
+      end
+
+      assert_redirected_to user_root_path
+      assert_not_requested loops_request
     end
 
     test "checked registration records marketing consent" do
