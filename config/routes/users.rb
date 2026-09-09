@@ -11,6 +11,7 @@ devise_scope :user do
 end
 
 resource :marketing_preference, only: :update
+resource :signup_completion, only: [:show, :update], module: :users
 
 namespace :account do
   resource :password

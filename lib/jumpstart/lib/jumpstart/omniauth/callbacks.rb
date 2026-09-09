@@ -59,7 +59,10 @@ module Jumpstart
         user = User.new(
           email: auth.info.email,
           terms_of_service: true,
-          name: auth.info.name
+          # AIDEV-NOTE: This local Jumpstart override marks new OAuth users for
+          # the post-authorization profile and marketing-consent step.
+          signup_completion_required: true,
+          name: oauth_user_name
         )
         user.password = ::Devise.friendly_token[0, 20] if user.respond_to?(:password=)
         user.connected_accounts.new(connected_account_params)
@@ -68,6 +71,10 @@ module Jumpstart
         sign_in_and_redirect(user, event: :authentication)
         run_connected_callback(user.connected_accounts.last)
         success_message!(kind: auth.provider)
+      end
+
+      def oauth_user_name
+        auth.info.name.presence || [auth.info.first_name, auth.info.last_name].compact_blank.join(" ").presence || auth.info.email.split("@").first
       end
 
       def attach_account

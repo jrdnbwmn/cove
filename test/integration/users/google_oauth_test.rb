@@ -44,5 +44,15 @@ if defined? OmniAuth
       get "/users/sign_up"
       assert_includes response.body, button_text
     end
+
+    test "shows Terms and Privacy Policy disclosure with the Google OAuth button" do
+      ["/users/sign_in", "/users/sign_up"].each do |path|
+        get path
+
+        assert_select "p", text: "By continuing, you agree to the Terms and Privacy Policy."
+        assert_select "a[href='#{terms_path}'][target='_blank']", text: "Terms"
+        assert_select "a[href='#{privacy_path}'][target='_blank']", text: "Privacy Policy"
+      end
+    end
   end
 end

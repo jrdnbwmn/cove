@@ -10,6 +10,10 @@
       <%= button_to t("oauth.sign_in_with", provider: t("oauth.#{provider}")), omniauth_authorize_path(:user, provider), class: "inline-flex w-full items-center justify-center gap-1.5 rounded-[var(--radius)] border border-black/10 bg-white/90 px-3.5 py-2 text-sm font-medium text-neutral-800 shadow-xs transition-all duration-100 ease-in-out hover:bg-muted focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-neutral-600 dark:border-white/10 dark:bg-neutral-700/50 dark:text-neutral-50 dark:hover:bg-neutral-700/75 dark:focus-visible:outline-neutral-200", data: { turbo: false, disable_with: t(".redirecting") } %>
     <% end -%>
   </div>
+
+  <p class="mb-4 text-center text-sm text-muted-foreground">
+    <%= t(".oauth_disclosure_html", terms: link_to(t(".terms"), terms_path, target: "_blank"), privacy_policy: link_to(t(".privacy_policy"), privacy_path, target: "_blank")) %>
+  </p>
 <% end -%>
 
 <%- if devise_mapping.recoverable? && controller_name != "passwords" && controller_name != "registrations" %>

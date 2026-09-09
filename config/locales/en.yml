@@ -485,6 +485,16 @@ en:
     dark: "Dark"
 
   users:
+    signup_completions:
+      show:
+        title: "Finish setting up your account"
+        description: "Tell us how to address you."
+        email: "Signed in as %{email}"
+        marketing_opt_in: "Send me occasional Cove updates and homeschooling resources."
+        marketing_opt_in_html: "Send me occasional Cove updates and homeschooling resources. Read our %{privacy}."
+        privacy_policy: "Privacy Policy"
+        submit: "Continue"
+        submitting: "Continuing..."
     agreements:
       show:
         title: "%{agreement} Changed"

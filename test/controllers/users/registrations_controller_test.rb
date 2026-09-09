@@ -80,6 +80,8 @@ class Users::RegistrationsControllerTest < ActionDispatch::IntegrationTest
       assert_difference "User.count" do
         post user_registration_url, params: @user_params
       end
+
+      assert_not_predicate User.find_by!(email: @user_params[:user][:email]), :signup_completion_required?
     end
 
     test "checked registration records marketing consent" do
