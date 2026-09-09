@@ -7,9 +7,9 @@
 
 | Task | Phase | Checkpoint | Description | Assign | Done |
 | ---- | ----- | ---------- | ----------- | ------ | ---- |
-| 1 | 1 | 1 | Create the account-created Loops draft | Master | |
-| 2 | 1 | 1 | Author and validate the approved LMX | Master | |
-| 3 | 1 | 1 | Preview, publish, and record the template | Master | |
+| 1 | 1 | 1 | Create the account-created Loops draft | Master | ✅ |
+| 2 | 1 | 1 | Author and validate the approved LMX | Master | ✅ |
+| 3 | 1 | 1 | Preview, publish, and record the template | Master | ✅ |
 | 4 | 2 | 2 | Add the mapping and bodyless UserMailer | Master | |
 | 5 | 2 | 2 | Enqueue account-created mail after user creation | Master | |
 | 6 | 2 | 3 | Verify password and invited-user registration | subagent | |

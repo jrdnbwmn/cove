@@ -138,7 +138,7 @@ change is one new key in `config/loops.yml`.
 | Object | ID | Contract |
 | --- | --- | --- |
 | `Cove` theme | `cmsdnxho301lh0j17qh8ltsre` | Existing (COV-40). Reused unchanged |
-| `account-created` | recorded at execution | New. Required `recipient_email`, `sign_in_url` |
+| `account-created` | `cmt95d4t100gq0jyvqpknv5vi` | New. Required `recipient_email`, `sign_in_url` |
 
 Live Loops state confirmed during brainstorming (2026-08-25): the template does
 **not** exist. All eleven existing templates sit in the `Unsorted` group
