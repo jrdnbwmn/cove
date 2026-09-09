@@ -122,3 +122,14 @@ marketing_unsubscribed:
   marketing_opt_in_source: registration
   marketing_opt_out_at: <%= Time.current %>
   marketing_opt_out_reason: user_app
+
+oauth_signup_pending:
+  email: oauth-pending@example.com
+  first_name: OAuth
+  last_name: Pending
+  encrypted_password: <%= Devise::Encryptor.digest(User, UNIQUE_PASSWORD) %>
+  accepted_terms_at: <%= Time.current %>
+  accepted_privacy_at: <%= Time.current %>
+  time_zone: "Central Time (US & Canada)"
+  confirmed_at: <%= Time.current %>
+  signup_completion_required: true

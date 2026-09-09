@@ -17,6 +17,7 @@ if defined? OmniAuth
       assert_equal "12345", user.connected_accounts.last.uid
       assert_equal user, controller.current_user
       assert_equal Time.now.utc + 100, user.connected_accounts.last.expires_at.utc
+      assert_predicate user, :signup_completion_required?
 
       sign_out user
       get "/"
@@ -27,6 +28,16 @@ if defined? OmniAuth
       assert_equal user, controller.current_user
     end
 
+    test "does not flag a returning connected user" do
+      user = users(:one)
+      OmniAuth.config.add_mock(:developer, uid: "one", info: {email: user.email}, credentials: {token: 1})
+
+      get "/users/auth/developer/callback"
+
+      assert_equal user, controller.current_user
+      assert_not_predicate user.reload, :signup_completion_required?
+    end
+
     test "can connect a social account when signed in" do
       user = users(:one)
 
@@ -35,6 +46,7 @@ if defined? OmniAuth
 
       assert_equal "developer", user.connected_accounts.developer.last.provider
       assert_equal "12345", user.connected_accounts.developer.last.uid
+      assert_not_predicate user.reload, :signup_completion_required?
     end
 
     test "cannot login with social if email is taken but not connected yet" do
@@ -76,6 +88,16 @@ if defined? OmniAuth
 
       assert user.connected_accounts.developer.none?
       assert_equal I18n.t("users.omniauth_callbacks.connected_to_another_account"), flash[:alert]
+    end
+
+    test "uses the email local part when OAuth sends no name data" do
+      OmniAuth.config.add_mock(:developer, uid: "missing-name", info: {email: "family@example.com", name: "", first_name: nil, last_name: nil}, credentials: {token: 1})
+
+      get "/users/auth/developer/callback"
+
+      user = User.find_by!(email: "family@example.com")
+      assert_equal "family", user.name
+      assert_predicate user, :signup_completion_required?
     end
   end
 end

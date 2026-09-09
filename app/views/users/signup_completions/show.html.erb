@@ -1,0 +1,53 @@
+<% Current.meta_tags.set(title: t(".title")) %>
+
+<div class="sm:max-w-sm px-4 mx-auto my-10 lg:px-0">
+  <div class="mb-4 text-center">
+    <h2 class="mb-1"><%= t(".title") %></h2>
+    <p><%= t(".description") %></p>
+  </div>
+
+  <%= form_with(model: @user, url: signup_completion_path) do |f| %>
+    <%= render "error_messages", resource: @user %>
+
+    <p class="mb-6 text-sm text-neutral-600"><%= t(".email", email: @user.email) %></p>
+
+    <%= render FormFieldComponent.new(
+      label: @user.class.human_attribute_name(:first_name),
+      name: "user[first_name]",
+      required: true,
+      error: @user.errors[:first_name].first,
+      classes: "mb-6"
+    ) do |field| %>
+      <% field.with_input do %>
+        <%= f.text_field :first_name, autocomplete: "given-name", class: "form-control" %>
+      <% end %>
+    <% end %>
+
+    <%= render FormFieldComponent.new(
+      label: @user.class.human_attribute_name(:last_name),
+      name: "user[last_name]",
+      error: @user.errors[:last_name].first,
+      classes: "mb-6"
+    ) do |field| %>
+      <% field.with_input do %>
+        <%= f.text_field :last_name, autocomplete: "family-name", class: "form-control" %>
+      <% end %>
+    <% end %>
+
+    <%= hidden_field_tag "user[marketing_opt_in]", "0" %>
+    <%= render CheckboxComponent.new(
+      label: t(".marketing_opt_in"),
+      label_html: t(".marketing_opt_in_html", privacy: link_to(t(".privacy_policy"), privacy_path, target: "_blank")),
+      name: "user[marketing_opt_in]",
+      checked: @marketing_opt_in,
+      classes: "mb-6"
+    ) %>
+
+    <%= render ButtonComponent.new(
+      text: t(".submit"),
+      type: "submit",
+      full_width: true,
+      data: {disable_with: t(".submitting")}
+    ) %>
+  <% end %>
+</div>

@@ -7,13 +7,13 @@
 
 | Task | Phase | Checkpoint | Description | Assign | Done |
 | ---- | ----- | ---------- | ----------- | ------ | ---- |
-| 1 | 1 | 1 | Replace the privacy placeholder with accurate Cove policy content | Master | |
-| 2 | 1 | 1 | Add passive Terms and Privacy disclosure below Google OAuth | subagent | |
-| 3 | 2 | 2 | Add persistent OAuth signup-completion state | Master | |
-| 4 | 2 | 2 | Flag only new OAuth users and handle missing Google names | Master | |
-| 5 | 2 | 3 | Add the authenticated GET gate and singular route | Master | |
-| 6 | 2 | 3 | Build and test the signup-completion endpoint and screen | subagent | |
-| 7 | 3 | 4 | Run release verification and prepare the Google Console handoff | Master | |
+| 1 | 1 | 1 | Replace the privacy placeholder with accurate Cove policy content | Master | ✅ |
+| 2 | 1 | 1 | Add passive Terms and Privacy disclosure below Google OAuth | subagent | ✅ |
+| 3 | 2 | 2 | Add persistent OAuth signup-completion state | Master | ✅ |
+| 4 | 2 | 2 | Flag only new OAuth users and handle missing Google names | Master | ✅ |
+| 5 | 2 | 3 | Add the authenticated GET gate and singular route | Master | ✅ |
+| 6 | 2 | 3 | Build and test the signup-completion endpoint and screen | subagent | ✅ |
+| 7 | 3 | 4 | Run release verification and prepare the Google Console handoff | Master | ✅ |
 
 ## Prerequisites
 
