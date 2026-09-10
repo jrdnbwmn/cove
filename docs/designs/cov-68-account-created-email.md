@@ -352,6 +352,22 @@ Two staging constraints follow from the idempotency finding below:
    `STAGING_EMAIL_RECIPIENT_ALLOWLIST`.** Confirm before execution rather than
    discovering it mid-verification.
 
+### Execution record
+
+- On 2026-09-09, `account-created` (`cmt95d4t100gq0jyvqpknv5vi`) was previewed,
+  published, and re-verified with exactly `recipient_email` and `sign_in_url`.
+  Guardian returned no warnings or errors.
+- The feature commit `c3f23171f29ba6f3ac174b5893bb67a7bf27e0fd` was deployed to
+  `cove-staging`. One email/password signup and one Google OAuth signup used
+  distinct allowlisted addresses. Both signups succeeded, each email arrived,
+  each CTA opened the staging sign-in page, and neither recipient appeared as a
+  Loops contact. Recipient values are deliberately not recorded.
+- The original free staging database had been deleted after its free-tier
+  retention window. A new empty `cove-staging-db` was provisioned in Oregon;
+  no credentials are recorded here.
+- `cove-staging` was restored to `main`; its successful restore deployment
+  reported source `3af4f29` on 2026-09-10.
+
 ## Edge Cases
 
 | Case | Behavior |

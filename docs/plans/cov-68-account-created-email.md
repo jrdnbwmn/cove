@@ -14,7 +14,7 @@
 | 5 | 2 | 2 | Enqueue account-created mail after user creation | Master | ✅ |
 | 6 | 2 | 3 | Verify password and invited-user registration | subagent | ✅ |
 | 7 | 2 | 3 | Verify OAuth signup and audit callback blast radius | subagent | ✅ |
-| 8 | 3 | 4 | Run final gates and staging inbox verification | Master | |
+| 8 | 3 | 4 | Run final gates and staging inbox verification | Master | ✅ |
 
 ## Prerequisites
 
