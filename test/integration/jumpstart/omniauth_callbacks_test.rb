@@ -9,7 +9,14 @@ if defined? OmniAuth
 
     test "can register and login with a social account" do
       freeze_time
-      get "/users/auth/developer/callback"
+      assert_enqueued_jobs 1, only: LoopsMailDeliveryJob do
+        assert_enqueued_email_with UserMailer, :account_created,
+          params: ->(params) { params[:user].email == "twitter@example.com" } do
+          assert_difference "User.count", 1 do
+            get "/users/auth/developer/callback"
+          end
+        end
+      end
 
       user = User.last
       assert_equal "twitter@example.com", user.email
@@ -23,7 +30,12 @@ if defined? OmniAuth
       get "/"
 
       assert_nil controller.current_user
-      get "/users/auth/developer/callback"
+      clear_enqueued_jobs
+      assert_no_enqueued_jobs only: LoopsMailDeliveryJob do
+        assert_no_difference "User.count" do
+          get "/users/auth/developer/callback"
+        end
+      end
 
       assert_equal user, controller.current_user
     end

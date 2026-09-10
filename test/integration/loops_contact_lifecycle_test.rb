@@ -19,7 +19,8 @@ class LoopsContactLifecycleTest < ActiveSupport::TestCase
     assert_enqueued_jobs 1, only: LoopsContactSyncJob do
       user.save!
     end
-    assert_equal [user.id, "opt_in"], enqueued_jobs.last.fetch(:args)
+    contact_sync_job = enqueued_jobs.find { |job| job.fetch(:job) == LoopsContactSyncJob }
+    assert_equal [user.id, "opt_in"], contact_sync_job.fetch(:args)
   end
 
   test "settings opt-in and app opt-out enqueue their exact intents" do

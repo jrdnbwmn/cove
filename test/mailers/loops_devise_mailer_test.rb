@@ -16,6 +16,7 @@ class LoopsDeviseMailerTest < ActiveSupport::TestCase
   test "config/loops.yml exposes every checked-in transactional mapping" do
     transactional = Rails.application.config_for(:loops).transactional
 
+    assert_equal "cmt95d4t100gq0jyvqpknv5vi", transactional[:account_created]
     assert_equal "cmsdnzduk02k40jx72rv3uwe2", transactional[:reset_password_instructions]
     assert_equal "cmsdo8ixv001e0j1zu027i3s7", transactional[:password_change]
     assert_equal "cmsdr01rw02s00j3ozshehy4f", transactional[:invite]
@@ -28,6 +29,7 @@ class LoopsDeviseMailerTest < ActiveSupport::TestCase
     assert_equal "cmsdru71a04c50jzw6rqtt95u", transactional[:subscription_trial_will_end]
     assert_equal "cmsdru76v04ep0jw7xrbb236w", transactional[:subscription_trial_ended]
     assert_equal %i[
+      account_created
       reset_password_instructions
       password_change
       invite

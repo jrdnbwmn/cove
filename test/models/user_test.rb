@@ -1,6 +1,8 @@
 require "test_helper"
 
 class UserTest < ActiveSupport::TestCase
+  # Fixtures are loaded directly by Rails before each test, so their records do
+  # not exercise User creation callbacks; callback coverage builds users here.
   test "user has many accounts" do
     user = users(:one)
     assert_includes user.accounts, accounts(:one)

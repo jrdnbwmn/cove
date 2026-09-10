@@ -14,8 +14,12 @@ graph TD
   Models --> Account[Account]
   Models --> Current[Current]
   Models --> UserConcerns[user/]
+  UserConcerns --> AccountCreatedEmail[AccountCreatedEmail]
   UserConcerns --> MarketingConsent[MarketingConsent]
   Models --> LoopsWebhookEvent[LoopsWebhookEvent]
+
+  App --> Mailers[app/mailers]
+  Mailers --> UserMailer[UserMailer]
 
   App --> Jobs[app/jobs]
   Jobs --> LoopsContactSyncJob[LoopsContactSyncJob]
@@ -67,6 +71,8 @@ graph TD
   MarketingPreferencesController --> User
   MarketingPreferencesController --> DeviseViews
   User --> MarketingConsent
+  User --> AccountCreatedEmail
+  AccountCreatedEmail --> UserMailer
   MarketingConsent --> LoopsContactSyncJob
   MarketingConsent --> LoopsContactDeletionJob
   LoopsContactSyncJob --> LoopsContactSynchronizer

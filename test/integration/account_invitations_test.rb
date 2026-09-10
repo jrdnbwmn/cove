@@ -1,11 +1,14 @@
 require "test_helper"
 
 class Jumpstart::AccountInvitationsTest < ActionDispatch::IntegrationTest
+  include ActionMailer::TestHelper
+
   setup do
     @account_invitation = account_invitations(:one)
     @account = @account_invitation.account
     @inviter = @account.users.first
     @invited = users(:invited)
+    clear_enqueued_jobs
   end
 
   test "cannot view invitation when logged out" do
@@ -55,6 +58,42 @@ class Jumpstart::AccountInvitationsTest < ActionDispatch::IntegrationTest
     assert_includes User.last.accounts, @account
     assert_raises ActiveRecord::RecordNotFound do
       @account_invitation.reload
+    end
+  end
+
+  test "invited-user registration enqueues the invitation and account-created emails" do
+    invitation = @account.account_invitations.new(
+      name: "New Invited User",
+      email: "new-invited-user@example.com",
+      invited_by: @inviter
+    )
+
+    assert_enqueued_jobs 1, only: LoopsMailDeliveryJob do
+      assert_enqueued_email_with AccountMailer, :invite, params: {account_invitation: invitation} do
+        assert invitation.save_and_send_invite
+      end
+    end
+
+    assert_difference "User.count" do
+      assert_enqueued_jobs 1, only: LoopsMailDeliveryJob do
+        assert_enqueued_email_with UserMailer, :account_created,
+          params: ->(params) { params[:user].email == invitation.email } do
+          post user_registration_path(invite: invitation.token), params: {
+            user: {
+              name: invitation.name,
+              email: invitation.email,
+              password: "password",
+              password_confirmation: "password",
+              terms_of_service: "1"
+            }
+          }
+        end
+      end
+    end
+
+    assert_redirected_to user_root_path
+    assert_raises ActiveRecord::RecordNotFound do
+      invitation.reload
     end
   end
 end

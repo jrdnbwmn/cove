@@ -1,6 +1,7 @@
 shared:
   contact_sync_mailing_list_id: cmsdo8ncl02wc0j0j4rxwhy4l
   transactional:
+    account_created: cmt95d4t100gq0jyvqpknv5vi
     reset_password_instructions: cmsdnzduk02k40jx72rv3uwe2
     password_change: cmsdo8ixv001e0j1zu027i3s7
     invite: cmsdr01rw02s00j3ozshehy4f
