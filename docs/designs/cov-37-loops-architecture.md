@@ -13,7 +13,7 @@ seven names, none of them Loops.
 
 Loops sends by referencing a template authored and published inside Loops
 (`transactionalId`) plus a `dataVariables` hash. The email body — and the
-subject — stop living in this repo. Eleven transactional triggers exist. This
+subject — stop living in this repo. Twelve transactional triggers exist. This
 brief resolves the three decisions that shape COV-39, COV-43, COV-44, COV-45,
 and COV-46.
 
@@ -22,7 +22,7 @@ ticket.** Everything below is a decision, not an implementation.
 
 ---
 
-## The eleven triggers
+## The twelve triggers
 
 | # | Trigger | Source | Delivery |
 | -- | -- | -- | -- |
@@ -37,6 +37,7 @@ ticket.** Everything below is a decision, not an implementation.
 | 9 | `Pay::UserMailer#subscription_renewing` | `pay-11.6.2/lib/pay/stripe/webhooks/subscription_renewing.rb:23` | `deliver_later` |
 | 10 | `Pay::UserMailer#subscription_trial_will_end` | `pay-11.6.2/lib/pay/stripe/webhooks/subscription_trial_will_end.rb:13` | `deliver_later` |
 | 11 | `Pay::UserMailer#subscription_trial_ended` | `pay-11.6.2/lib/pay/stripe/webhooks/subscription_trial_will_end.rb:18` (same handler, `elsif` branch) | `deliver_later` |
+| 12 | `UserMailer#account_created` | COV-68 account-creation flow | `deliver_later` |
 
 **Not triggers.** No `:confirmable` and no `:lockable` on `User::Authenticatable`,
 so no confirmation or unlock email exists. `send_email_changed_notification` is
@@ -291,31 +292,17 @@ carries a fresh token per request, so its hash differs per send and repeated
 resets are not suppressed. Billing emails hash over a charge ID and are
 genuinely idempotent.
 
-### The receipt PDF — resolved: link, do not attach
+### The receipt PDF — superseded: attach the PDF
 
 `Pay::UserMailer#receipt` (`pay-11.6.2/app/mailers/pay/user_mailer.rb:3-9`)
-populates `attachments[]` at build time. Two paths existed; we take the link.
+populates `attachments[]` at build time. COV-45 superseded this early
+architecture decision after Loops attachment support was available: the shipped
+transport attaches the receipt PDF.
 
-**Attaching is gated on a Loops support request.** The API docs state
-*"Attachments must be enabled on your account before use. Contact
-help@loops.so."* That is an account action, and it would make COV-45 depend on a
-third party's response time. It also puts a base64-encoded PDF inside a JSON
-request body on every successful charge.
-
-Instead, `dataVariables` carries a `receiptUrl` pointing at the hosted invoice
-page that already exists — `billing_charge_path` / `invoice_billing_charge_path`
-from `config/routes/billing.rb:27-31`, served by
-`lib/jumpstart/app/controllers/billing/charges_controller.rb`. The Loops
-template renders a link. `mail.attachments` is ignored by the delivery method.
-
-**The link must not be the account-scoped one.** `billing_charge_path` is behind
-`authenticate_user!` and account scoping, and `config/initializers/pay.rb:15`
-sends to `account.billing_email` — a field whose entire purpose is routing
-billing mail to someone who is *not* the account owner (the settings form at
-`app/views/billing/_email.html.erb` placeholders it as `account@example.com`).
-Sending that recipient a link they cannot open would break the one thing the
-field does. COV-45 must use a recipient-agnostic URL; see Open Questions for the
-two candidates.
+The current `Pay::UserMailer` and `LoopsDelivery` pass the decoded receipt PDF
+to Loops as the transactional attachment payload. COV-45 documents the shipped
+implementation and its focused test coverage. This obsolete link-only analysis
+is retained only as historical decision context.
 
 ### `dataVariables` are length-capped
 
