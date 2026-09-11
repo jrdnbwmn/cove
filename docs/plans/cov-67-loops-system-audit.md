@@ -7,16 +7,16 @@
 
 | Task | Phase | Checkpoint | Description | Assign | Done |
 | ---- | ----- | ---------- | ----------- | ------ | ---- |
-| 1 | 1 | 1 | Scaffold the findings document and secret-safe evidence workspace | Master | |
-| 2 | 2 | 2 | Audit all twelve Loops transactional templates, checks 3.1–3.6 | subagent | |
-| 3 | 2 | 2 | Audit delivery-path integrity, checks 4.1–4.8 | subagent | |
-| 4 | 2 | 2 | Audit repository hygiene and design drift, checks 5.1–5.4 | subagent | |
-| 5 | 3 | 3 | Verify production mail configuration through a local production boot, checks 1.3–1.4 | Master | |
-| 6 | 3 | 3 | Audit production credentials and contact-sync configuration, checks 1.1–1.2 and 1.6 | Master | |
-| 7 | 3 | 3 | Verify the Render allowlist, mailing-list ID, and recorded DNS evidence, checks 1.5, 1.7, and 2.2 | Master | |
-| 8 | 4 | 4 | Resolve sender identity, DMARC, and inbox placement, checks 2.1, 2.3, and 2.4 | Master | |
-| 9 | 5 | 5 | Make the remaining judgment calls and draft follow-up tickets | Master | |
-| 10 | 6 | 6 | Assemble the findings document, write the verdict, and run final verification | Master | |
+| 1 | 1 | 1 | Scaffold the findings document and secret-safe evidence workspace | Master | ✅ |
+| 2 | 2 | 2 | Audit all twelve Loops transactional templates, checks 3.1–3.6 | subagent | ✅ |
+| 3 | 2 | 2 | Audit delivery-path integrity, checks 4.1–4.8 | subagent | ✅ |
+| 4 | 2 | 2 | Audit repository hygiene and design drift, checks 5.1–5.4 | subagent | ✅ |
+| 5 | 3 | 3 | Verify production mail configuration through a local production boot, checks 1.3–1.4 | Master | ✅ |
+| 6 | 3 | 3 | Audit production credentials and contact-sync configuration, checks 1.1–1.2 and 1.6 | Master | ✅ |
+| 7 | 3 | 3 | Verify the Render allowlist, mailing-list ID, and recorded DNS evidence, checks 1.5, 1.7, and 2.2 | Master | ✅ |
+| 8 | 4 | 4 | Resolve sender identity, DMARC, and inbox placement, checks 2.1, 2.3, and 2.4 | Master | ✅ |
+| 9 | 5 | 5 | Make the remaining judgment calls and draft follow-up tickets | Master | ✅ |
+| 10 | 6 | 6 | Assemble the findings document, write the verdict, and run final verification | Master | ✅ |
 
 ## Prerequisites
 
