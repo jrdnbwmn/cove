@@ -1,8 +1,4 @@
 class AdminBootstrap
-  def self.call(email:, name:)
-    new(email:, name:).call
-  end
-
   def initialize(email:, name:)
     @email = email
     @name = name

@@ -17,8 +17,12 @@ class AdminTaskTest < ActiveSupport::TestCase
   test "bootstrap forwards the configured email and name to the service" do
     with_bootstrap_environment(email: "admin@example.com", name: "Cove Administrator") do
       received_arguments = nil
+      no_op_service = Object.new.tap { |service| service.define_singleton_method(:call) {} }
 
-      AdminBootstrap.stub(:call, ->(email:, name:) { received_arguments = {email:, name:} }) do
+      AdminBootstrap.stub(:new, ->(email:, name:) {
+        received_arguments = {email:, name:}
+        no_op_service
+      }) do
         invoke("admin:bootstrap")
       end
 
