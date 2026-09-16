@@ -20,6 +20,13 @@ class RenderBlueprintTest < Minitest::Test
     refute allowlist.key?("value")
   end
 
+  def test_staging_prepares_the_database_and_bootstraps_the_admin_before_starting
+    blueprint = YAML.load_file(File.expand_path("../../render.yaml", __dir__))
+    service = blueprint.fetch("services").find { |entry| entry["name"] == "cove-staging" }
+
+    assert_equal "bundle exec rails db:prepare admin:bootstrap && bundle exec rails server", service.fetch("startCommand")
+  end
+
   def test_dormant_production_blueprint_is_valid_and_ready_for_cutover
     service = dormant_production_service
     environment_variables = service.fetch("envVars").to_h { |entry| [entry.fetch("key"), entry] }
@@ -31,7 +38,7 @@ class RenderBlueprintTest < Minitest::Test
     refute environment_variables.key?("CACHE_DATABASE_URL")
     refute environment_variables.key?("QUEUE_DATABASE_URL")
     refute environment_variables.key?("CABLE_DATABASE_URL")
-    assert_equal "bundle exec rails db:prepare", service.fetch("preDeployCommand")
+    assert_equal "bundle exec rails db:prepare admin:bootstrap", service.fetch("preDeployCommand")
     refute_includes service.fetch("startCommand"), "db:prepare"
     assert_equal false, service.fetch("autoDeploy")
   end
