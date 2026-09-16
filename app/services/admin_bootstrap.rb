@@ -27,6 +27,10 @@ class AdminBootstrap
     end
 
     user
+  # AIDEV-NOTE: Deliberately broad rescue — this runs inside render.yaml's
+  # startCommand/preDeployCommand chained with `&&`. A raise here would stop
+  # the web service from booting on Render's free tier, which has no console
+  # to recover from. Fail open (log and continue) rather than fail closed.
   rescue => error
     log("error: #{error.class}: #{error.message}", level: :error)
     nil
