@@ -7,9 +7,9 @@
 
 | Task | Phase | Checkpoint | Description | Assign | Done |
 | ---- | ----- | ---------- | ----------- | ------ | ---- |
-| 1 | 1 | 1 | Implement and test the idempotent admin bootstrap service | Master | |
-| 2 | 1 | 1 | Add and test the thin `admin:bootstrap` rake task | subagent | |
-| 3 | 1 | 1 | Restrict demo seeds to local environments and add regression coverage | subagent | |
+| 1 | 1 | 1 | Implement and test the idempotent admin bootstrap service | Master | ✅ |
+| 2 | 1 | 1 | Add and test the thin `admin:bootstrap` rake task | subagent | ✅ |
+| 3 | 1 | 1 | Restrict demo seeds to local environments and add regression coverage | subagent | ✅ |
 | 4 | 1 | 2 | Wire bootstrap into Render commands, test the blueprint, and prepare staging | Master | |
 
 ## Prerequisites

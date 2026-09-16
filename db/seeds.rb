@@ -2,7 +2,7 @@
 # development, test). The code here should be idempotent so that it can be executed at any point in every environment.
 # The data can then be loaded with the rails db:seed command (or created alongside the database with db:setup).
 
-unless Rails.env.production?
+if Rails.env.local?
   # AIDEV-NOTE: Relies on User#create_default_account (lib/jumpstart/app/models/user/accounts.rb)
   # auto-creating a personal account on create. That hook only fires when
   # Jumpstart.config.personal_accounts? is true (default account_types "both"). If account_types
