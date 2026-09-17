@@ -7,30 +7,30 @@
 
 | Task | Phase | Checkpoint | Description | Assign | Done |
 | ---- | ----- | ---------- | ----------- | ------ | ---- |
-| 1 | 1 | 1 | Add family schema constraints and deterministic membership cleanup | Master | |
-| 2 | 1 | 1 | Normalize fixtures to one family per user | Master | |
-| 3 | 1 | 1 | Add Account family lifecycle and safe subscription teardown | Master | |
-| 4 | 1 | 2 | Add User family/default-family behavior and family terminology | Master | |
-| 5 | 1 | 2 | Enforce membership uniqueness, two-parent capacity, and flat billing | Master | |
-| 6 | 1 | 2 | Derive current account from membership and close nested-account creation | Master | |
-| 7 | 1 | 3 | Make web signup create exactly one family | subagent | |
-| 8 | 1 | 3 | Make API signup create exactly one family | subagent | |
-| 9 | 1 | 3 | Remove account index/create/switch routes and dead controller actions | Master | |
-| 10 | 1 | 4 | Remove desktop account switching and expose singular Family settings | subagent | |
-| 11 | 1 | 4 | Remove fallback/native switching links and test-only switching | subagent | |
-| 12 | 1 | 4 | Enable team accounts and rebuild development seeds | Master | |
-| 13 | 2 | 5 | Link verified Google identities to existing users | Master | |
-| 14 | 3 | 6 | Implement transactional family invitation acceptance | Master | |
-| 15 | 3 | 6 | Enforce invitation capacity, admin role, and email binding | subagent | |
-| 16 | 3 | 6 | Accept invitations during signup without a throwaway family | Master | |
-| 17 | 4 | 7 | Implement owner-only parent removal and safe ownership transfer | subagent | |
-| 18 | 4 | 7 | Guard login deletion for family owners | Master | |
-| 19 | 4 | 7 | Make family deletion owner-only and cancel billable subscriptions first | Master | |
-| 20 | 5 | 8 | Build invitation and acceptance disclosure UI | subagent | |
-| 21 | 5 | 8 | Update family roster and destructive-action UI | Master | |
-| 22 | 5 | 8 | Send receipts to both parents and verify billing access | Master | |
-| 23 | 6 | 9 | Update and verify the live Loops invitation email | Master | |
-| 24 | 6 | 10 | Refresh architecture and project-decision documentation | Master | |
+| 1 | 1 | 1 | Add family schema constraints and deterministic membership cleanup | Master | ✅ |
+| 2 | 1 | 1 | Normalize fixtures to one family per user | Master | ✅ |
+| 3 | 1 | 1 | Add Account family lifecycle and safe subscription teardown | Master | ✅ |
+| 4 | 1 | 2 | Add User family/default-family behavior and family terminology | Master | ✅ |
+| 5 | 1 | 2 | Enforce membership uniqueness, two-parent capacity, and flat billing | Master | ✅ |
+| 6 | 1 | 2 | Derive current account from membership and close nested-account creation | Master | ✅ |
+| 7 | 1 | 3 | Make web signup create exactly one family | subagent | ✅ |
+| 8 | 1 | 3 | Make API signup create exactly one family | subagent | ✅ |
+| 9 | 1 | 3 | Remove account index/create/switch routes and dead controller actions | Master | ✅ |
+| 10 | 1 | 4 | Remove desktop account switching and expose singular Family settings | subagent | ✅ |
+| 11 | 1 | 4 | Remove fallback/native switching links and test-only switching | subagent | ✅ |
+| 12 | 1 | 4 | Enable team accounts and rebuild development seeds | Master | ✅ |
+| 13 | 2 | 5 | Link verified Google identities to existing users | Master | ✅ |
+| 14 | 3 | 6 | Implement transactional family invitation acceptance | Master | ✅ |
+| 15 | 3 | 6 | Enforce invitation capacity, admin role, and email binding | subagent | ✅ |
+| 16 | 3 | 6 | Accept invitations during signup without a throwaway family | Master | ✅ |
+| 17 | 4 | 7 | Implement owner-only parent removal and safe ownership transfer | subagent | ✅ |
+| 18 | 4 | 7 | Guard login deletion for family owners | Master | ✅ |
+| 19 | 4 | 7 | Make family deletion owner-only and cancel billable subscriptions first | Master | ✅ |
+| 20 | 5 | 8 | Build invitation and acceptance disclosure UI | subagent | ✅ |
+| 21 | 5 | 8 | Update family roster and destructive-action UI | Master | ✅ |
+| 22 | 5 | 8 | Send receipts to both parents and verify billing access | Master | ✅ |
+| 23 | 6 | 9 | Update and verify the live Loops invitation email | Master | ✅ |
+| 24 | 6 | 10 | Refresh architecture and project-decision documentation | Master | ✅ |
 | 25 | 6 | 10 | Run release verification and prepare the staging reset handoff | Master | |
 
 ## Prerequisites

@@ -1,32 +1,20 @@
 require "test_helper"
 
 class Jumpstart::AccountsTransferTest < ActionDispatch::IntegrationTest
-  setup do
-    @account = accounts(:company)
-    @admin = users(:one)
-    @regular_user = users(:two)
+  test "owner can transfer the family to the other parent" do
+    account = accounts(:company)
+    sign_in users(:one)
+
+    patch account_transfer_path(account), params: {user_id: users(:two).id}
+
+    assert_equal users(:two), account.reload.owner
   end
 
-  class AdminUsers < Jumpstart::AccountsTransferTest
-    setup do
-      sign_in @admin
-    end
+  test "second parent cannot transfer ownership" do
+    sign_in users(:two)
 
-    test "can transfer account" do
-      patch account_transfer_path(@account), params: {user_id: @regular_user.id}
-      assert_redirected_to account_path(@account)
-      assert_equal @regular_user, @account.reload.owner
-    end
-  end
+    patch account_transfer_path(accounts(:company)), params: {user_id: users(:two).id}
 
-  class RegularUsers < Jumpstart::AccountsTransferTest
-    setup do
-      sign_in @regular_user
-    end
-
-    test "cannot transfer account" do
-      patch account_transfer_path(@account)
-      assert_redirected_to accounts_path
-    end
+    assert_not_equal users(:two), accounts(:company).reload.owner
   end
 end

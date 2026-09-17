@@ -75,7 +75,7 @@ if defined? OmniAuth
 
     test "can connect a social account with another model" do
       user = users(:one)
-      account = user.personal_account
+      account = user.family
 
       sign_in user
       post "/users/auth/developer?record=#{account.to_sgid(for: :oauth, expires_in: 1.hour)}"

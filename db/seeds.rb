@@ -3,10 +3,8 @@
 # The data can then be loaded with the rails db:seed command (or created alongside the database with db:setup).
 
 if Rails.env.local?
-  # AIDEV-NOTE: Relies on User#create_default_account (lib/jumpstart/app/models/user/accounts.rb)
-  # auto-creating a personal account on create. That hook only fires when
-  # Jumpstart.config.personal_accounts? is true (default account_types "both"). If account_types
-  # is ever changed to exclude personal accounts, these seeds must create personal accounts explicitly.
+  # AIDEV-NOTE: User creation creates one non-personal family. Seed membership
+  # moves must archive the generated family before joining another one.
 
   owner = User.find_or_create_by!(email: "owner@cove.test") do |u|
     u.name = "Olivia Owner"
@@ -17,13 +15,6 @@ if Rails.env.local?
 
   admin = User.find_or_create_by!(email: "admin@cove.test") do |u|
     u.name = "Andy Admin"
-    u.password = "password"
-    u.terms_of_service = "1"
-    u.confirmed_at = Time.current
-  end
-
-  member = User.find_or_create_by!(email: "member@cove.test") do |u|
-    u.name = "Molly Member"
     u.password = "password"
     u.terms_of_service = "1"
     u.confirmed_at = Time.current
@@ -43,17 +34,19 @@ if Rails.env.local?
     u.confirmed_at = Time.current
   end
 
-  team = Account.find_or_create_by!(name: "Cove Team", owner: owner) do |a|
-    a.personal = false
+  owner.create_default_account unless owner.family
+  admin.create_default_account unless admin.family
+  subscribed.create_default_account unless subscribed.family
+
+  family = owner.family
+  family.update!(name: "Cove Family")
+
+  if admin.family != family
+    old_family = admin.family
+    old_family.account_users.destroy_all
+    old_family.archive!
+    AccountUser.create!(account: family, user: admin, admin: true)
   end
-
-  team_owner = AccountUser.find_or_create_by!(account: team, user: owner)
-  team_owner.update!(admin: true)
-
-  team_admin = AccountUser.find_or_create_by!(account: team, user: admin)
-  team_admin.update!(admin: true)
-
-  AccountUser.find_or_create_by!(account: team, user: member)
 
   plan = Plan.find_or_create_by!(fake_processor_id: "cove_dev") do |p|
     p.name = "Cove Dev Plan"
@@ -61,7 +54,7 @@ if Rails.env.local?
     p.interval = "month"
   end
 
-  subscribed_account = subscribed.personal_account
+  subscribed_account = subscribed.family
   subscribed_account.set_payment_processor :fake_processor, allow_fake: true
   unless subscribed_account.payment_processor&.subscribed?
     subscribed_account.payment_processor.subscribe(plan: plan.fake_processor_id)

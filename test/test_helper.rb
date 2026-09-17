@@ -46,10 +46,6 @@ module ActionDispatch
   class IntegrationTest
     include Devise::Test::IntegrationHelpers
 
-    def switch_account(account)
-      patch "/accounts/#{account.id}/switch"
-    end
-
     def post_loops_webhook(webhook_id:, body:, signature: nil, timestamp: "1700000000", secret: LOOPS_WEBHOOK_TEST_SECRET)
       signature ||= "v1,#{sign_loops_webhook(webhook_id, timestamp, body, secret: secret)}"
 

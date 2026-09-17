@@ -3,63 +3,40 @@ require "test_helper"
 class Jumpstart::MultitenancyTest < ActionDispatch::IntegrationTest
   setup do
     @user = users(:one)
-    @account = accounts(:company)
+    @family = accounts(:company)
     sign_in @user
   end
 
-  test "domain multitenancy" do
-    Jumpstart.config.stub(:account_types, "both") do
-      Jumpstart::Multitenancy.stub :selected, ["subdomain"] do
-        get about_path
-        assert_select "button[aria-label='Account Menu']", text: @user.name
+  test "a stale cookie cannot select a different family" do
+    cookies[:account_id] = accounts(:one).id
 
-        host! @account.domain
-        sign_in @user
+    get about_path
 
-        get about_path
-        assert_select "button[aria-label='Account Menu']", text: @account.name
-      end
-    end
+    assert_response :success
+    assert_equal @family, @user.family
   end
 
-  test "subdomain multitenancy" do
-    Jumpstart.config.stub(:account_types, "both") do
-      Jumpstart::Multitenancy.stub :selected, ["subdomain"] do
-        get about_path
-        assert_select "button[aria-label='Account Menu']", text: @user.name
+  test "a signed-in user without a family receives one default family" do
+    user = users(:noaccount)
+    old_family = accounts(:one)
+    old_family.account_users.destroy_all
+    old_family.archive!
+    sign_in user
 
-        host! "#{@account.subdomain}.example.com"
-        sign_in @user
+    get about_path
 
-        get about_path
-        assert_select "button[aria-label='Account Menu']", text: @account.name
-      end
-    end
+    assert_response :success
+    assert_not_nil user.family
+    assert_equal "No Account User's Family", user.family.name
   end
 
-  test "script path multitenancy" do
-    Jumpstart.config.stub(:account_types, "both") do
-      Jumpstart::Multitenancy.stub :selected, ["path"] do
-        get about_path
-        assert_select "button[aria-label='Account Menu']", text: @user.name
+  test "an archived family is never selected from the session" do
+    @family.account_users.destroy_all
+    @family.archive!
 
-        get "/#{@account.id}/about"
-        assert_select "button[aria-label='Account Menu']", text: @account.name
-      end
-    end
-  end
+    get about_path
 
-  test "session multitenancy" do
-    Jumpstart.config.stub(:account_types, "both") do
-      Jumpstart::Multitenancy.stub :selected, [] do
-        get about_path
-        assert_select "button[aria-label='Account Menu']", text: @user.name
-
-        switch_account(@account)
-
-        get about_path
-        assert_select "button[aria-label='Account Menu']", text: @account.name
-      end
-    end
+    assert_response :success
+    assert_not_equal @family, @user.family
   end
 end

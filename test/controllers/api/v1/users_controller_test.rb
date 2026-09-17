@@ -35,8 +35,7 @@ class UsersControllerTest < ActionDispatch::IntegrationTest
 
     user = User.last
 
-    # Account name should match user's name
-    assert_equal "API User", user.personal_account.name
+    assert_equal "API User's Family", user.family.name
 
     # Set Devise cookies for Turbo Native apps
     assert_not_nil session["warden.user.user.key"]
@@ -45,16 +44,32 @@ class UsersControllerTest < ActionDispatch::IntegrationTest
     assert_equal user.api_tokens.find_by(name: ApiToken::APP_NAME).token, response.parsed_body["token"]
   end
 
-  test "registration with account" do
+  test "registration creates one auto-named family with an owner admin" do
     Jumpstart.config.stub(:register_with_account?, true) do
-      # Depending on configuration, may have a personal account
-      assert_difference "Account.count", ((Jumpstart.config.account_types == "team") ? 1 : 2) do
-        post api_v1_users_url, params: {user: {email: "api-user@example.com", name: "API User", password: "password", password_confirmation: "password", terms_of_service: "1", owned_accounts_attributes: [{name: "Test Account"}]}}, headers: {HTTP_USER_AGENT: "Turbo Native iOS"}
+      assert_difference ["Account.count", "AccountUser.count"], 1 do
+        post api_v1_users_url, params: {user: {email: "api-user@example.com", name: "API User", password: "password", password_confirmation: "password", terms_of_service: "1"}}, headers: {HTTP_USER_AGENT: "Turbo Native iOS"}
         assert_response :success
       end
 
-      account = User.order(created_at: :asc).last.accounts.find_by!(name: "Test Account")
-      assert account.account_users.first.admin
+      user = User.order(created_at: :asc).last
+      family = user.family
+
+      assert_equal "API User's Family", family.name
+      assert_equal user, family.owner
+      assert family.account_users.sole.admin?
+    end
+  end
+
+  test "registration ignores crafted nested account attributes" do
+    Jumpstart.config.stub(:register_with_account?, true) do
+      assert_difference ["Account.count", "AccountUser.count"], 1 do
+        post api_v1_users_url, params: {user: {email: "api-user@example.com", name: "API User", password: "password", password_confirmation: "password", terms_of_service: "1", owned_accounts_attributes: [{name: "Crafted Family"}]}}, headers: {HTTP_USER_AGENT: "Turbo Native iOS"}
+        assert_response :success
+      end
+
+      user = User.order(created_at: :asc).last
+      assert_equal "API User's Family", user.family.name
+      assert_equal 1, user.accounts.count
     end
   end
 end

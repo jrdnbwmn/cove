@@ -9,7 +9,6 @@
   </div>
 
   <div class="shrink-0 mt-3 sm:mt-0 sm:text-right">
-    <%= switch_account_button @account, label: t(".switch"), class: "inline-flex items-center justify-center gap-1.5 font-medium whitespace-nowrap transition-all duration-100 ease-in-out select-none focus-visible:outline-2 focus-visible:outline-offset-2 disabled:cursor-not-allowed disabled:opacity-50 px-3.5 py-2 text-sm rounded-[var(--radius)] border border-black/10 bg-white/90 text-neutral-800 shadow-xs hover:bg-muted focus-visible:outline-neutral-600 dark:border-white/10 dark:bg-neutral-700/50 dark:text-neutral-50 dark:hover:bg-neutral-700/75 dark:focus-visible:outline-neutral-200", form_class: "inline-block" unless current_account == @account %>
     <%= render ButtonComponent.new(text: t(".edit_account"), variant: :secondary, href: edit_account_path(@account)) if !@account.personal? && account_admin?(@account, current_user) %>
   </div>
 </div>
@@ -32,6 +31,11 @@
             <%= render AvatarComponent.new(src: avatar_url_for(user), alt: user.name || user.email, size: :xs, classes: "hidden lg:inline-flex") %>
             <span>
               <%= user.name || user.email %>
+              <% if @account.owner?(user) %>
+                <%= render BadgeComponent.new(text: "Owner", size: :sm) %>
+              <% else %>
+                <span class="text-sm text-muted-foreground">Admin · can manage billing</span>
+              <% end %>
               <% if Current.user == user %>
                 (<%= t ".you" %>)
               <% end %>
@@ -87,5 +91,8 @@
     <% end %>
   <% end %>
 
-  <%= render ButtonComponent.new(text: t(".invite"), variant: :secondary, href: new_account_account_invitation_path(@account), classes: "mt-2") if !@account.personal? && account_admin?(@account, current_user) %>
+  <%= render ButtonComponent.new(text: t(".invite"), variant: :secondary, href: new_account_account_invitation_path(@account), classes: "mt-2") if @account.account_users_count < 2 && account_admin?(@account, current_user) %>
+  <% if @account.owner?(current_user) %>
+    <%= button_to "Delete family", account_path(@account), method: :delete, class: "mt-2", data: {turbo_confirm: "This ends Premium immediately with no refund. Delete this family?"} %>
+  <% end %>
 <% end %>

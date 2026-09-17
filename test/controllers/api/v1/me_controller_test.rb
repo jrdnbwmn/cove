@@ -8,9 +8,16 @@ class MeControllerTest < ActionDispatch::IntegrationTest
     assert_equal user.name, response.parsed_body["name"]
   end
 
-  test "delete current user" do
+  test "blocks an owner from deleting their login while another parent exists" do
+    delete api_v1_me_url, headers: {Authorization: "token #{user.api_tokens.first.token}"}
+
+    assert_response :unprocessable_content
+  end
+
+  test "allows a non-owner parent to delete their login" do
+    parent = users(:two)
     assert_difference "User.count", -1 do
-      delete api_v1_me_url, headers: {Authorization: "token #{user.api_tokens.first.token}"}
+      delete api_v1_me_url, headers: {Authorization: "token #{parent.api_tokens.first.token}"}
       assert_response :success
     end
   end

@@ -1,13 +1,13 @@
 one:
-  account: company
-  invited_by: one
+  account: invited
+  invited_by: user_without_billing_address
   token: <%= AccountInvitation.generate_unique_secure_token %>
   name: Invited User
   email: invited@example.com
 
 two:
-  account: company
-  invited_by: two
+  account: two
+  invited_by: twofactor
   token: <%= AccountInvitation.generate_unique_secure_token %>
   name: Second Invited User
   email: invited2@example.com

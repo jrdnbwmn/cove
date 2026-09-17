@@ -10,10 +10,9 @@ Pay.setup do |config|
     pay_customer = params[:pay_customer]
     account = pay_customer.owner
 
-    recipients = []
-    recipients << ActionMailer::Base.email_address_with_name(account.owner.email, pay_customer.customer_name) if account
+    recipients = account ? account.parents.map { |parent| ActionMailer::Base.email_address_with_name(parent.email, pay_customer.customer_name) } : []
     recipients << account.billing_email if account&.billing_email?
-    recipients
+    recipients.uniq
   }
 end
 

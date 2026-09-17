@@ -42,20 +42,7 @@
     <% end %>
   <% end %>
 
-  <h2 class="mb-4 text-lg font-semibold text-foreground"><%= t("accounts.roles") %></h2>
-  <div class="mb-6 space-y-3">
-    <% AccountUser::ROLES.each do |role| %>
-      <%# AIDEV-NOTE: CheckboxComponent does not generate Rails' companion unchecked value. %>
-      <%= hidden_field_tag "account_invitation[#{role}]", "0", id: nil %>
-      <%= render CheckboxComponent.new(
-        label: role.to_s.humanize,
-        name: "account_invitation[#{role}]",
-        id: role.to_s.parameterize,
-        value: "1",
-        checked: form.object.public_send(role)
-      ) %>
-    <% end %>
-  </div>
+  <%= render AlertComponent.new(title: "The other parent will be an admin.", description: "They can manage your family, billing, and receipts. Only you can delete the family or transfer ownership.", variant: :info) %>
 
   <div class="flex gap-3">
     <%= render ButtonComponent.new(text: t(".send"), type: "submit") %>

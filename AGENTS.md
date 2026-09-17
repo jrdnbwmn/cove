@@ -140,6 +140,13 @@ Routes are modularized in `config/routes/`:
 - Dark mode is intentionally disabled. Keep the inert Tailwind `@variant dark`
   declaration so existing `dark:` utilities stay inactive; do not restore theme
   wiring or a system-preference fallback without an explicit product decision.
+- Accounts are user-facing Families: each user has one active family, a family
+  has one or two admin parents, and only its owner can transfer or delete it.
+- Family billing is flat per family. Both parents receive receipts; adding or
+  removing a parent must not change subscription quantity.
+- Archived families retain billing history after a parent joins another family.
+- Normal sessions never switch families; derive the current family from the
+  user membership rather than an account cookie.
 
 ## Development Notes
 

@@ -1,118 +1,22 @@
 require "test_helper"
 
 class Jumpstart::AccountUsersTest < ActionDispatch::IntegrationTest
-  setup do
-    @account = accounts(:company)
-    @admin = users(:one)
-    @regular_user = users(:two)
+  test "owner removing the other parent gives them a fresh family" do
+    account = accounts(:company)
+    sign_in users(:one)
+
+    delete account_account_user_path(account, account_users(:company_regular_user))
+
+    assert_redirected_to account
+    assert_equal [users(:one)], account.reload.users.to_a
+    assert_equal users(:two), users(:two).family.owner
   end
 
-  class AdminUsers < Jumpstart::AccountUsersTest
-    setup do
-      sign_in @admin
-    end
+  test "a non-owner cannot remove the family owner" do
+    sign_in users(:two)
 
-    test "can view account users" do
-      get account_path(@account)
-      assert_select "h1", @account.name
-      assert_select "a", text: I18n.t("accounts.show.edit_account"), count: 1
-      assert_select "a", text: I18n.t("accounts.show.edit"), count: @account.account_users.count + @account.account_invitations.count
-      assert_select "a", text: I18n.t("accounts.show.invite"), count: 1
-    end
+    delete account_account_user_path(accounts(:company), account_users(:company_admin))
 
-    test "can edit account user" do
-      account_user = account_users(:company_regular_user)
-      get edit_account_account_user_path(@account, account_user)
-      assert_select "button .when-enabled", I18n.t("helpers.submit.update", model: AccountUser.model_name.human)
-    end
-
-    test "can update account user" do
-      account_user = account_users(:company_regular_user)
-      put account_account_user_path(@account, account_user), params: {account_user: {admin: "1"}}
-      assert_response :redirect
-      assert account_user.reload.admin?
-    end
-
-    test "can delete account users" do
-      user = users(:two)
-      user = @account.account_users.find_by(user: user)
-      assert_difference "@account.account_users.count", -1 do
-        delete account_account_user_path(@account, user.id)
-      end
-      assert_response :redirect
-    end
-
-    test "cannot delete account owner" do
-      account_user = @account.account_users.find_by(user_id: @account.owner_id)
-      assert_no_difference "@account.account_users.count" do
-        delete account_account_user_path(@account, account_user.id)
-      end
-    end
-
-    test "disables admin role checkbox when editing owner" do
-      account_user = account_users(:company_admin)
-      get edit_account_account_user_path(@account, account_user)
-      assert_select "input[type=checkbox][name='account_user[admin]'][disabled]", 1
-    end
-
-    test "keeps the unchecked admin role value when editing a member" do
-      account_user = account_users(:company_regular_user)
-      get edit_account_account_user_path(@account, account_user)
-
-      assert_select "input[type=hidden][name='account_user[admin]'][value='0']", 1
-      assert_select "input[type=checkbox][name='account_user[admin]'][value='1']", 1
-    end
-  end
-
-  class RegularUsers < Jumpstart::AccountUsersTest
-    setup do
-      sign_in @regular_user
-    end
-
-    test "can view account users but not edit" do
-      get account_path(@account)
-      assert_select "h1", @account.name
-
-      assert_select "a", text: I18n.t("accounts.show.edit_account"), count: 0
-      assert_select "a", text: I18n.t("accounts.show.edit"), count: 0
-      assert_select "a", text: "Invite A Account Member", count: 0
-    end
-
-    test "Regular user cannot view account user page" do
-      get account_account_user_path(@account, @admin)
-      assert_redirected_to account_path(@account)
-    end
-
-    test "Regular user cannot edit account users" do
-      # Cannot edit themselves
-      account_user = @account.account_users.find_by(user: @regular_user)
-      get edit_account_account_user_path(@account, account_user)
-      assert_redirected_to account_path(@account)
-
-      # Cannot edit admin user
-      account_user = @account.account_users.find_by(user: @admin)
-      get edit_account_account_user_path(@account, account_user)
-      assert_redirected_to account_path(@account)
-    end
-
-    test "Regular user cannot update account users" do
-      # Cannot edit themselves
-      account_user = @account.account_users.find_by(user: @regular_user)
-      put account_account_user_path(@account, account_user), params: {admin: "1"}
-      assert_redirected_to account_path(@account)
-
-      # Cannot edit admin user
-      account_user = @account.account_users.find_by(user: @admin)
-      put account_account_user_path(@account, account_user), params: {admin: "0"}
-      assert_redirected_to account_path(@account)
-    end
-
-    test "Regular user cannot delete account users" do
-      user = users(:one)
-      account_user = @account.account_users.find_by(user: user)
-      delete account_account_user_path(@account, account_user.id)
-      assert_redirected_to account_path(@account)
-      assert_includes @account.account_users.pluck(:user_id), user.id
-    end
+    assert_equal account_users(:company_admin), AccountUser.find(account_users(:company_admin).id)
   end
 end
