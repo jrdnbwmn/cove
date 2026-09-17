@@ -20,6 +20,7 @@ graph LR
     Family[/accounts/:id settings] --> AccountsController[AccountsController]
     Family --> AccountUsers[AccountUsersController]
     Family --> AccountInvitations[Accounts::AccountInvitationsController]
+    FamilyTransfer[PATCH /accounts/:account_id/transfer] --> Transfers[Accounts::TransfersController#update]
     Pricing[/pricing] --> PricingController[PricingController]
     Checkout[/checkout] --> CheckoutController[CheckoutController]
     Billing[/billing] --> BillingController[BillingController]
