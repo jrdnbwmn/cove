@@ -31,6 +31,24 @@ class Users::RegistrationsControllerTest < ActionDispatch::IntegrationTest
   end
 
   class BasicRegistrationTest < Users::RegistrationsControllerTest
+    test "blocks an owner from deleting their login while another parent exists" do
+      sign_in users(:one)
+
+      assert_no_difference "User.count" do
+        delete user_registration_path
+      end
+
+      assert_redirected_to edit_user_registration_path
+    end
+
+    test "shows an ownership transfer warning instead of login deletion" do
+      sign_in users(:one)
+
+      get edit_user_registration_path
+
+      assert_includes response.body, "Transfer family ownership before deleting your login"
+    end
+
     test "successfully registration form render" do
       get new_user_registration_path
       assert_response :success
@@ -71,7 +89,7 @@ class Users::RegistrationsControllerTest < ActionDispatch::IntegrationTest
     end
 
     test "invitation registration does not render marketing consent inputs" do
-      invitation = account_invitations(:one)
+      invitation = AccountInvitation.create!(account: accounts(:invited), invited_by: users(:user_without_billing_address), name: "New Invited", email: "new-invited@example.com", admin: true)
 
       get new_user_registration_path(invite: invitation.token)
 
@@ -85,6 +103,34 @@ class Users::RegistrationsControllerTest < ActionDispatch::IntegrationTest
       end
 
       assert_not_predicate User.find_by!(email: @user_params[:user][:email]), :signup_completion_required?
+    end
+
+    test "team signup creates one family owned by the new parent" do
+      Jumpstart.config.stub(:account_types, "team") do
+        assert_difference ["User.count", "Account.count", "AccountUser.count"], 1 do
+          post user_registration_url, params: @user_params
+        end
+      end
+
+      user = User.find_by!(email: @user_params[:user][:email])
+
+      assert_equal "Test User's Family", user.family.name
+      assert_equal user, user.family.owner
+      assert_predicate user.family.account_users.sole, :admin?
+    end
+
+    test "team signup ignores crafted nested account attributes" do
+      Jumpstart.config.stub(:account_types, "team") do
+        assert_difference ["User.count", "Account.count", "AccountUser.count"], 1 do
+          post user_registration_url, params: @user_params.deep_merge(
+            user: {owned_accounts_attributes: [{name: "Crafted Second Family"}]}
+          )
+        end
+      end
+
+      user = User.find_by!(email: @user_params[:user][:email])
+
+      assert_equal ["Test User's Family"], user.accounts.pluck(:name)
     end
 
     test "successful registration enqueues one account-created email without an inline Loops request" do
@@ -127,7 +173,7 @@ class Users::RegistrationsControllerTest < ActionDispatch::IntegrationTest
     end
 
     test "invitation registration ignores a crafted marketing consent parameter" do
-      invitation = account_invitations(:one)
+      invitation = AccountInvitation.create!(account: accounts(:invited), invited_by: users(:user_without_billing_address), name: "New Invited", email: "new-invited@example.com", admin: true)
       invitation_params = @user_params.deep_merge(
         invite: invitation.token,
         user: {email: "new-invited@example.com", marketing_opt_in: "1"}

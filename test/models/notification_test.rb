@@ -1,11 +1,11 @@
 require "test_helper"
 
 class NotificationTest < ActiveSupport::TestCase
-  test "notifications with user param are destroyed when user destroyed" do
-    user = users(:one)
-    Account::AcceptedInviteNotifier.with(user: user, account: accounts(:one)).deliver(users(:two))
+  test "notifications retain their recorded invitation after a non-owner parent leaves" do
+    user = users(:two)
+    Account::AcceptedInviteNotifier.with(user: user, account: accounts(:company)).deliver(users(:one))
 
-    assert_difference "Noticed::Notification.count", -1 do
+    assert_no_difference "Noticed::Notification.count" do
       user.destroy
     end
   end

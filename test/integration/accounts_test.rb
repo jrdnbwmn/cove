@@ -1,96 +1,31 @@
 require "test_helper"
 
 class Jumpstart::AccountsTest < ActionDispatch::IntegrationTest
-  setup do
-    @account = accounts(:company)
-    @admin = users(:one)
-    @regular_user = users(:two)
+  test "removed collection and switching routes are unroutable" do
+    sign_in users(:one)
+    get "/accounts/new"
+    assert_response :not_found
+    post "/accounts"
+    assert_response :not_found
+    patch "/accounts/#{accounts(:company).id}/switch"
+    assert_response :not_found
   end
 
-  class AdminUsers < Jumpstart::AccountsTest
-    setup do
-      sign_in @admin
-    end
+  test "only the owner can delete a family" do
+    sign_in users(:two)
 
-    test "can edit account" do
-      Jumpstart.config.stub(:account_types, "both") do
-        get edit_account_path(@account)
-        assert_response :success
-        assert_select "button .when-enabled", I18n.t("helpers.submit.update", model: Account.model_name.human)
-      end
-    end
-
-    test "can update account" do
-      Jumpstart.config.stub(:account_types, "both") do
-        put account_path(@account), params: {account: {name: "Test Account 2"}}
-        assert_redirected_to account_path(@account)
-        follow_redirect!
-        assert_select "h1", "Test Account 2"
-      end
-    end
-
-    test "can view the team roster and invitation action" do
-      get account_path(@account)
-
-      assert_response :success
-      assert_select "table", 1
-      assert_select "a[href='#{new_account_account_invitation_path(@account)}']", I18n.t("accounts.show.invite")
-    end
-
-    test "can delete account" do
-      Jumpstart.config.stub(:account_types, "both") do
-        assert_difference "Account.count", -1 do
-          delete account_path(@account)
-        end
-        assert_redirected_to accounts_path
-        assert_equal flash[:notice], I18n.t("accounts.destroyed")
-      end
-    end
-
-    test "cannot delete personal account" do
-      account = @admin.personal_account
-      assert_no_difference "Account.count" do
-        delete account_path(account)
-      end
-      assert_equal flash[:alert], I18n.t("accounts.personal.cannot_delete")
-    end
-
-    test "personal account show page omits team management controls" do
-      account = @admin.personal_account
-
-      get account_path(account)
-
-      assert_response :success
-      assert_select "table", 0
-      assert_select "a[href='#{new_account_account_invitation_path(account)}']", 0
-      assert_select "a[href='#{edit_account_path(account)}']", 0
-      assert_select "h3", I18n.t("accounts.show.personal_team_description")
+    assert_no_difference "Account.count" do
+      delete account_path(accounts(:company))
     end
   end
 
-  class RegularUsers < Jumpstart::AccountsTest
-    setup do
-      sign_in @regular_user
+  test "the owner can delete their family" do
+    sign_in users(:noaccount)
+
+    assert_difference "Account.count", -1 do
+      delete account_path(accounts(:one))
     end
 
-    test "cannot edit account" do
-      get edit_account_path(@account)
-      assert_redirected_to account_path(@account)
-    end
-
-    test "cannot update account" do
-      name = @account.name
-      put account_path(@account), params: {account: {name: "Test Account Changed"}}
-      assert_redirected_to account_path(@account)
-      follow_redirect!
-      assert_select "h1", name
-    end
-
-    test "cannot delete account" do
-      assert_no_difference "Account.count" do
-        delete account_path(@account)
-      end
-      assert_redirected_to account_path(@account)
-    end
+    assert_redirected_to root_path
   end
 end

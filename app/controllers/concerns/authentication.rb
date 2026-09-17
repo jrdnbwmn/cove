@@ -1,0 +1,49 @@
+module Authentication
+  extend ActiveSupport::Concern
+
+  included do
+    before_action :configure_permitted_parameters, if: :devise_controller?
+    before_action(if: -> { devise_controller? && hotwire_native_app? }) { request.env["warden"].params["hotwire_native_form"] = true }
+    layout :set_layout if respond_to?(:layout)
+    delegate :account, to: Current, prefix: :current
+    helper_method :current_account
+    impersonates :user
+    set_referral_cookie if defined?(::Refer)
+  end
+
+  protected
+
+  def set_layout
+    return "turbo_rails/frame" if turbo_frame_request?
+    "minimal" if devise_controller? && !user_signed_in?
+  end
+
+  def configure_permitted_parameters
+    extra_keys = [:avatar, :name, :preferred_language, :theme]
+    devise_parameter_sanitizer.permit(:sign_up, keys: extra_keys + [:terms_of_service, :marketing_opt_in, :invite])
+    devise_parameter_sanitizer.permit(:account_update, keys: extra_keys)
+    devise_parameter_sanitizer.permit(:accept_invitation, keys: extra_keys)
+  end
+
+  def after_sign_in_path_for(resource_or_scope)
+    return "/reset_app" if hotwire_native_app?
+    stored_location_for(resource_or_scope) || super
+  end
+
+  def authenticate_user_with_sign_up!
+    unless user_signed_in?
+      store_location_for(:user, request.fullpath)
+      redirect_to new_user_registration_path, alert: t("create_an_account_first")
+    end
+  end
+
+  def require_current_account_admin
+    redirect_to root_path, alert: t("must_be_an_admin") unless Current.account_admin?
+  end
+
+  private
+
+  def require_account
+    redirect_to new_user_registration_path unless Current.account
+  end
+end

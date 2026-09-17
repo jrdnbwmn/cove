@@ -7,7 +7,7 @@ class CurrentHelperTest < ActionView::TestCase
     setup do
       @current_user = users(:one)
       Current.user = @current_user
-      Current.account = accounts(:one)
+      Current.account = accounts(:company)
     end
 
     test "delegates to Current" do
@@ -28,13 +28,13 @@ class CurrentHelperTest < ActionView::TestCase
       assert Current.account_admin?
     end
 
-    test "current_account_admin? returns false for a non admin" do
+    test "current_account_admin? returns true for the second parent" do
       account_user = account_users(:company_regular_user)
       @current_user = account_user.user
       Current.user = account_user.user
       Current.account = account_user.account
 
-      assert_not Current.account_admin?
+      assert Current.account_admin?
     end
 
     test "current account member is from current account" do

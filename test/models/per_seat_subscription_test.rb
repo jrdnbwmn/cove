@@ -7,13 +7,13 @@ class PerSeatSubscriptionTest < ActiveSupport::TestCase
     @account.payment_processor.subscribe(plan: "per_seat", quantity: @account.account_users_count)
   end
 
-  test "per seat subscription increments quantity when a user is added to the account" do
-    @account.account_users.create!(user: users(:one))
-    assert_equal 2, @account.payment_processor.subscription.quantity
+  test "adding a second parent leaves the subscription quantity unchanged" do
+    @account.account_users.create!(user: users(:admin), admin: true)
+    assert_equal 1, @account.payment_processor.subscription.quantity
   end
 
-  test "per seat subscription decrements quantity when a user is removed from the account" do
+  test "removing a parent leaves the subscription quantity unchanged" do
     @account.account_users.last.destroy
-    assert_equal 0, @account.payment_processor.subscription.quantity
+    assert_equal 1, @account.payment_processor.subscription.quantity
   end
 end

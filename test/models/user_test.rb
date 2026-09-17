@@ -3,15 +3,26 @@ require "test_helper"
 class UserTest < ActiveSupport::TestCase
   # Fixtures are loaded directly by Rails before each test, so their records do
   # not exercise User creation callbacks; callback coverage builds users here.
-  test "user has many accounts" do
+  test "user has one family" do
     user = users(:one)
-    assert_includes user.accounts, accounts(:one)
-    assert_includes user.accounts, accounts(:company)
+    assert_equal accounts(:company), user.family
+    assert_equal [accounts(:company)], user.accounts.to_a
   end
 
-  test "user has a personal account" do
-    user = users(:one)
-    assert_equal accounts(:one), user.personal_account
+  test "new users receive one owner-admin family with an automatic name" do
+    user = User.create!(name: "Test Parent", email: "test-parent@example.com", password: "password", password_confirmation: "password", terms_of_service: true)
+
+    assert_equal "Test Parent's Family", user.family.name
+    assert_equal user, user.family.owner
+    assert_predicate user.family.account_users.find_by!(user: user), :admin?
+  end
+
+  test "an invitation signup skips default family creation" do
+    user = User.new(name: "Invited Parent", email: "invited-parent@example.com", password: "password", password_confirmation: "password", terms_of_service: true)
+    user.invitation_signup = true
+
+    assert user.save
+    assert_nil user.family
   end
 
   test "can delete user with accounts" do

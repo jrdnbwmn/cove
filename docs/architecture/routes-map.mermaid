@@ -17,14 +17,17 @@ graph LR
   end
 
   subgraph Accounts and billing
-    Accounts[/accounts] --> AccountsController[AccountsController]
-    Accounts --> AccountUsers[AccountUsersController]
-    Accounts --> AccountInvitations[Accounts::AccountInvitationsController]
+    Family[/accounts/:id settings] --> AccountsController[AccountsController]
+    Family --> AccountUsers[AccountUsersController]
+    Family --> AccountInvitations[Accounts::AccountInvitationsController]
+    FamilyTransfer[PATCH /accounts/:account_id/transfer] --> Transfers[Accounts::TransfersController#update]
     Pricing[/pricing] --> PricingController[PricingController]
     Checkout[/checkout] --> CheckoutController[CheckoutController]
     Billing[/billing] --> BillingController[BillingController]
     Subscriptions[/billing/subscriptions] --> SubscriptionsController[Billing::SubscriptionsController]
   end
+
+  %% Account collection, creation, and switching routes are intentionally absent.
 
   subgraph API v1 JSON
     ApiAuth[/api/v1/auth] --> ApiAuthController[Api::V1::AuthController]

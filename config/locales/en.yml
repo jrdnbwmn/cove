@@ -88,8 +88,8 @@ en:
 
   accounts:
     index:
-      title: "Accounts"
-      create: "Create an Account"
+      title: "Families"
+      create: "Create a Family"
       switch: "Switch"
       current: "Current Account"
       user: "user"
@@ -99,16 +99,15 @@ en:
       resend_invite: "Resend Invite"
       2fa: "2FA"
       edit: "Edit"
-      edit_account: "Edit Account"
+      edit_account: "Edit Family"
       copy_link: "Copy link"
       switch: "Switch"
-      personal_team_description: "Your personal account is private. Create a new account to share with your team."
       you: "you"
     new:
-      title: "New Account"
-      description: "Collaborate and share with others by creating an account."
+      title: "New Family"
+      description: "Create a family for your homeschooling household."
     edit:
-      title: "Edit Account"
+      title: "Edit Family"
       delete_description: "Deleting this account will permanently remove all associated data."
       delete_with_payments_description: "Deleting this account will cancel any active subscriptions and permanently remove all associated data."
     created: "Account was successfully created."
@@ -518,7 +517,7 @@ en:
       account_exists: "We already have an account with this email. Login with your previous account before connecting this one."
       connected_to_another_account: "This account is already connected to another user."
     registrations:
-      team_name: "%{name}'s Team"
+      team_name: "%{name}'s Family"
     sessions:
       create:
         incorrect_verification_code: "Incorrect verification code"

@@ -3,14 +3,10 @@ require "test_helper"
 class CheckoutsTest < ActionDispatch::IntegrationTest
   setup do
     @user = users(:one)
-    @account = @user.personal_account
+    @account = @user.family
     @plan = plans(:personal)
 
     sign_in @user
-    Jumpstart::Multitenancy.stub :selected, [] do
-      switch_account(@account)
-    end
-
     @account.set_payment_processor(:stripe, processor_id: "cus_test")
   end
 

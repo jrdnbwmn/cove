@@ -34,4 +34,25 @@ class AccountUserTest < ActiveSupport::TestCase
     member.update(admin: false)
     assert_not member.valid?
   end
+
+  test "family memberships must be admins" do
+    membership = AccountUser.new(account: accounts(:fake_processor), user: users(:admin), admin: false)
+
+    assert_not membership.valid?
+    assert_includes membership.errors[:admin], "must be an admin"
+  end
+
+  test "a user cannot belong to a second family" do
+    membership = AccountUser.new(account: accounts(:fake_processor), user: users(:one), admin: true)
+
+    assert_not membership.valid?
+    assert_includes membership.errors[:user], "already belongs to a family"
+  end
+
+  test "a family cannot have more than two parents" do
+    membership = AccountUser.new(account: accounts(:company), user: users(:admin), admin: true)
+
+    assert_not membership.valid?
+    assert_includes membership.errors[:base], "Family already has two parents"
+  end
 end

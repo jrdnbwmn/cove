@@ -19,9 +19,7 @@
   <% if Jumpstart.config.payments_enabled? %>
     <% dropdown.with_item_link text: t(".billing"), href: billing_path %>
   <% end %>
-  <% if Jumpstart.config.team_accounts? %>
-    <% dropdown.with_item_link text: t(".accounts"), href: accounts_path %>
-  <% end %>
+  <% dropdown.with_item_link text: "Family", href: account_path(current_account) %>
 
   <% if current_user.admin? %>
     <% dropdown.with_item_divider %>

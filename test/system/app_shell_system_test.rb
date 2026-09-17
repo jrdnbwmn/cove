@@ -31,21 +31,20 @@ class AppShellSystemTest < ApplicationSystemTestCase
     assert_no_selector "button[aria-label='Open navigation']", visible: true
   end
 
-  test "signed in user can switch accounts from the account menu" do
+  test "signed in user can navigate to family settings from the user menu" do
     login_as users(:one), scope: :user
 
-    Jumpstart.config.stub(:account_types, "both") do
-      visit root_path
+    visit root_path
 
-      find("button[aria-label='Account Menu']").click
-      assert_selector "dialog[open]", text: accounts(:company).name
+    assert_no_selector "button[aria-label='Account Menu']"
 
-      within "dialog[open]" do
-        click_button accounts(:company).name
-      end
-
-      assert_selector "button[aria-label='Account Menu']", text: accounts(:company).name
+    find("button[aria-label='User Menu']").click
+    within "dialog[open]" do
+      assert_link "Family", href: account_path(accounts(:company))
+      click_link "Family"
     end
+
+    assert_current_path account_path(accounts(:company))
   end
 
   test "signed in user can open the user menu" do

@@ -10,10 +10,9 @@ class AccountTest < ActiveSupport::TestCase
   end
 
   test "can have multiple accounts with nil domain" do
-    user = users(:one)
     assert_nothing_raised do
-      Account.create!(owner: user, name: "test")
-      Account.create!(owner: user, name: "test2")
+      Account.create!(owner: users(:admin), name: "test")
+      Account.create!(owner: users(:marketing_subscribed), name: "test2")
     end
   end
 
@@ -24,10 +23,9 @@ class AccountTest < ActiveSupport::TestCase
   end
 
   test "can have multiple accounts with nil subdomain" do
-    user = users(:one)
     assert_nothing_raised do
-      Account.create!(owner: user, name: "test")
-      Account.create!(owner: user, name: "test2")
+      Account.create!(owner: users(:admin), name: "test")
+      Account.create!(owner: users(:marketing_subscribed), name: "test2")
     end
   end
 
@@ -78,28 +76,17 @@ class AccountTest < ActiveSupport::TestCase
     end
   end
 
-  test "personal accounts enabled" do
-    Jumpstart.config.stub(:personal_accounts?, true) do
-      user = User.create! name: "Test", email: "personalaccounts@example.com", password: "password", password_confirmation: "password", terms_of_service: true
-      assert user.accounts.first.personal?
-    end
-  end
+  test "does not allow personal families" do
+    account = Account.new(owner: users(:admin), name: "Personal Family", personal: true)
 
-  test "personal accounts disabled" do
-    Jumpstart.config.stub(:personal_accounts?, false) do
-      user = User.create! name: "Test", email: "nonpersonalaccounts@example.com", password: "password", password_confirmation: "password", terms_of_service: true
-      assert_not user.accounts.first.personal?
-    end
+    assert_not account.valid?
+    assert_includes account.errors[:personal], "must be false"
   end
 
   test "owner?" do
     account = accounts(:one)
-    assert account.owner?(users(:one))
-    assert_not account.owner?(users(:two))
-  end
-
-  test "can_transfer? false for personal accounts" do
-    assert_not accounts(:one).can_transfer?(users(:one))
+    assert account.owner?(users(:noaccount))
+    assert_not account.owner?(users(:one))
   end
 
   test "can_transfer? true for owner" do
@@ -141,7 +128,7 @@ class AccountTest < ActiveSupport::TestCase
     pay_charge = pay_customer.charge(10_00)
 
     mail = Pay::UserMailer.with(pay_customer: pay_customer, pay_charge: pay_charge).receipt
-    assert_equal [account.email], mail.to
+    assert_equal [account.owner.email, users(:two).email], mail.to
   end
 
   test "billing_email should be included in receipts if present" do
@@ -151,7 +138,7 @@ class AccountTest < ActiveSupport::TestCase
     pay_charge = pay_customer.charge(10_00)
 
     mail = Pay::UserMailer.with(pay_customer: pay_customer, pay_charge: pay_charge).receipt
-    assert_equal [account.owner.email, "accounting@example.com"], mail.to
+    assert_equal [account.owner.email, users(:two).email, "accounting@example.com"], mail.to
   end
 
   test "destroys noticed events when associated" do
@@ -174,5 +161,61 @@ class AccountTest < ActiveSupport::TestCase
 
   test "account can be subscribed" do
     assert accounts(:subscribed).payment_processor.subscribed?
+  end
+
+  test "separates active and archived families" do
+    account = accounts(:one)
+
+    account.archive!
+
+    assert_includes Account.archived, account
+    assert_not_includes Account.active, account
+  end
+
+  test "parents are the family admins" do
+    assert_equal accounts(:company).admins.order(:id).to_a, accounts(:company).parents.order(:id).to_a
+  end
+
+  test "archiving a family preserves its payment records" do
+    account = accounts(:one)
+    customer = account.set_payment_processor(:fake_processor, allow_fake: true)
+    subscription = customer.subscribe(plan: "per_seat")
+
+    account.archive!
+
+    assert_equal customer, account.pay_customers.find(customer.id)
+    assert_equal subscription, account.pay_subscriptions.find(subscription.id)
+  end
+
+  test "a one-parent family without billable subscriptions is joinable by its parent" do
+    account = accounts(:one)
+
+    assert account.joinable_by?(users(:noaccount))
+    assert_not account.joinable_by?(users(:admin))
+  end
+
+  test "a family with an active or past-due subscription is not joinable" do
+    account = accounts(:one)
+    customer = account.set_payment_processor(:fake_processor, allow_fake: true)
+    active_subscription = customer.subscribe(name: "active", plan: "per_seat")
+
+    assert_not account.joinable_by?(users(:noaccount))
+
+    active_subscription.update!(status: "past_due")
+
+    assert_not account.joinable_by?(users(:noaccount))
+  end
+
+  test "destroying a family immediately cancels active and past-due subscriptions" do
+    account = accounts(:one)
+    customer = account.set_payment_processor(:fake_processor, allow_fake: true)
+    active_subscription = customer.subscribe(name: "active", plan: "per_seat")
+    past_due_subscription = customer.subscribe(name: "past_due", plan: "per_seat")
+    past_due_subscription.update!(status: "past_due")
+
+    account.destroy!
+
+    assert_predicate active_subscription.reload, :canceled?
+    assert_predicate past_due_subscription.reload, :canceled?
   end
 end

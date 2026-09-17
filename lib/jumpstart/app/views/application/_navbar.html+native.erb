@@ -7,7 +7,7 @@
       <nav>
         <%= nav_link_to t(".profile"), edit_user_registration_path %>
         <%= nav_link_to t(".password"), edit_account_password_path %>
-        <%= nav_link_to t(".accounts"), accounts_path %>
+        <%= nav_link_to "Family", account_path(current_account) %>
         <%= button_to t(".sign_out"), destroy_user_session_path, method: :delete, data: {controller: "bridge--sign-out", bridge__sign_out_path_value: api_v1_auth_path, action: "bridge--sign-out#signOut"} %>
       </nav>
 

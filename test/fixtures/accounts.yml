@@ -1,12 +1,14 @@
 one:
-  owner: one
-  name: "User One"
-  personal: true
+  owner: noaccount
+  name: "No Account Family"
+  personal: false
+  account_users_count: 1
 
 two:
-  owner: two
-  name: "User Two"
-  personal: true
+  owner: twofactor
+  name: "Two Factor Family"
+  personal: false
+  account_users_count: 1
 
 company:
   owner: one
@@ -14,11 +16,13 @@ company:
   personal: false
   domain: company.com
   subdomain: company
+  account_users_count: 2
 
 invited:
-  owner: invited
-  name: "Invited User"
-  personal: true
+  owner: user_without_billing_address
+  name: "Invitation Family"
+  personal: false
+  account_users_count: 1
 
 fake_processor:
   owner: fake_processor
@@ -29,4 +33,5 @@ fake_processor:
 subscribed:
   owner: subscribed
   name: "Subscribed User"
-  personal: true
+  personal: false
+  account_users_count: 1

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_08_25_205800) do
+ActiveRecord::Schema[8.1].define(version: 2026_09_16_210158) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -35,20 +35,24 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_25_205800) do
     t.datetime "updated_at", null: false
     t.bigint "user_id"
     t.index ["account_id", "user_id"], name: "index_account_users_on_account_id_and_user_id", unique: true
+    t.index ["user_id"], name: "index_account_users_on_user_id", unique: true
   end
 
   create_table "accounts", force: :cascade do |t|
     t.integer "account_users_count", default: 0
+    t.datetime "archived_at"
     t.string "billing_email"
     t.datetime "created_at", null: false
     t.string "domain"
     t.text "extra_billing_info"
     t.string "name", null: false
     t.bigint "owner_id"
-    t.boolean "personal", default: false
+    t.boolean "personal", default: false, null: false
     t.string "subdomain"
     t.datetime "updated_at", null: false
+    t.index ["archived_at"], name: "index_accounts_on_archived_at"
     t.index ["owner_id"], name: "index_accounts_on_owner_id"
+    t.check_constraint "personal = false", name: "accounts_personal_must_be_false"
   end
 
   create_table "action_text_embeds", force: :cascade do |t|

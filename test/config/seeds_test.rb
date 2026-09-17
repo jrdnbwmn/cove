@@ -20,4 +20,15 @@ class SeedsTest < ActiveSupport::TestCase
       assert_not User.where("email LIKE ?", DEMO_EMAILS).exists?
     end
   end
+
+  test "development seeds one two-parent family and one flat-rate subscribed family" do
+    environment_inquirer = ActiveSupport::EnvironmentInquirer.new("development")
+
+    Rails.stub(:env, environment_inquirer) { load SEEDS_FILE }
+
+    family = Account.find_by!(name: "Cove Family")
+    assert_equal 2, family.account_users_count
+    assert_equal 2, family.parents.count
+    assert_equal 1, User.find_by!(email: "subscribed@cove.test").family.payment_processor.subscription.quantity
+  end
 end

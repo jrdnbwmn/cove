@@ -12,19 +12,24 @@ erDiagram
     bigint id PK
     bigint owner_id FK
     boolean personal
+    datetime archived_at
   }
 
   ACCOUNT_USER {
     bigint id PK
     bigint account_id FK
     bigint user_id FK
-    string role
+    jsonb roles
   }
 
   ACCOUNT_INVITATION {
     bigint id PK
     bigint account_id FK
     bigint invited_by_id FK
+    string name
+    string email
+    string token
+    jsonb roles
   }
 
   API_TOKEN {
@@ -52,8 +57,12 @@ erDiagram
     datetime processed_at
   }
 
-  USER ||--o{ ACCOUNT_USER : memberships
-  ACCOUNT ||--o{ ACCOUNT_USER : members
+  USER ||--o| ACCOUNT_USER : one membership
+  ACCOUNT ||--o{ ACCOUNT_USER : admin parents
+
+  %% Accounts are Family records: personal is constrained false, each family
+  %% has at most two admin parents, and archived accounts retain billing
+  %% history after their former parent joins another family.
   USER ||--o{ ACCOUNT : owns
   ACCOUNT ||--o{ ACCOUNT_INVITATION : invitations
   USER o|--o{ ACCOUNT_INVITATION : invites

@@ -1,12 +1,12 @@
 require "test_helper"
 
 class Jumpstart::UsersTest < ActionDispatch::IntegrationTest
-  test "user can delete their account" do
+  test "owner with another parent cannot delete their login" do
     sign_in users(:one)
-    assert_difference "User.count", -1 do
+    assert_no_difference "User.count" do
       delete "/users"
     end
-    assert_redirected_to root_path
+    assert_redirected_to edit_user_registration_path
   end
 
   test "invalid time zones are handled safely" do
