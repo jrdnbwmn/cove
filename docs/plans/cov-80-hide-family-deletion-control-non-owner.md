@@ -7,8 +7,8 @@
 
 | Task | Phase | Checkpoint | Description | Assign | Done |
 | ---- | ----- | ---------- | ------------------------------------------------------------ | ------ | ---- |
-| 1    | 1     | 1          | Gate Delete button on `accounts/edit.html.erb` by ownership   | Clone  |      |
-| 2    | 1     | 1          | Fix `%{user}` interpolation on `account_users/edit.html.erb`  | Clone  |      |
+| 1    | 1     | 1          | Gate Delete button on `accounts/edit.html.erb` by ownership   | Clone  | ✅   |
+| 2    | 1     | 1          | Fix `%{user}` interpolation on `account_users/edit.html.erb`  | Clone  | ✅   |
 
 ## Prerequisites
 

@@ -1,4 +1,4 @@
-<% Current.meta_tags.set(title: t(".title")) %>
+<% Current.meta_tags.set(title: t(".title", user: @account_user.user.name || @account_user.user.email)) %>
 
 <% content_for :sidebar, render(partial: "account_navbar") %>
 
