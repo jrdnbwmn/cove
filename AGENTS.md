@@ -147,6 +147,11 @@ Routes are modularized in `config/routes/`:
 - Archived families retain billing history after a parent joins another family.
 - Normal sessions never switch families; derive the current family from the
   user membership rather than an account cookie.
+- Personal accounts no longer exist: `accounts.personal` is DB-constrained to
+  always be `false` (`accounts_personal_must_be_false` check constraint in
+  `db/schema.rb`, added by COV-72). `Account#personal?`-gated code paths and
+  test fixtures for personal accounts are unreachable — don't write tests
+  that assume a `personal: true` fixture can exist.
 
 ## Development Notes
 
