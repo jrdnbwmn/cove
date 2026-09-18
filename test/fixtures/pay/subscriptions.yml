@@ -6,3 +6,59 @@ subscribed:
   processor_plan: fake
   quantity: 1
   status: active
+
+past_due:
+  type: Pay::FakeProcessor::Subscription
+  customer: past_due
+  name: default
+  processor_id: fake_2
+  processor_plan: premium-monthly
+  quantity: 1
+  status: past_due
+
+unpaid:
+  type: Pay::FakeProcessor::Subscription
+  customer: unpaid
+  name: default
+  processor_id: fake_3
+  processor_plan: premium-monthly
+  quantity: 1
+  status: unpaid
+
+paused:
+  type: Pay::FakeProcessor::Subscription
+  customer: paused
+  name: default
+  processor_id: fake_4
+  processor_plan: premium-monthly
+  quantity: 1
+  status: paused
+
+canceled_in_period:
+  type: Pay::FakeProcessor::Subscription
+  customer: canceled_in_period
+  name: default
+  processor_id: fake_5
+  processor_plan: premium-monthly
+  quantity: 1
+  status: active
+  ends_at: <%= 1.month.from_now %>
+
+canceled_ended:
+  type: Pay::FakeProcessor::Subscription
+  customer: canceled_ended
+  name: default
+  processor_id: fake_6
+  processor_plan: premium-monthly
+  quantity: 1
+  status: canceled
+  ends_at: <%= 1.month.ago %>
+
+old_price:
+  type: Pay::FakeProcessor::Subscription
+  customer: old_price
+  name: default
+  processor_id: fake_7
+  processor_plan: hidden
+  quantity: 1
+  status: active

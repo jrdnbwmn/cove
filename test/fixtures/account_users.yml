@@ -39,3 +39,39 @@ subscribed:
   account: subscribed
   roles:
     admin: true
+
+past_due:
+  user: past_due
+  account: past_due
+  roles:
+    admin: true
+
+unpaid:
+  user: unpaid
+  account: unpaid
+  roles:
+    admin: true
+
+paused:
+  user: paused
+  account: paused
+  roles:
+    admin: true
+
+canceled_in_period:
+  user: canceled_in_period
+  account: canceled_in_period
+  roles:
+    admin: true
+
+canceled_ended:
+  user: canceled_ended
+  account: canceled_ended
+  roles:
+    admin: true
+
+old_price:
+  user: old_price
+  account: old_price
+  roles:
+    admin: true

@@ -163,6 +163,102 @@ class AccountTest < ActiveSupport::TestCase
     assert accounts(:subscribed).payment_processor.subscribed?
   end
 
+  test "a new family is free and allowed one student" do
+    account = Account.new(owner: users(:admin), name: "New Family")
+
+    assert_not account.premium?
+    assert account.free?
+    assert_equal 1, account.students_allowed
+  end
+
+  test "a family with an active monthly subscription is premium and allowed its limit" do
+    account = accounts(:subscribed)
+    subscription = account.pay_subscriptions.first
+    subscription.update!(processor_plan: plans(:premium_monthly).fake_processor_id)
+
+    assert account.premium?
+    assert_not account.free?
+    assert_equal 10, account.students_allowed
+  end
+
+  test "a family with an active yearly subscription is premium and allowed its limit" do
+    account = accounts(:subscribed)
+    subscription = account.pay_subscriptions.first
+    subscription.update!(processor_plan: plans(:premium_yearly).fake_processor_id)
+
+    assert account.premium?
+    assert_equal 10, account.students_allowed
+  end
+
+  test "a raised student limit is retained while a family is free" do
+    account = accounts(:subscribed)
+    account.update!(student_limit: 14)
+
+    assert_equal 14, account.students_allowed
+
+    account.pay_subscriptions.first.update!(status: "unpaid")
+
+    assert account.free?
+    assert_equal 1, account.students_allowed
+    assert_equal 14, account.student_limit
+  end
+
+  test "a canceled family stays premium through its paid period" do
+    account = accounts(:canceled_in_period)
+
+    assert account.premium?
+    assert_equal 10, account.students_allowed
+  end
+
+  test "a family is free when its canceled subscription has ended" do
+    account = accounts(:canceled_ended)
+
+    assert account.free?
+    assert_equal 1, account.students_allowed
+  end
+
+  test "a past due family remains premium while payment is retried" do
+    account = accounts(:past_due)
+
+    assert account.premium?
+    assert_equal 10, account.students_allowed
+  end
+
+  test "an unpaid family is free" do
+    account = accounts(:unpaid)
+
+    assert account.free?
+    assert_equal 1, account.students_allowed
+  end
+
+  test "a paused family is free" do
+    account = accounts(:paused)
+
+    assert account.free?
+    assert_equal 1, account.students_allowed
+  end
+
+  test "a family on a hidden old price remains premium" do
+    account = accounts(:old_price)
+    subscription = account.pay_subscriptions.first
+
+    assert plans(:hidden).hidden?
+    assert_equal plans(:hidden).stripe_id, subscription.processor_plan
+    assert account.premium?
+    assert_equal 10, account.students_allowed
+  end
+
+  test "a family rejects student limits below one or with decimals" do
+    account = accounts(:one)
+
+    [nil, "", 0, -1, 1.5].each do |student_limit|
+      account.student_limit = student_limit
+
+      assert_not account.valid?, "expected #{student_limit.inspect} to be invalid"
+      assert_not_empty account.errors[:student_limit]
+    end
+  end
+
   test "separates active and archived families" do
     account = accounts(:one)
 

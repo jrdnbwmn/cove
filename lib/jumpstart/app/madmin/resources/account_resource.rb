@@ -12,6 +12,7 @@ class AccountResource < Madmin::Resource
   attribute :domain
   attribute :subdomain
   attribute :billing_email
+  attribute :student_limit, index: false
   attribute :account_users_count, form: false
   attribute :avatar, index: false
 

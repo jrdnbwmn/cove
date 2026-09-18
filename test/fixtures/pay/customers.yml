@@ -11,3 +11,45 @@ subscribed:
   processor: fake_processor
   processor_id: fake_1001
   default: true
+
+past_due:
+  owner: past_due (Account)
+  type: Pay::FakeProcessor::Customer
+  processor: fake_processor
+  processor_id: fake_1002
+  default: true
+
+unpaid:
+  owner: unpaid (Account)
+  type: Pay::FakeProcessor::Customer
+  processor: fake_processor
+  processor_id: fake_1003
+  default: true
+
+paused:
+  owner: paused (Account)
+  type: Pay::FakeProcessor::Customer
+  processor: fake_processor
+  processor_id: fake_1004
+  default: true
+
+canceled_in_period:
+  owner: canceled_in_period (Account)
+  type: Pay::FakeProcessor::Customer
+  processor: fake_processor
+  processor_id: fake_1005
+  default: true
+
+canceled_ended:
+  owner: canceled_ended (Account)
+  type: Pay::FakeProcessor::Customer
+  processor: fake_processor
+  processor_id: fake_1006
+  default: true
+
+old_price:
+  owner: old_price (Account)
+  type: Pay::FakeProcessor::Customer
+  processor: fake_processor
+  processor_id: fake_1007
+  default: true

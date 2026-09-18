@@ -97,6 +97,66 @@ subscribed:
   time_zone: "Central Time (US & Canada)"
   confirmed_at: <%= Time.current %>
 
+past_due:
+  email: past-due@example.com
+  first_name: Past Due
+  last_name: User
+  encrypted_password: <%= Devise::Encryptor.digest(User, UNIQUE_PASSWORD) %>
+  accepted_terms_at: <%= Time.current %>
+  accepted_privacy_at: <%= Time.current %>
+  time_zone: "Central Time (US & Canada)"
+  confirmed_at: <%= Time.current %>
+
+unpaid:
+  email: unpaid@example.com
+  first_name: Unpaid
+  last_name: User
+  encrypted_password: <%= Devise::Encryptor.digest(User, UNIQUE_PASSWORD) %>
+  accepted_terms_at: <%= Time.current %>
+  accepted_privacy_at: <%= Time.current %>
+  time_zone: "Central Time (US & Canada)"
+  confirmed_at: <%= Time.current %>
+
+paused:
+  email: paused@example.com
+  first_name: Paused
+  last_name: User
+  encrypted_password: <%= Devise::Encryptor.digest(User, UNIQUE_PASSWORD) %>
+  accepted_terms_at: <%= Time.current %>
+  accepted_privacy_at: <%= Time.current %>
+  time_zone: "Central Time (US & Canada)"
+  confirmed_at: <%= Time.current %>
+
+canceled_in_period:
+  email: canceled-in-period@example.com
+  first_name: Canceled
+  last_name: In Period
+  encrypted_password: <%= Devise::Encryptor.digest(User, UNIQUE_PASSWORD) %>
+  accepted_terms_at: <%= Time.current %>
+  accepted_privacy_at: <%= Time.current %>
+  time_zone: "Central Time (US & Canada)"
+  confirmed_at: <%= Time.current %>
+
+canceled_ended:
+  email: canceled-ended@example.com
+  first_name: Canceled
+  last_name: Ended
+  encrypted_password: <%= Devise::Encryptor.digest(User, UNIQUE_PASSWORD) %>
+  accepted_terms_at: <%= Time.current %>
+  accepted_privacy_at: <%= Time.current %>
+  time_zone: "Central Time (US & Canada)"
+  confirmed_at: <%= Time.current %>
+
+old_price:
+  email: old-price@example.com
+  first_name: Old Price
+  last_name: User
+  encrypted_password: <%= Devise::Encryptor.digest(User, UNIQUE_PASSWORD) %>
+  accepted_terms_at: <%= Time.current %>
+  accepted_privacy_at: <%= Time.current %>
+  time_zone: "Central Time (US & Canada)"
+  confirmed_at: <%= Time.current %>
+
 marketing_subscribed:
   email: marketing-subscribed@example.com
   first_name: Marketing

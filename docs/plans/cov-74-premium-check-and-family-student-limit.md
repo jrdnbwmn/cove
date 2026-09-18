@@ -7,13 +7,13 @@
 
 | Task | Phase | Checkpoint | Description | Assign | Done |
 | ---- | ----- | ---------- | ----------- | ------ | ---- |
-| 1 | 1 | 1 | Add the persisted Premium student limit | Master | |
-| 2 | 1 | 1 | Add valid family fixtures for subscription states | subagent | |
-| 3 | 1 | 1 | Add isolated Pay subscription-state fixtures | subagent | |
-| 4 | 2 | 2 | Implement the Account Premium and student-limit rules | Master | |
-| 5 | 3 | 3 | Add the reusable Premium controller gate | Master | |
-| 6 | 3 | 3 | Expose student limits in Madmin | subagent | |
-| 7 | 3 | 3 | Run final review and verification gates | Master | |
+| 1 | 1 | 1 | Add the persisted Premium student limit | Master | ✅ |
+| 2 | 1 | 1 | Add valid family fixtures for subscription states | subagent | ✅ |
+| 3 | 1 | 1 | Add isolated Pay subscription-state fixtures | subagent | ✅ |
+| 4 | 2 | 2 | Implement the Account Premium and student-limit rules | Master | ✅ |
+| 5 | 3 | 3 | Add the reusable Premium controller gate | Master | ✅ |
+| 6 | 3 | 3 | Expose student limits in Madmin | subagent | ✅ |
+| 7 | 3 | 3 | Run final review and verification gates | Master | ✅ |
 
 ## Prerequisites
 
