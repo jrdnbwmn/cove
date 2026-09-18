@@ -7,11 +7,11 @@
 
 | Task | Phase | Checkpoint | Description | Assign | Done |
 | ---- | ----- | ---------- | ----------- | ------ | ---- |
-| 1    | 1     | 1          | `Plan` delete guard + model tests | Master |      |
-| 2    | 1     | 1          | Admin delete refusal message + request test | Clone |      |
-| 3    | 1     | 2          | Premium test fixtures + no-trial checkout test | Master |      |
-| 4    | 1     | 2          | Dev seeds: Premium monthly/yearly + seeds test | Clone |      |
-| 5    | 1     | 2          | Price-change runbook + `AGENTS.md` rule | Clone |      |
+| 1    | 1     | 1          | `Plan` delete guard + model tests | Master | ✅ |
+| 2    | 1     | 1          | Admin delete refusal message + request test | Clone | ✅ |
+| 3    | 1     | 2          | Premium test fixtures + no-trial checkout test | Master | ✅ |
+| 4    | 1     | 2          | Dev seeds: Premium monthly/yearly + seeds test | Clone | ✅ |
+| 5    | 1     | 2          | Price-change runbook + `AGENTS.md` rule | Clone | ✅ |
 | 6    | 2     | 3          | Staging: create Stripe product/prices, archive old price | Master |      |
 | 7    | 2     | 3          | Staging: enter Plan rows at `/admin/plans`, hide Cove Dev Plan | Master |      |
 | 8    | 2     | 3          | Staging: live checkouts (both intervals) + COV-78 handoff | Master |      |

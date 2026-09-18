@@ -24,9 +24,27 @@ class CheckoutsTest < ActionDispatch::IntegrationTest
     assert_equal({terms_of_service: :required}, checkout_args[:consent_collection])
   end
 
+  test "Premium monthly checkout starts with no trial" do
+    plan = plans(:premium_monthly)
+    checkout_args = capture_checkout_args(staging: false, plan: plan)
+
+    assert_response :success
+    assert_not checkout_args[:subscription_data].key?(:trial_period_days)
+    assert_equal plan.stripe_id, checkout_args[:line_items].first[:price]
+  end
+
+  test "Premium yearly checkout starts with no trial" do
+    plan = plans(:premium_yearly)
+    checkout_args = capture_checkout_args(staging: false, plan: plan)
+
+    assert_response :success
+    assert_not checkout_args[:subscription_data].key?(:trial_period_days)
+    assert_equal plan.stripe_id, checkout_args[:line_items].first[:price]
+  end
+
   private
 
-  def capture_checkout_args(staging:)
+  def capture_checkout_args(staging:, plan: @plan)
     checkout_args = nil
     checkout_session = Struct.new(:client_secret).new("cs_test_secret")
 
@@ -35,7 +53,7 @@ class CheckoutsTest < ActionDispatch::IntegrationTest
       checkout_session
     }) do
       Rails.env.stub(:staging?, staging) do
-        get checkout_path(plan: @plan)
+        get checkout_path(plan: plan)
       end
     end
 

@@ -21,6 +21,27 @@ class SeedsTest < ActiveSupport::TestCase
     end
   end
 
+  test "development seeds Premium monthly and yearly with no trial" do
+    environment_inquirer = ActiveSupport::EnvironmentInquirer.new("development")
+
+    Rails.stub(:env, environment_inquirer) { load SEEDS_FILE }
+    Rails.stub(:env, environment_inquirer) { load SEEDS_FILE }
+
+    seeded = Plan.where(fake_processor_id: %w[premium_monthly premium_yearly])
+    assert_equal 2, seeded.count
+
+    monthly = seeded.visible.where(name: "Premium", interval: "month", fake_processor_id: "premium_monthly")
+    yearly = seeded.visible.where(name: "Premium", interval: "year", fake_processor_id: "premium_yearly")
+    assert_equal 1, monthly.count
+    assert_equal 1, yearly.count
+    assert_equal 900, monthly.first.amount
+    assert_equal 8400, yearly.first.amount
+    assert_equal [0, 0], [monthly.first.trial_period_days, yearly.first.trial_period_days]
+
+    assert_not Plan.exists?(fake_processor_id: "cove_dev")
+    assert_equal "premium_monthly", User.find_by!(email: "subscribed@cove.test").family.payment_processor.subscription.processor_plan
+  end
+
   test "development seeds one two-parent family and one flat-rate subscribed family" do
     environment_inquirer = ActiveSupport::EnvironmentInquirer.new("development")
 

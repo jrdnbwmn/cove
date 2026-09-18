@@ -48,10 +48,22 @@ if Rails.env.local?
     AccountUser.create!(account: family, user: admin, admin: true)
   end
 
-  plan = Plan.find_or_create_by!(fake_processor_id: "cove_dev") do |p|
-    p.name = "Cove Dev Plan"
-    p.amount = 1900
+  features = ["Placeholder feature"]
+
+  plan = Plan.find_or_create_by!(fake_processor_id: "premium_monthly") do |p|
+    p.name = "Premium"
+    p.amount = 900
     p.interval = "month"
+    p.trial_period_days = 0
+    p.details = {features: features}
+  end
+
+  Plan.find_or_create_by!(fake_processor_id: "premium_yearly") do |p|
+    p.name = "Premium"
+    p.amount = 8400
+    p.interval = "year"
+    p.trial_period_days = 0
+    p.details = {features: features}
   end
 
   subscribed_account = subscribed.family
