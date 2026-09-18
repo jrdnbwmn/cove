@@ -6,7 +6,7 @@ module PremiumAccess
   end
 
   def premium?
-    user_signed_in? && current_account&.premium?
+    (user_signed_in? && current_account&.premium?) || false
   end
 
   def require_premium!
