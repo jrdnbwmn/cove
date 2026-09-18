@@ -166,7 +166,7 @@ marketing_subscribed:
   accepted_privacy_at: <%= Time.current %>
   time_zone: "Central Time (US & Canada)"
   confirmed_at: <%= Time.current %>
-  marketing_opt_in_at: <%= Time.current %>
+  marketing_opt_in_at: <%= 1.day.ago %>
   marketing_opt_in_source: registration
 
 marketing_unsubscribed:
