@@ -12,6 +12,7 @@ graph TD
   AccountsControllers --> FamilyTransfersController[TransfersController]
   Controllers --> DevControllers[dev/]
   Controllers --> Concerns[concerns/]
+  Concerns --> PremiumAccess[PremiumAccess]
   Controllers --> InboundWebhooksControllers[inbound_webhooks/]
   InboundWebhooksControllers --> LoopsWebhookController[LoopsController]
 

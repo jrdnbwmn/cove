@@ -35,3 +35,39 @@ subscribed:
   name: "Subscribed User"
   personal: false
   account_users_count: 1
+
+past_due:
+  owner: past_due
+  name: "Past Due Family"
+  personal: false
+  account_users_count: 1
+
+unpaid:
+  owner: unpaid
+  name: "Unpaid Family"
+  personal: false
+  account_users_count: 1
+
+paused:
+  owner: paused
+  name: "Paused Family"
+  personal: false
+  account_users_count: 1
+
+canceled_in_period:
+  owner: canceled_in_period
+  name: "Canceled In Period Family"
+  personal: false
+  account_users_count: 1
+
+canceled_ended:
+  owner: canceled_ended
+  name: "Canceled Ended Family"
+  personal: false
+  account_users_count: 1
+
+old_price:
+  owner: old_price
+  name: "Old Price Family"
+  personal: false
+  account_users_count: 1

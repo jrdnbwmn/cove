@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_09_16_210158) do
+ActiveRecord::Schema[8.1].define(version: 2026_09_18_215009) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -48,6 +48,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_16_210158) do
     t.string "name", null: false
     t.bigint "owner_id"
     t.boolean "personal", default: false, null: false
+    t.integer "student_limit", default: 10, null: false
     t.string "subdomain"
     t.datetime "updated_at", null: false
     t.index ["archived_at"], name: "index_accounts_on_archived_at"

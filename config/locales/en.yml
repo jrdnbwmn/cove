@@ -37,6 +37,8 @@ en:
   view: "View"
   must_be_an_admin: "You must be an admin to do that."
   processing: "Processing..."
+  premium_access:
+    required: "That's a Premium feature. Upgrade to unlock it."
   something_went_wrong: "Something went wrong"
   unauthorized: "You are not authorized to perform this action."
   reveal: "Reveal"

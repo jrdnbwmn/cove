@@ -112,6 +112,12 @@ with a small, named, hand-written set of records.
   timestamps (`<%= Time.current %>`) or derived secrets
   (`<%= Devise::Encryptor.digest(User, UNIQUE_PASSWORD) %>`), as `users.yml`
   already does. Don't use ERB to generate fake/random data.
+- **Don't compare `Time.current` across fixture files.** Each ERB
+  `Time.current` is evaluated when its file loads, so two "now" values in
+  different files differ by microseconds in an unpredictable order. Code that
+  compares them (e.g. `marketing_opt_in_at` vs a webhook event's `event_time`)
+  flakes ~1 run in 10. Give the earlier value an explicit offset
+  (`<%= 1.day.ago %>`).
 - **Signing in / switching accounts in tests.** Reuse the existing helpers —
   don't reinvent them:
   - `sign_in(user)` (Devise) in integration and system tests.
