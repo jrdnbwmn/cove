@@ -74,3 +74,25 @@ enterprise:
   stripe_id: enterprise
   braintree_id: enterprise
   fake_processor_id: enterprise
+
+premium_monthly:
+  name: Premium
+  amount: 900
+  interval: month
+  trial_period_days: 0
+  stripe_id: premium-monthly
+  fake_processor_id: premium-monthly
+  details:
+    features:
+      - Placeholder feature
+
+premium_yearly:
+  name: Premium
+  amount: 8400
+  interval: year
+  trial_period_days: 0
+  stripe_id: premium-yearly
+  fake_processor_id: premium-yearly
+  details:
+    features:
+      - Placeholder feature

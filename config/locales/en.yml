@@ -612,6 +612,10 @@ en:
           attributes:
             admin:
               cannot_be_removed: "role cannot be removed for the account owner"
+        plan:
+          attributes:
+            base:
+              has_subscriptions: "This plan has subscribers, so it can't be deleted. Hide it instead."
 
   errors:
     messages:

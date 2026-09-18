@@ -11,6 +11,10 @@ class Plan < ApplicationRecord
   validates :trial_period_days, numericality: {only_integer: true}
   validates :unit_label, presence: {if: :charge_per_unit?}
 
+  # AIDEV-NOTE: Subscriptions find their plan by processor ID (see config/initializers/pay.rb),
+  # and canceled subscriptions still appear in billing history, so any subscription blocks deletion.
+  before_destroy :prevent_destroy_with_subscriptions, prepend: true
+
   scope :hidden, -> { where(hidden: true) }
   scope :visible, -> { where(hidden: [nil, false]) }
   scope :monthly, -> { where(interval: :month) }
@@ -70,5 +74,15 @@ class Plan < ApplicationRecord
     return if processor_name.nil?
     processor_name = :braintree if processor_name.to_s == "paypal"
     send(:"#{processor_name}_id")
+  end
+
+  private
+
+  def prevent_destroy_with_subscriptions
+    ids = [stripe_id, fake_processor_id, braintree_id, paddle_billing_id, paddle_classic_id, lemon_squeezy_id].compact_blank
+    return unless Pay::Subscription.where(processor_plan: ids).exists?
+
+    errors.add(:base, :has_subscriptions)
+    throw :abort
   end
 end

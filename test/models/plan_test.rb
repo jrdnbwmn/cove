@@ -63,7 +63,60 @@ class PlanTest < ActiveSupport::TestCase
     assert plan.errors[:unit_label].any?
   end
 
+  test "a plan with an active subscriber can't be deleted" do
+    plan = plans(:personal)
+    subscribe_to(plan.stripe_id)
+
+    assert_not plan.destroy
+    assert Plan.exists?(plan.id)
+    assert_includes plan.errors.full_messages, "This plan has subscribers, so it can't be deleted. Hide it instead."
+  end
+
+  test "a plan referenced only by a canceled subscription can't be deleted" do
+    plan = plans(:personal)
+    subscribe_to(plan.stripe_id, status: "canceled")
+
+    assert_not plan.destroy
+    assert Plan.exists?(plan.id)
+  end
+
+  test "a subscriber on any of the plan's processor IDs blocks deletion" do
+    plan = plans(:personal)
+    plan.update_column(:fake_processor_id, "personal-fake")
+    subscribe_to("personal-fake")
+
+    assert_not plan.destroy
+    assert Plan.exists?(plan.id)
+  end
+
+  test "a plan with no subscribers can be deleted" do
+    plan = plans(:business)
+
+    assert plan.destroy
+    assert_not Plan.exists?(plan.id)
+  end
+
+  test "a plan with every processor ID blank can be deleted" do
+    plan = Plan.create!(name: "Blank", amount: 100, interval: "month")
+
+    assert plan.destroy
+  end
+
+  test "destroy! raises for a plan with subscribers" do
+    plan = plans(:personal)
+    subscribe_to(plan.stripe_id)
+
+    assert_raises(ActiveRecord::RecordNotDestroyed) { plan.destroy! }
+  end
+
   private
+
+  def subscribe_to(processor_plan, status: "active")
+    pay_customers(:subscribed).subscriptions.create!(
+      name: "default", processor_id: "sub_#{SecureRandom.hex(4)}",
+      processor_plan: processor_plan, quantity: 1, status: status
+    )
+  end
 
   def monthly
     @monthly ||= plans(:personal)

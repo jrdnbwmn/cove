@@ -152,6 +152,7 @@ Routes are modularized in `config/routes/`:
   `db/schema.rb`, added by COV-72). `Account#personal?`-gated code paths and
   test fixtures for personal accounts are unreachable — don't write tests
   that assume a `personal: true` fixture can exist.
+- Plan rows are never deleted or re-priced — a price change is a new Stripe Price + new Plan row, old row hidden. Follow `docs/runbooks/price-change-checklist.md`.
 
 ## Development Notes
 
