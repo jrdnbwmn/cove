@@ -36,6 +36,15 @@ subscribed:
   personal: false
   account_users_count: 1
 
+complimentary:
+  owner: complimentary
+  name: "Complimentary Family"
+  personal: false
+  student_limit: 10
+  complimentary_premium: true
+  complimentary_premium_note: "Test complimentary Premium access"
+  account_users_count: 1
+
 past_due:
   owner: past_due
   name: "Past Due Family"

@@ -42,6 +42,17 @@ class CheckoutsTest < ActionDispatch::IntegrationTest
     assert_equal plan.stripe_id, checkout_args[:line_items].first[:price]
   end
 
+  test "complimentary unpaid family can open Stripe checkout" do
+    @account.update!(complimentary_premium: true, complimentary_premium_note: "Tester access")
+
+    checkout_args = capture_checkout_args(staging: false)
+
+    assert_predicate @account.pay_subscriptions, :none?
+    assert_response :success
+    assert_nil response.headers["Location"]
+    assert_equal @plan.stripe_id, checkout_args[:line_items].first[:price]
+  end
+
   private
 
   def capture_checkout_args(staging:, plan: @plan)

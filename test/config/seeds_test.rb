@@ -52,4 +52,26 @@ class SeedsTest < ActiveSupport::TestCase
     assert_equal 2, family.parents.count
     assert_equal 1, User.find_by!(email: "subscribed@cove.test").family.payment_processor.subscription.quantity
   end
+
+  test "development seeds one complimentary Premium tester family without billing records" do
+    environment_inquirer = ActiveSupport::EnvironmentInquirer.new("development")
+
+    Rails.stub(:env, environment_inquirer) { load SEEDS_FILE }
+    Rails.stub(:env, environment_inquirer) { load SEEDS_FILE }
+
+    testers = User.where(email: "tester@cove.test")
+    assert_equal 1, testers.count
+
+    tester = testers.sole
+    assert_equal "Tina Tester", tester.name
+    assert tester.valid_password?("password")
+    assert_not_nil tester.confirmed_at
+    assert_not_nil tester.accepted_terms_at
+
+    family = tester.family
+    assert family.complimentary_premium?
+    assert_equal "Dev seed: complimentary Premium tester", family.complimentary_premium_note
+    assert_empty family.pay_customers
+    assert_empty family.pay_subscriptions
+  end
 end

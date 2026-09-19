@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_09_18_215009) do
+ActiveRecord::Schema[8.1].define(version: 2026_09_18_225045) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -42,6 +42,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_18_215009) do
     t.integer "account_users_count", default: 0
     t.datetime "archived_at"
     t.string "billing_email"
+    t.boolean "complimentary_premium", default: false, null: false
+    t.string "complimentary_premium_note"
     t.datetime "created_at", null: false
     t.string "domain"
     t.text "extra_billing_info"

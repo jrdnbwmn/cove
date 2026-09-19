@@ -7,12 +7,12 @@
 
 | Task | Phase | Checkpoint | Description | Assign | Done |
 | ---- | ----- | ---------- | ----------- | ------ | ---- |
-| 1 | 1 | 1 | Add complimentary Premium columns and document the data model | Master | |
-| 2 | 1 | 1 | Add a representative complimentary family fixture | subagent | |
-| 3 | 1 | 1 | Implement and test complimentary Premium entitlement behavior | Master | |
-| 4 | 2 | 2 | Expose and secure complimentary Premium administration | subagent | |
-| 5 | 2 | 2 | Prove complimentary families can enter checkout | subagent | |
-| 6 | 2 | 2 | Seed an idempotent complimentary tester family | subagent | |
+| 1 | 1 | 1 | Add complimentary Premium columns and document the data model | Master | ✅ |
+| 2 | 1 | 1 | Add a representative complimentary family fixture | subagent | ✅ |
+| 3 | 1 | 1 | Implement and test complimentary Premium entitlement behavior | Master | ✅ |
+| 4 | 2 | 2 | Expose and secure complimentary Premium administration | subagent | ✅ |
+| 5 | 2 | 2 | Prove complimentary families can enter checkout | subagent | ✅ |
+| 6 | 2 | 2 | Seed an idempotent complimentary tester family | subagent | ✅ |
 
 ## Prerequisites
 
@@ -124,7 +124,8 @@
 - Test successful grant with a note.
 - Test invalid blank/whitespace-note updates render Madmin's validation error and persist neither field.
 - Test revocation using `"0"` so unticking the checkbox saves false while retaining the note.
-- Test that a non-superadmin is redirected away from Madmin.
+- Test that a non-superadmin cannot access Madmin (the existing route-level
+  admin guard returns 404 before Madmin's controller redirect can run).
 - Test that a parent's `PATCH /accounts/:id` cannot change either comp field.
 
 **NOT in scope:**
