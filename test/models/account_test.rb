@@ -171,6 +171,57 @@ class AccountTest < ActiveSupport::TestCase
     assert_equal 1, account.students_allowed
   end
 
+  test "a complimentary family is Premium without billing records" do
+    account = accounts(:complimentary)
+
+    assert account.premium?
+    assert_not account.free?
+    assert_equal 10, account.students_allowed
+    assert_equal "complimentary", account.plan_status
+    assert_empty account.pay_customers
+    assert_empty account.pay_subscriptions
+  end
+
+  test "revoking complimentary Premium retains its note and restores Free access" do
+    account = accounts(:complimentary)
+    note = account.complimentary_premium_note
+
+    account.update!(complimentary_premium: false)
+
+    assert_equal note, account.complimentary_premium_note
+    assert account.free?
+    assert_equal "free", account.plan_status
+    assert_equal 1, account.students_allowed
+  end
+
+  test "a family cannot receive complimentary Premium without a note" do
+    account = accounts(:one)
+
+    [nil, "", "   "].each do |note|
+      account.assign_attributes(complimentary_premium: true, complimentary_premium_note: note)
+
+      assert_not account.valid?, "expected #{note.inspect} to be invalid"
+      assert_not_empty account.errors[:complimentary_premium_note]
+    end
+  end
+
+  test "an unsubscribed family has free plan status" do
+    assert_equal "free", accounts(:one).plan_status
+  end
+
+  test "a paid subscription takes precedence over complimentary Premium" do
+    account = accounts(:subscribed)
+    account.update!(complimentary_premium: true, complimentary_premium_note: "Converted tester")
+
+    assert account.premium?
+    assert_equal "premium", account.plan_status
+
+    account.update!(complimentary_premium: false)
+
+    assert account.premium?
+    assert_equal "premium", account.plan_status
+  end
+
   test "a family with an active monthly subscription is premium and allowed its limit" do
     account = accounts(:subscribed)
     subscription = account.pay_subscriptions.first

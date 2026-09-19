@@ -97,6 +97,16 @@ subscribed:
   time_zone: "Central Time (US & Canada)"
   confirmed_at: <%= Time.current %>
 
+complimentary:
+  email: complimentary@example.com
+  first_name: Complimentary
+  last_name: User
+  encrypted_password: <%= Devise::Encryptor.digest(User, UNIQUE_PASSWORD) %>
+  accepted_terms_at: <%= Time.current %>
+  accepted_privacy_at: <%= Time.current %>
+  time_zone: "Central Time (US & Canada)"
+  confirmed_at: <%= Time.current %>
+
 past_due:
   email: past-due@example.com
   first_name: Past Due

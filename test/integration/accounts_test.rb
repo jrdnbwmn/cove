@@ -28,4 +28,18 @@ class Jumpstart::AccountsTest < ActionDispatch::IntegrationTest
 
     assert_redirected_to root_path
   end
+
+  test "a parent cannot update complimentary Premium fields" do
+    account = accounts(:one)
+    account.update!(complimentary_premium: false, complimentary_premium_note: nil)
+    sign_in users(:noaccount)
+
+    patch account_path(account), params: {
+      account: {complimentary_premium: "1", complimentary_premium_note: "Attempted parent change"}
+    }
+
+    assert_response :bad_request
+    assert_not_predicate account.reload, :complimentary_premium?
+    assert_nil account.complimentary_premium_note
+  end
 end

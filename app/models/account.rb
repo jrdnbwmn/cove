@@ -8,6 +8,7 @@ class Account < ApplicationRecord
 
   validates :personal, exclusion: {in: [true], message: "must be false"}
   validates :student_limit, numericality: {only_integer: true, greater_than_or_equal_to: 1}
+  validates :complimentary_premium_note, presence: true, if: :complimentary_premium?
 
   before_destroy :cancel_billable_subscriptions!
 
@@ -23,11 +24,20 @@ class Account < ApplicationRecord
     update!(archived_at: Time.current)
   end
 
-  # AIDEV-NOTE: Premium follows billable subscriptions, never a price, plan, or
-  # Stripe ID, so old-price families remain Premium. It includes past_due while
-  # Stripe retries; COV-75 will add complimentary Premium.
+  # AIDEV-NOTE: Complimentary Premium is an account switch rather than a fake
+  # Pay subscription, keeping testers out of billing records and revenue numbers.
+  # It has no end date and stays on until a superadmin switches it off.
   def premium?
-    billable_subscriptions.exists?
+    complimentary_premium? || paid_premium?
+  end
+
+  # AIDEV-NOTE: Paid Premium wins over complimentary access so converted testers
+  # report premium; Loops sync (COV-76) and pricing/billing pages (COV-77) use this.
+  def plan_status
+    return "premium" if paid_premium?
+    return "complimentary" if complimentary_premium?
+
+    "free"
   end
 
   def free?
@@ -55,6 +65,10 @@ class Account < ApplicationRecord
   end
 
   private
+
+  def paid_premium?
+    billable_subscriptions.exists?
+  end
 
   def students_empty?
     !respond_to?(:students) || students.none?

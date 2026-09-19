@@ -34,9 +34,17 @@ if Rails.env.local?
     u.confirmed_at = Time.current
   end
 
+  tester = User.find_or_create_by!(email: "tester@cove.test") do |u|
+    u.name = "Tina Tester"
+    u.password = "password"
+    u.terms_of_service = "1"
+    u.confirmed_at = Time.current
+  end
+
   owner.create_default_account unless owner.family
   admin.create_default_account unless admin.family
   subscribed.create_default_account unless subscribed.family
+  tester.create_default_account unless tester.family
 
   family = owner.family
   family.update!(name: "Cove Family")
@@ -71,6 +79,11 @@ if Rails.env.local?
   unless subscribed_account.payment_processor&.subscribed?
     subscribed_account.payment_processor.subscribe(plan: plan.fake_processor_id)
   end
+
+  tester.family.update!(
+    complimentary_premium: true,
+    complimentary_premium_note: "Dev seed: complimentary Premium tester"
+  )
 
   Jumpstart.grant_system_admin!(superadmin)
 end

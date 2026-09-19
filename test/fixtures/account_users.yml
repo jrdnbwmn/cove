@@ -40,6 +40,12 @@ subscribed:
   roles:
     admin: true
 
+complimentary:
+  user: complimentary
+  account: complimentary
+  roles:
+    admin: true
+
 past_due:
   user: past_due
   account: past_due
