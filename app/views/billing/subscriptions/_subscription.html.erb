@@ -1,11 +1,4 @@
 <%= tag.div class: "mb-8 lg:flex lg:gap-8", id: dom_id(subscription) do %>
-  <% if subscription.generic_trial? %>
-    <div>
-      <%= render BadgeComponent.new(text: t(".free_trial"), classes: "mb-1") %>
-      <%= render AlertComponent.new(title: t(".free_trial_ends", date: l(subscription.trial_ends_at.to_date, format: :long)), variant: :info, show_icon: false) %>
-    </div>
-
-  <% else %>
     <div class="flex-1">
       <% if subscription.canceled? %>
         <%= render BadgeComponent.new(text: t(".canceled"), classes: "mb-1") %>
@@ -25,16 +18,8 @@
         <div><%= link_to t(".view_upcoming_invoice"), billing_subscription_upcoming_path(subscription), class: "text-sm font-medium text-primary" %></div>
       <% end %>
 
-      <% if subscription.on_trial? && subscription.canceled? %>
-        <%= render AlertComponent.new(title: t(".canceled_on_trial", date: l(subscription.trial_ends_at.to_date, format: :long)), variant: :warning, show_icon: false, classes: "mt-3") %>
-      <% elsif subscription.on_trial? %>
-        <%= render AlertComponent.new(title: t(".trial", date: l(subscription.trial_ends_at.to_date, format: :long)), variant: :info, show_icon: false, classes: "mt-3") %>
-      <% elsif subscription.on_grace_period? %>
-        <% if subscription.ends_at? %>
-          <%= render AlertComponent.new(title: t(".ends_at", date: l(subscription.ends_at.to_date, format: :long)), variant: :warning, classes: "mt-3") %>
-        <% elsif subscription.pause_starts_at %>
-          <%= render AlertComponent.new(title: t(".paused_at", date: l(subscription.pause_starts_at.to_date, format: :long)), variant: :warning, classes: "mt-3") %>
-        <% end %>
+      <% if subscription.on_grace_period? && subscription.pause_starts_at %>
+        <%= render AlertComponent.new(title: t(".paused_at", date: l(subscription.pause_starts_at.to_date, format: :long)), variant: :warning, classes: "mt-3") %>
       <% elsif subscription.paused? %>
         <%= render AlertComponent.new(title: t(".paused"), variant: :info, show_icon: false, classes: "mt-3") %>
       <% end %>
@@ -62,5 +47,4 @@
         <%= render ButtonComponent.new(text: t(".cancel_plan"), variant: :secondary, href: billing_subscription_cancel_path(subscription)) %>
       <% end %>
     </div>
-  <% end %>
 <% end %>

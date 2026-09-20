@@ -1,0 +1,26 @@
+<%# locals: (plan:, yearly:, free_family:, subscription:) %>
+<%# AIDEV-NOTE: One card for both interval panels; only the price display differs. %>
+<%
+  card_options = {
+    plan: plan,
+    description: t("pricing.show.premium.description"),
+    features: t("pricing.show.premium.features", student_limit: premium_student_limit)
+  }
+  if yearly
+    card_options[:price_text] = monthly_equivalent(plan)
+    card_options[:price_note] = t("pricing.show.premium.yearly_price_note", amount: pay_amount_to_currency(plan, strip_insignificant_zeros: true))
+  end
+%>
+<%= render PlanCardComponent.new(**card_options) do %>
+  <% if plan.contact_url.present? %>
+    <%= render ButtonComponent.new(text: t("billing.subscriptions.plan.contact_us"), href: plan.contact_url, variant: :secondary, size: :lg, full_width: true) %>
+  <% elsif !user_signed_in? %>
+    <%= render ButtonComponent.new(text: t("pricing.show.premium.get_premium"), href: checkout_path(plan: plan), variant: :secondary, size: :lg, full_width: true) %>
+  <% elsif free_family %>
+    <%= render ButtonComponent.new(text: t("pricing.show.premium.upgrade"), href: checkout_path(plan: plan), variant: :secondary, size: :lg, full_width: true) %>
+  <% elsif subscription&.plan == plan || current_account.complimentary_premium? %>
+    <%= render ButtonComponent.new(text: t("pricing.show.premium.current_plan"), variant: :secondary, size: :lg, full_width: true, disabled: true) %>
+  <% else %>
+    <%= render ButtonComponent.new(text: t("pricing.show.premium.change_plan"), href: edit_billing_subscription_path(subscription), variant: :secondary, size: :lg, full_width: true) %>
+  <% end %>
+<% end %>

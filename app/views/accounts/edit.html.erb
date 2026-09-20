@@ -14,7 +14,7 @@
     </h1>
   </div>
 
-  <%= button_to t("delete"), @account, {method: :delete, class: "inline-flex items-center justify-center rounded-[var(--radius)] border border-red-300/30 bg-red-600 px-3.5 py-2 text-sm font-medium text-white shadow-sm transition-all hover:bg-red-500", data: { turbo_confirm: t("are_you_sure"), turbo_confirm_description: subscribed? ? t(".delete_with_payments_description") : t(".delete_description") } } if @account.owner?(current_user) %>
+  <%= button_to t("delete"), @account, {method: :delete, class: "inline-flex items-center justify-center rounded-[var(--radius)] border border-red-300/30 bg-red-600 px-3.5 py-2 text-sm font-medium text-white shadow-sm transition-all hover:bg-red-500", data: { turbo_confirm: t("are_you_sure"), turbo_confirm_description: family_deletion_description(@account) } } if @account.owner?(current_user) %>
 </div>
 
 <%= render "form", account: @account %>

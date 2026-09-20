@@ -25,7 +25,7 @@
 | `PaginationComponent` | Renders Pagy navigation in full, compact, or minimal form. | `pagy`, `variant`, `size`, `frame_id` | — | `PaginationComponentPreview` |
 | `SidebarComponent` | Renders responsive primary navigation with collapsible groups. | `variant`, `collapsible`, `storage_key`, `position` | — | `SidebarComponentPreview` |
 | `CardComponent` | Renders a content container with optional image, header, body, and footer slots. | `variant`, `padding`, `shadow`, `divide`, `hoverable` | — | `CardComponentPreview` |
-| `PlanCardComponent` | Renders a billing plan, price, features, and caller-supplied actions inside a card. | `plan` | `CardComponent` | `PlanCardComponentPreview` |
+| `PlanCardComponent` | Renders a billing plan, price, features, and caller-supplied actions inside a card. | `plan`, `name`, `description`, `price_text`, `price_note`, `features` | `CardComponent` | `PlanCardComponentPreview` |
 | `AvatarComponent` | Renders a user or account image with accessible initials fallback and optional online status. | `alt`, `src`, `fallback`, `size`, `status` | — | `AvatarComponentPreview` |
 | `TableComponent` | Renders a responsive, accessible data table with row and column slots. | `striped`, `hoverable`, `density`, `sticky_header` | — | `TableComponentPreview` |
 | `EmptyStateComponent` | Renders a centered "nothing here" placeholder with optional icon and actions. | `title`, `description`, `size`, `bordered`, `heading_level` | — | `EmptyStateComponentPreview` |
@@ -625,7 +625,11 @@ and edge-to-edge mobile rendering.
 **Purpose:** Renders a Pay plan's name, description, price, optional unit label,
 feature checklist, and a caller-supplied action area inside `CardComponent`.
 
-**Arguments:** `plan` is required and supplies the Pay plan data.
+**Arguments:** `plan` is optional and supplies the Pay plan data. Optional
+`name:`, `description:`, `price_text:`, `price_note:`, and `features:` override
+the Plan-derived values, so a card can render without a Plan (for example,
+Free). `price_text` renders verbatim without the Plan interval, with
+`price_note` beneath it.
 
 **Slots:** Pass actions as the component block. The block content renders
 unchanged below the price.

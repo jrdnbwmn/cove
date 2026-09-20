@@ -105,13 +105,15 @@ en:
       copy_link: "Copy link"
       switch: "Switch"
       you: "you"
+      delete_family: "Delete family"
     new:
       title: "New Family"
       description: "Create a family for your homeschooling household."
     edit:
       title: "Edit Family"
-      delete_description: "Deleting this account will permanently remove all associated data."
-      delete_with_payments_description: "Deleting this account will cancel any active subscriptions and permanently remove all associated data."
+    deletion:
+      free_description: "Deleting this Family permanently removes its data."
+      paid_description: "Deleting this Family ends Premium immediately and no refund is issued."
     created: "Account was successfully created."
     created_and_switch_html: "Account was successfully created. <a class=\"underline\" href=\"%{link}\">Switch account</a>"
     updated: "Account was successfully updated."
@@ -254,6 +256,26 @@ en:
       subhead: "Simple, straightforward pricing"
       monthly: "Monthly"
       yearly: "Yearly"
+      free:
+        name: "Free"
+        description: "Everything you need to get started."
+        price_note: "forever"
+        features:
+          - "%{student_limit} student"
+          - "One parent"
+        get_started: "Get started free"
+        current_plan: "Current plan"
+      premium:
+        description: "More room for your family."
+        yearly_price_note: "billed %{amount} yearly"
+        features:
+          - "Up to %{student_limit} students"
+          - "Both parents"
+        get_premium: "Get Premium"
+        upgrade: "Upgrade"
+        change_plan: "Change plan"
+        current_plan: "Current plan"
+      no_refunds: "Cancel anytime. You keep Premium until the end of the period you have paid for. No refunds are issued for unused time."
 
   plan_intervals:
     day:
@@ -294,6 +316,16 @@ en:
       subscriptions: "Current plan"
       not_subscribed: "You are not currently subscribed."
       choose_plan: "Choose a plan"
+      free_title: "You're on Free"
+      free_description: "Your Family can have %{student_limit} student."
+      upgrade: "Upgrade to Premium"
+      premium: "Premium"
+      complimentary_premium: "Complimentary Premium"
+      complimentary_description: "Your Family has Premium access at no cost."
+      subscribe: "Subscribe to Premium"
+      renews_on: "Renews %{date}"
+      renewal_date_unavailable: "Your renewal date is unavailable."
+      premium_until: "Premium until %{date}, then Free"
 
     info:
       extra_billing_info: "Extra Billing Information"
@@ -327,11 +359,9 @@ en:
         change_plan: "Change Plan"
         current_plan: "Current plan"
         get_started: "Get Started"
-        start_trial: "Start Trial"
         processing: "Processing..."
 
       edit:
-        trial_ends: "Your trial ends in %{days}."
         title: "Change Your Plan"
         description: "Simple, straightforward pricing to get your online business up and running"
         monthly: "Monthly"
@@ -344,18 +374,13 @@ en:
 
       subscription:
         cancel_plan: "Cancel plan"
-        canceled_on_trial: "After your trial ends on %{date}, this plan will be canceled automatically."
         title: "Current Plans"
-        free_trial: "Free Trial"
-        free_trial_ends: "Your trial ends on %{date}."
-        trial: "After your trial ends on %{date}, this plan will continue automatically."
         resume: "Resume plan"
         change_plan: "Change plan"
         pause: "Pause plan"
         canceled: "Canceled"
         incomplete: "Incomplete"
         confirm_payment: "Confirm payment"
-        ends_at: "Your plan will be canceled on %{date}."
         paused_at: "Your plan will be paused on %{date}."
         paused: "Your plan is paused."
         view_usage: "View usage"
@@ -418,7 +443,8 @@ en:
           help_html: "Need to talk to someone? %{link} -- we'd love to help."
           contact_us: "Contact us"
           subject: "Question about %{product}"
-          active_until: "Your plan will be canceled, but is still available until the end of your billing period."
+          active_until_no_refund: "Your plan will be canceled on %{date}. No refund is issued for the remaining time."
+          active_until_no_refund_undated: "Your plan will be canceled at the end of your billing period. No refund is issued for the remaining time."
           cancel_immediately: "Your plan will be cancelled immediately."
           resume: "If you change your mind, you can resume your subscription."
           button: "Cancel plan"
@@ -453,7 +479,6 @@ en:
       payment_method: "Payment Method"
       change: "Change"
       subscribe: "Subscribe"
-      start_trial: "Start trial"
       processing: "Processing..."
       help: "Need any help?"
       contact_html: "Don't hesitate to %{link}."

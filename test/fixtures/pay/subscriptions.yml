@@ -3,9 +3,10 @@ subscribed:
   customer: subscribed
   name: default
   processor_id: fake_1
-  processor_plan: fake
+  processor_plan: premium-monthly
   quantity: 1
   status: active
+  current_period_end: 2026-10-15 12:00:00 UTC
 
 past_due:
   type: Pay::FakeProcessor::Subscription
@@ -42,7 +43,7 @@ canceled_in_period:
   processor_plan: premium-monthly
   quantity: 1
   status: active
-  ends_at: <%= 1.month.from_now %>
+  ends_at: 2026-10-20 12:00:00 UTC
 
 canceled_ended:
   type: Pay::FakeProcessor::Subscription

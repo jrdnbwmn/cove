@@ -3,6 +3,7 @@
     <div class="mx-auto max-w-3xl">
       <h1 class="mb-6 text-center text-3xl font-bold text-foreground sm:mb-8 sm:text-4xl"><%= t(".title") %></h1>
       <%= render "checkouts/forms/stripe", client_secret: @checkout_session.client_secret %>
+      <p class="mt-4 text-center text-sm text-muted-foreground"><%= t("pricing.show.no_refunds") %></p>
       <%= render "testimonial" %>
     </div>
   </div>
@@ -10,32 +11,23 @@
   <div class="mx-auto grid max-w-6xl gap-8 p-4 lg:grid-cols-2 lg:gap-16 lg:py-24">
     <div>
       <div class="mb-6 flex justify-center lg:justify-start">
-        <% if @plan.has_trial? %>
-          <div>
-            <h1 class="text-lg font-semibold text-muted-foreground">Try <%= @plan.name %></h1>
-            <h3 class="my-1 text-3xl font-bold text-foreground"><%= @plan.trial_period_days %> days free</h3>
-            <p class="font-medium text-muted-foreground">Then <span id="recurringTotal"><%= pay_amount_to_currency(@plan) %></span> per <%= formatted_plan_interval(@plan) %></p>
-          </div>
+        <div>
+          <h1 class="text-lg font-semibold text-muted-foreground">Subscribe to <%= @plan.name %></h1>
 
-        <% else %>
-          <div>
-            <h1 class="text-lg font-semibold text-muted-foreground">Subscribe to <%= @plan.name %></h1>
+          <div class="flex items-center">
+            <h3 id="recurringTotal" class="my-1 text-4xl font-bold text-foreground"><%= pay_amount_to_currency(@plan) %></h3>
 
-            <div class="flex items-center">
-              <h3 id="recurringTotal" class="my-1 text-4xl font-bold text-foreground"><%= pay_amount_to_currency(@plan) %></h3>
-
-              <div class="ml-2 text-sm leading-none font-medium text-muted-foreground">
-                <% if @plan.unit_label? %>
-                  <div>per <%= @plan.unit_label %></div>
-                  <div>per <%= formatted_plan_interval(@plan) %></div>
-                <% else %>
-                  <div>per</div>
-                  <div><%= formatted_plan_interval(@plan) %></div>
-                <% end %>
-              </div>
+            <div class="ml-2 text-sm leading-none font-medium text-muted-foreground">
+              <% if @plan.unit_label? %>
+                <div>per <%= @plan.unit_label %></div>
+                <div>per <%= formatted_plan_interval(@plan) %></div>
+              <% else %>
+                <div>per</div>
+                <div><%= formatted_plan_interval(@plan) %></div>
+              <% end %>
             </div>
           </div>
-        <% end %>
+        </div>
       </div>
 
       <% if @plan.taxed? && @stripe_invoice %>
@@ -102,11 +94,8 @@
             <%= render 'checkouts/forms/braintree' if Jumpstart.config.braintree? %>
             <%= render 'checkouts/forms/paypal' if Jumpstart.config.paypal? %>
 
-            <% if @plan.has_trial? %>
-              <p class="mt-4 text-center text-sm text-muted-foreground">After your trial ends, you will be charged <%= pay_amount_to_currency(@plan) %> per <%= formatted_plan_interval(@plan) %> starting <%= l @plan.trial_period_days.days.from_now.to_date, format: :long %>. You can always cancel before then.</p>
-            <% else %>
-              <p class="mt-4 text-center text-sm text-muted-foreground">By confirming your subscription, you allow <%= Jumpstart.config.application_name %> to charge your payment method for this payment and future payments in accordance with our terms.</p>
-            <% end %>
+            <p class="mt-4 text-center text-sm text-muted-foreground">By confirming your subscription, you allow <%= Jumpstart.config.application_name %> to charge your payment method for this payment and future payments in accordance with our terms.</p>
+            <p class="mt-2 text-center text-sm text-muted-foreground"><%= t("pricing.show.no_refunds") %></p>
           </div>
         <% end %>
       <% end %>

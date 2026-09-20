@@ -267,6 +267,11 @@ Routes are modularized in `config/routes/`:
   this checkout (incompatible syntax / deprecation warning on `-n`). Run a
   specific test with the positional file argument and `-i` instead, e.g.
   `bin/rails test:system test/system/foo_test.rb -i "test name"`.
+- Don't run system tests concurrently with another Rails test process in this
+  linked worktree — it causes unrelated browser/authentication failures. Keep
+  Rails test runs sequential.
+- Browser-side date assertions need fixture timestamps at noon UTC; otherwise
+  a timezone shift moves the rendered date by a day.
 - This Capybara version does not reliably resolve `click_button` against
   `aria-label` attributes. Use CSS attribute selectors
   (`find("[aria-label='...']").click`) instead.
