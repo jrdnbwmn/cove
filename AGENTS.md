@@ -159,6 +159,7 @@ Routes are modularized in `config/routes/`:
   test fixtures for personal accounts are unreachable — don't write tests
   that assume a `personal: true` fixture can exist.
 - Plan rows are never deleted or re-priced — a price change is a new Stripe Price + new Plan row, old row hidden. Follow `docs/runbooks/price-change-checklist.md`.
+- Consented Loops contacts carry `planStatus` as `premium`, `complimentary`, or `free`. This is the sole override to COV-51's no-plan-information rule.
 
 ## Development Notes
 

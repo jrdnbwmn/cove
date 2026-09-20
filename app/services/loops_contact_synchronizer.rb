@@ -18,7 +18,14 @@ class LoopsContactSynchronizer
       ensure_mailing_list_configured!
       return unless current_app_opt_in?(user)
 
-      client.update_contact(**subscribed_attributes(user))
+      client.update_contact(**subscribed_attributes(user, family: user.family))
+    when :plan_status
+      return unless user.marketing_subscribed?
+
+      family = user.family
+      return unless family
+
+      client.update_contact(**plan_status_attributes(user, family:))
     when :opt_out
       ensure_mailing_list_configured!
       return unless current_app_opt_out?(user)
@@ -70,12 +77,21 @@ class LoopsContactSynchronizer
     raise MailingListMissing, "Loops contact sync mailing list is not configured" if mailing_list_id.blank?
   end
 
-  def subscribed_attributes(user)
+  def subscribed_attributes(user, family:)
     {
       email: user.email,
       user_id: user.id.to_s,
       subscribed: true,
-      mailing_lists: {mailing_list_id => true}
+      mailing_lists: {mailing_list_id => true},
+      contact_properties: {planStatus: family&.plan_status || "free"}
+    }
+  end
+
+  def plan_status_attributes(user, family:)
+    {
+      email: user.email,
+      user_id: user.id.to_s,
+      contact_properties: {planStatus: family.plan_status}
     }
   end
 

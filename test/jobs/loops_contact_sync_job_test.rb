@@ -33,13 +33,27 @@ class LoopsContactSyncJobTest < ActiveSupport::TestCase
     assert_no_enqueued_jobs only: LoopsEventJob
   end
 
-  test "a raising synchronizer is retried by LoopsRetryable and enqueues no event" do
+  test "plan status forwards its intent to the synchronizer and does not enqueue an event" do
+    user = users(:marketing_subscribed)
+    synchronizer = Object.new
+    calls = []
+    synchronizer.define_singleton_method(:sync) { |record, **attributes| calls << [record, attributes] }
+
+    LoopsContactSynchronizer.stub(:new, synchronizer) do
+      LoopsContactSyncJob.perform_now(user.id, "plan_status")
+    end
+
+    assert_equal [[user, {intent: "plan_status", previously_consented: nil}]], calls
+    assert_no_enqueued_jobs only: LoopsEventJob
+  end
+
+  test "a retryable plan-status failure is retried and enqueues no event" do
     user = users(:marketing_subscribed)
     raising_synchronizer = Object.new.tap { |double| double.define_singleton_method(:sync) { |*| raise LoopsClient::InternalError, "boom" } }
 
     LoopsContactSynchronizer.stub(:new, raising_synchronizer) do
-      assert_enqueued_with(job: LoopsContactSyncJob, args: [user.id, "opt_in"]) do
-        LoopsContactSyncJob.perform_now(user.id, "opt_in")
+      assert_enqueued_with(job: LoopsContactSyncJob, args: [user.id, "plan_status"]) do
+        LoopsContactSyncJob.perform_now(user.id, "plan_status")
       end
     end
 

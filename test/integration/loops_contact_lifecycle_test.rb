@@ -13,14 +13,14 @@ class LoopsContactLifecycleTest < ActiveSupport::TestCase
     end
   end
 
-  test "checked registration enqueues an opt-in after commit" do
+  test "checked registration enqueues opt-in and plan-status synchronization after commit" do
     user = build_user(marketing_opt_in: "1")
 
-    assert_enqueued_jobs 1, only: LoopsContactSyncJob do
+    assert_enqueued_jobs 2, only: LoopsContactSyncJob do
       user.save!
     end
-    contact_sync_job = enqueued_jobs.find { |job| job.fetch(:job) == LoopsContactSyncJob }
-    assert_equal [user.id, "opt_in"], contact_sync_job.fetch(:args)
+    contact_sync_jobs = enqueued_jobs.filter_map { |job| job.fetch(:args) if job.fetch(:job) == LoopsContactSyncJob }
+    assert_equal [[user.id, "opt_in"], [user.id, "plan_status"]], contact_sync_jobs
   end
 
   test "settings opt-in and app opt-out enqueue their exact intents" do

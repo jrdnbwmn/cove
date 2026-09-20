@@ -53,24 +53,36 @@ class LoopsContactSynchronizerTest < ActiveSupport::TestCase
     assert_raises(LoopsContactSynchronizer::ConfigurationError) { synchronizer.ensure_backfill_ready! }
   end
 
-  test "current opt-in sends the minimal subscribed list payload" do
+  test "current opt-in sends the subscribed list payload with the family's plan status" do
+    client = RecordingClient.new
+    user = users(:marketing_subscribed)
+    family = create_family_for(user)
+
+    build_synchronizer(client:).sync(user, intent: :opt_in)
+
+    assert_equal [{email: user.email, user_id: user.id.to_s, subscribed: true, mailing_lists: {LIST_ID => true}, contact_properties: {planStatus: family.plan_status}}], client.updates
+  end
+
+  test "current opt-in for a user without a family still subscribes them with a free plan status" do
     client = RecordingClient.new
     user = users(:marketing_subscribed)
 
     build_synchronizer(client:).sync(user, intent: :opt_in)
 
-    assert_equal [{email: user.email, user_id: user.id.to_s, subscribed: true, mailing_lists: {LIST_ID => true}}], client.updates
+    assert_equal [{email: user.email, user_id: user.id.to_s, subscribed: true, mailing_lists: {LIST_ID => true}, contact_properties: {planStatus: "free"}}], client.updates
   end
 
   test "current opt-in makes one exact Loops update request" do
     user = users(:marketing_subscribed)
+    family = create_family_for(user)
     request = stub_request(:put, "https://app.loops.so/api/v1/contacts/update")
       .with(
         body: {
           email: user.email,
           userId: user.id.to_s,
           subscribed: true,
-          mailingLists: {LIST_ID => true}
+          mailingLists: {LIST_ID => true},
+          planStatus: family.plan_status
         }.to_json,
         headers: {"Authorization" => "Bearer test-token"}
       )
@@ -127,6 +139,52 @@ class LoopsContactSynchronizerTest < ActiveSupport::TestCase
     build_synchronizer(client:).sync(user, intent: :email_change)
 
     assert_empty client.updates
+  end
+
+  test "plan status sends only identifiers and the current family status for app or Loops consent" do
+    client = RecordingClient.new
+    user = users(:marketing_subscribed)
+    family = create_family_for(user)
+    user.update!(marketing_opt_in_source: "loops")
+
+    build_synchronizer(client:).sync(user, intent: :plan_status)
+
+    assert_equal [{email: user.email, user_id: user.id.to_s, contact_properties: {planStatus: family.plan_status}}], client.updates
+  end
+
+  test "plan status makes one exact Loops update request without mailing-list fields" do
+    user = users(:marketing_subscribed)
+    family = create_family_for(user)
+    request = stub_request(:put, "https://app.loops.so/api/v1/contacts/update")
+      .with(
+        body: {email: user.email, userId: user.id.to_s, planStatus: family.plan_status}.to_json,
+        headers: {"Authorization" => "Bearer test-token"}
+      )
+      .to_return(status: 200, body: {success: true}.to_json)
+
+    synchronizer_with_http_client.sync(user, intent: :plan_status)
+
+    assert_requested request, times: 1
+  end
+
+  test "plan status does not write for an opted-out user or a user without a family" do
+    client = RecordingClient.new
+    synchronizer = build_synchronizer(client:)
+
+    synchronizer.sync(users(:marketing_unsubscribed), intent: :plan_status)
+    synchronizer.sync(users(:marketing_subscribed), intent: :plan_status)
+
+    assert_empty client.updates
+  end
+
+  test "plan status does not require a mailing-list configuration" do
+    client = RecordingClient.new
+    user = users(:marketing_subscribed)
+    family = create_family_for(user)
+
+    build_synchronizer(config: config(list_id: nil), client:).sync(user, intent: :plan_status)
+
+    assert_equal [{email: user.email, user_id: user.id.to_s, contact_properties: {planStatus: family.plan_status}}], client.updates
   end
 
   test "stale and protected consent intents do not write" do
@@ -186,5 +244,9 @@ class LoopsContactSynchronizerTest < ActiveSupport::TestCase
 
   def synchronizer_with_http_client
     build_synchronizer(client: LoopsClient.new(token: "test-token"))
+  end
+
+  def create_family_for(user)
+    Account.create!(owner: user, name: "#{user.name}'s Family", personal: false)
   end
 end
