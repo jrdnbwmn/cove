@@ -1,7 +1,7 @@
 require "test_helper"
 
-class PricingHelperTest < ActionView::TestCase
-  include PricingHelper
+class PlanPricingHelperTest < ActionView::TestCase
+  include PlanPricingHelper
 
   def current_account
     Current.account
@@ -31,10 +31,10 @@ class PricingHelperTest < ActionView::TestCase
     account.update!(student_limit: 10)
     Current.account = account
 
-    assert_equal Account.column_defaults.fetch("student_limit").to_i, premium_student_limit
+    assert_equal Account.default_student_limit, premium_student_limit
   end
 
   test "uses the Account default when signed out" do
-    assert_equal Account.column_defaults.fetch("student_limit").to_i, premium_student_limit
+    assert_equal Account.default_student_limit, premium_student_limit
   end
 end

@@ -10,6 +10,12 @@ class Account < ApplicationRecord
   validates :student_limit, numericality: {only_integer: true, greater_than_or_equal_to: 1}
   validates :complimentary_premium_note, presence: true, if: :complimentary_premium?
 
+  # AIDEV-NOTE: The database default is the single source for the Premium cap
+  # advertised to signed-out visitors and Free families.
+  def self.default_student_limit
+    column_defaults.fetch("student_limit").to_i
+  end
+
   before_destroy :cancel_billable_subscriptions!
   after_update_commit :sync_plan_status_to_marketing_subscribed_parents, if: :saved_change_to_complimentary_premium?
 
@@ -39,6 +45,10 @@ class Account < ApplicationRecord
     return "complimentary" if complimentary_premium?
 
     "free"
+  end
+
+  def paid_premium?
+    billable_subscriptions.exists?
   end
 
   def free?
@@ -72,10 +82,6 @@ class Account < ApplicationRecord
   end
 
   private
-
-  def paid_premium?
-    billable_subscriptions.exists?
-  end
 
   def students_empty?
     !respond_to?(:students) || students.none?

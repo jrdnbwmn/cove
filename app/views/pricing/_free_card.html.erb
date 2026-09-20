@@ -1,0 +1,14 @@
+<%# locals: (free_family:) %>
+<%= render PlanCardComponent.new(
+  name: t("pricing.show.free.name"),
+  description: t("pricing.show.free.description"),
+  price_text: "$0",
+  price_note: t("pricing.show.free.price_note"),
+  features: t("pricing.show.free.features", student_limit: Account::FREE_STUDENT_LIMIT)
+) do %>
+  <% if !user_signed_in? %>
+    <%= render ButtonComponent.new(text: t("pricing.show.free.get_started"), href: new_user_registration_path, variant: :secondary, size: :lg, full_width: true) %>
+  <% elsif free_family %>
+    <%= render ButtonComponent.new(text: t("pricing.show.free.current_plan"), variant: :secondary, size: :lg, full_width: true, disabled: true) %>
+  <% end %>
+<% end %>

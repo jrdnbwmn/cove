@@ -18,78 +18,19 @@
     </div>
 
     <% subscription = current_account&.pay_subscriptions&.where(status: %w[active past_due])&.first %>
+    <% free_family = user_signed_in? && current_account.free? %>
 
     <div data-turbo-prefetch="false" class="w-full lg:px-0 px-2">
-      <div data-pricing-target="plans" data-frequency="monthly" class="grid lg:grid-flow-col lg:auto-cols-fr gap-4">
-        <%= tag.div if @monthly_plans.count.zero? %>
-        <%= render PlanCardComponent.new(
-          name: t(".free.name"),
-          description: t(".free.description"),
-          price_text: "$0",
-          price_note: t(".free.price_note"),
-          features: t(".free.features", student_limit: Account::FREE_STUDENT_LIMIT)
-        ) do %>
-          <% if !user_signed_in? %>
-            <%= render ButtonComponent.new(text: t(".free.get_started"), href: new_user_registration_path, variant: :secondary, size: :lg, full_width: true) %>
-          <% elsif current_account.free? %>
-            <%= render ButtonComponent.new(text: t(".free.current_plan"), variant: :secondary, size: :lg, full_width: true, disabled: true) %>
+      <% {"monthly" => @monthly_plans, "yearly" => @yearly_plans}.each do |frequency, plans| %>
+        <div data-pricing-target="plans" data-frequency="<%= frequency %>" class="<%= "hidden " unless frequency == "monthly" %>grid lg:grid-flow-col lg:auto-cols-fr gap-4">
+          <%= tag.div if plans.empty? %>
+          <%= render "pricing/free_card", free_family: free_family %>
+          <% plans.each do |plan| %>
+            <%= render "pricing/premium_card", plan: plan, yearly: frequency == "yearly", free_family: free_family, subscription: subscription %>
           <% end %>
-        <% end %>
-        <% @monthly_plans.each do |plan| %>
-          <%= render PlanCardComponent.new(plan: plan, description: t(".premium.description"), features: t(".premium.features", student_limit: premium_student_limit)) do %>
-            <% if plan.contact_url.present? %>
-              <%= render ButtonComponent.new(text: t("billing.subscriptions.plan.contact_us"), href: plan.contact_url, variant: :secondary, size: :lg, full_width: true) %>
-            <% elsif !user_signed_in? %>
-              <%= render ButtonComponent.new(text: t(".premium.get_premium"), href: checkout_path(plan: plan), variant: :secondary, size: :lg, full_width: true) %>
-            <% elsif current_account.free? %>
-              <%= render ButtonComponent.new(text: t(".premium.upgrade"), href: checkout_path(plan: plan), variant: :secondary, size: :lg, full_width: true) %>
-            <% elsif subscription&.plan == plan || current_account.complimentary_premium? %>
-              <%= render ButtonComponent.new(text: t(".premium.current_plan"), variant: :secondary, size: :lg, full_width: true, disabled: true) %>
-            <% else %>
-              <%= render ButtonComponent.new(text: t(".premium.change_plan"), href: edit_billing_subscription_path(subscription), variant: :secondary, size: :lg, full_width: true) %>
-            <% end %>
-          <% end %>
-        <% end %>
-        <%= tag.div if @monthly_plans.count.zero? %>
-      </div>
-      <div data-pricing-target="plans" data-frequency="yearly" class="hidden grid lg:grid-flow-col lg:auto-cols-fr gap-4">
-        <%= tag.div if @yearly_plans.count.zero? %>
-        <%= render PlanCardComponent.new(
-          name: t(".free.name"),
-          description: t(".free.description"),
-          price_text: "$0",
-          price_note: t(".free.price_note"),
-          features: t(".free.features", student_limit: Account::FREE_STUDENT_LIMIT)
-        ) do %>
-          <% if !user_signed_in? %>
-            <%= render ButtonComponent.new(text: t(".free.get_started"), href: new_user_registration_path, variant: :secondary, size: :lg, full_width: true) %>
-          <% elsif current_account.free? %>
-            <%= render ButtonComponent.new(text: t(".free.current_plan"), variant: :secondary, size: :lg, full_width: true, disabled: true) %>
-          <% end %>
-        <% end %>
-        <% @yearly_plans.each do |plan| %>
-          <%= render PlanCardComponent.new(
-            plan: plan,
-            description: t(".premium.description"),
-            price_text: monthly_equivalent(plan),
-            price_note: t(".premium.yearly_price_note", amount: pay_amount_to_currency(plan, strip_insignificant_zeros: true)),
-            features: t(".premium.features", student_limit: premium_student_limit)
-          ) do %>
-            <% if plan.contact_url.present? %>
-              <%= render ButtonComponent.new(text: t("billing.subscriptions.plan.contact_us"), href: plan.contact_url, variant: :secondary, size: :lg, full_width: true) %>
-            <% elsif !user_signed_in? %>
-              <%= render ButtonComponent.new(text: t(".premium.get_premium"), href: checkout_path(plan: plan), variant: :secondary, size: :lg, full_width: true) %>
-            <% elsif current_account.free? %>
-              <%= render ButtonComponent.new(text: t(".premium.upgrade"), href: checkout_path(plan: plan), variant: :secondary, size: :lg, full_width: true) %>
-            <% elsif subscription&.plan == plan || current_account.complimentary_premium? %>
-              <%= render ButtonComponent.new(text: t(".premium.current_plan"), variant: :secondary, size: :lg, full_width: true, disabled: true) %>
-            <% else %>
-              <%= render ButtonComponent.new(text: t(".premium.change_plan"), href: edit_billing_subscription_path(subscription), variant: :secondary, size: :lg, full_width: true) %>
-            <% end %>
-          <% end %>
-        <% end %>
-        <%= tag.div if @yearly_plans.count.zero? %>
-      </div>
+          <%= tag.div if plans.empty? %>
+        </div>
+      <% end %>
     </div>
   </div>
 

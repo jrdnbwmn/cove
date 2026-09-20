@@ -100,8 +100,7 @@
   <p class="mt-2 mb-4 text-sm text-muted-foreground">Transfer family ownership before deleting your login.</p>
   <%= link_to "Transfer ownership", edit_account_transfer_path(current_user.family), class: "btn btn-secondary" %>
 <% else %>
-  <% family_owner = current_user.family&.owner?(current_user) %>
-  <% deletion_copy = family_owner ? (current_user.family.plan_status == "premium" ? "cancel_my_account_paid" : "cancel_my_account") : "cancel_my_account_second_parent" %>
+  <% deletion_copy = login_deletion_copy_key(current_user) %>
   <p class="mt-2 mb-4 text-sm text-muted-foreground"><%= t(".#{deletion_copy}_description") %></p>
   <div class="mt-2">
     <%= button_to t(".cancel_my_account"), registration_path(resource_name),

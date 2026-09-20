@@ -106,15 +106,14 @@ en:
       switch: "Switch"
       you: "you"
       delete_family: "Delete family"
-      delete_free_description: "Deleting this Family permanently removes its data."
-      delete_paid_description: "Deleting this Family ends Premium immediately and no refund is issued."
     new:
       title: "New Family"
       description: "Create a family for your homeschooling household."
     edit:
       title: "Edit Family"
-      delete_description: "Deleting this Family permanently removes its data."
-      delete_with_payments_description: "Deleting this Family ends Premium immediately and no refund is issued."
+    deletion:
+      free_description: "Deleting this Family permanently removes its data."
+      paid_description: "Deleting this Family ends Premium immediately and no refund is issued."
     created: "Account was successfully created."
     created_and_switch_html: "Account was successfully created. <a class=\"underline\" href=\"%{link}\">Switch account</a>"
     updated: "Account was successfully updated."
@@ -327,7 +326,6 @@ en:
       renews_on: "Renews %{date}"
       renewal_date_unavailable: "Your renewal date is unavailable."
       premium_until: "Premium until %{date}, then Free"
-      premium_until_date_unavailable: "Premium will end and your Family will return to Free."
 
     info:
       extra_billing_info: "Extra Billing Information"
@@ -361,7 +359,6 @@ en:
         change_plan: "Change Plan"
         current_plan: "Current plan"
         get_started: "Get Started"
-        start_trial: "Start Trial"
         processing: "Processing..."
 
       edit:
@@ -446,7 +443,6 @@ en:
           help_html: "Need to talk to someone? %{link} -- we'd love to help."
           contact_us: "Contact us"
           subject: "Question about %{product}"
-          active_until: "Your plan will be canceled, but is still available until the end of your billing period."
           active_until_no_refund: "Your plan will be canceled on %{date}. No refund is issued for the remaining time."
           active_until_no_refund_undated: "Your plan will be canceled at the end of your billing period. No refund is issued for the remaining time."
           cancel_immediately: "Your plan will be cancelled immediately."
@@ -483,7 +479,6 @@ en:
       payment_method: "Payment Method"
       change: "Change"
       subscribe: "Subscribe"
-      start_trial: "Start trial"
       processing: "Processing..."
       help: "Need any help?"
       contact_html: "Don't hesitate to %{link}."

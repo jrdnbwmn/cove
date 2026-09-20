@@ -28,7 +28,7 @@
             </div>
           </div>
         </div>
-    </div>
+      </div>
 
       <% if @plan.taxed? && @stripe_invoice %>
         <%= render CardComponent.new(padding: :sm, classes: "mb-6") do %>
@@ -94,7 +94,7 @@
             <%= render 'checkouts/forms/braintree' if Jumpstart.config.braintree? %>
             <%= render 'checkouts/forms/paypal' if Jumpstart.config.paypal? %>
 
-              <p class="mt-4 text-center text-sm text-muted-foreground">By confirming your subscription, you allow <%= Jumpstart.config.application_name %> to charge your payment method for this payment and future payments in accordance with our terms.</p>
+            <p class="mt-4 text-center text-sm text-muted-foreground">By confirming your subscription, you allow <%= Jumpstart.config.application_name %> to charge your payment method for this payment and future payments in accordance with our terms.</p>
             <p class="mt-2 text-center text-sm text-muted-foreground"><%= t("pricing.show.no_refunds") %></p>
           </div>
         <% end %>

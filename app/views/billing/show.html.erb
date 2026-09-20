@@ -5,11 +5,12 @@
 <h1 class="h3"><%= t(".title") %></h1>
 
 <% if account_admin?(current_account, current_user) %>
-  <%= render "plan_state" %>
+  <% subscriptions = @subscriptions.to_a %>
+  <%= render "plan_state", subscription: subscriptions.first %>
   <h2 class="mt-8 mb-4 border-b border-(--divider-color) pb-2 text-lg font-semibold text-foreground"><%= t(".subscriptions") %></h2>
 
-  <% if @subscriptions.any? %>
-    <%= render partial: "billing/subscriptions/subscription", collection: @subscriptions %>
+  <% if subscriptions.any? %>
+    <%= render partial: "billing/subscriptions/subscription", collection: subscriptions %>
   <% else %>
     <div class="mb-8 flex items-center gap-4">
       <div class="flex-1 text-muted-foreground"><%= t ".not_subscribed" %></div>
@@ -17,7 +18,7 @@
     </div>
   <% end %>
 
-  <% if @subscriptions.any? %>
+  <% if subscriptions.any? %>
     <%= render partial: "email" %>
     <%= render partial: "info" %>
     <%= render partial: "charges" %>

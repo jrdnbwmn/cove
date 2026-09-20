@@ -1,5 +1,4 @@
-<% subscription = @subscriptions.first %>
-
+<%# locals: (subscription:) %>
 <% if current_account.free? %>
   <%= render CardComponent.new(classes: "mb-8") do |card| %>
     <% card.with_body do %>
