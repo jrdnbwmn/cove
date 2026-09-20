@@ -7,14 +7,14 @@
 
 | Task | Phase | Checkpoint | Description | Assign | Done |
 | ---- | ----- | ---------- | ----------- | ------ | ---- |
-| 1 | 1 | 1 | Add pricing helpers and the copy contract | Master | |
-| 2 | 1 | 1 | Extend `PlanCardComponent` for Free and yearly displays | subagent | |
-| 3 | 2 | 2 | Build state-aware Free/Premium pricing | Master | |
-| 4 | 2 | 2 | Render Free, paid, complimentary, and canceled billing states | Master | |
-| 5 | 2 | 2 | Remove billing trial and duplicate grace-period presentation | subagent | |
-| 6 | 3 | 3 | Add refund policy copy and dated cancellation terms | Master | |
-| 7 | 3 | 3 | Clarify Family and login deletion consequences | subagent | |
-| 8 | 3 | 3 | Update component documentation, previews, and run final verification | Master | |
+| 1 | 1 | 1 | Add pricing helpers and the copy contract | Master | ✅ |
+| 2 | 1 | 1 | Extend `PlanCardComponent` for Free and yearly displays | subagent | ✅ |
+| 3 | 2 | 2 | Build state-aware Free/Premium pricing | Master | ✅ |
+| 4 | 2 | 2 | Render Free, paid, complimentary, and canceled billing states | Master | ✅ |
+| 5 | 2 | 2 | Remove billing trial and duplicate grace-period presentation | subagent | ✅ |
+| 6 | 3 | 3 | Add refund policy copy and dated cancellation terms | Master | ✅ |
+| 7 | 3 | 3 | Clarify Family and login deletion consequences | subagent | ✅ |
+| 8 | 3 | 3 | Update component documentation, previews, and run final verification | Master | ✅ |
 
 ## Prerequisites
 
