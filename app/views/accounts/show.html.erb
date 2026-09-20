@@ -93,6 +93,7 @@
 
   <%= render ButtonComponent.new(text: t(".invite"), variant: :secondary, href: new_account_account_invitation_path(@account), classes: "mt-2") if @account.account_users_count < 2 && account_admin?(@account, current_user) %>
   <% if @account.owner?(current_user) %>
-    <%= button_to "Delete family", account_path(@account), method: :delete, class: "mt-2", data: {turbo_confirm: "This ends Premium immediately with no refund. Delete this family?"} %>
+    <% deletion_description = @account.plan_status == "premium" ? t(".delete_paid_description") : t(".delete_free_description") %>
+    <%= button_to t(".delete_family"), account_path(@account), method: :delete, class: "mt-2", data: {turbo_confirm: t("are_you_sure"), turbo_confirm_description: deletion_description} %>
   <% end %>
 <% end %>

@@ -72,6 +72,10 @@ en:
         cancel_my_account: Delete my account
         cancel_my_account_description: This will permanently erase all data associated with your account. This action cannot be undone.
         cancel_my_account_confirm_description_html: This will permanently erase all data associated with your account. This action cannot be undone.<br/><br/>To verify, type your email address to confirm and delete your account.
+        cancel_my_account_paid_description: Deleting your login ends Premium immediately and no refund is issued.
+        cancel_my_account_paid_confirm_description_html: Deleting your login ends Premium immediately and no refund is issued.<br/><br/>To verify, type your email address to confirm and delete your account.
+        cancel_my_account_second_parent_description: Deleting your login leaves the Family and subscription unchanged.
+        cancel_my_account_second_parent_confirm_description_html: Deleting your login leaves the Family and subscription unchanged.<br/><br/>To verify, type your email address to confirm and delete your account.
         currently_waiting_confirmation_for_email: 'Currently waiting confirmation for: %{email}'
         leave_blank_if_you_don_t_want_to_change_it: Leave blank if you don't want to change it
         marketing_preferences: "Marketing preferences"

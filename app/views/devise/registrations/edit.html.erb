@@ -100,7 +100,9 @@
   <p class="mt-2 mb-4 text-sm text-muted-foreground">Transfer family ownership before deleting your login.</p>
   <%= link_to "Transfer ownership", edit_account_transfer_path(current_user.family), class: "btn btn-secondary" %>
 <% else %>
-  <p class="mt-2 mb-4 text-sm text-muted-foreground"><%= current_user.family&.owner?(current_user) ? t(".cancel_my_account_description") : "Deleting your login leaves the family and its subscription unchanged." %></p>
+  <% family_owner = current_user.family&.owner?(current_user) %>
+  <% deletion_copy = family_owner ? (current_user.family.plan_status == "premium" ? "cancel_my_account_paid" : "cancel_my_account") : "cancel_my_account_second_parent" %>
+  <p class="mt-2 mb-4 text-sm text-muted-foreground"><%= t(".#{deletion_copy}_description") %></p>
   <div class="mt-2">
     <%= button_to t(".cancel_my_account"), registration_path(resource_name),
     method: :delete,
@@ -111,7 +113,7 @@
       bridge__sign_out_path_value: api_v1_me_path,
       turbo_confirm: t("are_you_sure"),
       turbo_confirm_text: current_user.email,
-      turbo_confirm_description: t(".cancel_my_account_confirm_description_html")
+      turbo_confirm_description: t(".#{deletion_copy}_confirm_description_html")
       } %>
   </div>
 <% end %>
