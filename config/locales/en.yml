@@ -365,7 +365,6 @@ en:
         processing: "Processing..."
 
       edit:
-        trial_ends: "Your trial ends in %{days}."
         title: "Change Your Plan"
         description: "Simple, straightforward pricing to get your online business up and running"
         monthly: "Monthly"
@@ -378,18 +377,13 @@ en:
 
       subscription:
         cancel_plan: "Cancel plan"
-        canceled_on_trial: "After your trial ends on %{date}, this plan will be canceled automatically."
         title: "Current Plans"
-        free_trial: "Free Trial"
-        free_trial_ends: "Your trial ends on %{date}."
-        trial: "After your trial ends on %{date}, this plan will continue automatically."
         resume: "Resume plan"
         change_plan: "Change plan"
         pause: "Pause plan"
         canceled: "Canceled"
         incomplete: "Incomplete"
         confirm_payment: "Confirm payment"
-        ends_at: "Your plan will be canceled on %{date}."
         paused_at: "Your plan will be paused on %{date}."
         paused: "Your plan is paused."
         view_usage: "View usage"

@@ -28,13 +28,13 @@ class Billing::Subscriptions::SubscriptionPartialTest < ActionView::TestCase
     subscription
   end
 
-  test "free trial shows Free Trial badge and trial end date" do
+  test "subscription with stale trial metadata does not show trial presentation" do
     subscription = subscribe(trial_ends_at: 10.days.from_now)
 
     doc = render_subscription(subscription)
 
-    assert_equal I18n.t("billing.subscriptions.subscription.free_trial"), doc.css("span").first.text.strip
-    assert_includes doc.text, I18n.t("billing.subscriptions.subscription.free_trial_ends", date: l(subscription.trial_ends_at.to_date, format: :long))
+    refute_match(/trial/i, doc.text)
+    assert doc.css("a").any? { |link| link.text.strip == I18n.t("billing.subscriptions.subscription.change_plan") }, "expected a change plan link"
   end
 
   test "canceled subscription shows Canceled badge with no variant color" do
@@ -97,12 +97,12 @@ class Billing::Subscriptions::SubscriptionPartialTest < ActionView::TestCase
     assert_equal billing_subscription_resume_path(subscription), link[:href]
   end
 
-  test "on grace period subscription shows ends_at alert and resume action" do
+  test "grace period subscription keeps its resume action without a duplicate end-date warning" do
     subscription = subscribe(status: "active", ends_at: 5.days.from_now)
 
     doc = render_subscription(subscription)
 
-    assert_includes doc.text, I18n.t("billing.subscriptions.subscription.ends_at", date: l(subscription.ends_at.to_date, format: :long))
+    refute_includes doc.text, "Your plan will be canceled on"
     link = doc.css("a").find { |a| a.text.strip == I18n.t("billing.subscriptions.subscription.resume") }
     assert link, "expected a resume link"
     assert_equal billing_subscription_resume_path(subscription), link[:href]

@@ -1,7 +1,3 @@
-<% if @subscription.on_trial? %>
-  <%= render AlertComponent.new(title: t(".trial_ends", days: time_ago_in_words(@subscription.trial_ends_at)), variant: :warning, classes: "mb-6") %>
-<% end %>
-
 <div class="container m-auto my-12">
   <div class="flex flex-wrap justify-center">
     <div class="text-center">

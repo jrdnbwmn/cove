@@ -5,6 +5,7 @@
 <h1 class="h3"><%= t(".title") %></h1>
 
 <% if account_admin?(current_account, current_user) %>
+  <%= render "plan_state" %>
   <h2 class="mt-8 mb-4 border-b border-(--divider-color) pb-2 text-lg font-semibold text-foreground"><%= t(".subscriptions") %></h2>
 
   <% if @subscriptions.any? %>
@@ -16,9 +17,11 @@
     </div>
   <% end %>
 
-  <%= render partial: "email" %>
-  <%= render partial: "info" %>
-  <%= render partial: "charges" %>
+  <% if @subscriptions.any? %>
+    <%= render partial: "email" %>
+    <%= render partial: "info" %>
+    <%= render partial: "charges" %>
+  <% end %>
 <% else %>
   <p class="text-muted-foreground"><%= t(".contact_admin", account: current_account.name) %></p>
 <% end %>

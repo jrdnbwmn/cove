@@ -1,0 +1,28 @@
+<% subscription = @subscriptions.first %>
+
+<% if current_account.free? %>
+  <%= render CardComponent.new(classes: "mb-8") do |card| %>
+    <% card.with_body do %>
+      <h2 class="text-lg font-semibold text-foreground"><%= t("billing.show.free_title") %></h2>
+      <p class="mt-2 text-muted-foreground"><%= t("billing.show.free_description", student_limit: Account::FREE_STUDENT_LIMIT) %></p>
+      <%= render ButtonComponent.new(text: t("billing.show.upgrade"), href: pricing_path, classes: "mt-4") %>
+    <% end %>
+  <% end %>
+<% elsif current_account.complimentary_premium? && subscription.nil? %>
+  <div class="mb-8">
+    <%= render BadgeComponent.new(text: t("billing.show.complimentary_premium"), variant: :purple) %>
+    <p class="mt-2 text-muted-foreground"><%= t("billing.show.complimentary_description") %></p>
+    <%= render ButtonComponent.new(text: t("billing.show.subscribe"), href: pricing_path, variant: :secondary, classes: "mt-4") %>
+  </div>
+<% else %>
+  <div class="mb-8">
+    <%= render BadgeComponent.new(text: t("billing.show.premium"), variant: subscription&.past_due? ? :red : :green) %>
+    <% if subscription&.on_grace_period? && subscription.ends_at? %>
+      <%= render AlertComponent.new(title: t("billing.show.premium_until", date: l(subscription.ends_at.to_date, format: :long)), variant: :warning, classes: "mt-3") %>
+    <% elsif subscription&.current_period_end? %>
+      <p class="mt-2 text-muted-foreground"><%= t("billing.show.renews_on", date: l(subscription.current_period_end.to_date, format: :long)) %></p>
+    <% else %>
+      <p class="mt-2 text-muted-foreground"><%= t("billing.show.renewal_date_unavailable") %></p>
+    <% end %>
+  </div>
+<% end %>
