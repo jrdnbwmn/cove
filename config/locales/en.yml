@@ -105,13 +105,16 @@ en:
       copy_link: "Copy link"
       switch: "Switch"
       you: "you"
+      delete_family: "Delete family"
+      delete_free_description: "Deleting this Family permanently removes its data."
+      delete_paid_description: "Deleting this Family ends Premium immediately and no refund is issued."
     new:
       title: "New Family"
       description: "Create a family for your homeschooling household."
     edit:
       title: "Edit Family"
-      delete_description: "Deleting this account will permanently remove all associated data."
-      delete_with_payments_description: "Deleting this account will cancel any active subscriptions and permanently remove all associated data."
+      delete_description: "Deleting this Family permanently removes its data."
+      delete_with_payments_description: "Deleting this Family ends Premium immediately and no refund is issued."
     created: "Account was successfully created."
     created_and_switch_html: "Account was successfully created. <a class=\"underline\" href=\"%{link}\">Switch account</a>"
     updated: "Account was successfully updated."
@@ -254,6 +257,26 @@ en:
       subhead: "Simple, straightforward pricing"
       monthly: "Monthly"
       yearly: "Yearly"
+      free:
+        name: "Free"
+        description: "Everything you need to get started."
+        price_note: "forever"
+        features:
+          - "%{student_limit} student"
+          - "One parent"
+        get_started: "Get started free"
+        current_plan: "Current plan"
+      premium:
+        description: "More room for your family."
+        yearly_price_note: "billed %{amount} yearly"
+        features:
+          - "Up to %{student_limit} students"
+          - "Both parents"
+        get_premium: "Get Premium"
+        upgrade: "Upgrade"
+        change_plan: "Change plan"
+        current_plan: "Current plan"
+      no_refunds: "Cancel anytime. You keep Premium until the end of the period you have paid for. No refunds are issued for unused time."
 
   plan_intervals:
     day:
@@ -294,6 +317,17 @@ en:
       subscriptions: "Current plan"
       not_subscribed: "You are not currently subscribed."
       choose_plan: "Choose a plan"
+      free_title: "You're on Free"
+      free_description: "Your Family can have %{student_limit} student."
+      upgrade: "Upgrade to Premium"
+      premium: "Premium"
+      complimentary_premium: "Complimentary Premium"
+      complimentary_description: "Your Family has Premium access at no cost."
+      subscribe: "Subscribe to Premium"
+      renews_on: "Renews %{date}"
+      renewal_date_unavailable: "Your renewal date is unavailable."
+      premium_until: "Premium until %{date}, then Free"
+      premium_until_date_unavailable: "Premium will end and your Family will return to Free."
 
     info:
       extra_billing_info: "Extra Billing Information"
@@ -419,6 +453,8 @@ en:
           contact_us: "Contact us"
           subject: "Question about %{product}"
           active_until: "Your plan will be canceled, but is still available until the end of your billing period."
+          active_until_no_refund: "Your plan will be canceled on %{date}. No refund is issued for the remaining time."
+          active_until_no_refund_undated: "Your plan will be canceled at the end of your billing period. No refund is issued for the remaining time."
           cancel_immediately: "Your plan will be cancelled immediately."
           resume: "If you change your mind, you can resume your subscription."
           button: "Cancel plan"

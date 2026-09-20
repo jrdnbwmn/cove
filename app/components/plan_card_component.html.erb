@@ -1,10 +1,15 @@
 <%= render CardComponent.new(padding: :lg, classes: "h-full border-(--divider-color)") do |card| %>
   <% card.with_body do %>
-    <h4 class="mb-4"><%= plan.name %></h4>
-    <p class="mb-6 text-sm/6 text-muted-foreground"><%= plan.description %></p>
+    <h4 class="mb-4"><%= name %></h4>
+    <p class="mb-6 text-sm/6 text-muted-foreground"><%= description %></p>
 
     <div class="mb-6">
-      <% if plan.contact_url? %>
+      <% if price_text %>
+        <span class="text-4xl font-semibold"><%= price_text %></span>
+        <% if price_note %>
+          <p class="mt-1 text-sm/6 text-muted-foreground"><%= price_note %></p>
+        <% end %>
+      <% elsif plan.contact_url? %>
         <span class="text-4xl font-semibold"><%= t("billing.subscriptions.plan.contact_us_price") %></span>
       <% else %>
         <span class="text-4xl font-semibold"><%= helpers.pay_amount_to_currency(plan, strip_insignificant_zeros: true) %></span>
@@ -17,9 +22,9 @@
 
     <%= content %>
 
-    <% if plan.features.any? %>
+    <% if features.any? %>
       <div class="mt-8">
-        <% plan.features.each do |plan_feature| %>
+        <% features.each do |plan_feature| %>
           <div class="flex mb-2 text-sm/6 text-muted-foreground">
             <%= icon "check", class: "shrink-0 mr-3 text-primary h-6 w-5" %>
             <div><%= plan_feature %></div>
