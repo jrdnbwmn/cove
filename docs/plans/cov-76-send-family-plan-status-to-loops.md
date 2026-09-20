@@ -7,10 +7,10 @@
 
 | Task | Phase | Checkpoint | Description | Assign | Done |
 | ---- | ----- | ---------- | ----------- | ------ | ---- |
-| 1 | 1 | 1 | Add and test the plan-status contact payload | Master | |
-| 2 | 1 | 1 | Add subscription and complimentary-status triggers | Master | |
-| 3 | 1 | 1 | Add family-membership triggers | subagent | |
-| 4 | 1 | 2 | Record the project decision in generated agent guidance | Master | |
+| 1 | 1 | 1 | Add and test the plan-status contact payload | Master | ✅ |
+| 2 | 1 | 1 | Add subscription and complimentary-status triggers | Master | ✅ |
+| 3 | 1 | 1 | Add family-membership triggers | subagent | ✅ |
+| 4 | 1 | 2 | Record the project decision in generated agent guidance | Master | ✅ |
 
 ## Prerequisites
 

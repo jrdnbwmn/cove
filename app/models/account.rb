@@ -11,6 +11,7 @@ class Account < ApplicationRecord
   validates :complimentary_premium_note, presence: true, if: :complimentary_premium?
 
   before_destroy :cancel_billable_subscriptions!
+  after_update_commit :sync_plan_status_to_marketing_subscribed_parents, if: :saved_change_to_complimentary_premium?
 
   def parents
     admins
@@ -62,6 +63,12 @@ class Account < ApplicationRecord
     return :other_members unless students_empty?
     return :billable_subscription if billable_subscriptions.any?
     nil
+  end
+
+  def sync_plan_status_to_marketing_subscribed_parents
+    parents.marketing_subscribed.find_each do |parent|
+      LoopsContactSyncJob.perform_later(parent.id, "plan_status")
+    end
   end
 
   private

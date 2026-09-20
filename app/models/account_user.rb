@@ -8,6 +8,7 @@ class AccountUser < ApplicationRecord
   validates :admin, inclusion: {in: [true], message: "must be an admin"}
   validate :user_has_no_other_family
   validate :family_has_capacity, on: :create
+  after_commit :enqueue_plan_status_sync, on: [:create, :destroy]
 
   private
 
@@ -21,5 +22,12 @@ class AccountUser < ApplicationRecord
     return unless account&.full?
 
     errors.add(:base, "Family already has two parents")
+  end
+
+  def enqueue_plan_status_sync
+    user = User.find_by(id: user_id)
+    return unless user&.marketing_subscribed?
+
+    LoopsContactSyncJob.perform_later(user.id, "plan_status")
   end
 end
