@@ -65,7 +65,6 @@ class TableComponent < ViewComponent::Base
     classes = [base]
     classes << rounded_classes
     classes << "border border-black/10 dark:border-white/10" if @bordered
-    classes << "shadow-xs"
     classes << @container_classes if @container_classes
     classes.compact.reject(&:empty?).join(" ")
   end
