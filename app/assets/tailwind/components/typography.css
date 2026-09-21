@@ -2,14 +2,14 @@
   font-family: var(--font-serif);
   font-size: var(--text-5xl);
   font-weight: 600;
-  letter-spacing: normal;
+  letter-spacing: -0.025em;
   line-height: 1.25;
 }
 
 h1, .h1 {
   font-size: var(--text-4xl);
   font-weight: 600;
-  letter-spacing: normal;
+  letter-spacing: -0.025em;
   line-height: 1.25;
 }
 
