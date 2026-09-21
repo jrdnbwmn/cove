@@ -5,10 +5,12 @@
 
     <div class="mb-6">
       <% if price_text %>
-        <span class="text-4xl font-semibold"><%= price_text %></span>
-        <% if price_note %>
-          <p class="mt-1 text-sm/6 text-muted-foreground"><%= price_note %></p>
-        <% end %>
+        <div class="flex flex-wrap items-baseline gap-x-2">
+          <span class="text-4xl font-semibold"><%= price_text %></span>
+          <% if price_note %>
+            <span class="text-sm/6 text-muted-foreground"><%= price_note %></span>
+          <% end %>
+        </div>
       <% elsif plan.contact_url? %>
         <span class="text-4xl font-semibold"><%= t("billing.subscriptions.plan.contact_us_price") %></span>
       <% else %>

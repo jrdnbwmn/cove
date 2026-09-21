@@ -1,10 +1,28 @@
-<div class="py-32 max-w-2xl m-auto text-center flex flex-col items-center justify-center">
-  <h1 class="mb-2">Welcome to Jumpstart</h1>
-  <p class="mb-6 text-muted-foreground leading-normal text-xl">Jumpstart is the perfect starting point for your next Ruby on Rails app. Skip the boilerplate setup and build your app faster.</p>
-  <% if Rails.env.development? %>
-    <div class="flex flex-col items-center gap-4">
-      <%= render ButtonComponent.new(text: "Configure Jumpstart", variant: :primary, href: jumpstart_path, data: { turbo: false }) %>
-      <%= render ButtonComponent.new(text: "Read the Docs", variant: :outline, href: jumpstart.docs_path, target: "_blank", data: { turbo: false }) %>
-    </div>
+<div class="container m-auto">
+  <section class="py-24 max-w-2xl m-auto text-center flex flex-col items-center justify-center">
+    <h1 class="mb-4"><%= t(".headline") %></h1>
+    <p class="mb-8 text-muted-foreground leading-normal text-xl"><%= t(".subhead") %></p>
+    <%= render ButtonComponent.new(text: t(".cta"), variant: :primary, size: :lg, href: new_user_registration_path) %>
+  </section>
+
+  <section class="pb-16 grid gap-8 lg:grid-cols-3">
+    <% {"plan" => "calendar-days", "records" => "clipboard-check", "day" => "sun"}.each do |key, icon_name| %>
+      <div data-testid="value-point">
+        <%= render CardComponent.new(classes: "h-full") do %>
+          <div class="mb-4 flex size-10 items-center justify-center rounded-[var(--radius)] bg-muted text-primary">
+            <%= icon icon_name, class: "size-5" %>
+          </div>
+          <h3 class="mb-2"><%= t(".value_points.#{key}.heading") %></h3>
+          <p class="text-muted-foreground"><%= t(".value_points.#{key}.body") %></p>
+        <% end %>
+      </div>
+    <% end %>
+  </section>
+
+  <% if @monthly_plans.any? || @yearly_plans.any? %>
+    <section class="pb-24">
+      <h2 class="text-center"><%= t(".pricing_heading") %></h2>
+      <%= render "pricing/plans", monthly_plans: @monthly_plans, yearly_plans: @yearly_plans %>
+    </section>
   <% end %>
 </div>

@@ -11,8 +11,7 @@
 
       <nav class="minimal-top-nav">
         <%= link_to root_path do %>
-          <%= render_svg "logo", class: "h-6" %>
-          <span class="sr-only"><%= Jumpstart.config.application_name %></span>
+          <%= render "application/wordmark" %>
         <% end %>
       </nav>
     </header>

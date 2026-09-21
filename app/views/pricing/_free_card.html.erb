@@ -3,7 +3,6 @@
   name: t("pricing.show.free.name"),
   description: t("pricing.show.free.description"),
   price_text: "$0",
-  price_note: t("pricing.show.free.price_note"),
   features: t("pricing.show.free.features", student_limit: Account::FREE_STUDENT_LIMIT)
 ) do %>
   <% if !user_signed_in? %>

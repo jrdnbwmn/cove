@@ -171,7 +171,6 @@ button[aria-label="Notifications"] svg {
 
 .minimal-top-nav {
   padding: 16px;
-  border-bottom: 1px solid var(--base-border-tertiary);
 
   @media (min-width: 1024px) {
     padding: 0px 32px;
