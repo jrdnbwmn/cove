@@ -1,7 +1,7 @@
 .font-display {
   font-family: var(--font-serif);
   font-size: var(--text-5xl);
-  font-weight: 600;
+  font-weight: 400;
   letter-spacing: -0.025em;
   line-height: 1.25;
 }
@@ -39,7 +39,7 @@ h5, .h5 {
 
 h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
   font-family: var(--font-serif);
-  font-weight: 600;
+  font-weight: 400;
 }
 
 .with-border {
