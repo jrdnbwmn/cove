@@ -160,6 +160,8 @@ Routes are modularized in `config/routes/`:
   that assume a `personal: true` fixture can exist.
 - Plan rows are never deleted or re-priced — a price change is a new Stripe Price + new Plan row, old row hidden. Follow `docs/runbooks/price-change-checklist.md`.
 - Consented Loops contacts carry `planStatus` as `premium`, `complimentary`, or `free`. This is the sole override to COV-51's no-plan-information rule.
+- Brand palette: teal (`--primary`, `--primary-hover`), cream (`--background`), coral (`--accent-brand`, used only via `--bg-accent`/`--border-accent`). Reference these tokens; don't repeat the hex values. Neutrals (`neutral-*`, and `gray-*` which maps to it) point at Tailwind's warm `stone` scale, and the red/orange/yellow/green/blue/purple/pink scales are redefined muted in `application.css` `@theme` (same lightness steps as Tailwind's defaults, so contrast is unchanged).
+- Typography: only `h1`/`h2` (and `.font-display`) use the serif (`--font-serif`, Source Serif 4 at 600); `h3`–`h6` and body use Inter. Buttons and inputs have no drop shadows (the opt-in `fancy` button style keeps its own).
 
 ## Development Notes
 
@@ -314,3 +316,4 @@ Routes are modularized in `config/routes/`:
 - Braintree's dark-mode selector is a mixed `:is(.dark .braintree-placeholder,
   .braintree-heading)` rule — it is not fully dark-mode-only. Preserve the
   light-mode `.braintree-heading` branch when stripping dark-mode CSS.
+- Fonts are self-hosted from `app/assets/fonts/` via `@font-face` in `application.css`. Use a plain filename in `url("...")` (not `/assets/...`) so Propshaft rewrites it to the digested path. A new `app/assets/*` subfolder isn't picked up by an already-running dev server — restart `bin/dev`. Source Serif 4 must come from Google's static (default optical size) files, not Adobe's Display/Text/Caption cuts, or headings render with different letterforms.
