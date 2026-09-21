@@ -40,10 +40,10 @@
   --icon-on-warning-secondary: var(--color-yellow-700);
 
   /*Accent*/
-  --bg-accent: var(--color-orange-700);
-  --text-on-accent: var(--color-white);
-  --border-accent: var(--color-orange-500);
-  --text-accent: var(--color-orange-700);
+  --bg-accent: #FA796E;
+  --text-on-accent: var(--color-gray-900);
+  --border-accent: #FA796E;
+  --text-accent: #C4433A;
 
   /*Light*/
   --bg-light: var(--color-white);
@@ -53,12 +53,12 @@
   --border-light: var(--color-gray-300);
 
   /*Dark*/
-  --bg-dark: var(--color-gray-800);
+  --bg-dark: #295F68;
   --bg-dark-secondary: var(--color-gray-500);
-  --bg-dark-hover: var(--color-gray-700);
+  --bg-dark-hover: #1F4A51;
   --text-on-dark: var(--color-white);
   --text-on-dark-outline: var(--color-gray-800);
-  --border-dark: var(--color-gray-700);
+  --border-dark: #1F4A51;
   --border-dark-focus: var(--color-gray-500);
 
   /*Disabled*/
@@ -78,19 +78,19 @@
   --base-bg-backdrop: var(--color-gray-800);
   --base-bg-highest: var(--color-gray-300);
   --base-bg-high: var(--color-gray-100);
-  --base-bg-base: var(--color-gray-50);
+  --base-bg-base: #F6F0E4;
   --base-bg-low: var(--color-white);
-  --base-bg-lowest: var(--color-gray-50);
+  --base-bg-lowest: #F6F0E4;
   --base-border-primary: var(--color-gray-500);
   --base-border-secondary: var(--color-gray-400);
   --base-border-tertiary: var(--color-gray-200);
-  --base-border-focus: var(--color-blue-500);
-  --base-bg-selected: var(--color-blue-700);
+  --base-border-focus: #295F68;
+  --base-bg-selected: #295F68;
   --base-bg-hover: var(--color-gray-50);
   --base-bg-tooltip: var(--color-gray-800);
   --base-text-on-tooltip: var(--color-white);
 
-  --background: var(--color-white);
+  --background: #F6F0E4;
   --divider-color: var(--color-gray-100);
   /* Background */
   background-color: var(--background);
