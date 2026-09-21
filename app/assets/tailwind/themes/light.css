@@ -78,9 +78,9 @@
   --base-bg-backdrop: var(--color-gray-800);
   --base-bg-highest: var(--color-gray-300);
   --base-bg-high: var(--color-gray-100);
-  --base-bg-base: #F8F7F1;
+  --base-bg-base: #F8F8F3;
   --base-bg-low: var(--color-white);
-  --base-bg-lowest: #F8F7F1;
+  --base-bg-lowest: #F8F8F3;
   --base-border-primary: var(--color-gray-500);
   --base-border-secondary: var(--color-gray-400);
   --base-border-tertiary: var(--color-gray-200);
@@ -90,7 +90,7 @@
   --base-bg-tooltip: var(--color-gray-800);
   --base-text-on-tooltip: var(--color-white);
 
-  --background: #F8F7F1;
+  --background: #F8F8F3;
   --divider-color: var(--color-gray-100);
   /* Background */
   background-color: var(--background);
