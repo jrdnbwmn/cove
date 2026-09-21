@@ -4,7 +4,7 @@ class MinimalLayoutPreviewController < ApplicationController
   layout "minimal"
 
   def show
-    render template: "public/index"
+    render template: "public/about"
   end
 end
 

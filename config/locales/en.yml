@@ -251,11 +251,12 @@ en:
 
   pricing:
     no_plans_html: "There are no pricing plans configured. %{link}."
+    plans:
+      monthly: "Monthly"
+      yearly: "Yearly"
     show:
       heading: "Pricing Plans"
       subhead: "Simple, straightforward pricing"
-      monthly: "Monthly"
-      yearly: "Yearly"
       free:
         name: "Free"
         description: "Everything you need to get started."
@@ -302,6 +303,21 @@ en:
   public:
     about:
       title: "About Us"
+    index:
+      headline: "Your homeschool's chief of staff"
+      subhead: "Cove keeps the plans, the records, and the day-to-day running, so your time goes to teaching instead of tracking."
+      cta: "Start free"
+      pricing_heading: "Simple pricing for your family"
+      value_points:
+        plan:
+          heading: "Plan the year"
+          body: "Lay out subjects and schedules for every student in one place."
+        records:
+          heading: "Keep the records"
+          body: "Attendance, grades, and progress captured as you go, ready when you need them."
+        day:
+          heading: "Run the day"
+          body: "See what's next for each student without rebuilding the plan every morning."
     privacy:
       title: "Privacy Policy"
     terms:

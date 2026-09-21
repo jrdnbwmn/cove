@@ -3,7 +3,7 @@ require "test_helper"
 class FlashVariantPreviewController < ApplicationController
   def show
     flash.now[params[:flash_key].to_sym] = params[:flash_message]
-    render template: "public/index"
+    render template: "public/about"
   end
 end
 

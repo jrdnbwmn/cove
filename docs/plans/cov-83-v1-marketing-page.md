@@ -9,9 +9,9 @@
 | ---- | ----- | ---------- | ----------------------------------------------------------------- | ------ | ---- |
 | 1    | 1     | 1          | `marketing_page?` helper, `_wordmark` partial, navbar variant     | Master | ✅   |
 | 2    | 1     | 1          | Wordmark in Devise/error layouts, drop `.minimal-top-nav` border  | Clone  | ✅   |
-| 3    | 1     | 2          | Extract `pricing/_plans` partial (+ move locale keys)             | Master |      |
-| 4    | 1     | 2          | `PublicController` app-level override with plan loading           | Master |      |
-| 5    | 1     | 2          | Homepage view, `public.index.*` copy, homepage tests              | Clone  |      |
+| 3    | 1     | 2          | Extract `pricing/_plans` partial (+ move locale keys)             | Master | ✅   |
+| 4    | 1     | 2          | `PublicController` app-level override with plan loading           | Master | ✅   |
+| 5    | 1     | 2          | Homepage view, `public.index.*` copy, homepage tests              | Clone  | ✅   |
 
 ## Prerequisites
 
