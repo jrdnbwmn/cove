@@ -1,43 +1,46 @@
 .font-display {
+  font-family: var(--font-serif);
   font-size: var(--text-5xl);
-  font-weight: 700;
+  font-weight: 600;
   letter-spacing: -0.025em;
   line-height: 1.25;
 }
 
 h1, .h1 {
+  font-family: var(--font-serif);
   font-size: var(--text-4xl);
-  font-weight: 700;
+  font-weight: 600;
   letter-spacing: -0.025em;
   line-height: 1.25;
 }
 
 h2, .h2 {
+  font-family: var(--font-serif);
   font-size: var(--text-3xl);
-  font-weight: 700;
+  font-weight: 600;
   line-height: 1.25;
 }
 
 h3, .h3 {
   font-size: var(--text-2xl);
-  font-weight: 700;
+  font-weight: 600;
   line-height: 1.5;
 }
 
 h4, .h4 {
   font-size: var(--text-xl);
-  font-weight: 700;
+  font-weight: 600;
   line-height: 1.5;
 }
 
 h5, .h5 {
   font-size: var(--text-lg);
-  font-weight: 700;
+  font-weight: 600;
   line-height: 1.5;
 }
 
 h6, .h6 {
-  font-weight: 700;
+  font-weight: 600;
 }
 
 .with-border {

@@ -13,7 +13,6 @@
   background-color: var(--base-bg-low);
   border: 1px solid var(--border-secondary);
   border-radius: 6px;
-  box-shadow: 0px 1px 2px 0px rgba(0, 0, 0, 0.05);
   color: var(--base-text-secondary);
   display: block;
   font-size: 14px;
@@ -53,7 +52,6 @@ select {
   background-color: var(--base-bg-low);
   border: 1px solid var(--border-secondary);
   border-radius: 6px;
-  box-shadow: 0px 1px 2px 0px rgba(0, 0, 0, 0.05);
   cursor: pointer;
   font-size: 14px;
   line-height: 26px;
@@ -83,7 +81,6 @@ select[multiple] {
   background: var(--base-bg-low);
   border: 1px solid var(--border-secondary);
   border-radius: 6px;
-  box-shadow: 0px 1px 2px 0px rgba(0, 0, 0, 0.05);
   padding: 6px 0px;
   width: 100%;
 

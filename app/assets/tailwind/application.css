@@ -8,10 +8,119 @@
 @variant hotwire-native (html.hotwire-native &);
 @variant not-hotwire-native (html:not(.hotwire-native) &);
 
+@font-face {
+  font-family: "Source Serif 4";
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url("SourceSerif4-Semibold-latin-ext.woff2") format("woff2");
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+
+@font-face {
+  font-family: "Source Serif 4";
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url("SourceSerif4-Semibold-latin.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
 @theme {
   --font-sans: InterVariable, ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
   /* https://rsms.me/inter/lab */
-  --font-sans--font-feature-settings: 'liga', 'cv02', 'cv03', 'cv04', 'cv11';
+  --font-sans--font-feature-settings: 'liga', 'cv02', 'cv03', 'cv04';
+  --font-serif: "Source Serif 4", ui-serif, Georgia, serif;
+  /* AIDEV-NOTE: Muted brand-tone status palette. Same lightness steps as Tailwind's defaults (so contrast is unchanged), lower chroma, earthier hues to sit with teal/cream/coral. */
+  --color-red-50: oklch(0.977 0.012 25);
+  --color-red-100: oklch(0.945 0.026 25);
+  --color-red-200: oklch(0.895 0.054 25);
+  --color-red-300: oklch(0.82 0.091 25);
+  --color-red-400: oklch(0.72 0.123 25);
+  --color-red-500: oklch(0.63 0.145 25);
+  --color-red-600: oklch(0.54 0.15 25);
+  --color-red-700: oklch(0.46 0.134 25);
+  --color-red-800: oklch(0.39 0.112 25);
+  --color-red-900: oklch(0.33 0.091 25);
+  --color-red-950: oklch(0.23 0.064 25);
+  --color-orange-50: oklch(0.977 0.01 55);
+  --color-orange-100: oklch(0.945 0.022 55);
+  --color-orange-200: oklch(0.895 0.046 55);
+  --color-orange-300: oklch(0.82 0.079 55);
+  --color-orange-400: oklch(0.72 0.107 55);
+  --color-orange-500: oklch(0.63 0.125 55);
+  --color-orange-600: oklch(0.54 0.13 55);
+  --color-orange-700: oklch(0.46 0.116 55);
+  --color-orange-800: oklch(0.39 0.097 55);
+  --color-orange-900: oklch(0.33 0.079 55);
+  --color-orange-950: oklch(0.23 0.056 55);
+  --color-yellow-50: oklch(0.977 0.009 85);
+  --color-yellow-100: oklch(0.945 0.019 85);
+  --color-yellow-200: oklch(0.895 0.039 85);
+  --color-yellow-300: oklch(0.82 0.067 85);
+  --color-yellow-400: oklch(0.72 0.09 85);
+  --color-yellow-500: oklch(0.63 0.106 85);
+  --color-yellow-600: oklch(0.54 0.11 85);
+  --color-yellow-700: oklch(0.46 0.098 85);
+  --color-yellow-800: oklch(0.39 0.082 85);
+  --color-yellow-900: oklch(0.33 0.067 85);
+  --color-yellow-950: oklch(0.23 0.047 85);
+  --color-green-50: oklch(0.977 0.008 155);
+  --color-green-100: oklch(0.945 0.018 155);
+  --color-green-200: oklch(0.895 0.037 155);
+  --color-green-300: oklch(0.82 0.064 155);
+  --color-green-400: oklch(0.72 0.086 155);
+  --color-green-500: oklch(0.63 0.101 155);
+  --color-green-600: oklch(0.54 0.105 155);
+  --color-green-700: oklch(0.46 0.094 155);
+  --color-green-800: oklch(0.39 0.079 155);
+  --color-green-900: oklch(0.33 0.064 155);
+  --color-green-950: oklch(0.23 0.045 155);
+  --color-blue-50: oklch(0.977 0.007 238);
+  --color-blue-100: oklch(0.945 0.015 238);
+  --color-blue-200: oklch(0.895 0.032 238);
+  --color-blue-300: oklch(0.82 0.055 238);
+  --color-blue-400: oklch(0.72 0.074 238);
+  --color-blue-500: oklch(0.63 0.087 238);
+  --color-blue-600: oklch(0.54 0.09 238);
+  --color-blue-700: oklch(0.46 0.08 238);
+  --color-blue-800: oklch(0.39 0.067 238);
+  --color-blue-900: oklch(0.33 0.055 238);
+  --color-blue-950: oklch(0.23 0.039 238);
+  --color-purple-50: oklch(0.977 0.007 320);
+  --color-purple-100: oklch(0.945 0.015 320);
+  --color-purple-200: oklch(0.895 0.032 320);
+  --color-purple-300: oklch(0.82 0.055 320);
+  --color-purple-400: oklch(0.72 0.074 320);
+  --color-purple-500: oklch(0.63 0.087 320);
+  --color-purple-600: oklch(0.54 0.09 320);
+  --color-purple-700: oklch(0.46 0.08 320);
+  --color-purple-800: oklch(0.39 0.067 320);
+  --color-purple-900: oklch(0.33 0.055 320);
+  --color-purple-950: oklch(0.23 0.039 320);
+  --color-pink-50: oklch(0.977 0.009 8);
+  --color-pink-100: oklch(0.945 0.019 8);
+  --color-pink-200: oklch(0.895 0.039 8);
+  --color-pink-300: oklch(0.82 0.067 8);
+  --color-pink-400: oklch(0.72 0.09 8);
+  --color-pink-500: oklch(0.63 0.106 8);
+  --color-pink-600: oklch(0.54 0.11 8);
+  --color-pink-700: oklch(0.46 0.098 8);
+  --color-pink-800: oklch(0.39 0.082 8);
+  --color-pink-900: oklch(0.33 0.067 8);
+  --color-pink-950: oklch(0.23 0.047 8);
+  /* AIDEV-NOTE: neutral-* (and gray-*, which maps to it) use Tailwind's warm stone scale. */
+  --color-neutral-50: var(--color-stone-50);
+  --color-neutral-100: var(--color-stone-100);
+  --color-neutral-200: var(--color-stone-200);
+  --color-neutral-300: var(--color-stone-300);
+  --color-neutral-400: var(--color-stone-400);
+  --color-neutral-500: var(--color-stone-500);
+  --color-neutral-600: var(--color-stone-600);
+  --color-neutral-700: var(--color-stone-700);
+  --color-neutral-800: var(--color-stone-800);
+  --color-neutral-900: var(--color-stone-900);
+  --color-neutral-950: var(--color-stone-950);
   --color-gray-50: var(--color-neutral-50);
   --color-gray-100: var(--color-neutral-100);
   --color-gray-200: var(--color-neutral-200);
