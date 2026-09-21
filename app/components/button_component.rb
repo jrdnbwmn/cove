@@ -151,7 +151,7 @@ class ButtonComponent < ViewComponent::Base
   def basic_variant_classes
     case @variant
     when :primary
-      "border border-neutral-400/30 bg-primary text-primary-foreground hover:bg-neutral-700 focus-visible:outline-neutral-600 dark:hover:bg-neutral-100 dark:focus-visible:outline-neutral-200"
+      "border border-neutral-400/30 bg-primary text-primary-foreground hover:bg-primary-hover focus-visible:outline-neutral-600 dark:hover:bg-neutral-100 dark:focus-visible:outline-neutral-200"
     when :secondary
       "border border-black/10 bg-white/90 text-neutral-800 hover:bg-neutral-50 focus-visible:outline-neutral-600 dark:border-white/10 dark:bg-neutral-700/50 dark:text-neutral-50 dark:hover:bg-neutral-700/75 dark:focus-visible:outline-neutral-200"
     when :outline
