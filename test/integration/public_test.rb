@@ -15,6 +15,37 @@ class Jumpstart::PublicTest < ActionDispatch::IntegrationTest
     assert_response :success
   end
 
+  test "pricing page navbar is borderless and shows the text wordmark" do
+    get pricing_path
+
+    assert_response :success
+    assert_select "nav[aria-label='Primary']" do |navs|
+      assert_not_includes navs.first["class"].split, "border-b"
+    end
+    assert_select "nav[aria-label='Primary'] a[href='/']:first-of-type" do |links|
+      assert_equal "Cove", links.first.text.strip
+    end
+    assert_select "nav[aria-label='Primary'] a[href='/'] svg", count: 0
+    assert_select "nav[aria-label='Primary'] a[href='/'] .sr-only", count: 0
+  end
+
+  test "about page keeps the standard navbar with logo and border" do
+    get about_path
+
+    assert_response :success
+    assert_select "nav[aria-label='Primary'].border-b"
+    assert_select "nav[aria-label='Primary'] a[href='/'] svg"
+  end
+
+  test "signed-in pages keep the standard navbar with logo and border" do
+    sign_in users(:one)
+    get edit_user_registration_path
+
+    assert_response :success
+    assert_select "nav[aria-label='Primary'].border-b"
+    assert_select "nav[aria-label='Primary'] a[href='/'] svg"
+  end
+
   test "privacy policy explains OAuth data, marketing consent, and service providers" do
     get privacy_path
 
