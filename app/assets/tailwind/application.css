@@ -12,7 +12,7 @@
   --font-sans: InterVariable, ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
   /* https://rsms.me/inter/lab */
   --font-sans--font-feature-settings: 'liga', 'cv02', 'cv03', 'cv04';
-  --font-serif: "Literata", ui-serif, Georgia, serif;
+  --font-serif: "Source Serif 4", ui-serif, Georgia, serif;
   --color-gray-50: var(--color-neutral-50);
   --color-gray-100: var(--color-neutral-100);
   --color-gray-200: var(--color-neutral-200);
