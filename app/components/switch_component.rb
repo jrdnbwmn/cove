@@ -169,8 +169,8 @@ class SwitchComponent < ViewComponent::Base
     return classes.join(" ") if custom_checked_background?
 
     classes.unshift(
-      "peer-checked:bg-neutral-800",
-      "peer-checked:group-hover:bg-neutral-700",
+      "peer-checked:bg-primary",
+      "peer-checked:group-hover:bg-primary-hover",
       "dark:peer-checked:bg-neutral-50",
       "dark:peer-checked:group-hover:bg-neutral-100"
     )
