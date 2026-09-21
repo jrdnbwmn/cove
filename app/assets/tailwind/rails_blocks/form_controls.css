@@ -1,5 +1,5 @@
 [type="checkbox"] {
-  @apply size-4 cursor-pointer appearance-none rounded-sm border border-neutral-300 bg-white checked:border-primary checked:bg-primary focus:outline-2 focus:outline-offset-2 focus:outline-neutral-600 disabled:border-neutral-300 disabled:bg-neutral-100 disabled:checked:bg-neutral-100 dark:border-white/20 dark:bg-neutral-800 dark:checked:border-white/20 dark:checked:bg-neutral-900 dark:focus:outline-neutral-200 dark:disabled:border-neutral-500 dark:disabled:bg-neutral-400 dark:disabled:checked:bg-neutral-500 forced-colors:appearance-auto;
+  @apply size-4 cursor-pointer appearance-none rounded-sm border border-neutral-300 bg-white checked:border-neutral-700 checked:bg-neutral-700 focus:outline-2 focus:outline-offset-2 focus:outline-neutral-600 disabled:border-neutral-300 disabled:bg-neutral-100 disabled:checked:bg-neutral-100 dark:border-white/20 dark:bg-neutral-800 dark:checked:border-white/20 dark:checked:bg-neutral-900 dark:focus:outline-neutral-200 dark:disabled:border-neutral-500 dark:disabled:bg-neutral-400 dark:disabled:checked:bg-neutral-500 forced-colors:appearance-auto;
 }
 
 [type="checkbox"]:checked {
