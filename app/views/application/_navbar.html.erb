@@ -20,7 +20,6 @@
       <%= icon "menu", class: "size-6" %>
     </button>
 
-    <%= render "dev_menu" if Rails.env.development? %>
     <% if user_signed_in? %>
       <%= render "notifications" %>
       <%= render "user_menu" %>

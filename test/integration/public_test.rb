@@ -23,6 +23,29 @@ class Jumpstart::PublicTest < ActionDispatch::IntegrationTest
     assert_select "h2", text: I18n.t("public.index.pricing_heading")
   end
 
+  test "homepage value points are cards, each with an icon" do
+    get root_path
+
+    cards = css_select("[data-testid='value-point']")
+    assert_equal 3, cards.size
+    cards.each do |card|
+      assert_equal 1, card.css("svg").size
+      assert_equal 1, card.css("h3").size
+    end
+  end
+
+  test "footer shows the Cove wordmark and the dev menu inline with the links, not in the navbar" do
+    Rails.env.stub(:development?, true) do
+      get root_path
+    end
+
+    assert_select "footer a[href='/']", text: "Cove"
+    assert_select "footer a[href='/'] svg", count: 0
+    assert_select "footer ul li button[aria-label='Dev Menu']", count: 1
+    assert_select "nav[aria-label='Primary'] button[aria-label='Dev Menu']", count: 0
+    assert_select "footer button[aria-label='Dev Menu']", count: 1
+  end
+
   test "homepage has no Jumpstart text outside the footer" do
     get root_path
 

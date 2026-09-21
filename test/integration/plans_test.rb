@@ -39,4 +39,20 @@ class Jumpstart::PlansTest < ActionDispatch::IntegrationTest
     assert_select "[data-pricing-target='plans']", text: /#{I18n.t("pricing.show.free.name")}/
     assert_select "a[href=?]", checkout_path(plan: plans(:personal)), text: I18n.t("pricing.show.premium.get_premium")
   end
+
+  test "free card puts Free forever. in the description and has no price note" do
+    get "/pricing"
+
+    assert_includes response.body, "Everything you need to get started. Free forever."
+    assert_select "p", text: "forever", count: 0
+  end
+
+  test "yearly plan note sits beside the monthly price, baseline aligned" do
+    get "/pricing"
+
+    assert_select "[data-frequency='yearly'] .flex.items-baseline" do
+      assert_select "span.text-4xl"
+      assert_select "span", text: /billed .* yearly/
+    end
+  end
 end

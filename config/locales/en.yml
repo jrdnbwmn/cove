@@ -259,8 +259,7 @@ en:
       subhead: "Simple, straightforward pricing"
       free:
         name: "Free"
-        description: "Everything you need to get started."
-        price_note: "forever"
+        description: "Everything you need to get started. Free forever."
         features:
           - "%{student_limit} student"
           - "One parent"

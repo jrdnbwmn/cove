@@ -6,10 +6,15 @@
   </section>
 
   <section class="pb-16 grid gap-8 lg:grid-cols-3">
-    <% %w[plan records day].each do |key| %>
-      <div>
-        <h3 class="mb-2"><%= t(".value_points.#{key}.heading") %></h3>
-        <p class="text-muted-foreground"><%= t(".value_points.#{key}.body") %></p>
+    <% {"plan" => "calendar-days", "records" => "clipboard-check", "day" => "sun"}.each do |key, icon_name| %>
+      <div data-testid="value-point">
+        <%= render CardComponent.new(classes: "h-full") do %>
+          <div class="mb-4 flex size-10 items-center justify-center rounded-[var(--radius)] bg-muted text-primary">
+            <%= icon icon_name, class: "size-5" %>
+          </div>
+          <h3 class="mb-2"><%= t(".value_points.#{key}.heading") %></h3>
+          <p class="text-muted-foreground"><%= t(".value_points.#{key}.body") %></p>
+        <% end %>
       </div>
     <% end %>
   </section>
