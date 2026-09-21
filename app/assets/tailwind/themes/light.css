@@ -53,7 +53,7 @@
   --border-light: var(--color-gray-300);
 
   /*Dark*/
-  --bg-dark: #265961;
+  --bg-dark: #32646C;
   --bg-dark-secondary: var(--color-gray-500);
   --bg-dark-hover: #1F4A51;
   --text-on-dark: var(--color-white);
@@ -84,8 +84,8 @@
   --base-border-primary: var(--color-gray-500);
   --base-border-secondary: var(--color-gray-400);
   --base-border-tertiary: var(--color-gray-200);
-  --base-border-focus: #265961;
-  --base-bg-selected: #265961;
+  --base-border-focus: #32646C;
+  --base-bg-selected: #32646C;
   --base-bg-hover: var(--color-gray-50);
   --base-bg-tooltip: var(--color-gray-800);
   --base-text-on-tooltip: var(--color-white);

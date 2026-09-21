@@ -1,14 +1,14 @@
 :root {
   --background: #FAF9F5;
   --foreground: oklch(0.145 0 0);
-  --primary: #265961;
+  --primary: #32646C;
   --primary-foreground: #FAF9F5;
   --accent-brand: #FA796E;
   --primary-hover: color-mix(in oklab, var(--primary) 90%, transparent);
-  --muted: color-mix(in oklab, #FAF9F5 88%, #265961);
+  --muted: color-mix(in oklab, #FAF9F5 88%, #32646C);
   --muted-foreground: oklch(0.556 0 0);
   --border: oklch(0.922 0 0);
-  --ring: #265961;
+  --ring: #32646C;
   --radius: 0.625rem;
 }
 
