@@ -151,15 +151,15 @@ class ButtonComponent < ViewComponent::Base
   def basic_variant_classes
     case @variant
     when :primary
-      "border border-neutral-400/30 bg-primary text-primary-foreground shadow-sm hover:bg-neutral-700 focus-visible:outline-neutral-600 dark:hover:bg-neutral-100 dark:focus-visible:outline-neutral-200"
+      "border border-neutral-400/30 bg-primary text-primary-foreground hover:bg-neutral-700 focus-visible:outline-neutral-600 dark:hover:bg-neutral-100 dark:focus-visible:outline-neutral-200"
     when :secondary
-      "border border-black/10 bg-white/90 text-neutral-800 shadow-xs hover:bg-neutral-50 focus-visible:outline-neutral-600 dark:border-white/10 dark:bg-neutral-700/50 dark:text-neutral-50 dark:hover:bg-neutral-700/75 dark:focus-visible:outline-neutral-200"
+      "border border-black/10 bg-white/90 text-neutral-800 hover:bg-neutral-50 focus-visible:outline-neutral-600 dark:border-white/10 dark:bg-neutral-700/50 dark:text-neutral-50 dark:hover:bg-neutral-700/75 dark:focus-visible:outline-neutral-200"
     when :outline
       "border border-neutral-300 bg-transparent text-neutral-700 hover:bg-neutral-100 focus-visible:outline-neutral-600 dark:border-neutral-600 dark:text-neutral-300 dark:hover:bg-neutral-800 dark:focus-visible:outline-neutral-200"
     when :ghost
       "bg-transparent text-neutral-800 hover:bg-neutral-100 hover:text-neutral-900 focus-visible:outline-neutral-600 dark:text-neutral-50 dark:hover:bg-neutral-600/50 dark:hover:text-white dark:focus-visible:outline-neutral-200"
     when :destructive
-      "border border-red-300/30 bg-red-600 text-white shadow-sm hover:bg-red-500 focus-visible:outline-neutral-600 dark:focus-visible:outline-neutral-200"
+      "border border-red-300/30 bg-red-600 text-white hover:bg-red-500 focus-visible:outline-neutral-600 dark:focus-visible:outline-neutral-200"
     else
       basic_variant_classes_for(:primary)
     end

@@ -448,7 +448,7 @@ select[data-controller="select"] {
 }
 
 .ts-control {
-  @apply flex min-h-10 w-full cursor-default rounded-lg border-0 px-3 py-2 text-base/6 text-neutral-900 shadow-xs ring-1 ring-inset ring-neutral-300 outline-hidden placeholder:text-neutral-500 focus:ring-neutral-600 dark:bg-neutral-700 dark:text-white dark:placeholder-neutral-300 dark:ring-neutral-600 dark:focus:ring-neutral-500;
+  @apply flex min-h-10 w-full cursor-default rounded-lg border-0 px-3 py-2 text-base/6 text-neutral-900 ring-1 ring-inset ring-neutral-300 outline-hidden placeholder:text-neutral-500 focus:ring-neutral-600 dark:bg-neutral-700 dark:text-white dark:placeholder-neutral-300 dark:ring-neutral-600 dark:focus:ring-neutral-500;
 }
 
 .ts-control[disabled] {
