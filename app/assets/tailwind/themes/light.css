@@ -40,9 +40,9 @@
   --icon-on-warning-secondary: var(--color-yellow-700);
 
   /*Accent*/
-  --bg-accent: #FA796E;
+  --bg-accent: var(--accent-brand);
   --text-on-accent: var(--color-gray-900);
-  --border-accent: #FA796E;
+  --border-accent: var(--accent-brand);
   --text-accent: #C4433A;
 
   /*Light*/
@@ -53,12 +53,12 @@
   --border-light: var(--color-gray-300);
 
   /*Dark*/
-  --bg-dark: #326B75;
+  --bg-dark: var(--primary);
   --bg-dark-secondary: var(--color-gray-500);
-  --bg-dark-hover: #1F4A51;
+  --bg-dark-hover: var(--primary-hover);
   --text-on-dark: var(--color-white);
   --text-on-dark-outline: var(--color-gray-800);
-  --border-dark: #1F4A51;
+  --border-dark: var(--primary-hover);
   --border-dark-focus: var(--color-gray-500);
 
   /*Disabled*/
@@ -84,8 +84,8 @@
   --base-border-primary: var(--color-gray-500);
   --base-border-secondary: var(--color-gray-400);
   --base-border-tertiary: var(--color-gray-200);
-  --base-border-focus: #326B75;
-  --base-bg-selected: #326B75;
+  --base-border-focus: var(--primary);
+  --base-bg-selected: var(--primary);
   --base-bg-hover: var(--color-gray-50);
   --base-bg-tooltip: var(--color-gray-800);
   --base-text-on-tooltip: var(--color-white);

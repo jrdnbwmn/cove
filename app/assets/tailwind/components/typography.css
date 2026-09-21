@@ -7,6 +7,7 @@
 }
 
 h1, .h1 {
+  font-family: var(--font-serif);
   font-size: var(--text-4xl);
   font-weight: 600;
   letter-spacing: -0.025em;
@@ -14,6 +15,7 @@ h1, .h1 {
 }
 
 h2, .h2 {
+  font-family: var(--font-serif);
   font-size: var(--text-3xl);
   font-weight: 600;
   line-height: 1.25;
@@ -37,11 +39,7 @@ h5, .h5 {
   line-height: 1.5;
 }
 
-h1, h2, .h1, .h2 {
-  font-family: var(--font-serif);
-}
-
-h3, h4, h5, h6, .h3, .h4, .h5, .h6 {
+h6, .h6 {
   font-weight: 600;
 }
 

@@ -2,13 +2,13 @@
   --background: #FAF9F5;
   --foreground: var(--color-stone-950);
   --primary: #326B75;
-  --primary-foreground: #FAF9F5;
+  --primary-foreground: var(--background);
   --accent-brand: #FA796E;
   --primary-hover: color-mix(in oklab, var(--primary) 80%, black);
-  --muted: color-mix(in oklab, #FAF9F5 88%, #326B75);
+  --muted: color-mix(in oklab, var(--background) 88%, var(--primary));
   --muted-foreground: var(--color-stone-500);
   --border: var(--color-stone-200);
-  --ring: #326B75;
+  --ring: var(--primary);
   --radius: 0.625rem;
 }
 
