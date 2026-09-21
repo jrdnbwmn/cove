@@ -629,7 +629,7 @@ feature checklist, and a caller-supplied action area inside `CardComponent`.
 `name:`, `description:`, `price_text:`, `price_note:`, and `features:` override
 the Plan-derived values, so a card can render without a Plan (for example,
 Free). `price_text` renders verbatim without the Plan interval, with
-`price_note` beneath it.
+`price_note` beside it (wrapping below on narrow cards).
 
 **Slots:** Pass actions as the component block. The block content renders
 unchanged below the price.
