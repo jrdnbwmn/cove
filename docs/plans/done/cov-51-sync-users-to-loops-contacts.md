@@ -16,7 +16,7 @@
 ## Prerequisites
 
 - Design: [`docs/designs/cov-51-sync-users-to-loops-contacts.md`](../designs/cov-51-sync-users-to-loops-contacts.md)
-- Governing architecture: [`docs/designs/cov-48-marketing-architecture.md`](../designs/cov-48-marketing-architecture.md)
+- Governing architecture: [`docs/designs/done/cov-48-marketing-architecture.md`](../designs/done/cov-48-marketing-architecture.md)
 - Prototype: None; this feature is entirely background and operational behavior
 - Feature branch exists: `feature/cov-51-sync-users-to-loops-contacts`
 - Architecture references reviewed: `docs/architecture/app-structure.mermaid`, `docs/architecture/data-model.mermaid`, and `docs/architecture/routes-map.mermaid`

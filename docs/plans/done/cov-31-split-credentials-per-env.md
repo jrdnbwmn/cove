@@ -96,7 +96,7 @@ per-env file layout Rails expects.
 - Boot-verify the staging host resolves (AC #5):
   `RAILS_MASTER_KEY=$(cat config/credentials/staging.key) RAILS_ENV=staging PATH="$HOME/.local/share/mise/shims:$PATH" bin/rails runner "puts Rails.application.config.action_mailer.default_url_options[:host]"`
   → expects `staging.covehomeschool.com`.
-- Write the handoff note at `docs/designs/cov-31-credentials-handoff.md` per the
+- Write the handoff note at `docs/designs/done/cov-31-credentials-handoff.md` per the
   design's "Handoff note contents": lists `RAILS_MASTER_KEY` as the only
   manually-set Render secret (= contents of `config/credentials/staging.key`),
   notes Stripe/Google secrets live inside credentials (no extra Render vars), and
@@ -115,7 +115,7 @@ per-env file layout Rails expects.
 
 1. **Verify:** `git status` shows no `.key`; run the boot-verify runner command
    and confirm output is `staging.covehomeschool.com`.
-2. **Implement:** write `docs/designs/cov-31-credentials-handoff.md`.
+2. **Implement:** write `docs/designs/done/cov-31-credentials-handoff.md`.
 3. **Review:** run review-changes-mini on the full checkpoint (Tasks 1–3).
 
 ## Task Dependencies

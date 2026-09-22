@@ -219,9 +219,10 @@ None.
 
 ## More Info
 
-- Audit reference: `docs/designs/cov-71-monetization-family-audit.md` (product
-  rules; gap 3 = no premium check; gap 6 = Pay `subscribed?` excludes
-  `past_due`; gap 8 = no `student_limit`).
+- Product rules: `docs/product/product-brief.md`.
+- Audit reference: `docs/designs/done/cov-71-monetization-family-audit.md`
+  (gap 3 = no premium check; gap 6 = Pay `subscribed?` excludes `past_due`;
+  gap 8 = no `student_limit`).
 - Relevant code: `app/models/account.rb` (`billable_subscriptions`),
   `lib/jumpstart/app/controllers/concerns/accounts/subscription_status.rb` (the
   pattern to mirror, not reuse), `app/controllers/pricing_controller.rb`,

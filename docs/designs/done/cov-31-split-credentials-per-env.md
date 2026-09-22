@@ -68,7 +68,7 @@ absolute URLs in the staging environment use `staging.covehomeschool.com`.
 4. Verify `.gitignore` already covers `/config/master.key` and
    `/config/credentials/*.key` (lines 47–48) — confirm no `.key` is stageable in
    `git status`. No edit expected.
-5. Write the handoff note at `docs/designs/cov-31-credentials-handoff.md`.
+5. Write the handoff note at `docs/designs/done/cov-31-credentials-handoff.md`.
 6. Verify by booting the staging env with the generated key and asserting the
    host resolves:
    `RAILS_MASTER_KEY=$(cat config/credentials/staging.key) RAILS_ENV=staging bin/rails runner "puts Rails.application.config.action_mailer.default_url_options[:host]"`

@@ -251,10 +251,9 @@ None.
 
 ## More Info
 
-- Product rules: `docs/designs/cov-71-monetization-family-audit.md` ("Product
-  rules" section) — Premium $9/mo or $84/yr flat per family, no trial, no
-  refunds, `past_due` keeps Premium, and **no feature logic may depend on a
-  price, amount, plan name, or Stripe ID**.
+- Product rules: `docs/product/product-brief.md` — Premium flat per family,
+  no trial, no refunds, `past_due` keeps Premium, and **no feature logic may
+  depend on a price, amount, plan name, or Stripe ID**.
 - Prior tickets: `docs/designs/done/cov-73-premium-plan-catalog.md`,
   `cov-74-premium-check-and-family-student-limit.md`,
   `cov-75-complimentary-premium-for-testers.md`.

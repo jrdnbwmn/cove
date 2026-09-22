@@ -199,5 +199,6 @@ None.
 - The archived COV-51 design doc keeps its "do not sync plan" wording; this
   ticket supersedes it for plan status only, and the override is recorded in
   AGENTS.md.
-- Plan-status values and the Loops property setup are documented in
-  `docs/designs/cov-71-monetization-family-audit.md`.
+- Plan-status values are documented in `docs/product/product-brief.md`
+  (Loops section); the Loops property setup itself is documented in
+  `docs/designs/done/cov-71-monetization-family-audit.md`.

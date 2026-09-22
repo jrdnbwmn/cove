@@ -152,7 +152,7 @@ None.
 ## More Info
 - Predecessors (both merged, in `docs/designs/done/`):
   `render-staging-blueprint.md`, `cov-31-split-credentials-per-env.md`.
-- COV-31 handoff (`docs/designs/cov-31-credentials-handoff.md`) documents the
+- COV-31 handoff (`docs/designs/done/cov-31-credentials-handoff.md`) documents the
   original manual steps this runbook supersedes.
 - `render.yaml`: production block is commented out; only `cove-staging` +
   `cove-staging-db` are active. Region must stay `oregon` across service and DB

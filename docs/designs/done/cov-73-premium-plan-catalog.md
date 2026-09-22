@@ -207,10 +207,9 @@ None.
 ## More Info
 
 - Depends on COV-72 (merged). Blocks COV-74, COV-77, COV-78.
-- Product rules this builds on are recorded in
-  `docs/designs/cov-71-monetization-family-audit.md` ("Product rules" section):
-  Premium $9/mo or $84/yr, flat per family, no trial, and **no feature logic may
-  depend on a price, amount, plan name, or Stripe ID**.
+- Product rules this builds on: Premium flat per family and no trial
+  (`docs/product/strategy-brief.md`), and **no feature logic may depend on
+  a price, amount, plan name, or Stripe ID** (`AGENTS.md`).
 - `Plan#find_interval_plan` / `annual_version` / `monthly_version` pair by name
   without a `visible` filter, but nothing in the app calls them today — not a
   concern for this ticket.

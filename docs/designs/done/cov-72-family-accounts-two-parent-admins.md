@@ -369,9 +369,9 @@ logins, two families, `ConnectedAccount #1` on the Google one.
 
 `docs/product/product-brief.md`, `strategy-brief.md`, and `ux-notes.md` are empty.
 The product rules this design assumes — pricing, family rules, student limits,
-billing behavior, comped Premium, Loops `planStatus` — live only in
-`docs/designs/cov-71-monetization-family-audit.md` and should be promoted into
-`docs/product/`.
+billing behavior, comped Premium, Loops `planStatus` — live in
+`docs/product/product-brief.md`. The COV-71 audit that first recorded them is
+archived at `docs/designs/done/cov-71-monetization-family-audit.md`.
 
 Prices will change; **no feature logic may depend on a price, amount, plan name, or
 Stripe ID** (COV-71).

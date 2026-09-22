@@ -36,7 +36,7 @@
 ## Prerequisites
 
 - Design: [`docs/designs/cov-72-family-accounts-two-parent-admins.md`](../designs/cov-72-family-accounts-two-parent-admins.md)
-- Dependency handoff: [`docs/designs/cov-71-monetization-family-audit.md`](../designs/cov-71-monetization-family-audit.md) remains active and must not be archived.
+- Dependency handoff: [`docs/designs/done/cov-71-monetization-family-audit.md`](../designs/done/cov-71-monetization-family-audit.md).
 - Prototype: None.
 - Feature branch exists: `feature/cov-72-family-accounts-two-parent-admins`.
 - Before Rails commands, prepend `/Users/jordan/.local/share/mise/shims` to `PATH` and confirm `ruby -v` reports 4.0.5.
