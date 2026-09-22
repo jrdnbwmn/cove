@@ -13,7 +13,8 @@ class Jumpstart::PublicTest < ActionDispatch::IntegrationTest
     get root_path
 
     assert_response :success
-    assert_select "h1", text: I18n.t("public.index.headline")
+    assert_select "h1"
+    assert_includes response.body, I18n.t("public.index.headline_html")
     assert_select "a[href=?]", new_user_registration_path, text: I18n.t("public.index.cta")
     assert_select "h3", text: I18n.t("public.index.value_points.plan.heading")
     assert_select "h3", text: I18n.t("public.index.value_points.records.heading")
@@ -34,13 +35,13 @@ class Jumpstart::PublicTest < ActionDispatch::IntegrationTest
     end
   end
 
-  test "footer shows the Cove wordmark and the dev menu inline with the links, not in the navbar" do
+  test "footer shows the Cove logo and the dev menu inline with the links, not in the navbar" do
     Rails.env.stub(:development?, true) do
       get root_path
     end
 
-    assert_select "footer a[href='/']", text: "Cove"
-    assert_select "footer a[href='/'] svg", count: 0
+    assert_select "footer a[href='/'] svg", count: 1
+    assert_select "footer a[href='/'] .sr-only", text: "Cove"
     assert_select "footer ul li button[aria-label='Dev Menu']", count: 1
     assert_select "nav[aria-label='Primary'] button[aria-label='Dev Menu']", count: 0
     assert_select "footer button[aria-label='Dev Menu']", count: 1
@@ -54,16 +55,14 @@ class Jumpstart::PublicTest < ActionDispatch::IntegrationTest
     assert_not_includes doc.at_css("body").text, "Jumpstart"
   end
 
-  test "homepage navbar is borderless and shows the text wordmark" do
+  test "homepage navbar is borderless and shows the logo" do
     get root_path
 
     assert_select "nav[aria-label='Primary']" do |navs|
       assert_not_includes navs.first["class"].split, "border-b"
     end
-    assert_select "nav[aria-label='Primary'] a[href='/']:first-of-type" do |links|
-      assert_equal "Cove", links.first.text.strip
-    end
-    assert_select "nav[aria-label='Primary'] a[href='/'] svg", count: 0
+    assert_select "nav[aria-label='Primary'] a[href='/'] svg", count: 1
+    assert_select "nav[aria-label='Primary'] a[href='/'] .sr-only", text: "Cove"
   end
 
   test "homepage omits the pricing section when there are no visible plans" do
@@ -71,7 +70,8 @@ class Jumpstart::PublicTest < ActionDispatch::IntegrationTest
     get root_path
 
     assert_response :success
-    assert_select "h1", text: I18n.t("public.index.headline")
+    assert_select "h1"
+    assert_includes response.body, I18n.t("public.index.headline_html")
     assert_select "h3", text: I18n.t("public.index.value_points.plan.heading")
     assert_select "[data-controller='pricing']", count: 0
     assert_select "h2", text: I18n.t("public.index.pricing_heading"), count: 0
@@ -83,18 +83,15 @@ class Jumpstart::PublicTest < ActionDispatch::IntegrationTest
     assert_response :success
   end
 
-  test "pricing page navbar is borderless and shows the text wordmark" do
+  test "pricing page navbar is borderless and shows the logo" do
     get pricing_path
 
     assert_response :success
     assert_select "nav[aria-label='Primary']" do |navs|
       assert_not_includes navs.first["class"].split, "border-b"
     end
-    assert_select "nav[aria-label='Primary'] a[href='/']:first-of-type" do |links|
-      assert_equal "Cove", links.first.text.strip
-    end
-    assert_select "nav[aria-label='Primary'] a[href='/'] svg", count: 0
-    assert_select "nav[aria-label='Primary'] a[href='/'] .sr-only", count: 0
+    assert_select "nav[aria-label='Primary'] a[href='/'] svg", count: 1
+    assert_select "nav[aria-label='Primary'] a[href='/'] .sr-only", text: "Cove"
   end
 
   test "about page keeps the standard navbar with logo and border" do
