@@ -88,7 +88,7 @@ class Jumpstart::PublicTest < ActionDispatch::IntegrationTest
 
     assert_response :success
     assert_not_includes response.body, "One parent"
-    assert_includes response.body, ">Both parents<"
+    assert_includes response.body, ">#{I18n.t("pricing.show.free.features").last}<"
   end
 
   test "pricing page navbar is borderless and shows the logo" do
