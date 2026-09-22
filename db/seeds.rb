@@ -58,21 +58,20 @@ if Rails.env.local?
 
   features = ["Placeholder feature"]
 
-  plan = Plan.find_or_create_by!(fake_processor_id: "premium_monthly") do |p|
-    p.name = "Premium"
-    p.amount = 900
-    p.interval = "month"
-    p.trial_period_days = 0
-    p.details = {features: features}
+  seed_premium_plan = ->(fake_processor_id:, interval:, amount:) do
+    plan = Plan.find_or_create_by!(fake_processor_id: fake_processor_id) do |p|
+      p.name = "Premium"
+      p.amount = amount
+      p.interval = interval
+      p.trial_period_days = 0
+      p.details = {features: features}
+    end
+    plan.update!(amount: amount)
+    plan
   end
 
-  Plan.find_or_create_by!(fake_processor_id: "premium_yearly") do |p|
-    p.name = "Premium"
-    p.amount = 8400
-    p.interval = "year"
-    p.trial_period_days = 0
-    p.details = {features: features}
-  end
+  plan = seed_premium_plan.call(fake_processor_id: "premium_monthly", interval: "month", amount: 1200)
+  seed_premium_plan.call(fake_processor_id: "premium_yearly", interval: "year", amount: 12000)
 
   subscribed_account = subscribed.family
   subscribed_account.set_payment_processor :fake_processor, allow_fake: true

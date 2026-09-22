@@ -16,7 +16,7 @@ class PlanPricingHelperTest < ActionView::TestCase
   end
 
   test "shows yearly plans as rounded monthly equivalents" do
-    assert_equal "$7/mo", monthly_equivalent(plans(:premium_yearly))
+    assert_equal "$10/mo", monthly_equivalent(plans(:premium_yearly))
     assert_equal "$7.50/mo", monthly_equivalent(Plan.new(amount: 9000, interval: "year"))
   end
 

@@ -35,3 +35,12 @@ price ID into your local plan's Stripe ID field at `/admin/plans`.
 ## Live mode
 
 Live-mode steps are tracked in COV-78.
+
+## Current price IDs
+
+Staging sandbox Premium prices for COV-88:
+
+- Monthly ($12): `price_1UIYqBAVvDn1V5lJCfF44Njc`
+- Yearly ($120): `price_1UIYqaAVvDn1V5lJYebDXeFF`
+
+COV-78 still needs corresponding live-mode Price IDs.
