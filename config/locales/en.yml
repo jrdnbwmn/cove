@@ -262,7 +262,7 @@ en:
         description: "Everything you need to get started. Free forever."
         features:
           - "%{student_limit} student"
-          - "One parent"
+          - "Both parents"
         get_started: "Get started free"
         current_plan: "Current plan"
       premium:
