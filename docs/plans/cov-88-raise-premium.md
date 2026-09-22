@@ -7,12 +7,12 @@
 
 | Task | Phase | Checkpoint | Description | Assign | Done |
 | ---- | ----- | ---------- | ----------- | ------ | ---- |
-| 1 | 1 | 1 | Make development seed prices authoritative on fresh and existing databases | Master | |
-| 2 | 1 | 1 | Update plan fixtures and pricing behavior expectations | subagent | |
-| 3 | 1 | 1 | Update the yearly preview and its directly coupled test | subagent | |
-| 4 | 2 | 2 | Validate the staging Stripe account and request creation approval | Master | |
-| 5 | 2 | 2 | Create sandbox Prices and update staging Plan rows | Master | |
-| 6 | 2 | 2 | Verify staging, record Price IDs, and run final gates | Master | |
+| 1 | 1 | 1 | Make development seed prices authoritative on fresh and existing databases | Master | ✅ |
+| 2 | 1 | 1 | Update plan fixtures and pricing behavior expectations | subagent | ✅ |
+| 3 | 1 | 1 | Update the yearly preview and its directly coupled test | subagent | ✅ |
+| 4 | 2 | 2 | Validate the staging Stripe account and request creation approval | Master | ✅ |
+| 5 | 2 | 2 | Create sandbox Prices and update staging Plan rows | Master | ✅ |
+| 6 | 2 | 2 | Verify staging, record Price IDs, and run final gates | Master | ✅ |
 
 ## Prerequisites
 
