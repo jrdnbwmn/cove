@@ -1,18 +1,17 @@
-<% flash_variants = { notice: :info, success: :success, alert: :error, error: :error } %>
+<% flash_keys = %i[notice success alert error] %>
 <div id="flash" data-turbo-temporary>
-  <% flash_variants.each do |key, variant| %>
+  <% flash_keys.each do |key| %>
     <% if flash[key].is_a?(String) && flash[key].present? %>
-      <%= render AlertComponent.new(title: flash[key], variant: variant) %>
+      <%= render AlertComponent.new(title: flash[key], variant: flash_variant(key)) %>
     <% end %>
   <% end %>
 </div>
 
-<% icon_name_variants = { alert: :error, notice: :info, success: :success, default: :default } %>
 <%= render UiToastComponent.new(position: "bottom-right") %>
 
 <div id="toasts" data-turbo-temporary>
   <% toasts.each do |key, toast| %>
-    <% toast_type = icon_name_variants[toast[:icon_name]&.to_sym] || flash_variants[key.to_sym] || :default %>
+    <% toast_type = toast[:icon_name] ? flash_variant(toast[:icon_name]) : flash_variant(key) %>
     <div data-controller="flash-toast"
          data-flash-toast-type-value="<%= toast_type %>"
          data-flash-toast-message-value="<%= toast[:title] %>"
