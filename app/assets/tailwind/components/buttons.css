@@ -1,7 +1,8 @@
 /* Hotwire's version of data-disable-with */
+/* AIDEV-NOTE: display: contents (not inline/initial) promotes the spinner/icon + text to be direct flex items of the .btn/ButtonComponent's own inline-flex row, so they inherit its gap/alignment instead of stacking (svg defaults to display:block per Tailwind preflight, which breaks the line inside a plain inline span). */
 button                  .when-disabled { display: none; }
-button[disabled]        .when-disabled { display: initial; }
-button                  .when-enabled { display: initial; }
+button[disabled]        .when-disabled { display: contents; }
+button                  .when-enabled { display: contents; }
 button[disabled]        .when-enabled { display: none; }
 
 .btn {
