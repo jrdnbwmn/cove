@@ -1,12 +1,7 @@
 <nav class="relative flex items-center justify-between gap-4 <%= "border-b border-border" unless marketing_page? %> bg-background px-4 py-3 text-foreground lg:px-8" data-controller="toggle" aria-label="Primary">
   <section class="flex shrink-0 items-center">
     <%= link_to root_path, class: "flex items-center text-primary" do %>
-      <% if marketing_page? %>
-        <%= render "application/wordmark" %>
-      <% else %>
-        <%= render_svg "logo", class: "h-6 fill-current" %>
-        <span class="sr-only"><%= Jumpstart.config.application_name %></span>
-      <% end %>
+      <%= render "application/brand" %>
     <% end %>
   </section>
 
