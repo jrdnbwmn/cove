@@ -115,7 +115,7 @@
 ### Task 4 [Master]: Record the Loops plan-status project decision
 
 **Skills:** engineering:documentation
-**Reference:** Read the generated-file warning at the top of [`AGENTS.md`](../../AGENTS.md), its “Current Project Decisions” section, the approved COV-76 design, and [`docs/designs/cov-71-monetization-family-audit.md`](../designs/cov-71-monetization-family-audit.md).
+**Reference:** Read the generated-file warning at the top of [`AGENTS.md`](../../AGENTS.md), its “Current Project Decisions” section, the approved COV-76 design, and [`docs/designs/done/cov-71-monetization-family-audit.md`](../designs/done/cov-71-monetization-family-audit.md).
 
 **In scope:**
 

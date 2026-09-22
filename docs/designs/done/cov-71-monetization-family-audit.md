@@ -36,68 +36,17 @@ None.
 
 ## Product rules this audit is measured against
 
-Recorded here because the audit's verdicts depend on them, and because no
-`docs/product/` brief currently holds them (all three files are empty).
+Moved into [`docs/product/product-brief.md`](../product/product-brief.md) —
+that brief was empty when this audit was written, so the rules were recorded
+here first. Pricing there has since moved on to $12/mo and $120/yr (COV-88);
+the figures below are what the audit was actually measured against on
+2026-09-15.
 
-### Pricing and tiers
+### Pricing and tiers (as of this audit)
 
-- Two tiers on the family account: **Free** (no subscription) and **Premium**.
-- Premium is **$9/mo** or **$84/yr** (shown as "$7/mo billed yearly"). Flat per
-  family.
-- **No trial.** Free serves that purpose.
-- Prices will change. **No feature logic may depend on a price, amount, plan
-  name, or Stripe ID.**
-
-### Families
-
-- One family account holds **one or two parents** plus their students.
-- **Both parents are admins**; one is the owner.
-- Owner-only: deleting the family, transferring ownership. Admins do everything
-  else, **including billing**.
-- The subscription belongs to the family and survives a parent leaving.
-- **One person belongs to exactly one family.** No account switching, no second
-  families.
-- An existing user may accept another family's invite **only if their own
-  family is empty** (no students, subscription, or other members); that empty
-  family is then deleted. Otherwise the invite is refused with "contact
-  support".
-- The owner **must transfer ownership before deleting their login** if another
-  parent is in the family. A non-owner parent deleting their login just leaves.
+- Premium was **$9/mo** or **$84/yr** (shown as "$7/mo billed yearly") at the
+  time of this audit.
 - The model stays `Account` in code; users see "family".
-
-### Students
-
-- Students are **data records owned by the family**, not logins or members.
-- Free limit **1**; Premium limit **10** by default, raisable per family by a
-  superadmin in `/admin/accounts`. The cap exists to stop co-ops and
-  micro-schools using a family plan.
-- Past the limit: Free sees an upgrade prompt, Premium sees "Contact us".
-- **On downgrade no students are deleted.** The parent picks which stay
-  editable; the rest go read-only until the family upgrades. Read-only students
-  still appear on calendar events they're already assigned to.
-
-### Billing behavior
-
-- Canceling stops the next renewal; Premium lasts until the paid period ends.
-- **No refunds**, stated on pricing, checkout, cancel confirmation, and family
-  deletion. One-off refunds are done by hand in Stripe.
-- Deleting a family ends its subscription immediately, no refund.
-- **`past_due` keeps Premium** while Stripe retries. Free once `unpaid` or
-  canceled.
-
-### Testers
-
-- **Complimentary Premium** is a superadmin on/off switch on the family in
-  `/admin/accounts`, plus a note. No end date, no Stripe records.
-- A comped family can still subscribe; a paid subscription takes precedence.
-
-### Loops
-
-- Plan status syncs to Loops as contact property **`planStatus`**: `free`,
-  `premium`, or `complimentary`.
-- **Only for marketing-opted-in users, and only in production.** Every
-  opted-in parent in a family gets it.
-- This **overrides COV-51's** rule of not syncing plan info.
 
 ### Technical principles
 
@@ -358,14 +307,11 @@ in the repo, and no console dependency.
 
 ## Open Questions
 
-- **Sales tax on subscriptions** — ask an accountant before launch.
-- **Yearly → monthly switch mid-year** — Stripe prorates by default; behavior
-  not yet decided.
-- **Terms of Service and refund policy pages** — required before Stripe live
-  activation.
-- **Downgraded families** — what they see before picking which students stay
-  editable, and whether that pick can change later. Belongs to the Students
-  feature design.
+The still-open product questions this audit raised (sales tax, mid-year
+plan-interval switches, ToS/refund pages, downgraded-family UX) moved into
+[`docs/product/product-brief.md`](../product/product-brief.md). What's left
+here are the ones this audit itself resolved:
+
 - **Existing staging accounts** — resolved: reset (above).
 - **Loops property setup** — resolved: `planStatus` created.
 - **Staging's first admin after the reset** — resolved: seed guard narrowed to
@@ -379,8 +325,5 @@ in the repo, and no console dependency.
 
 ## More Info
 
-`docs/product/product-brief.md`, `strategy-brief.md`, and `ux-notes.md` are all
-**empty files**. The product rules above are the only written record of the
-monetization and family model; they came from Jordan in the COV-71 session on
-2026-09-15 and should probably be promoted into `docs/product/` rather than
-living only in this design doc.
+The product rules and open questions this audit surfaced now live in
+[`docs/product/product-brief.md`](../product/product-brief.md).

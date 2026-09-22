@@ -16,7 +16,7 @@ without first solving this would lock us out of `/admin/plans` — where real
 Plan rows get entered (COV-72, COV-78).
 
 Found during COV-71; full detail in
-`docs/designs/cov-71-monetization-family-audit.md` (gaps 9, 12, 15).
+`docs/designs/done/cov-71-monetization-family-audit.md` (gaps 9, 12, 15).
 
 ## Approach
 
@@ -200,7 +200,7 @@ regression.
 
 ## More Info
 
-From COV-71 (`docs/designs/cov-71-monetization-family-audit.md`):
+From COV-71 (`docs/designs/done/cov-71-monetization-family-audit.md`):
 
 - Staging data is disposable — entirely seed data plus two duplicate Jordan
   logins, no real Stripe activity, and the only Plan row has no Stripe ID.

@@ -34,7 +34,7 @@
 **Skills:** loops-api, write-tests
 **Reference:** Read [`app/clients/loops_client.rb`](../../app/clients/loops_client.rb),
 [`test/clients/loops_client_test.rb`](../../test/clients/loops_client_test.rb), and
-[`docs/designs/cov-37-loops-architecture.md`](../designs/cov-37-loops-architecture.md)
+[`docs/designs/done/cov-37-loops-architecture.md`](../designs/done/cov-37-loops-architecture.md)
 for the HTTP client, idempotency, and header-transport contracts.
 
 **In scope:**

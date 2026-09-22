@@ -97,7 +97,7 @@ HTTP, credential-factory, and WebMock patterns.
 
 **Skills:** write-tests
 **Reference:** Read `app/jobs/application_job.rb`, `config/application.rb`, and
-the retry rationale in `docs/designs/cov-37-loops-architecture.md`.
+the retry rationale in `docs/designs/done/cov-37-loops-architecture.md`.
 
 **In scope:**
 

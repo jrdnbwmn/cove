@@ -208,8 +208,9 @@ None.
 
 ## More Info
 
-- Audit reference: `docs/designs/cov-71-monetization-family-audit.md` (Testers
-  and Technical principles sections; gap 8 = no comp flag/note).
+- Product rules: `docs/product/product-brief.md` (Testers section).
+- Audit reference: `docs/designs/done/cov-71-monetization-family-audit.md`
+  (Technical principles section; gap 8 = no comp flag/note).
 - COV-74 design: `docs/designs/done/cov-74-premium-check-and-family-student-limit.md`
   (`premium?` rules, `billable_subscriptions`, Madmin pattern, admin test style in
   `test/integration/madmin/accounts_test.rb`).

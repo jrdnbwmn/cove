@@ -86,7 +86,7 @@ Mail retries need transient connection errors (4.4); a throttle is not justified
 
 ## Inline fixes applied
 
-`docs/designs/cov-37-loops-architecture.md` now records twelve triggers and the shipped receipt-PDF attachment. No behavior changed.
+`docs/designs/done/cov-37-loops-architecture.md` now records twelve triggers and the shipped receipt-PDF attachment. No behavior changed.
 
 ## Appendices
 

@@ -146,11 +146,12 @@ Routes are modularized in `config/routes/`:
 - Dark mode is intentionally disabled. Keep the inert Tailwind `@variant dark`
   declaration so existing `dark:` utilities stay inactive; do not restore theme
   wiring or a system-preference fallback without an explicit product decision.
-- Accounts are user-facing Families: each user has one active family, a family
-  has one or two admin parents, and only its owner can transfer or delete it.
-- Family billing is flat per family. Both parents receive receipts; adding or
-  removing a parent must not change subscription quantity.
-- Archived families retain billing history after a parent joins another family.
+- Product rules (families, students, billing behavior, testers, Loops plan
+  status) live in `docs/product/product-brief.md`. Read it before changing
+  those areas.
+- Jumpstart's `Account` is the user-facing Family; `AccountUser` admins are
+  its parents.
+- Adding or removing a parent must not change subscription quantity.
 - Normal sessions never switch families; derive the current family from the
   user membership rather than an account cookie.
 - Personal accounts no longer exist: `accounts.personal` is DB-constrained to
@@ -159,7 +160,7 @@ Routes are modularized in `config/routes/`:
   test fixtures for personal accounts are unreachable — don't write tests
   that assume a `personal: true` fixture can exist.
 - Plan rows are never deleted or re-priced — a price change is a new Stripe Price + new Plan row, old row hidden. Follow `docs/runbooks/price-change-checklist.md`.
-- Consented Loops contacts carry `planStatus` as `premium`, `complimentary`, or `free`. This is the sole override to COV-51's no-plan-information rule.
+- No feature logic may depend on a price, amount, plan name, or Stripe ID — prices will change. Gate features on `Account#premium?` / `#plan_status`.
 - Brand palette: teal (`--primary`, `--primary-hover`), cream (`--background`), coral (`--accent-brand`, used only via `--bg-accent`/`--border-accent`). Reference these tokens; don't repeat the hex values. Neutrals (`neutral-*`, and `gray-*` which maps to it) point at Tailwind's warm `stone` scale, and the red/orange/yellow/green/blue/purple/pink scales are redefined muted in `application.css` `@theme` (same lightness steps as Tailwind's defaults, so contrast is unchanged).
 - Typography: only `h1`/`h2` (and `.font-display`) use the serif (`--font-serif`, Source Serif 4 at 600); `h3`–`h6` and body use Inter. Buttons and inputs have no drop shadows (the opt-in `fancy` button style keeps its own).
 
