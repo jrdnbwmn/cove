@@ -153,7 +153,6 @@
 @import "./components/pagination.css" layer(components);
 @import "./components/pills.css" layer(components);
 @import "./components/tabs.css" layer(components);
-@import "./components/toasts.css" layer(components);
 @import "./components/tooltips.css" layer(components);
 @import "./components/top_nav.css" layer(components);
 @import "./components/typography.css" layer(components);

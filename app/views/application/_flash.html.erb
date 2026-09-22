@@ -7,8 +7,15 @@
   <% end %>
 </div>
 
+<% icon_name_variants = { alert: :error, notice: :info, success: :success, default: :default } %>
+<%= render UiToastComponent.new(position: "bottom-right") %>
+
 <div id="toasts" data-turbo-temporary>
-  <% toasts.each do |_, toast| %>
-    <%= render ToastComponent.new(toast) %>
+  <% toasts.each do |key, toast| %>
+    <% toast_type = icon_name_variants[toast[:icon_name]&.to_sym] || flash_variants[key.to_sym] || :default %>
+    <div data-controller="flash-toast"
+         data-flash-toast-type-value="<%= toast_type %>"
+         data-flash-toast-message-value="<%= toast[:title] %>"
+         data-flash-toast-description-value="<%= toast[:description] %>"></div>
   <% end %>
 </div>

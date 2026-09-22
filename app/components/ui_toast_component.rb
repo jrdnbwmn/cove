@@ -41,7 +41,9 @@ class UiToastComponent < ViewComponent::Base
     # (also 20rem) exactly — a wider container would leave dead space next
     # to the left-aligned card, making the right/bottom corner margins look
     # uneven even though position_classes sets them equal.
-    base = "fixed z-[99999] w-full px-4 sm:px-0 sm:w-80 pointer-events-none transition-all duration-300 ease-in-out"
+    # AIDEV-NOTE: this element uses the native [popover] API — its UA stylesheet applies a white
+    # background-color and border by default, which bg-transparent/border-0 must override explicitly.
+    base = "fixed z-[99999] w-full px-4 sm:px-0 sm:w-80 pointer-events-none transition-all duration-300 ease-in-out bg-transparent border-0"
     [base, position_classes, @classes].compact.reject(&:empty?).join(" ")
   end
 
