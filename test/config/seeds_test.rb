@@ -21,10 +21,14 @@ class SeedsTest < ActiveSupport::TestCase
     end
   end
 
-  test "development seeds Premium monthly and yearly with no trial" do
+  test "development reseeding corrects Premium prices without duplicating plans" do
     environment_inquirer = ActiveSupport::EnvironmentInquirer.new("development")
 
     Rails.stub(:env, environment_inquirer) { load SEEDS_FILE }
+
+    Plan.find_by!(fake_processor_id: "premium_monthly").update!(amount: 900)
+    Plan.find_by!(fake_processor_id: "premium_yearly").update!(amount: 8400)
+
     Rails.stub(:env, environment_inquirer) { load SEEDS_FILE }
 
     seeded = Plan.where(fake_processor_id: %w[premium_monthly premium_yearly])
@@ -34,8 +38,8 @@ class SeedsTest < ActiveSupport::TestCase
     yearly = seeded.visible.where(name: "Premium", interval: "year", fake_processor_id: "premium_yearly")
     assert_equal 1, monthly.count
     assert_equal 1, yearly.count
-    assert_equal 900, monthly.first.amount
-    assert_equal 8400, yearly.first.amount
+    assert_equal 1200, monthly.first.amount
+    assert_equal 12000, yearly.first.amount
     assert_equal [0, 0], [monthly.first.trial_period_days, yearly.first.trial_period_days]
 
     assert_not Plan.exists?(fake_processor_id: "cove_dev")

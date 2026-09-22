@@ -14,9 +14,9 @@ class PlanCardComponentPreview < ViewComponent::Preview
 
   def yearly_equivalent_plan
     render PlanCardComponent.new(
-      plan: plan(name: "Premium", amount: 8400, features: ["Up to 5 students"]),
-      price_text: "$7/mo",
-      price_note: "Billed $84/year"
+      plan: plan(name: "Premium", amount: 12000, features: ["Up to 5 students"]),
+      price_text: "$10/mo",
+      price_note: "Billed $120/year"
     ).with_content("Choose plan")
   end
 

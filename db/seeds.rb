@@ -60,19 +60,21 @@ if Rails.env.local?
 
   plan = Plan.find_or_create_by!(fake_processor_id: "premium_monthly") do |p|
     p.name = "Premium"
-    p.amount = 900
+    p.amount = 1200
     p.interval = "month"
     p.trial_period_days = 0
     p.details = {features: features}
   end
+  plan.update!(amount: 1200)
 
-  Plan.find_or_create_by!(fake_processor_id: "premium_yearly") do |p|
+  yearly_plan = Plan.find_or_create_by!(fake_processor_id: "premium_yearly") do |p|
     p.name = "Premium"
-    p.amount = 8400
+    p.amount = 12000
     p.interval = "year"
     p.trial_period_days = 0
     p.details = {features: features}
   end
+  yearly_plan.update!(amount: 12000)
 
   subscribed_account = subscribed.family
   subscribed_account.set_payment_processor :fake_processor, allow_fake: true

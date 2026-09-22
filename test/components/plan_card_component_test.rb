@@ -77,7 +77,7 @@ class PlanCardComponentTest < ViewComponent::TestCase
   test "renders the yearly-equivalent plan preview" do
     render_preview(:yearly_equivalent_plan)
 
-    assert_text "$7/mo"
-    assert_text "Billed $84/year"
+    assert_text "$10/mo"
+    assert_text "Billed $120/year"
   end
 end

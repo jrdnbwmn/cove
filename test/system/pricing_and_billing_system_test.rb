@@ -30,8 +30,8 @@ class PricingAndBillingSystemTest < ApplicationSystemTestCase
 
     within pricing_group("yearly") do
       assert_link I18n.t("pricing.show.premium.change_plan")
-      assert_text "$7/mo"
-      assert_text "billed $84 yearly"
+      assert_text "$10/mo"
+      assert_text "billed $120 yearly"
     end
   end
 
