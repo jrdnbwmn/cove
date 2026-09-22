@@ -4,7 +4,7 @@
   <div class="flex flex-col-reverse items-center gap-4 lg:flex-row lg:justify-between">
     <div class="flex items-center justify-center">
       <%= link_to root_path, class: "hidden text-primary transition-colors hover:text-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring sm:inline-flex" do %>
-        <%= render "application/wordmark" %>
+        <%= render "application/brand" %>
       <% end %>
       <div class="sm:ml-4">© <%= Date.current.year %> <%= Jumpstart.config.business_name %></div>
     </div>

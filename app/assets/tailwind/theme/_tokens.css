@@ -1,11 +1,12 @@
 :root {
   --background: #FAF9F5;
   --foreground: var(--color-stone-950);
-  --primary: #326B75;
+  --primary: #205465;
   --primary-foreground: var(--background);
-  --accent-brand: #FA796E;
+  --accent-brand: #D4884A;
   --primary-hover: color-mix(in oklab, var(--primary) 80%, black);
   --muted: color-mix(in oklab, var(--background) 88%, var(--primary));
+  --accent-muted: color-mix(in oklab, var(--background) 85%, var(--accent-brand));
   --muted-foreground: var(--color-stone-500);
   --border: var(--color-stone-200);
   --ring: var(--primary);
@@ -22,6 +23,8 @@
   --color-primary-hover: var(--primary-hover);
   --color-muted: var(--muted);
   --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent-brand);
+  --color-accent-muted: var(--accent-muted);
   --color-border: var(--border);
   --color-ring: var(--ring);
   --radius: var(--radius);

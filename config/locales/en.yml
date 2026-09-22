@@ -303,7 +303,7 @@ en:
     about:
       title: "About Us"
     index:
-      headline: "Your homeschool's chief of staff"
+      headline_html: "Your homeschool's<br>chief of staff"
       subhead: "Cove keeps the plans, the records, and the day-to-day running, so your time goes to teaching instead of tracking."
       cta: "Start free"
       pricing_heading: "Simple pricing for your family"

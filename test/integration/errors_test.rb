@@ -41,20 +41,20 @@ class ErrorsTest < ActionDispatch::IntegrationTest
     assert_not_includes response.body, 'type="importmap"'
   end
 
-  test "minimal layout shows the text wordmark instead of the logo" do
+  test "minimal layout shows the Cove logo" do
     get new_user_session_path
 
     assert_response :success
-    assert_select "nav.minimal-top-nav a[href=?]", root_path, text: "Cove"
-    assert_select "nav.minimal-top-nav svg", count: 0
+    assert_select "nav.minimal-top-nav a[href=?] svg", root_path, count: 1
+    assert_select "nav.minimal-top-nav a[href=?] .sr-only", root_path, text: "Cove"
   end
 
   private
 
   def assert_wordmark_header(body)
     header = Nokogiri::HTML(body).at_css("header a[href='#{root_path}']")
-    assert_equal "Cove", header.text.strip
-    assert_nil header.at_css("svg")
+    assert_equal "Cove", header.at_css(".sr-only")&.text&.strip
+    assert header.at_css("svg"), "expected the header logo link to contain an svg"
   end
 
   def error_response_for(path)

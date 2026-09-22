@@ -303,6 +303,20 @@ Routes are modularized in `config/routes/`:
   the link helpers can't derive a base URL.
 - `importmap pin --download` isn't supported by this project's importmap CLI;
   use the plain `importmap pin` form.
+- The `app/helpers/` name-collision risk isn't limited to ViewComponents
+  (see the collision note above) — a same-named file there doesn't *reopen*
+  a same-named engine module. `app/helpers/flash_helper.rb` does not merge
+  with Jumpstart's `lib/jumpstart/app/helpers/flash_helper.rb`; Zeitwerk only
+  loads one file per constant path, so the app-level file silently replaces
+  the engine's module wholesale (this broke `impersonation_banner` and the
+  `toasts` flash helper entirely, with no load-time error). Add new helper
+  methods to an already app-owned module (e.g. `ApplicationHelper`) instead
+  of a filename that collides with a vendored one.
+- `UiToastComponent` (+ `ui_toast_controller.js`) is a page-wide toast host
+  meant to be rendered exactly once, globally, via `application/_flash`. A
+  second instance rendered on an individual page (e.g. a demo/preview)
+  creates a competing `[popover]` host that fights the first for the
+  "primary controller" role, producing duplicated/misplaced toasts.
 
 ### CSS / Tailwind
 - Tailwind v4 compiles variants with nested CSS rules. Don't use naive CSSOM
@@ -317,3 +331,21 @@ Routes are modularized in `config/routes/`:
   .braintree-heading)` rule — it is not fully dark-mode-only. Preserve the
   light-mode `.braintree-heading` branch when stripping dark-mode CSS.
 - Fonts are self-hosted from `app/assets/fonts/` via `@font-face` in `application.css`. Use a plain filename in `url("...")` (not `/assets/...`) so Propshaft rewrites it to the digested path. A new `app/assets/*` subfolder isn't picked up by an already-running dev server — restart `bin/dev`. Source Serif 4 must come from Google's static (default optical size) files, not Adobe's Display/Text/Caption cuts, or headings render with different letterforms.
+- Shared control class names can be defined in more than one stylesheet with
+  no error. `.form-control` is defined in both
+  `app/assets/tailwind/components/forms.css` (hand-written: a real
+  `border-width` at rest and on `:focus`) and
+  `app/assets/tailwind/rails_blocks/base.css` (Tailwind-generated: `border-width: 0`
+  plus a box-shadow ring). Because `rails_blocks/base.css` imports after
+  `forms.css`, its `border-width: 0` wins at rest — but `forms.css`'s
+  `:focus` rule (a pseudo-class, so it still applies) set a real border,
+  which grew the field by 2px and pushed surrounding layout on focus. Check
+  both files before changing a shared class, not just the one you think
+  owns it; prefer a box-shadow-only focus ring so a border-width mismatch
+  like this can't reflow anything.
+- Elements using the native Popover API (`showPopover()` / `popover`
+  attribute — `UiToastComponent`'s container is one) get a UA-stylesheet
+  default `background-color: canvas` (opaque white) and border. Nothing in
+  this app's CSS overrides that automatically; any `[popover]`-based
+  component needs its own explicit `bg-transparent border-0` (or an
+  intentional background) or it silently renders an unwanted white box.

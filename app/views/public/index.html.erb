@@ -1,15 +1,19 @@
 <div class="container m-auto">
   <section class="py-24 max-w-2xl m-auto text-center flex flex-col items-center justify-center">
-    <h1 class="mb-4"><%= t(".headline") %></h1>
+    <h1 class="mb-4"><%= t(".headline_html") %></h1>
     <p class="mb-8 text-muted-foreground leading-normal text-xl"><%= t(".subhead") %></p>
     <%= render ButtonComponent.new(text: t(".cta"), variant: :primary, size: :lg, href: new_user_registration_path) %>
+  </section>
+
+  <section class="pb-16">
+    <%= image_tag "homepage-lake-sunset.webp", alt: "", class: "w-full rounded-[var(--radius)] object-cover" %>
   </section>
 
   <section class="pb-16 grid gap-8 lg:grid-cols-3">
     <% {"plan" => "calendar-days", "records" => "clipboard-check", "day" => "sun"}.each do |key, icon_name| %>
       <div data-testid="value-point">
         <%= render CardComponent.new(classes: "h-full") do %>
-          <div class="mb-4 flex size-10 items-center justify-center rounded-[var(--radius)] bg-muted text-primary">
+          <div class="mb-4 flex size-10 items-center justify-center rounded-[var(--radius)] bg-accent-muted text-accent">
             <%= icon icon_name, class: "size-5" %>
           </div>
           <h3 class="mb-2"><%= t(".value_points.#{key}.heading") %></h3>

@@ -77,7 +77,7 @@ class NavbarComponent < ViewComponent::Base
   end
 
   def background_classes
-    "relative z-0 rounded-lg border border-neutral-200 bg-white dark:border-neutral-700 dark:bg-neutral-800"
+    "relative z-0 rounded-lg border border-neutral-200 bg-white shadow-xs dark:border-neutral-700 dark:bg-neutral-800"
   end
 
   def mobile_menu_button_classes

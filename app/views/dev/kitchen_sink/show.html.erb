@@ -105,7 +105,7 @@
       <div class="mt-8 flex flex-wrap items-center gap-6">
         <button class="rounded-md border border-border px-3 py-2" type="button" data-controller="toast-preview" data-toast-preview-type-value="success" data-toast-preview-message-value="Changes saved" data-toast-preview-description-value="Your updates have been saved successfully." data-action="click->toast-preview#show">Show success toast</button>
         <button class="rounded-md border border-border px-3 py-2" type="button" data-controller="toast-preview" data-toast-preview-type-value="error" data-toast-preview-message-value="Something went wrong" data-toast-preview-description-value="We couldn't process your request." data-action="click->toast-preview#show">Show error toast</button>
-        <%= render UiToastComponent.new(position: "bottom-right") %>
+        <%# AIDEV-NOTE: no UiToastComponent render here — the layout already provides one globally (see application/_flash), and a second instance on this page fights it for the "primary controller" role. %>
         <%= render TooltipComponent.new(text: "Rails Blocks tooltip", placement: "top") do %>
           <button class="rounded-md border border-border px-3 py-2" type="button">Rails Blocks tooltip</button>
         <% end %>
@@ -139,8 +139,8 @@
           <% navbar.with_item(label: "Dashboard", href: "#") %>
           <% navbar.with_item(label: "Resources", dropdown: true, content_id: "navigation-resources") %>
           <% navbar.with_dropdown_content(id: "navigation-resources", columns: 2) do %>
-            <a class="rounded-md p-2 hover:bg-muted" href="#">Guides</a>
-            <a class="rounded-md p-2 hover:bg-muted" href="#">Support</a>
+            <a class="rounded-md p-2 hover:bg-neutral-100 dark:hover:bg-neutral-700" href="#">Guides</a>
+            <a class="rounded-md p-2 hover:bg-neutral-100 dark:hover:bg-neutral-700" href="#">Support</a>
           <% end %>
         <% end %>
 

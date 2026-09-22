@@ -32,7 +32,7 @@ class UiTabsComponent
     def tab_classes
       shape = (@variant == :underline) ? "rounded-none" : "rounded-lg"
       low_contrast_border = (@variant == :low_contrast) ? "border border-transparent" : ""
-      base = "#{shape} #{low_contrast_border} whitespace-nowrap text-xs font-medium transition flex gap-x-2 items-center justify-center py-2.5 px-3 w-full text-center"
+      base = "#{shape} #{low_contrast_border} whitespace-nowrap text-sm font-medium transition flex gap-x-2 items-center justify-center py-2.5 px-3 w-full text-center"
       focus = "focus-visible:outline-offset-2 focus-visible:outline-neutral-600 dark:focus-visible:outline-neutral-200"
       color = "text-current hover:text-current dark:text-current dark:hover:text-current"
       disabled_styles = @disabled ? "opacity-50 cursor-not-allowed" : ""

@@ -54,7 +54,7 @@
       name: "user[password]",
       id: "user_password",
       autocomplete: "new-password",
-      placeholder: true,
+      placeholder: "•••••••",
       error: resource.errors[:password].first,
       hint: @minimum_password_length && t("devise.shared.minimum_password_length", count: @minimum_password_length),
       classes: "mb-6"

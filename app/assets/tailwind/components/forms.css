@@ -26,8 +26,9 @@
 
   &:focus,
   &:focus-visible {
+    /* AIDEV-NOTE: box-shadow only, no border-width change — swapping border width grows an auto-height box and pushes surrounding layout. */
     box-shadow: inset 0 0 0 1px var(--primary);
-    border: 1px solid var(--primary);
+    border-color: var(--primary);
   }
 
   &.error {
@@ -68,8 +69,9 @@ select {
 
   &:focus,
   &:focus-visible {
+    /* AIDEV-NOTE: box-shadow only, no border-width change — swapping border width grows an auto-height box and pushes surrounding layout. */
     box-shadow: inset 0 0 0 1px var(--primary);
-    border: 1px solid var(--primary);
+    border-color: var(--primary);
   }
 }
 
@@ -90,8 +92,9 @@ select[multiple] {
 
   &:focus,
   &:focus-visible {
+    /* AIDEV-NOTE: box-shadow only, no border-width change — swapping border width grows an auto-height box and pushes surrounding layout. */
     box-shadow: inset 0 0 0 1px var(--primary);
-    border: 1px solid var(--primary);
+    border-color: var(--primary);
   }
 
   &.error {
