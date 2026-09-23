@@ -12,9 +12,9 @@
 | 3 | 1 | 1 | Implement `UiTabsComponent` link mode | subagent | ✅ |
 | 4 | 1 | 2 | Add component previews and kitchen-sink examples | subagent | ✅ |
 | 5 | 1 | 2 | Regenerate the component catalog and map | Master | ✅ |
-| 6 | 2 | 3 | Add the authenticated Schedules placeholder | Master | |
-| 7 | 2 | 3 | Add the authenticated Subjects placeholder | Master | |
-| 8 | 2 | 3 | Add the authenticated Students placeholder | Master | |
+| 6 | 2 | 3 | Add the authenticated Schedules placeholder | Master | ✅ |
+| 7 | 2 | 3 | Add the authenticated Subjects placeholder | Master | ✅ |
+| 8 | 2 | 3 | Add the authenticated Students placeholder | Master | ✅ |
 | 9 | 3 | 4 | Centralize sidebar and settings-tab highlighting | Master | |
 | 10 | 3 | 4 | Build the signed-in shell and account menu | Master | |
 | 11 | 3 | 4 | Verify navigation across desktop, collapsed, mobile, and Turbo states | Master | |

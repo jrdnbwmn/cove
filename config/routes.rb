@@ -17,6 +17,10 @@ Rails.application.routes.draw do
     # get "/dashboard", to: "dashboard#show", as: :user_root
   end
 
+  resources :schedules, only: :index
+  resources :subjects, only: :index
+  resources :students, only: :index
+
   # Public marketing homepage
   root to: "public#index"
 
