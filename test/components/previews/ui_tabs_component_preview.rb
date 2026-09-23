@@ -11,6 +11,14 @@ class UiTabsComponentPreview < ViewComponent::Preview
     render tabs_component(variant: :underline)
   end
 
+  def links
+    tabs = UiTabsComponent.new(mode: :links)
+    tabs.with_tab(title: "Profile", href: "/settings/profile", active: true)
+    tabs.with_tab(title: "Password", href: "/settings/password")
+    tabs.with_tab(title: "Billing", href: "/settings/billing")
+    render tabs
+  end
+
   private
 
   def tabs_component(**options)

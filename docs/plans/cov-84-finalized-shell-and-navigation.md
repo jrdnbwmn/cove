@@ -10,8 +10,8 @@
 | 1 | 1 | 1 | Extend `SidebarComponent` for inset styling, active accessibility, and mobile indicators | Master | ✅ |
 | 2 | 1 | 1 | Define the failing link-tabs component contract | subagent | ✅ |
 | 3 | 1 | 1 | Implement `UiTabsComponent` link mode | subagent | ✅ |
-| 4 | 1 | 2 | Add component previews and kitchen-sink examples | subagent | |
-| 5 | 1 | 2 | Regenerate the component catalog and map | Master | |
+| 4 | 1 | 2 | Add component previews and kitchen-sink examples | subagent | ✅ |
+| 5 | 1 | 2 | Regenerate the component catalog and map | Master | ✅ |
 | 6 | 2 | 3 | Add the authenticated Schedules placeholder | Master | |
 | 7 | 2 | 3 | Add the authenticated Subjects placeholder | Master | |
 | 8 | 2 | 3 | Add the authenticated Students placeholder | Master | |

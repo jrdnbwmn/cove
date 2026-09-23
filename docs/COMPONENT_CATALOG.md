@@ -21,7 +21,7 @@
 | `DropdownComponent` | Renders an accessible, positioned menu with item slots. | `trigger_text`, `placement`, `hover`, `portal` | — | `DropdownComponentPreview` |
 | `NavbarComponent` | Renders responsive primary navigation with optional dropdown panels. | `variant`, `sticky`, `show_mobile_menu` | — | `NavbarComponentPreview` |
 | `BreadcrumbComponent` | Renders an accessible page hierarchy trail. | `items`, `separator`, `variant`, `truncate_at` | — | `BreadcrumbComponentPreview` |
-| `UiTabsComponent` | Renders Rails Blocks tabs without replacing Jumpstart's tabs. | `variant`, `orientation`, `default_tab`, `url_sync` | — | `UiTabsComponentPreview` |
+| `UiTabsComponent` | Renders Rails Blocks tabs without replacing Jumpstart's tabs. | `mode`, `variant`, `orientation`, `default_tab`, `url_sync` | — | `UiTabsComponentPreview` |
 | `PaginationComponent` | Renders Pagy navigation in full, compact, or minimal form. | `pagy`, `variant`, `size`, `frame_id` | — | `PaginationComponentPreview` |
 | `SidebarComponent` | Renders responsive primary navigation with collapsible groups. | `variant`, `collapsible`, `storage_key`, `position` | — | `SidebarComponentPreview` |
 | `CardComponent` | Renders a content container with optional image, header, body, and footer slots. | `variant`, `padding`, `shadow`, `divide`, `hoverable` | — | `CardComponentPreview` |
@@ -510,17 +510,24 @@ developer-authored SVG markup.
 **Purpose:** Renders Rails Blocks tabs for new product UI. Use this component
 instead of `TabsComponent`, which belongs to Jumpstart and remains unchanged.
 
-**Arguments:** Use `variant`, `orientation`, `default_tab`, `url_sync`,
+**Arguments:** Use `mode`, `variant`, `orientation`, `default_tab`, `url_sync`,
 `scroll_to_anchor`, `auto_switch`, `lazy_load`, `arrow_focus_only`, and class
-options to configure the tab group.
+options to configure the tab group. `mode` is `:panels` (default, client-side
+tab/panel switching) or `:links`, where each tab is a real navigation anchor
+to its own page.
 
-**Slots:** `with_tab` adds a tab button; `with_panel` adds its matching panel.
+**Slots:** `with_tab` adds a tab button (`:panels` mode) or link (`:links`
+mode, via `href:` and caller-computed `active:`); `with_panel` adds its
+matching panel (`:panels` mode only — `:links` mode renders no panels).
 
 **Variants:** `:pills`, `:underline`, and `:low_contrast`; `:bordered` remains
-a legacy alias for `:low_contrast`.
+a legacy alias for `:low_contrast`. Visual variant applies in both `mode`
+values.
 
-**Dependencies:** Uses the collision-free `ui-tabs` controller. Jumpstart's
-existing `tabs` controller and `TabsComponent` remain intact.
+**Dependencies:** Uses the collision-free `ui-tabs` controller in `:panels`
+mode only — `:links` mode has no Stimulus controller and no
+`tablist`/`tab`/`tabpanel` ARIA roles, since navigation is real page loads.
+Jumpstart's existing `tabs` controller and `TabsComponent` remain intact.
 
 **Safety:** Tab `icon` markup is rendered as HTML. Supply only static,
 developer-authored SVG markup.
@@ -533,6 +540,13 @@ developer-authored SVG markup.
 <%= render UiTabsComponent.new do |tabs| %>
   <% tabs.with_tab(title: "Overview", id: "overview") %>
   <% tabs.with_panel do %>Overview content<% end %>
+<% end %>
+```
+
+```erb
+<%= render UiTabsComponent.new(mode: :links) do |tabs| %>
+  <% tabs.with_tab(title: "Profile", href: profile_path, active: current_page?(profile_path)) %>
+  <% tabs.with_tab(title: "Password", href: password_path, active: current_page?(password_path)) %>
 <% end %>
 ```
 
@@ -568,10 +582,16 @@ build-time scanner needs each `open:` variant spelled out literally, so an
 unrecognized value falls back to `"w-64"` rather than silently producing an
 unstyled class.
 
-**Slots:** `with_logo`, `with_item`, `with_section`, `with_footer`, and
-`with_collapsed_footer`.
+**Slots:** `with_logo`, `with_item`, `with_section`, `with_footer`,
+`with_collapsed_footer`, and `with_mobile_toggle_indicator` (a caller-supplied
+indicator, e.g. a status dot, rendered inside the mobile menu-toggle button).
 
-**Variants:** `:default`, `:bordered`, and `:minimal`.
+**Variants:** `:default`, `:bordered`, `:minimal`, and `:inset` (borderless,
+uses the `bg-background` token — pairs with an inset content panel rather
+than a bordered sidebar edge).
+
+**Accessibility:** Active items (`with_item(..., active: true)`) get
+`aria-current="page"` on both their expanded and collapsed anchor.
 
 **Dependencies:** Uses the locally installed `sidebar` Stimulus controller and
 the Rails Blocks `ui-tooltip` controller for collapsed-item labels.

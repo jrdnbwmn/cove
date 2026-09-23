@@ -21,4 +21,11 @@ class SidebarComponentPreview < ViewComponent::Preview
     sidebar.with_item(label: "Dashboard", href: "/dashboard", active: true)
     render sidebar.with_content("Main content")
   end
+
+  def inset
+    sidebar = SidebarComponent.new(variant: :inset)
+    sidebar.with_item(label: "Dashboard", href: "/dashboard", active: true)
+    sidebar.with_item(label: "Settings", href: "/settings")
+    render sidebar.with_content("Main content")
+  end
 end
