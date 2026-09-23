@@ -20,9 +20,9 @@
 | 11 | 3 | 4 | Verify navigation across desktop, collapsed, mobile, and Turbo states | Master | ✅ |
 | 12 | 3 | 5 | Replace settings sub-navigation with horizontal link tabs | Master | ✅ |
 | 13 | 3 | 5 | Move impersonation controls into the sidebar | Master | ✅ |
-| 14 | 4 | 6 | Route ordinary flashes to toasts and Devise flashes to in-card alerts | Master | |
-| 15 | 4 | 6 | Add persistent error-toast behavior and live-region accessibility | Master | |
-| 16 | 4 | 6 | Run responsive, full-suite, lint, and diff verification | Master | |
+| 14 | 4 | 6 | Route ordinary flashes to toasts and Devise flashes to in-card alerts | Master | ✅ |
+| 15 | 4 | 6 | Add persistent error-toast behavior and live-region accessibility | Master | ✅ |
+| 16 | 4 | 6 | Run responsive, full-suite, lint, and diff verification | Master | ✅ |
 
 ## Prerequisites
 

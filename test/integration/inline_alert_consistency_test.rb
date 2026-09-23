@@ -8,22 +8,17 @@ class FlashVariantPreviewController < ApplicationController
 end
 
 class InlineAlertConsistencyTest < ActionDispatch::IntegrationTest
-  test "each flash key renders the expected AlertComponent variant" do
+  test "ordinary pages bridge each flash key to the toast host" do
     with_routing do |routes|
       routes.draw do
         get "/flash-variant-preview", to: "flash_variant_preview#show"
       end
 
-      {
-        notice: "border-blue-200",
-        success: "border-green-200",
-        alert: "border-red-200",
-        error: "border-red-200"
-      }.each do |flash_key, border_class|
+      %i[notice success alert error].each do |flash_key|
         get "/flash-variant-preview", params: {flash_key: flash_key, flash_message: "Test #{flash_key} message"}
 
         assert_response :success
-        assert_select "#flash .#{border_class}", text: "Test #{flash_key} message"
+        assert_select "[data-controller='flash-toast'][data-flash-toast-message-value='Test #{flash_key} message']"
       end
     end
   end

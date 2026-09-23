@@ -8,7 +8,8 @@ export default class extends Controller {
   static values = {
     type: { type: String, default: "default" },
     message: String,
-    description: String
+    description: String,
+    autoDismiss: { type: Boolean, default: true }
   }
 
   connect() {
@@ -16,7 +17,8 @@ export default class extends Controller {
       detail: {
         type: this.typeValue,
         message: this.messageValue,
-        description: this.descriptionValue
+        description: this.descriptionValue,
+        autoDismiss: this.autoDismissValue
       }
     }))
   }

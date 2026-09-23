@@ -7,7 +7,7 @@
   <body data-controller="turbo-resilience">
     <header>
       <%= impersonation_banner %>
-      <%= render "flash" %>
+      <%= render "flash", inline: devise_controller? && !user_signed_in? %>
 
       <nav class="minimal-top-nav">
         <%= link_to root_path do %>

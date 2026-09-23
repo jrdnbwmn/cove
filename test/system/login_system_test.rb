@@ -51,7 +51,7 @@ class LoginSystemTest < ApplicationSystemTestCase
   private
 
   def assert_notice(message)
-    assert_selector "#flash .border-blue-200", text: message
+    assert_selector "[role='status']", text: message
   end
 
   def assert_alert(message)
