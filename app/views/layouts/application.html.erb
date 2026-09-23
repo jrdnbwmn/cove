@@ -5,7 +5,6 @@
   </head>
   <body data-controller="turbo-resilience bridge--menu-button <%= "bridge--notification-token" if user_signed_in? %>">
     <% if user_signed_in? && !hotwire_native_app? %>
-      <%= impersonation_banner %>
       <%= render "flash" %>
       <%= render "application/sidebar" %>
     <% else %>

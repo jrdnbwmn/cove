@@ -15,6 +15,7 @@
 
   <% sidebar.with_footer do %>
     <div class="flex flex-col gap-1">
+      <%= render "application/sidebar_impersonation" %>
       <% support_item = SidebarComponent::ItemComponent.new(label: "Support", href: "mailto:support@covehomeschool.com") %>
       <a href="mailto:support@covehomeschool.com" title="support@covehomeschool.com" class="<%= support_item.item_classes %>">
         <span class="flex min-w-0 items-center gap-1.5">
@@ -42,6 +43,12 @@
 
       <%= render "application/sidebar_account_menu", collapsed: true %>
     </div>
+  <% end %>
+
+  <% if current_user != true_user %>
+    <% sidebar.with_mobile_toggle_indicator do %>
+      <span class="absolute right-1 top-1 size-1.5 rounded-full bg-[var(--icon-on-warning-secondary)]"></span>
+    <% end %>
   <% end %>
 
   <div class="flex-1 overflow-y-auto p-2 sm:p-4">

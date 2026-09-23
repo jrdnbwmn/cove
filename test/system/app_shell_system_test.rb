@@ -102,6 +102,32 @@ class AppShellSystemTest < ApplicationSystemTestCase
     assert_no_selector "a[href='#{user_root_path}'][aria-current='page']"
   end
 
+  test "impersonating user sees sidebar controls and can stop" do
+    admin = users(:admin)
+    admin.create_default_account
+    login_as admin, scope: :user
+    visit madmin_user_path(users(:one))
+
+    click_button "Impersonate"
+
+    assert_selector "[data-testid='sidebar-impersonation']", text: users(:one).name
+    find("button[aria-label='Collapse sidebar']").click
+    assert_selector "button[aria-label='Account menu'][data-ui-tooltip-content*='Impersonating']"
+
+    find("button[aria-label='Expand sidebar']").click
+    page.current_window.resize_to(375, 900)
+    find("button[aria-label='Open sidebar']").click
+    within "[data-sidebar-target='mobileSidebar']" do
+      assert_selector "[data-testid='sidebar-impersonation']"
+    end
+    page.current_window.resize_to(1400, 1400)
+    click_button "Stop impersonating"
+
+    assert_no_selector "[data-testid='sidebar-impersonation']"
+  ensure
+    page.current_window.resize_to(1400, 1400)
+  end
+
   test "footer retains its public links" do
     visit root_path
 

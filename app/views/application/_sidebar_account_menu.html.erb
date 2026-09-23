@@ -1,4 +1,5 @@
 <%# locals: (collapsed: false) -%>
+<% impersonating = current_user != true_user %>
 <%= render DropdownComponent.new(placement: "top-start", classes: collapsed ? nil : "w-full") do |dropdown| %>
   <% dropdown.with_trigger do %>
     <% account_name = current_user.name.presence %>
@@ -10,14 +11,14 @@
         aria-haspopup="menu"
         title="<%= account_label %>"
         data-controller="ui-tooltip"
-        data-ui-tooltip-content="<%= account_label %>"
+        data-ui-tooltip-content="<%= impersonating ? "Impersonating #{account_label}" : account_label %>"
         data-ui-tooltip-placement-value="right"
         data-ui-tooltip-arrow="true"
         data-ui-tooltip-animation-value="fade origin"
         data-ui-tooltip-size-value="small"
         data-ui-dropdown-popover-target="button"
         data-action="click->ui-dropdown-popover#toggle"
-        class="flex h-8 w-8.5 items-center justify-center rounded-lg text-neutral-700 hover:bg-neutral-100 focus:outline-none focus-visible:bg-neutral-100 dark:text-neutral-100 dark:hover:bg-neutral-800 dark:focus-visible:bg-neutral-800">
+        class="flex h-8 w-8.5 items-center justify-center rounded-lg text-neutral-700 hover:bg-neutral-100 focus:outline-none focus-visible:bg-neutral-100 <%= "ring-2 ring-[var(--icon-on-warning-secondary)]" if impersonating %> dark:text-neutral-100 dark:hover:bg-neutral-800 dark:focus-visible:bg-neutral-800">
         <%= render AvatarComponent.new(src: avatar_url_for(current_user), alt: account_label, size: :xs) %>
       </button>
     <% else %>

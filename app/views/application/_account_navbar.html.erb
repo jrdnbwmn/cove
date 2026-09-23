@@ -1,0 +1,15 @@
+<%= render UiTabsComponent.new(mode: :links, variant: :underline, tab_list_classes: "border-b border-neutral-200 dark:border-neutral-700") do |tabs| %>
+  <% tabs.with_tab(title: t(".profile"), href: edit_user_registration_path, active: profile_tab_active?) %>
+  <% tabs.with_tab(title: t(".password"), href: edit_account_password_path, active: password_tab_active?) %>
+  <% if Devise.omniauth_configs.any? %>
+    <% tabs.with_tab(title: t(".connected_accounts"), href: user_connected_accounts_path, active: connected_accounts_tab_active?) %>
+  <% end %>
+  <% if Jumpstart.config.payments_enabled? && !hotwire_native_app? %>
+    <% tabs.with_tab(title: t(".billing"), href: billing_path, active: billing_tab_active?) %>
+  <% end %>
+  <% tabs.with_tab(title: "Family", href: account_path(current_account), active: family_tab_active?) %>
+  <% tabs.with_tab(title: t(".api_tokens"), href: api_tokens_path, active: api_tokens_tab_active?) %>
+  <% if defined? Refer %>
+    <% tabs.with_tab(title: t(".referrals"), href: referrals_path, active: referrals_tab_active?) %>
+  <% end %>
+<% end %>
