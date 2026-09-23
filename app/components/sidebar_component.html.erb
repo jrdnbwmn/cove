@@ -127,7 +127,7 @@
     </div>
 
     <!-- Main Content Area -->
-    <main class="<%= min_height_class %> grow h-auto w-auto bg-white dark:bg-neutral-950 flex flex-col relative">
+    <main class="<%= main_classes %>">
       <% if show_mobile_toggle? %>
         <div class="w-full absolute top-0 z-10 flex items-center md:hidden p-2">
           <button type="button" class="relative size-9 inline-flex items-center justify-center rounded-md focus:bg-neutral-100 focus:outline-hidden focus:ring-inset dark:focus:bg-neutral-700/50 active:opacity-50" data-action="click->sidebar#openMobile" aria-label="Open sidebar">

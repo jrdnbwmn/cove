@@ -17,6 +17,20 @@ class SidebarComponentTest < ViewComponent::TestCase
     assert_text "Main content"
   end
 
+  test "the main content area background follows the variant" do
+    render_inline(SidebarComponent.new) do |sidebar|
+      sidebar.with_item(label: "Home", href: "/")
+    end
+    assert_includes page.find("main")[:class], "bg-white"
+
+    render_inline(SidebarComponent.new(variant: :inset)) do |sidebar|
+      sidebar.with_item(label: "Home", href: "/")
+    end
+    main_classes = page.find("main")[:class]
+    assert_includes main_classes, "bg-background"
+    assert_no_match(/\bbg-white\b/, main_classes)
+  end
+
   test "the inset variant has no sidebar border on desktop or mobile" do
     render_inline(SidebarComponent.new(variant: :inset)) do |sidebar|
       sidebar.with_item(label: "Home", href: "/", active: true)

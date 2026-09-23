@@ -1,0 +1,83 @@
+<%# locals: (collapsed: false) -%>
+<%= render DropdownComponent.new(placement: "top-start", classes: collapsed ? nil : "w-full") do |dropdown| %>
+  <% dropdown.with_trigger do %>
+    <% account_name = current_user.name.presence %>
+    <% account_label = account_name || current_user.email %>
+    <% if collapsed %>
+      <button
+        type="button"
+        aria-label="Account menu"
+        aria-haspopup="menu"
+        title="<%= account_label %>"
+        data-controller="ui-tooltip"
+        data-ui-tooltip-content="<%= account_label %>"
+        data-ui-tooltip-placement-value="right"
+        data-ui-tooltip-arrow="true"
+        data-ui-tooltip-animation-value="fade origin"
+        data-ui-tooltip-size-value="small"
+        data-ui-dropdown-popover-target="button"
+        data-action="click->ui-dropdown-popover#toggle"
+        class="flex h-8 w-8.5 items-center justify-center rounded-lg text-neutral-700 hover:bg-neutral-100 focus:outline-none focus-visible:bg-neutral-100 dark:text-neutral-100 dark:hover:bg-neutral-800 dark:focus-visible:bg-neutral-800">
+        <%= render AvatarComponent.new(src: avatar_url_for(current_user), alt: account_label, size: :xs) %>
+      </button>
+    <% else %>
+      <button
+        type="button"
+        aria-label="Account menu"
+        aria-haspopup="menu"
+        data-ui-dropdown-popover-target="button"
+        data-action="click->ui-dropdown-popover#toggle"
+        class="flex w-full items-center gap-2 rounded-lg border border-neutral-200 p-1.5 text-left hover:bg-neutral-100 focus:outline-none focus-visible:bg-neutral-100 dark:border-neutral-800 dark:hover:bg-neutral-800 dark:focus-visible:bg-neutral-800">
+        <%= render AvatarComponent.new(src: avatar_url_for(current_user), alt: account_label, size: :sm) %>
+        <div class="min-w-0 flex-1">
+          <% if account_name %>
+            <div class="truncate text-sm font-medium text-neutral-900 dark:text-neutral-100" title="<%= account_name %>"><%= account_name %></div>
+            <div class="truncate text-xs text-neutral-500 dark:text-neutral-400" title="<%= current_user.email %>"><%= current_user.email %></div>
+          <% else %>
+            <div class="truncate text-sm font-medium text-neutral-900 dark:text-neutral-100" title="<%= current_user.email %>"><%= current_user.email %></div>
+          <% end %>
+        </div>
+        <%= icon "chevrons-up-down", class: "size-4 shrink-0 text-neutral-500 dark:text-neutral-400" %>
+      </button>
+    <% end %>
+  <% end %>
+
+  <% dropdown.with_item_link text: t("application.user_menu.profile"), href: edit_user_registration_path %>
+  <% dropdown.with_item_link text: t("application.user_menu.password"), href: edit_account_password_path %>
+  <% if Devise.omniauth_configs.any? %>
+    <% dropdown.with_item_link text: t("application.user_menu.connected_accounts"), href: user_connected_accounts_path %>
+  <% end %>
+  <% if Jumpstart.config.payments_enabled? %>
+    <% dropdown.with_item_link text: t("application.user_menu.billing"), href: billing_path %>
+  <% end %>
+  <% dropdown.with_item_link text: "Family", href: account_path(current_account) %>
+
+  <% if Rails.env.development? %>
+    <% dropdown.with_item_divider %>
+    <% dropdown.with_item_label text: "Jumpstart" %>
+    <% dropdown.with_item_custom(unstyled: true) do %>
+      <%= link_to "Configuration", jumpstart_path(script_name: nil), class: "flex items-center gap-2 rounded-md px-2 py-1.5 text-left text-sm text-muted-foreground focus:bg-muted focus:outline-hidden dark:text-neutral-100 dark:focus:bg-neutral-700/50", role: "menuitem", tabindex: "-1", data: {turbo: false, ui_menu_target: "item"} %>
+    <% end %>
+    <% dropdown.with_item_custom(unstyled: true) do %>
+      <%= link_to "Documentation", jumpstart.docs_path, target: :_blank, class: "flex items-center gap-2 rounded-md px-2 py-1.5 text-left text-sm text-muted-foreground focus:bg-muted focus:outline-hidden dark:text-neutral-100 dark:focus:bg-neutral-700/50", role: "menuitem", tabindex: "-1", data: {turbo: false, ui_menu_target: "item"} %>
+    <% end %>
+    <% dropdown.with_item_custom(unstyled: true) do %>
+      <%= link_to "Mailbin", mailbin_path(script_name: nil), target: :_blank, class: "flex items-center gap-2 rounded-md px-2 py-1.5 text-left text-sm text-muted-foreground focus:bg-muted focus:outline-hidden dark:text-neutral-100 dark:focus:bg-neutral-700/50", role: "menuitem", tabindex: "-1", data: {turbo: false, ui_menu_target: "item"} %>
+    <% end %>
+  <% end %>
+
+  <% dropdown.with_item_divider %>
+  <% dropdown.with_item_custom(unstyled: true) do %>
+    <%= button_to t("application.user_menu.sign_out"), destroy_user_session_path, method: :delete,
+      form: {class: "w-full"},
+      class: "flex w-full items-center rounded-md px-2 py-1.5 text-left text-sm text-muted-foreground focus:bg-muted focus:outline-hidden dark:text-neutral-100 dark:focus:bg-neutral-700/50" %>
+  <% end %>
+
+  <% dropdown.with_item_divider %>
+  <% dropdown.with_item_custom(unstyled: true) do %>
+    <div class="flex items-center gap-3 px-2 py-1.5 text-xs text-muted-foreground">
+      <%= link_to t("application.footer.privacy"), privacy_path, class: "hover:underline" %>
+      <%= link_to t("application.footer.terms"), terms_path, class: "hover:underline" %>
+    </div>
+  <% end %>
+<% end %>

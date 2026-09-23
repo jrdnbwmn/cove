@@ -4,17 +4,23 @@
     <%= render "head" %>
   </head>
   <body data-controller="turbo-resilience bridge--menu-button <%= "bridge--notification-token" if user_signed_in? %>">
-    <header>
+    <% if user_signed_in? && !hotwire_native_app? %>
       <%= impersonation_banner %>
       <%= render "flash" %>
-      <%= render "navbar" %>
-    </header>
+      <%= render "application/sidebar" %>
+    <% else %>
+      <header>
+        <%= impersonation_banner %>
+        <%= render "flash" %>
+        <%= render "navbar" %>
+      </header>
 
-    <main>
-      <%= content_for?(:content) ? yield(:content) : yield %>
-    </main>
+      <main>
+        <%= content_for?(:content) ? yield(:content) : yield %>
+      </main>
 
-    <%= render "footer" unless hotwire_native_app? %>
+      <%= render "footer" unless hotwire_native_app? %>
+    <% end %>
     <%= render "turbo_resilience_templates" %>
   </body>
 </html>

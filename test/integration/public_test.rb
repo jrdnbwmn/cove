@@ -110,13 +110,24 @@ class Jumpstart::PublicTest < ActionDispatch::IntegrationTest
     assert_select "nav[aria-label='Primary'] a[href='/'] svg"
   end
 
-  test "signed-in pages keep the standard navbar with logo and border" do
+  test "signed-in pages render the sidebar shell instead of the top navbar" do
     sign_in users(:one)
     get edit_user_registration_path
 
     assert_response :success
-    assert_select "nav[aria-label='Primary'].border-b"
-    assert_select "nav[aria-label='Primary'] a[href='/'] svg"
+    assert_select "nav[aria-label='Primary']", count: 0
+    assert_select "[data-controller='sidebar']"
+    assert_select "button[aria-label='Notifications']", count: 0
+    assert_select "footer", count: 0
+  end
+
+  test "signed-in dashboard shows the sidebar with Home active" do
+    sign_in users(:one)
+    get root_path
+
+    assert_response :success
+    assert_select "[data-controller='sidebar']"
+    assert_select "a[href='#{user_root_path}'][aria-current='page']"
   end
 
   test "terms page shows the terms of service" do

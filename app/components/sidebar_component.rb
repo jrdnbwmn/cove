@@ -143,6 +143,13 @@ class SidebarComponent < ViewComponent::Base
     [@width.to_s, base, sidebar_bg_class].join(" ")
   end
 
+  def main_classes
+    base = "#{@min_height_class} grow h-auto w-auto flex flex-col relative"
+    main_bg_class = (@variant == :inset) ? "bg-background" : "bg-white dark:bg-neutral-950"
+
+    [base, main_bg_class].join(" ")
+  end
+
   def controller_data
     {
       data: {

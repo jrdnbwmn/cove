@@ -15,9 +15,9 @@
 | 6 | 2 | 3 | Add the authenticated Schedules placeholder | Master | ✅ |
 | 7 | 2 | 3 | Add the authenticated Subjects placeholder | Master | ✅ |
 | 8 | 2 | 3 | Add the authenticated Students placeholder | Master | ✅ |
-| 9 | 3 | 4 | Centralize sidebar and settings-tab highlighting | Master | |
-| 10 | 3 | 4 | Build the signed-in shell and account menu | Master | |
-| 11 | 3 | 4 | Verify navigation across desktop, collapsed, mobile, and Turbo states | Master | |
+| 9 | 3 | 4 | Centralize sidebar and settings-tab highlighting | Master | ✅ |
+| 10 | 3 | 4 | Build the signed-in shell and account menu | Master | ✅ |
+| 11 | 3 | 4 | Verify navigation across desktop, collapsed, mobile, and Turbo states | Master | ✅ |
 | 12 | 3 | 5 | Replace settings sub-navigation with horizontal link tabs | Master | |
 | 13 | 3 | 5 | Move impersonation controls into the sidebar | Master | |
 | 14 | 4 | 6 | Route ordinary flashes to toasts and Devise flashes to in-card alerts | Master | |

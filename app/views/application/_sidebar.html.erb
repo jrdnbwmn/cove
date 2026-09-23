@@ -1,0 +1,52 @@
+<%= render SidebarComponent.new(variant: :inset, storage_key: "appSidebar") do |sidebar| %>
+  <% sidebar.with_logo do %>
+    <%= link_to root_path, class: "flex items-center text-primary", aria: {label: Jumpstart.config.application_name} do %>
+      <%= render "application/brand" %>
+    <% end %>
+  <% end %>
+
+  <% sidebar.with_item(label: "Home", href: user_root_path, icon: icon("house", class: "size-4 sm:size-4.5"), active: dashboard_nav_active?) %>
+  <% sidebar.with_item(label: "Schedules", href: schedules_path, icon: icon("calendar", class: "size-4 sm:size-4.5"), active: schedules_nav_active?) %>
+  <% sidebar.with_item(label: "Subjects", href: subjects_path, icon: icon("book-open", class: "size-4 sm:size-4.5"), active: subjects_nav_active?) %>
+  <% sidebar.with_item(label: "Students", href: students_path, icon: icon("users", class: "size-4 sm:size-4.5"), active: students_nav_active?) %>
+  <% if current_user.admin? %>
+    <% sidebar.with_item(label: "Admin", href: madmin_root_path, icon: icon("shield", class: "size-4 sm:size-4.5")) %>
+  <% end %>
+
+  <% sidebar.with_footer do %>
+    <div class="flex flex-col gap-1">
+      <% support_item = SidebarComponent::ItemComponent.new(label: "Support", href: "mailto:support@covehomeschool.com") %>
+      <a href="mailto:support@covehomeschool.com" title="support@covehomeschool.com" class="<%= support_item.item_classes %>">
+        <span class="flex min-w-0 items-center gap-1.5">
+          <%= icon "life-buoy", class: "size-4 sm:size-4.5" %>
+          <span class="truncate">Support</span>
+        </span>
+        <%= icon "external-link", class: "size-3.5 text-neutral-500 dark:text-neutral-400" %>
+      </a>
+
+      <%= render SidebarComponent::ItemComponent.new(label: "Settings", href: edit_user_registration_path, icon: icon("settings", class: "size-4 sm:size-4.5"), active: settings_nav_active?) %>
+
+      <%= render "application/sidebar_account_menu" %>
+    </div>
+  <% end %>
+
+  <% sidebar.with_collapsed_footer do %>
+    <div class="flex w-full flex-col items-center gap-1">
+      <a href="mailto:support@covehomeschool.com" aria-label="Support" data-controller="ui-tooltip" data-ui-tooltip-content="Support" data-ui-tooltip-placement-value="right" data-ui-tooltip-arrow="true" data-ui-tooltip-animation-value="fade origin" data-ui-tooltip-size-value="small" class="<%= SidebarComponent::ItemComponent.new(label: "Support", href: "#").collapsed_item_classes %>">
+        <%= icon "life-buoy", class: "size-4 sm:size-4.5" %>
+      </a>
+
+      <a href="<%= edit_user_registration_path %>" aria-label="Settings" <%= "aria-current=\"page\"".html_safe if settings_nav_active? %> data-controller="ui-tooltip" data-ui-tooltip-content="Settings" data-ui-tooltip-placement-value="right" data-ui-tooltip-arrow="true" data-ui-tooltip-animation-value="fade origin" data-ui-tooltip-size-value="small" class="<%= SidebarComponent::ItemComponent.new(label: "Settings", href: "#", active: settings_nav_active?).collapsed_item_classes %>">
+        <%= icon "settings", class: "size-4 sm:size-4.5" %>
+      </a>
+
+      <%= render "application/sidebar_account_menu", collapsed: true %>
+    </div>
+  <% end %>
+
+  <div class="flex-1 overflow-y-auto p-2 sm:p-4">
+    <div class="min-h-full rounded-xl bg-white p-4 shadow-sm sm:rounded-2xl sm:p-6 dark:bg-neutral-950">
+      <%= content_for?(:content) ? yield(:content) : yield %>
+    </div>
+  </div>
+<% end %>
