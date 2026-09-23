@@ -2,7 +2,7 @@
 
 class SidebarComponent < ViewComponent::Base
   # AIDEV-NOTE: Rails Blocks generated Sidebar::Component; keep this app's catalog flat.
-  VARIANTS = %i[default bordered minimal].freeze
+  VARIANTS = %i[default bordered minimal inset].freeze
   POSITIONS = %i[left right].freeze
 
   # Tailwind can't resolve "open:#{@width}" built via string interpolation —
@@ -19,6 +19,7 @@ class SidebarComponent < ViewComponent::Base
   renders_one :logo
   renders_one :footer
   renders_one :collapsed_footer
+  renders_one :mobile_toggle_indicator
 
   renders_many :items, lambda { |label:, href: "#", icon: nil, shortcut: nil, active: false, disabled: false, badge: nil, classes: nil|
     SidebarComponent::ItemComponent.new(
@@ -105,6 +106,8 @@ class SidebarComponent < ViewComponent::Base
       "bg-neutral-50 border-r border-neutral-200 dark:bg-neutral-900 dark:border-neutral-800"
     when :minimal
       "bg-white dark:bg-neutral-950 border-r border-neutral-200 dark:border-neutral-800"
+    when :inset
+      "bg-background"
     else
       "bg-neutral-50 border-r border-neutral-200 dark:bg-neutral-900 dark:border-neutral-800"
     end
@@ -167,6 +170,8 @@ class SidebarComponent < ViewComponent::Base
       "border-r border-neutral-200 bg-neutral-50 dark:border-neutral-800 dark:bg-neutral-900"
     when :minimal
       "bg-white dark:bg-neutral-950"
+    when :inset
+      "bg-background"
     else
       "border-r border-neutral-200 bg-neutral-50 dark:border-neutral-800 dark:bg-neutral-900"
     end
@@ -176,6 +181,8 @@ class SidebarComponent < ViewComponent::Base
     case @variant
     when :minimal
       "bg-white dark:bg-neutral-950"
+    when :inset
+      "bg-background"
     else
       "bg-neutral-50 dark:bg-neutral-900"
     end

@@ -25,7 +25,7 @@
             <!-- Collapsed Nav Items -->
             <div class="mt-1.5 sm:mt-2 flex w-full flex-col items-start">
               <% items.each do |item| %>
-                <a href="<%= item.href %>" aria-label="<%= item.label %>" data-controller="ui-tooltip" data-ui-tooltip-content="<%= item.label %>" data-ui-tooltip-placement-value="right" data-ui-tooltip-arrow="true" data-ui-tooltip-animation-value="fade origin" data-ui-tooltip-size-value="small" class="<%= item.collapsed_item_classes %>">
+                <a href="<%= item.href %>" aria-label="<%= item.label %>" <%= "aria-current=\"page\"".html_safe if item.active %> data-controller="ui-tooltip" data-ui-tooltip-content="<%= item.label %>" data-ui-tooltip-placement-value="right" data-ui-tooltip-arrow="true" data-ui-tooltip-animation-value="fade origin" data-ui-tooltip-size-value="small" class="<%= item.collapsed_item_classes %>">
                   <% if item.icon? %>
                     <%= item.icon.html_safe %>
                   <% else %>
@@ -130,9 +130,12 @@
     <main class="<%= min_height_class %> grow h-auto w-auto bg-white dark:bg-neutral-950 flex flex-col relative">
       <% if show_mobile_toggle? %>
         <div class="w-full absolute top-0 z-10 flex items-center md:hidden p-2">
-          <button type="button" class="size-9 inline-flex items-center justify-center rounded-md focus:bg-neutral-100 focus:outline-hidden focus:ring-inset dark:focus:bg-neutral-700/50 active:opacity-50" data-action="click->sidebar#openMobile" aria-label="Open sidebar">
+          <button type="button" class="relative size-9 inline-flex items-center justify-center rounded-md focus:bg-neutral-100 focus:outline-hidden focus:ring-inset dark:focus:bg-neutral-700/50 active:opacity-50" data-action="click->sidebar#openMobile" aria-label="Open sidebar">
             <span class="sr-only">Open sidebar</span>
             <%= icon "menu", class: "size-4 sm:size-4.5" %>
+            <% if mobile_toggle_indicator? %>
+              <%= mobile_toggle_indicator %>
+            <% end %>
           </button>
         </div>
       <% end %>

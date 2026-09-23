@@ -2,22 +2,30 @@
 
 class UiTabsComponent < ViewComponent::Base
   # AIDEV-NOTE: Rails Blocks generated Tabs::Component; keep it separate from Jumpstart's TabsComponent.
+  # AIDEV-NOTE: mode: :links (COV-84) renders plain navigation anchors with no Stimulus controller,
+  # tab/tablist/tabpanel semantics, or panels — used for page-to-page tabs like settings sub-nav.
   VARIANTS = %i[pills underline low_contrast].freeze
   LEGACY_VARIANTS = {
     bordered: :low_contrast
   }.freeze
   ORIENTATIONS = %i[horizontal vertical].freeze
+  MODES = %i[panels links].freeze
 
-  renders_many :tabs, lambda { |title:, id: nil, icon: nil, meta: nil, badge: nil, disabled: false, classes: nil|
+  renders_many :tabs, lambda { |title:, id: nil, href: nil, active: false, icon: nil, meta: nil, badge: nil, disabled: false, classes: nil|
     tab_meta = meta.presence || badge
 
     UiTabsComponent::TabComponent.new(
       title: title,
       id: id,
+      href: href,
+      active: active,
       icon: icon,
       meta: tab_meta,
       disabled: disabled,
       variant: @variant,
+      mode: @mode,
+      active_class: links_mode? ? active_tab_classes : nil,
+      inactive_class: links_mode? ? inactive_tab_classes : nil,
       classes: classes
     )
   }
@@ -28,6 +36,7 @@ class UiTabsComponent < ViewComponent::Base
     )
   }
 
+  # @param mode [Symbol] Tab behavior: :panels (default, client-side panel switching), :links (plain navigation anchors)
   # @param variant [Symbol] Visual style: :pills, :underline, :low_contrast (:bordered is a legacy alias)
   # @param orientation [Symbol] Tab layout: :horizontal, :vertical
   # @param default_tab [Integer] Index of tab to show on load (0-based)
@@ -44,6 +53,7 @@ class UiTabsComponent < ViewComponent::Base
   # @param tab_list_classes [String] Additional CSS classes for the tab list
   # @param panel_classes [String] Additional CSS classes for all panels
   def initialize(
+    mode: :panels,
     variant: :pills,
     orientation: :horizontal,
     default_tab: 0,
@@ -61,6 +71,7 @@ class UiTabsComponent < ViewComponent::Base
     panel_classes: nil
   )
     super()
+    @mode = normalized_mode(mode)
     @variant = normalized_variant(variant)
     @orientation = ORIENTATIONS.include?(orientation) ? orientation : :horizontal
     @default_tab = default_tab
@@ -85,6 +96,8 @@ class UiTabsComponent < ViewComponent::Base
   end
 
   def tab_list_wrapper_classes
+    return links_tab_list_wrapper_classes if links_mode?
+
     base = "opacity-0 transition-opacity duration-200"
     horizontal_gap = (@variant == :low_contrast) ? "gap-1" : "gap-2"
 
@@ -106,14 +119,23 @@ class UiTabsComponent < ViewComponent::Base
     [base, orientation_classes, variant_classes, @tab_list_classes].compact.reject(&:empty?).join(" ")
   end
 
+  def links_tab_list_wrapper_classes
+    base = "flex items-center gap-2 overflow-x-auto"
+    [base, @tab_list_classes].compact.reject(&:empty?).join(" ")
+  end
+
+  def links_mode?
+    @mode == :links
+  end
+
   def tab_list_grid_cols
-    return nil if @orientation == :vertical
+    return nil if @orientation == :vertical || links_mode?
 
     "grid-cols-1 sm:[grid-template-columns:repeat(var(--tabs-columns),minmax(0,1fr))]"
   end
 
   def tab_list_style
-    return nil if @orientation == :vertical
+    return nil if @orientation == :vertical || links_mode?
 
     "--tabs-columns: #{[tabs.size, 1].max};"
   end
@@ -123,6 +145,8 @@ class UiTabsComponent < ViewComponent::Base
   end
 
   def controller_data
+    return {} if links_mode?
+
     data = {
       controller: "ui-tabs",
       ui_tabs_index_value: resolved_default_tab_index,
@@ -206,5 +230,12 @@ class UiTabsComponent < ViewComponent::Base
     VARIANTS.include?(candidate) ? candidate : :pills
   rescue NoMethodError
     :pills
+  end
+
+  def normalized_mode(mode)
+    candidate = mode.to_sym
+    MODES.include?(candidate) ? candidate : :panels
+  rescue NoMethodError
+    :panels
   end
 end
