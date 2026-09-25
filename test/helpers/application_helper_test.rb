@@ -29,6 +29,10 @@ class ApplicationHelperTest < ActionView::TestCase
     assert students_nav_active?
     assert_not schedules_nav_active?
     assert_not subjects_nav_active?
+
+    request.path = support_path
+    assert support_nav_active?
+    assert_not students_nav_active?
   end
 
   test "settings stays highlighted across profile, password, and two-factor pages" do

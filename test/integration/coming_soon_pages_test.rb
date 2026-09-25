@@ -54,4 +54,21 @@ class ComingSoonPagesTest < ActionDispatch::IntegrationTest
     assert_select "p", text: "Student management will be available here."
     assert_select "svg circle[cx='9'][cy='7'][r='4']"
   end
+
+  test "redirects guests to sign in for support" do
+    get support_path
+
+    assert_redirected_to new_user_session_path
+  end
+
+  test "shows a coming-soon empty state for signed-in users on support" do
+    sign_in users(:one)
+
+    get support_path
+
+    assert_response :success
+    assert_select "h1", text: "Support"
+    assert_select "h2", text: "Coming soon"
+    assert_select "p", text: "Support resources will be available here."
+  end
 end

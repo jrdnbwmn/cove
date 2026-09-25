@@ -28,6 +28,10 @@ module ApplicationHelper
     current_page_or_descendant?(students_path)
   end
 
+  def support_nav_active?
+    current_page_or_descendant?(support_path)
+  end
+
   def settings_nav_active?
     profile_tab_active? || password_tab_active? || connected_accounts_tab_active? ||
       billing_tab_active? || family_tab_active? || api_tokens_tab_active? || referrals_tab_active?
