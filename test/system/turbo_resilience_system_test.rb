@@ -21,40 +21,40 @@ class TurboResilienceSystemTest < ApplicationSystemTestCase
   end
 
   test "frame network failures show a retry that cannot be clicked repeatedly" do
-    login_as users(:one), scope: :user
     visit root_path
-    stub_notifications_frame_fetch("reject")
+    create_remote_frame
+    stub_remote_frame_fetch("reject")
 
-    open_notifications
+    load_remote_frame
 
-    assert_selector "turbo-frame#notifications [data-turbo-resilience-notice][role='alert']", text: I18n.t("turbo_resilience.frame.title")
-    set_notifications_frame_fetch_outcomes("pending")
+    assert_selector "turbo-frame#turbo-resilience-test-frame [data-turbo-resilience-notice][role='alert']", text: I18n.t("turbo_resilience.frame.title")
+    set_remote_frame_fetch_outcomes("pending")
     click_button I18n.t("turbo_resilience.frame.retry")
-    assert page.evaluate_script("document.querySelector('turbo-frame#notifications button')?.disabled")
+    assert page.evaluate_script("document.querySelector('turbo-frame#turbo-resilience-test-frame button')?.disabled")
   end
 
   test "missing frame responses replace Turbo's generic error" do
-    login_as users(:one), scope: :user
     visit root_path
-    stub_notifications_frame_fetch({body: "<main>Unexpected content</main>"})
+    create_remote_frame
+    stub_remote_frame_fetch({body: "<main>Unexpected content</main>"})
 
-    open_notifications
+    load_remote_frame
 
-    assert_selector "turbo-frame#notifications [data-turbo-resilience-notice][role='alert']", text: I18n.t("turbo_resilience.frame.title")
+    assert_selector "turbo-frame#turbo-resilience-test-frame [data-turbo-resilience-notice][role='alert']", text: I18n.t("turbo_resilience.frame.title")
     assert_no_text "Content missing"
   end
 
   test "repeated frame failures restore the retry action" do
-    login_as users(:one), scope: :user
     visit root_path
-    stub_notifications_frame_fetch("reject")
+    create_remote_frame
+    stub_remote_frame_fetch("reject")
 
-    open_notifications
-    assert_selector "turbo-frame#notifications [data-turbo-resilience-notice][role='alert']", text: I18n.t("turbo_resilience.frame.title")
-    set_notifications_frame_fetch_outcomes("reject")
+    load_remote_frame
+    assert_selector "turbo-frame#turbo-resilience-test-frame [data-turbo-resilience-notice][role='alert']", text: I18n.t("turbo_resilience.frame.title")
+    set_remote_frame_fetch_outcomes("reject")
     click_button I18n.t("turbo_resilience.frame.retry")
 
-    assert_selector "turbo-frame#notifications button:not([disabled])", text: I18n.t("turbo_resilience.frame.retry")
+    assert_selector "turbo-frame#turbo-resilience-test-frame button:not([disabled])", text: I18n.t("turbo_resilience.frame.retry")
   end
 
   test "frame failures omit retry actions for cross-origin sources" do
@@ -73,65 +73,61 @@ class TurboResilienceSystemTest < ApplicationSystemTestCase
   end
 
   test "remote frame deadlines render a retryable failure" do
-    login_as users(:one), scope: :user
     visit root_path
-    set_notifications_frame_timeout("50")
-    stub_notifications_frame_fetch("pending")
+    create_remote_frame(timeout: "50")
+    stub_remote_frame_fetch("pending")
 
-    open_notifications
+    load_remote_frame
 
-    assert_selector "turbo-frame#notifications [data-turbo-resilience-notice][role='alert']", text: I18n.t("turbo_resilience.frame.title")
+    assert_selector "turbo-frame#turbo-resilience-test-frame [data-turbo-resilience-notice][role='alert']", text: I18n.t("turbo_resilience.frame.title")
     assert_button I18n.t("turbo_resilience.frame.retry")
   end
 
   test "remote frames can opt out of deadlines" do
-    login_as users(:one), scope: :user
     visit root_path
-    set_notifications_frame_timeout("false")
-    stub_notifications_frame_fetch("pending")
+    create_remote_frame(timeout: "false")
+    stub_remote_frame_fetch("pending")
 
-    open_notifications
+    load_remote_frame
 
-    assert_no_selector "turbo-frame#notifications [data-turbo-resilience-notice]", wait: 0.2
+    assert_no_selector "turbo-frame#turbo-resilience-test-frame [data-turbo-resilience-notice]", wait: 0.2
   end
 
   test "invalid remote frame deadlines fall back to the default" do
-    login_as users(:one), scope: :user
     visit root_path
-    set_notifications_frame_timeout("soon")
-    stub_notifications_frame_fetch("pending")
+    create_remote_frame(timeout: "soon")
+    stub_remote_frame_fetch("pending")
 
-    open_notifications
+    load_remote_frame
 
-    assert_no_selector "turbo-frame#notifications [data-turbo-resilience-notice]", wait: 0.2
+    assert_no_selector "turbo-frame#turbo-resilience-test-frame [data-turbo-resilience-notice]", wait: 0.2
   end
 
   test "a timed out frame retry restores the failure when it rejects" do
-    login_as users(:one), scope: :user
     visit root_path
-    set_notifications_frame_timeout("50")
-    stub_notifications_frame_fetch("pending")
+    create_remote_frame(timeout: "50")
+    stub_remote_frame_fetch("pending")
 
-    open_notifications
-    assert_selector "turbo-frame#notifications [data-turbo-resilience-notice][role='alert']", text: I18n.t("turbo_resilience.frame.title")
-    set_notifications_frame_fetch_outcomes("reject")
+    load_remote_frame
+    assert_selector "turbo-frame#turbo-resilience-test-frame [data-turbo-resilience-notice][role='alert']", text: I18n.t("turbo_resilience.frame.title")
+    set_remote_frame_fetch_outcomes("reject")
     click_button I18n.t("turbo_resilience.frame.retry")
 
-    assert_selector "turbo-frame#notifications button:not([disabled])", text: I18n.t("turbo_resilience.frame.retry")
+    assert_selector "turbo-frame#turbo-resilience-test-frame button:not([disabled])", text: I18n.t("turbo_resilience.frame.retry")
   end
 
   test "a successful frame retry clears the resilience failure" do
-    login_as users(:one), scope: :user
     visit root_path
-    stub_notifications_frame_fetch("reject")
+    create_remote_frame
+    stub_remote_frame_fetch("reject")
 
-    open_notifications
-    assert_selector "turbo-frame#notifications [data-turbo-resilience-notice]"
-    set_notifications_frame_fetch_outcomes({body: "<turbo-frame id='notifications'>Loaded notifications</turbo-frame>"})
+    load_remote_frame
+    assert_selector "turbo-frame#turbo-resilience-test-frame [data-turbo-resilience-notice]"
+    set_remote_frame_fetch_outcomes({body: "<turbo-frame id='turbo-resilience-test-frame'>Loaded frame</turbo-frame>"})
     click_button I18n.t("turbo_resilience.frame.retry")
 
-    assert_selector "turbo-frame#notifications", text: "Loaded notifications"
-    assert_no_selector "turbo-frame#notifications [data-turbo-resilience-notice]"
+    assert_selector "turbo-frame#turbo-resilience-test-frame", text: "Loaded frame"
+    assert_no_selector "turbo-frame#turbo-resilience-test-frame [data-turbo-resilience-notice]"
   end
 
   test "form deadlines restore the submit control without resubmitting" do
@@ -246,12 +242,18 @@ class TurboResilienceSystemTest < ApplicationSystemTestCase
     end
   end
 
-  def open_notifications
-    find("button[aria-label='Notifications']").click
+  def create_remote_frame(timeout: nil)
+    page.execute_script(<<~JAVASCRIPT, timeout)
+      const frame = document.createElement("turbo-frame")
+      frame.id = "turbo-resilience-test-frame"
+      frame.src = "/turbo-resilience-test-frame"
+      if (arguments[0] !== null) frame.dataset.turboResilienceTimeout = arguments[0]
+      document.body.append(frame)
+    JAVASCRIPT
   end
 
-  def set_notifications_frame_timeout(value)
-    page.execute_script("document.querySelector('turbo-frame#notifications').dataset.turboResilienceTimeout = arguments[0]", value)
+  def load_remote_frame
+    page.execute_script("document.querySelector('turbo-frame#turbo-resilience-test-frame').reload()")
   end
 
   def set_registration_form_timeout(value)

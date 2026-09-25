@@ -14,4 +14,12 @@ class AvatarComponentTest < ViewComponent::TestCase
 
     assert_selector "div[role='group'][aria-label='Project members']"
   end
+
+  test "renders a ringless extra-small avatar" do
+    render_inline(AvatarComponent.new(alt: "Avery Stone", fallback: "AS", size: :xs, ring: false))
+
+    classes = page.find("span[role='img']")[:class]
+    assert_includes classes, "size-6"
+    assert_no_match(/\bring-/, classes)
+  end
 end

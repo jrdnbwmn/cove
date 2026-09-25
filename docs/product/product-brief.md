@@ -1,9 +1,6 @@
 # Product Brief
 
-This document outlines key pieces of info about this product that are important to understand while building.
-
-For vision, positioning, pricing, and tiers, see
-[strategy-brief.md](strategy-brief.md).
+This document outlines key rules about this product that are important to understand while building.
 
 ## Free vs Premium
 
@@ -73,7 +70,6 @@ features on the plan, never on a price or plan name.
 
 ## Open questions
 
-- **Sales tax on subscriptions** — ask an accountant before launch.
 - **Yearly → monthly switch mid-year** — Stripe prorates by default;
   behavior not yet decided.
 - **Terms of Service and refund policy pages** — required before Stripe

@@ -1,0 +1,41 @@
+<% nav_items = [
+  {label: "Home", href: user_root_path, icon: "house", active: dashboard_nav_active?},
+  {label: "Schedules", href: schedules_path, icon: "calendar", active: schedules_nav_active?},
+  {label: "Subjects", href: subjects_path, icon: "book-open", active: subjects_nav_active?},
+  {label: "Students", href: students_path, icon: "users", active: students_nav_active?}
+] %>
+<% nav_items << {label: "Admin", href: madmin_root_path, icon: "shield", active: false} if current_user.admin? %>
+
+<%= render SidebarComponent.new(variant: :inset, storage_key: "appSidebar", width: "w-56", show_mobile_toggle: false, mobile_overlay: false) do |sidebar| %>
+  <% sidebar.with_logo do %>
+    <%= link_to root_path, class: "flex items-center text-primary", aria: {label: Jumpstart.config.application_name} do %>
+      <%= render "application/brand" %>
+    <% end %>
+  <% end %>
+
+  <% nav_items.each do |item| %>
+    <% sidebar.with_item(label: item[:label], href: item[:href], icon: icon(item[:icon], class: "size-4 sm:size-4.5"), active: item[:active]) %>
+  <% end %>
+
+  <% sidebar.with_footer do %>
+    <div class="flex flex-col gap-1">
+      <%= render "application/sidebar_impersonation" %>
+
+      <%= render "application/sidebar_account_menu" %>
+    </div>
+  <% end %>
+
+  <% sidebar.with_collapsed_footer do %>
+    <div class="flex flex-col items-start gap-1">
+      <%= render "application/sidebar_account_menu", collapsed: true %>
+    </div>
+  <% end %>
+
+  <div class="flex-1 overflow-y-auto p-0 lg:p-3">
+    <div class="app-content min-h-full bg-white p-6 dark:bg-neutral-950 md:rounded-lg md:border-x md:border-b md:border-border md:py-8 md:px-12 md:shadow-xs">
+      <%= content_for?(:content) ? yield(:content) : yield %>
+    </div>
+  </div>
+<% end %>
+
+<%= render "application/mobile_nav", nav_items: nav_items %>

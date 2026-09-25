@@ -9,28 +9,34 @@
 @variant not-hotwire-native (html:not(.hotwire-native) &);
 
 @font-face {
-  font-family: "Source Serif 4";
+  font-family: "Lastik Free Font";
   font-style: normal;
-  font-weight: 600;
+  font-weight: 400;
   font-display: swap;
-  src: url("SourceSerif4-Semibold-latin-ext.woff2") format("woff2");
-  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+  src: url("Lastik-FreeFont-Regular.woff2") format("woff2");
 }
 
 @font-face {
-  font-family: "Source Serif 4";
+  font-family: "Geist";
   font-style: normal;
-  font-weight: 600;
+  font-weight: 100 900;
   font-display: swap;
-  src: url("SourceSerif4-Semibold-latin.woff2") format("woff2");
-  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+  src: url("Geist-Variable-latin-ext.woff2") format("woff2");
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+
+@font-face {
+  font-family: "Geist";
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url("Geist-Variable-latin.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2191, U+2193, U+2212, U+2215, U+FFFD;
 }
 
 @theme {
-  --font-sans: InterVariable, ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
-  /* https://rsms.me/inter/lab */
-  --font-sans--font-feature-settings: 'liga', 'cv02', 'cv03', 'cv04';
-  --font-serif: "Source Serif 4", ui-serif, Georgia, serif;
+  --font-sans: "Geist", ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  --font-serif: "Lastik Free Font", ui-serif, Georgia, serif;
   /* AIDEV-NOTE: Muted brand-tone status palette. Same lightness steps as Tailwind's defaults (so contrast is unchanged), lower chroma, earthier hues to sit with teal/cream/coral. */
   --color-red-50: oklch(0.977 0.012 25);
   --color-red-100: oklch(0.945 0.026 25);
@@ -144,6 +150,7 @@
 @import "./components/cards.css" layer(components);
 @import "./components/direct_uploads.css" layer(components);
 @import "./components/docs.css" layer(components);
+@import "./components/drawer.css" layer(components);
 @import "./components/forms.css" layer(components);
 @import "./components/hotwire_native.css" layer(components);
 @import "./components/iframe.css" layer(components);
@@ -152,6 +159,7 @@
 @import "./components/notifications.css" layer(components);
 @import "./components/pagination.css" layer(components);
 @import "./components/pills.css" layer(components);
+@import "./components/app_content.css" layer(components);
 @import "./components/tabs.css" layer(components);
 @import "./components/tooltips.css" layer(components);
 @import "./components/top_nav.css" layer(components);

@@ -21,13 +21,13 @@ class SidebarComponent
     end
 
     def item_classes
-      base = "w-full flex items-center justify-between gap-2 rounded-md pl-2 pr-9 py-1.5 text-left text-sm"
+      base = "w-full flex items-center justify-between gap-2 rounded-md pl-2 pr-9 py-1.5 text-left text-base"
       state_classes = if @disabled
         "text-neutral-400 cursor-not-allowed opacity-50 dark:text-neutral-500"
       elsif @active
-        "text-neutral-900 bg-neutral-100 dark:text-neutral-100 dark:bg-neutral-700/50"
+        "bg-muted text-foreground"
       else
-        "text-neutral-700 hover:bg-neutral-100 focus-visible:bg-neutral-100 focus:outline-hidden disabled:cursor-not-allowed disabled:opacity-50 dark:text-neutral-100 dark:hover:bg-neutral-700/50 dark:focus-visible:bg-neutral-700/50"
+        "text-foreground hover:bg-muted focus-visible:bg-muted focus:outline-hidden disabled:cursor-not-allowed disabled:opacity-50"
       end
 
       [base, state_classes, @classes].compact.reject(&:empty?).join(" ")

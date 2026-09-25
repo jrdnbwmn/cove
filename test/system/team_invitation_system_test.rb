@@ -13,7 +13,7 @@ class TeamInvitationSystemTest < ApplicationSystemTestCase
     fill_in "account_invitation[email]", with: email
     find("button[type=submit]").click
 
-    assert_selector "#flash", text: "Invitation was sent to #{email}."
+    assert_selector "[role='status']", text: "Invitation was sent to #{email}."
     invitation = account.account_invitations.find_by!(email: email)
     logout(:user)
     login_as invitee, scope: :user

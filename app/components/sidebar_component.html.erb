@@ -1,31 +1,41 @@
 <div class="<%= wrapper_classes %>" <%= tag.attributes(controller_data) %>>
-  <!-- Mobile Sidebar Overlay -->
-  <div class="absolute inset-0 z-50 md:hidden hidden" data-sidebar-target="mobileSidebar">
-    <!-- Backdrop -->
-    <div class="absolute inset-0 bg-black/50 transition-opacity duration-300" data-sidebar-target="mobileBackdrop" data-action="click->sidebar#closeMobile"></div>
+  <% if mobile_overlay? %>
+    <!-- Mobile Sidebar Overlay -->
+    <div class="absolute inset-0 z-50 md:hidden hidden" data-sidebar-target="mobileSidebar">
+      <!-- Backdrop -->
+      <div class="absolute inset-0 bg-black/50 transition-opacity duration-300" data-sidebar-target="mobileBackdrop" data-action="click->sidebar#closeMobile"></div>
 
-    <!-- Sidebar Panel -->
-    <div class="<%= mobile_panel_classes %>" data-sidebar-target="mobilePanel">
-      <div data-sidebar-target="sharedContent"></div>
+      <!-- Sidebar Panel -->
+      <div class="<%= mobile_panel_classes %>" data-sidebar-target="mobilePanel">
+        <div data-sidebar-target="sharedContent"></div>
+      </div>
     </div>
-  </div>
+  <% end %>
 
   <div class="relative z-0 flex h-full w-full">
     <div class="relative flex h-full flex-row">
       <% if collapsible? %>
-        <details class="<%= sidebar_classes %>" data-sidebar-target="desktopSidebar">
+        <details class="<%= sidebar_classes %>" data-sidebar-target="desktopSidebar" <%= "open".html_safe if default_open? %>>
           <!-- Collapsed Sidebar Summary -->
-          <summary class="group-open/sidebar:hidden flex <%= min_height_class %> h-full cursor-e-resize list-none flex-col items-start pl-2 pr-1.5">
-            <div class="flex h-13 w-full items-center justify-start">
+          <!-- AIDEV-NOTE: pl-3 is a fixed anchor (not items-center), matching nav_classes'
+               own pl-3, so icons sit at a constant offset from the left edge throughout the
+               collapse/expand width transition. items-center/justify-center recompute against
+               the <details>'s currently-animating width, which made icons visibly slide as the
+               sidebar resized. No right padding here — the main content's own p-3 gap (same
+               background color) supplies the visual right-side spacing instead. collapsed_width
+               (sidebar_component.rb) is sized to pl-3 + the icon width + 0, so the rail's own
+               right edge sits flush against the icon. -->
+          <summary class="group-open/sidebar:hidden flex <%= min_height_class %> h-full cursor-e-resize list-none flex-col items-start pt-3 pb-3 pl-3">
+            <div class="flex h-13 items-center">
               <button class="cursor-pointer flex size-10 items-center justify-center rounded-lg text-neutral-500 hover:bg-neutral-100 focus:outline-none focus-visible:bg-neutral-100 disabled:opacity-50 sm:size-9 dark:text-neutral-400 hover:text-neutral-700 dark:hover:text-neutral-100 dark:hover:bg-neutral-800 dark:focus-visible:bg-neutral-800" data-action="click->sidebar#open" aria-label="Expand sidebar">
-                <%= icon "panel-left-open", class: "size-4 sm:size-4.5" %>
+                <%= icon "panel-right", class: "size-4 sm:size-4.5" %>
               </button>
             </div>
 
             <!-- Collapsed Nav Items -->
-            <div class="mt-1.5 sm:mt-2 flex w-full flex-col items-start">
+            <div class="mt-3 flex flex-col items-start gap-1">
               <% items.each do |item| %>
-                <a href="<%= item.href %>" aria-label="<%= item.label %>" data-controller="ui-tooltip" data-ui-tooltip-content="<%= item.label %>" data-ui-tooltip-placement-value="right" data-ui-tooltip-arrow="true" data-ui-tooltip-animation-value="fade origin" data-ui-tooltip-size-value="small" class="<%= item.collapsed_item_classes %>">
+                <a href="<%= item.href %>" aria-label="<%= item.label %>" <%= "aria-current=\"page\"".html_safe if item.active %> data-controller="ui-tooltip" data-ui-tooltip-content="<%= item.label %>" data-ui-tooltip-placement-value="right" data-ui-tooltip-arrow="true" data-ui-tooltip-animation-value="fade origin" data-ui-tooltip-size-value="small" class="<%= item.collapsed_item_classes %>">
                   <% if item.icon? %>
                     <%= item.icon.html_safe %>
                   <% else %>
@@ -51,23 +61,21 @@
             <template data-sidebar-target="contentTemplate">
               <nav class="<%= nav_classes %>">
                 <div class="<%= header_classes %>">
-                  <div class="px-1.5 sm:px-2">
-                    <div class="flex h-13 items-center justify-between">
-                      <!-- Logo -->
-                      <% if logo? %>
-                        <%= logo %>
-                      <% end %>
-                      <div class="flex">
-                        <button class="flex size-10 cursor-pointer items-center justify-center rounded-lg text-neutral-500 hover:bg-neutral-100 focus:outline-none focus-visible:bg-neutral-100 disabled:opacity-50 sm:size-9 dark:text-neutral-400 hover:text-neutral-700 dark:hover:text-neutral-100 dark:hover:bg-neutral-800 dark:focus-visible:bg-neutral-800" aria-expanded="true" aria-label="Collapse sidebar" data-state="closed" data-action="click->sidebar#close">
-                          <%= icon "panel-left-close", class: "size-4 sm:size-4.5" %>
-                        </button>
-                      </div>
+                  <div class="flex h-13 items-center justify-between">
+                    <!-- Logo -->
+                    <% if logo? %>
+                      <%= logo %>
+                    <% end %>
+                    <div class="flex">
+                      <button class="flex size-10 cursor-pointer items-center justify-center rounded-lg text-neutral-400 hover:bg-neutral-100 focus:outline-none focus-visible:bg-neutral-100 disabled:opacity-50 sm:size-9 dark:text-neutral-400 hover:text-neutral-700 dark:hover:text-neutral-100 dark:hover:bg-neutral-800 dark:focus-visible:bg-neutral-800" aria-expanded="true" aria-label="Collapse sidebar" data-state="closed" data-action="click->sidebar#close">
+                        <%= icon "panel-left", class: "size-4 sm:size-4.5" %>
+                      </button>
                     </div>
                   </div>
                 </div>
 
                 <!-- Main Nav Items -->
-                <aside class="relative p-1.5 last:mb-5 sm:p-2 <%= variant == :minimal ? '' : 'bg-neutral-50 dark:bg-neutral-900' %>">
+                <aside class="relative flex flex-col gap-1 last:mb-5 <%= variant == :minimal ? '' : 'bg-neutral-50 dark:bg-neutral-900' %>">
                   <% items.each do |item| %>
                     <%= item %>
                   <% end %>
@@ -95,16 +103,14 @@
         <div class="<%= static_sidebar_classes %>" data-sidebar-target="desktopSidebar">
           <nav class="<%= nav_classes %>">
             <div class="<%= header_classes %>">
-              <div class="px-1.5 sm:px-2">
-                <div class="flex h-13 items-center justify-between">
-                  <% if logo? %>
-                    <%= logo %>
-                  <% end %>
-                </div>
+              <div class="flex h-13 items-center justify-between">
+                <% if logo? %>
+                  <%= logo %>
+                <% end %>
               </div>
             </div>
 
-            <aside class="relative p-1.5 last:mb-5 sm:p-2">
+            <aside class="relative flex flex-col gap-1 last:mb-5">
               <% items.each do |item| %>
                 <%= item %>
               <% end %>
@@ -127,12 +133,15 @@
     </div>
 
     <!-- Main Content Area -->
-    <main class="<%= min_height_class %> grow h-auto w-auto bg-white dark:bg-neutral-950 flex flex-col relative">
+    <main class="<%= main_classes %>">
       <% if show_mobile_toggle? %>
         <div class="w-full absolute top-0 z-10 flex items-center md:hidden p-2">
-          <button type="button" class="size-9 inline-flex items-center justify-center rounded-md focus:bg-neutral-100 focus:outline-hidden focus:ring-inset dark:focus:bg-neutral-700/50 active:opacity-50" data-action="click->sidebar#openMobile" aria-label="Open sidebar">
+          <button type="button" class="relative size-9 inline-flex items-center justify-center rounded-md focus:bg-neutral-100 focus:outline-hidden focus:ring-inset dark:focus:bg-neutral-700/50 active:opacity-50" data-action="click->sidebar#openMobile" aria-label="Open sidebar">
             <span class="sr-only">Open sidebar</span>
             <%= icon "menu", class: "size-4 sm:size-4.5" %>
+            <% if mobile_toggle_indicator? %>
+              <%= mobile_toggle_indicator %>
+            <% end %>
           </button>
         </div>
       <% end %>

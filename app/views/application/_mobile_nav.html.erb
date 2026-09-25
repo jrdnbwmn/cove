@@ -1,0 +1,50 @@
+<%# locals: (nav_items:) -%>
+<%# The dialog element itself needs the same top rounding as its inner
+    content wrapper (component.html.erb's content_wrapper_classes) — both
+    are opaque white and nearly the same size, so an unrounded dialog paints
+    over the wrapper's rounded corners instead of revealing the backdrop
+    through them. %>
+<%= render(Drawer::Component.new(snap_points: :auto, classes: "rounded-t-3xl", show_close_button: true)) do |drawer| %>
+  <% drawer.with_trigger do %>
+    <button
+      type="button"
+      data-action="drawer#show:prevent"
+      aria-label="Open menu"
+      aria-haspopup="dialog"
+      class="fixed right-6 bottom-6 z-40 flex size-12 items-center justify-center rounded-full bg-white text-neutral-700 shadow-lg hover:bg-neutral-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary md:hidden dark:bg-neutral-900 dark:text-neutral-100">
+      <%= icon "menu", class: "size-5" %>
+    </button>
+  <% end %>
+
+  <%= render "application/sidebar_impersonation" %>
+
+  <% inactive_link_classes = "flex items-center gap-3 rounded-md px-3 py-2.5 text-base font-medium text-neutral-700 hover:bg-neutral-100 dark:text-neutral-300 dark:hover:bg-neutral-800" %>
+
+  <nav aria-label="Main" class="flex flex-col gap-1">
+    <% nav_items.each do |item| %>
+      <%= link_to item[:href], aria: {current: (item[:active] ? "page" : nil)}, class: class_names(
+        "flex items-center gap-3 rounded-md px-3 py-2.5 text-base font-medium",
+        "bg-neutral-100 text-foreground dark:bg-neutral-800": item[:active],
+        "text-neutral-700 hover:bg-neutral-100 dark:text-neutral-300 dark:hover:bg-neutral-800": !item[:active]
+      ) do %>
+        <%= icon item[:icon], class: "size-5" %>
+        <%= item[:label] %>
+      <% end %>
+    <% end %>
+
+    <%= link_to edit_user_registration_path, class: inactive_link_classes do %>
+      <%= icon "settings", class: "size-5" %>
+      Settings
+    <% end %>
+
+    <%= link_to support_path, class: inactive_link_classes do %>
+      <%= icon "life-buoy", class: "size-5" %>
+      Support
+    <% end %>
+
+    <%= button_to destroy_user_session_path, method: :delete, form: {class: "w-full"}, class: "w-full text-left #{inactive_link_classes}" do %>
+      <%= icon "log-out", class: "size-5" %>
+      Sign out
+    <% end %>
+  </nav>
+<% end %>

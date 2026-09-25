@@ -1,0 +1,80 @@
+<%# locals: (collapsed: false) -%>
+<% impersonating = current_user != true_user %>
+<%= render DropdownComponent.new(placement: "top-start", classes: collapsed ? nil : "w-full") do |dropdown| %>
+  <% dropdown.with_trigger do %>
+    <% account_name = current_user.name.presence %>
+    <% account_label = account_name || current_user.email %>
+    <% if collapsed %>
+      <button
+        type="button"
+        aria-label="Account menu"
+        aria-haspopup="menu"
+        title="<%= account_label %>"
+        data-controller="ui-tooltip"
+        data-ui-tooltip-content="<%= impersonating ? "Impersonating #{account_label}" : account_label %>"
+        data-ui-tooltip-placement-value="right"
+        data-ui-tooltip-arrow="true"
+        data-ui-tooltip-animation-value="fade origin"
+        data-ui-tooltip-size-value="small"
+        data-ui-dropdown-popover-target="button"
+        data-action="click->ui-dropdown-popover#toggle"
+        class="flex w-8.5 items-center justify-center rounded-lg py-2 text-neutral-700 hover:bg-neutral-100 focus:outline-none focus-visible:bg-neutral-100 <%= "ring-2 ring-[var(--icon-on-warning-secondary)]" if impersonating %> dark:text-neutral-100 dark:hover:bg-neutral-800 dark:focus-visible:bg-neutral-800">
+        <%= render AvatarComponent.new(src: avatar_url_for(current_user), alt: account_label, size: :xs) %>
+      </button>
+    <% else %>
+      <button
+        type="button"
+        aria-label="Account menu"
+        aria-haspopup="menu"
+        data-ui-dropdown-popover-target="button"
+        data-action="click->ui-dropdown-popover#toggle"
+        class="group flex w-full items-center gap-2 rounded-md px-2 py-2 text-left hover:bg-muted focus:outline-none focus-visible:bg-muted">
+        <%= render AvatarComponent.new(src: avatar_url_for(current_user), alt: account_label, size: :xs, ring: false) %>
+        <span class="sidebar-account-label min-w-0 flex-1 truncate text-base text-foreground" title="<%= account_label %>"><%= account_label %></span>
+        <%= icon "chevron-down", class: "size-4 shrink-0 text-muted-foreground transition-transform duration-200 group-data-[state=open]:rotate-180" %>
+      </button>
+    <% end %>
+  <% end %>
+
+  <% dropdown.with_item_link text: "Settings", href: edit_user_registration_path, icon: icon("settings", class: "size-4"), classes: "!text-base !text-foreground hover:bg-muted" %>
+  <% dropdown.with_item_link text: "Support", href: support_path, icon: icon("life-buoy", class: "size-4"), classes: "!text-base !text-foreground hover:bg-muted" %>
+  <% dropdown.with_item_custom(unstyled: true) do %>
+    <%= button_to destroy_user_session_path, method: :delete,
+      form: {class: "w-full"},
+      class: "flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-left text-base text-foreground hover:bg-muted focus:bg-muted focus:outline-hidden" do %>
+      <%= icon "log-out", class: "size-4 text-neutral-500 dark:text-neutral-400" %>
+      <%= t("application.user_menu.sign_out") %>
+    <% end %>
+  <% end %>
+
+  <% if Rails.env.development? %>
+    <% dropdown.with_item_divider %>
+    <% dropdown.with_item_label text: "Jumpstart" %>
+    <% dropdown.with_item_custom(unstyled: true) do %>
+      <%= link_to jumpstart_path(script_name: nil), class: "flex items-center gap-2 rounded-md px-2 py-1.5 text-left text-base text-foreground hover:bg-muted focus:bg-muted focus:outline-hidden", role: "menuitem", tabindex: "-1", data: {turbo: false, ui_menu_target: "item"} do %>
+        <%= icon "settings", class: "size-4 text-neutral-500 dark:text-neutral-400" %>
+        Configuration
+      <% end %>
+    <% end %>
+    <% dropdown.with_item_custom(unstyled: true) do %>
+      <%= link_to jumpstart.docs_path, target: :_blank, class: "flex items-center gap-2 rounded-md px-2 py-1.5 text-left text-base text-foreground hover:bg-muted focus:bg-muted focus:outline-hidden", role: "menuitem", tabindex: "-1", data: {turbo: false, ui_menu_target: "item"} do %>
+        <%= icon "book-open", class: "size-4 text-neutral-500 dark:text-neutral-400" %>
+        Documentation
+      <% end %>
+    <% end %>
+    <% dropdown.with_item_custom(unstyled: true) do %>
+      <%= link_to mailbin_path(script_name: nil), target: :_blank, class: "flex items-center gap-2 rounded-md px-2 py-1.5 text-left text-base text-foreground hover:bg-muted focus:bg-muted focus:outline-hidden", role: "menuitem", tabindex: "-1", data: {turbo: false, ui_menu_target: "item"} do %>
+        <%= icon "inbox", class: "size-4 text-neutral-500 dark:text-neutral-400" %>
+        Mailbin
+      <% end %>
+    <% end %>
+  <% end %>
+
+  <% dropdown.with_item_divider %>
+  <% dropdown.with_item_custom(unstyled: true) do %>
+    <div class="flex items-center gap-3 px-2 py-1.5 text-sm text-foreground">
+      <%= link_to t("application.footer.privacy"), privacy_path, class: "hover:underline" %>
+      <%= link_to t("application.footer.terms"), terms_path, class: "hover:underline" %>
+    </div>
+  <% end %>
+<% end %>

@@ -5,7 +5,7 @@
   --primary-foreground: var(--background);
   --accent-brand: #D4884A;
   --primary-hover: color-mix(in oklab, var(--primary) 80%, black);
-  --muted: color-mix(in oklab, var(--background) 88%, var(--primary));
+  --muted: color-mix(in oklab, var(--background) 95%, black);
   --accent-muted: color-mix(in oklab, var(--background) 85%, var(--accent-brand));
   --muted-foreground: var(--color-stone-500);
   --border: var(--color-stone-200);

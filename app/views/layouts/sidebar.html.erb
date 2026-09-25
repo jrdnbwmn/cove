@@ -1,0 +1,11 @@
+<% content_for :content do %>
+  <div class="p-0">
+    <h1 class="h1 mb-6">Settings</h1>
+    <%= yield :sidebar %>
+    <div class="mt-6">
+      <%= yield %>
+    </div>
+  </div>
+<% end %>
+
+<%= render template: "layouts/application" %>

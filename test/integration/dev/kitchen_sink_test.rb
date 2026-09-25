@@ -12,6 +12,8 @@ class KitchenSinkTest < ActionDispatch::IntegrationTest
     assert_select ".dark", count: 0
     assert_select "[data-controller='ui-modal']", count: 1
     assert_select "[data-controller='ui-dropdown-popover']", count: 1
+    assert_select "a", text: "New chat", count: 0
+    assert_select "p", text: "Inset sidebar content area", count: 1
     assert_select "h4", "Starter"
     assert_select "a", text: "Upgrade to Premium"
     assert_select "a", text: "Start trial", count: 0

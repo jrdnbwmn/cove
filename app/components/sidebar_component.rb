@@ -2,7 +2,7 @@
 
 class SidebarComponent < ViewComponent::Base
   # AIDEV-NOTE: Rails Blocks generated Sidebar::Component; keep this app's catalog flat.
-  VARIANTS = %i[default bordered minimal].freeze
+  VARIANTS = %i[default bordered minimal inset].freeze
   POSITIONS = %i[left right].freeze
 
   # Tailwind can't resolve "open:#{@width}" built via string interpolation —
@@ -19,6 +19,7 @@ class SidebarComponent < ViewComponent::Base
   renders_one :logo
   renders_one :footer
   renders_one :collapsed_footer
+  renders_one :mobile_toggle_indicator
 
   renders_many :items, lambda { |label:, href: "#", icon: nil, shortcut: nil, active: false, disabled: false, badge: nil, classes: nil|
     SidebarComponent::ItemComponent.new(
@@ -48,9 +49,16 @@ class SidebarComponent < ViewComponent::Base
   # @param position [Symbol] Sidebar position: :left, :right
   # @param storage_key [String] LocalStorage key for persisting collapsed state
   # @param width [String] Width when expanded (e.g., "w-64", "w-72")
-  # @param collapsed_width [String] Width when collapsed (e.g., "w-13", "w-16")
+  # @param collapsed_width [String] Width when collapsed. The collapsed rail has pl-3
+  #   (12px) and no right padding — the main content's own p-3 gap (application/_sidebar.html.erb)
+  #   supplies the visual right-side spacing instead, since both share the same background.
+  #   Sized as pl-3 + collapsed_item_classes' w-8.5 (34px) + 0: 12+34 = 46px. Keep in sync
+  #   if either value changes.
   # @param min_height_class [String] Min-height utility used by sidebar and content (e.g., "min-h-screen", "min-h-[600px]")
   # @param show_mobile_toggle [Boolean] Whether to show mobile menu button in main content
+  # @param mobile_overlay [Boolean] Whether to render the built-in slide-in mobile
+  #   overlay/panel. Set to false when the caller provides its own mobile nav
+  #   (e.g. a floating button + drawer) instead.
   # @param classes [String] Additional CSS classes for the wrapper
   def initialize(
     variant: :default,
@@ -59,9 +67,10 @@ class SidebarComponent < ViewComponent::Base
     position: :left,
     storage_key: "sidebarOpen",
     width: "w-64",
-    collapsed_width: "w-13",
+    collapsed_width: "w-11.5",
     min_height_class: "min-h-screen",
     show_mobile_toggle: true,
+    mobile_overlay: true,
     classes: nil
   )
     super()
@@ -74,6 +83,7 @@ class SidebarComponent < ViewComponent::Base
     @collapsed_width = collapsed_width
     @min_height_class = min_height_class
     @show_mobile_toggle = show_mobile_toggle
+    @mobile_overlay = mobile_overlay
     @classes = classes
   end
 
@@ -105,6 +115,8 @@ class SidebarComponent < ViewComponent::Base
       "bg-neutral-50 border-r border-neutral-200 dark:bg-neutral-900 dark:border-neutral-800"
     when :minimal
       "bg-white dark:bg-neutral-950 border-r border-neutral-200 dark:border-neutral-800"
+    when :inset
+      "bg-background"
     else
       "bg-neutral-50 border-r border-neutral-200 dark:bg-neutral-900 dark:border-neutral-800"
     end
@@ -113,31 +125,42 @@ class SidebarComponent < ViewComponent::Base
   end
 
   def nav_classes
-    base = "#{@min_height_class} relative flex h-full w-full flex-1 flex-col overflow-y-auto select-none"
+    base = "#{@min_height_class} relative flex h-full w-full flex-1 flex-col overflow-y-auto pl-3 py-3 select-none"
 
     [base, sidebar_bg_class].join(" ")
   end
 
   def header_classes
-    base = "sticky top-0 z-30"
+    base = "sticky top-0 z-30 mb-3"
 
     [base, sidebar_bg_class].join(" ")
   end
 
   def footer_classes
-    base = "sticky bottom-0 z-30 p-1.5 empty:hidden sm:p-2"
+    base = "sticky bottom-0 z-30 empty:hidden"
 
     [base, sidebar_bg_class].join(" ")
   end
 
   def collapsed_footer_classes
-    "sticky bottom-0 z-30 py-1.5 empty:hidden sm:py-2"
+    # AIDEV-NOTE: no own padding — matches footer_classes, which relies entirely on
+    # nav_classes' py-3. The collapsed rail's own pt-3/pb-3 (on <summary>) is the
+    # equivalent for the collapsed state; adding padding here on top of that pushed
+    # the footer up relative to the expanded state.
+    "sticky bottom-0 z-30 empty:hidden"
   end
 
   def content_classes
     base = "h-full overflow-x-clip overflow-y-auto text-clip whitespace-nowrap"
 
     [@width.to_s, base, sidebar_bg_class].join(" ")
+  end
+
+  def main_classes
+    base = "#{@min_height_class} grow h-auto w-auto flex flex-col relative"
+    main_bg_class = (@variant == :inset) ? "bg-background" : "bg-white dark:bg-neutral-950"
+
+    [base, main_bg_class].join(" ")
   end
 
   def controller_data
@@ -153,8 +176,24 @@ class SidebarComponent < ViewComponent::Base
     @collapsible
   end
 
+  # AIDEV-NOTE: server-rendered so the first paint already matches the common
+  # case (expanded), instead of always starting closed and waiting for
+  # sidebar_controller.js's connect() to open it — that gap is what caused
+  # the collapsed-then-expands flash on a hard reload. The controller still
+  # corrects this at connect time for the cases where it's wrong (a saved
+  # manual collapse, or the 768-1023px auto-collapsed band), but the
+  # transition is already disabled at that point, so the correction is a
+  # same-tick attribute flip rather than a second visible layout.
+  def default_open?
+    !@default_collapsed
+  end
+
   def show_mobile_toggle?
     @show_mobile_toggle
+  end
+
+  def mobile_overlay?
+    @mobile_overlay
   end
 
   attr_reader :variant, :position, :storage_key, :width, :collapsed_width, :min_height_class
@@ -167,6 +206,8 @@ class SidebarComponent < ViewComponent::Base
       "border-r border-neutral-200 bg-neutral-50 dark:border-neutral-800 dark:bg-neutral-900"
     when :minimal
       "bg-white dark:bg-neutral-950"
+    when :inset
+      "bg-background"
     else
       "border-r border-neutral-200 bg-neutral-50 dark:border-neutral-800 dark:bg-neutral-900"
     end
@@ -176,6 +217,8 @@ class SidebarComponent < ViewComponent::Base
     case @variant
     when :minimal
       "bg-white dark:bg-neutral-950"
+    when :inset
+      "bg-background"
     else
       "bg-neutral-50 dark:bg-neutral-900"
     end

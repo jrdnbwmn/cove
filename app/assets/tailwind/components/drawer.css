@@ -1,0 +1,20 @@
+/*
+AIDEV-NOTE: The Rails Blocks Drawer::Component ships no base CSS of its own —
+its Stimulus controller only ever applies a `translate3d` transform on top of
+whatever the dialog's *untransformed* resting position already is. Native
+`<dialog>` defaults to `position: fixed; inset-block: 0; margin: auto;` when
+shown via showModal(), which centers it vertically — not bottom-anchored.
+Without this override the drawer renders as a centered/top-heavy box with
+square corners (the UA default) instead of sliding up from the bottom edge.
+*/
+dialog.drawer {
+  position: fixed;
+  inset: auto 0 0 0;
+  margin: 0;
+  max-height: 100dvh;
+}
+
+dialog.drawer::backdrop {
+  background: var(--base-bg-backdrop);
+  opacity: var(--drawer-overlay-opacity, 0.5);
+}

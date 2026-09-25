@@ -1,8 +1,11 @@
+<%# locals: (inline: false) %>
 <% flash_keys = %i[notice success alert error] %>
 <div id="flash" data-turbo-temporary>
-  <% flash_keys.each do |key| %>
-    <% if flash[key].is_a?(String) && flash[key].present? %>
+  <% if inline %>
+    <% flash_keys.each do |key| %>
+      <% if flash[key].is_a?(String) && flash[key].present? %>
       <%= render AlertComponent.new(title: flash[key], variant: flash_variant(key)) %>
+      <% end %>
     <% end %>
   <% end %>
 </div>
@@ -10,11 +13,14 @@
 <%= render UiToastComponent.new(position: "bottom-right") %>
 
 <div id="toasts" data-turbo-temporary>
-  <% toasts.each do |key, toast| %>
+  <% flash.each do |key, value| %>
+    <% next unless flash_keys.include?(key.to_sym) && value.present? %>
+    <% toast = value.is_a?(Hash) ? value : {title: value} %>
     <% toast_type = toast[:icon_name] ? flash_variant(toast[:icon_name]) : flash_variant(key) %>
     <div data-controller="flash-toast"
          data-flash-toast-type-value="<%= toast_type %>"
          data-flash-toast-message-value="<%= toast[:title] %>"
-         data-flash-toast-description-value="<%= toast[:description] %>"></div>
+         data-flash-toast-description-value="<%= toast[:description] %>"
+         data-flash-toast-auto-dismiss-value="<%= !%i[alert error].include?(key.to_sym) %>"></div>
   <% end %>
 </div>

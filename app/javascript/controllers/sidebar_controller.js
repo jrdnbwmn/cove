@@ -18,6 +18,11 @@ export default class extends Controller {
   connect() {
     // Bind the handler once so we can properly remove it later
     this.boundHandleToggle = this.handleToggle.bind(this);
+    this.boundHandleBreakpointChange = this.handleBreakpointChange.bind(this);
+    // AIDEV-NOTE: 1024px (Tailwind's `lg`) is the line between the auto-collapsed
+    // rail (768-1023px) and the full sidebar default (1024px+). Only used as a
+    // *default* when the user hasn't manually toggled yet (see handleToggle).
+    this.desktopBreakpoint = window.matchMedia("(min-width: 1024px)");
 
     // Clone the sidebar content for both mobile and desktop
     if (this.hasContentTemplateTarget) {
@@ -57,15 +62,19 @@ export default class extends Controller {
       // Temporarily disable transitions to prevent animation on page load
       this.desktopSidebarTarget.style.transition = "none";
 
-      // Restore the saved state from localStorage, default to open if no saved state
-      const savedState = localStorage.getItem(this.storageKeyValue);
+      const initialOpen = this.desiredOpenState();
 
-      if (savedState !== null) {
-        this.desktopSidebarTarget.open = savedState === "true";
-      } else {
-        // Default to open for first-time visitors
-        this.desktopSidebarTarget.open = true;
+      // AIDEV-NOTE: the native `toggle` event fires asynchronously, so it
+      // can land *after* this method returns even though addEventListener
+      // is called below — attach-order alone doesn't protect against this
+      // assignment being mistaken for a manual toggle and persisted. Guard
+      // with a flag the handler itself clears instead, and only set it when
+      // the value is actually changing (no change means no event, which
+      // would otherwise leave the flag stuck for the next real toggle).
+      if (this.desktopSidebarTarget.open !== initialOpen) {
+        this.isProgrammaticToggle = true;
       }
+      this.desktopSidebarTarget.open = initialOpen;
 
       // Re-enable transitions after a brief delay
       requestAnimationFrame(() => {
@@ -74,8 +83,11 @@ export default class extends Controller {
         });
       });
 
-      // Listen for toggle events to save the state
+      // Listen for toggle events to save the state.
       this.desktopSidebarTarget.addEventListener("toggle", this.boundHandleToggle);
+      // Re-apply the breakpoint default on resize, but only until the user
+      // manually toggles (see handleToggle/handleBreakpointChange).
+      this.desktopBreakpoint.addEventListener("change", this.boundHandleBreakpointChange);
     }
   }
 
@@ -83,28 +95,78 @@ export default class extends Controller {
     if (this.hasDesktopSidebarTarget && this.boundHandleToggle) {
       this.desktopSidebarTarget.removeEventListener("toggle", this.boundHandleToggle);
     }
+    if (this.desktopBreakpoint && this.boundHandleBreakpointChange) {
+      this.desktopBreakpoint.removeEventListener("change", this.boundHandleBreakpointChange);
+    }
+  }
+
+  // AIDEV-NOTE: below 1024px the auto-collapsed rail always resets on the
+  // next load/resize, regardless of any previously saved preference —
+  // localStorage is only ever consulted (read or written) at 1024px+.
+  desiredOpenState() {
+    if (!this.desktopBreakpoint.matches) return false;
+
+    const savedState = localStorage.getItem(this.storageKeyValue);
+    return savedState !== null ? savedState === "true" : true;
+  }
+
+  // AIDEV-NOTE: open()/close()/toggle() persist synchronously, right here,
+  // instead of relying on the native `toggle` event the way the programmatic
+  // corrections below do. Chrome coalesces same-tick `.open` writes into a
+  // single (sometimes misleadingly-labeled) toggle event — if a breakpoint
+  // correction (handleBreakpointChange) lands in the same tick as a user's
+  // click, an event-driven save can silently lose the user's change
+  // entirely rather than merely being late. Persisting here has no such
+  // race: it runs at the exact moment we know this is a real user choice.
+  persist() {
+    if (!this.desktopBreakpoint.matches) return;
+    localStorage.setItem(this.storageKeyValue, this.desktopSidebarTarget.open.toString());
   }
 
   handleToggle(event) {
-    // Save the current state to localStorage
-    localStorage.setItem(this.storageKeyValue, this.desktopSidebarTarget.open.toString());
+    if (this.isProgrammaticToggle) {
+      // A programmatic default change (initial load or breakpoint resize),
+      // not a manual toggle: don't persist it as if the user had made an
+      // explicit choice.
+      this.isProgrammaticToggle = false;
+      return;
+    }
+
+    // Fallback for toggles that don't go through open()/close()/toggle()
+    // below — e.g. a native click on the collapsed rail's own clickable
+    // area, which toggles the <details> directly. Redundant (and harmless)
+    // for toggles that already persisted synchronously above.
+    this.persist();
+  }
+
+  handleBreakpointChange(event) {
+    if (!this.hasDesktopSidebarTarget) return;
+
+    const desiredOpen = this.desiredOpenState();
+    if (this.desktopSidebarTarget.open === desiredOpen) return;
+
+    this.isProgrammaticToggle = true;
+    this.desktopSidebarTarget.open = desiredOpen;
   }
 
   open() {
     if (this.hasDesktopSidebarTarget) {
       this.desktopSidebarTarget.open = true;
+      this.persist();
     }
   }
 
   close() {
     if (this.hasDesktopSidebarTarget) {
       this.desktopSidebarTarget.open = false;
+      this.persist();
     }
   }
 
   toggle() {
     if (this.hasDesktopSidebarTarget) {
       this.desktopSidebarTarget.open = !this.desktopSidebarTarget.open;
+      this.persist();
     }
   }
 

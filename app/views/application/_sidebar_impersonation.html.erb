@@ -1,0 +1,8 @@
+<% if current_user != true_user %>
+  <div class="banner banner-impersonate" data-testid="sidebar-impersonation">
+    <span>
+      Impersonating <%= link_to current_user.name, madmin_user_path(current_user), class: "underline" %>
+    </span>
+    <%= button_to "Stop impersonating", madmin_user_impersonate_path(current_user), method: :delete, form_class: "inline-block", class: "btn btn-secondary btn-small" %>
+  </div>
+<% end %>

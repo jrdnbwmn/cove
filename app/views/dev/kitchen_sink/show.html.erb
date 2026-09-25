@@ -129,6 +129,13 @@
           <% dropdown.with_item_divider %>
           <% dropdown.with_item_button(text: "Archive project", destructive: true) %>
         <% end %>
+
+        <%= render(Drawer::Component.new(snap_points: :large, title: "Menu", trigger_text: "Open drawer")) do |drawer| %>
+          <p class="text-sm text-muted-foreground">Drawer content, such as the mobile navigation menu.</p>
+          <% drawer.with_footer do %>
+            <%= render ButtonComponent.new(text: "Close", variant: :secondary, data: {action: "drawer#hide:prevent"}) %>
+          <% end %>
+        <% end %>
       </div>
     </section>
 
@@ -162,25 +169,20 @@
           <% tabs.with_panel do %>Members content<% end %>
         <% end %>
 
+        <%= render UiTabsComponent.new(mode: :links) do |tabs| %>
+          <% tabs.with_tab(title: "Profile", href: "/settings/profile", active: true) %>
+          <% tabs.with_tab(title: "Password", href: "/settings/password") %>
+          <% tabs.with_tab(title: "Billing", href: "/settings/billing") %>
+        <% end %>
+
         <% navigation_pagy = Pagy::Offset.new(count: 30, page: 2, limit: 10, request: Pagy::Request.new(request: request)) %>
         <%= render PaginationComponent.new(pagy: navigation_pagy, request_path: request.path) %>
 
         <div class="overflow-hidden rounded-lg border border-neutral-200 dark:border-neutral-800">
-        <%= render SidebarComponent.new(show_mobile_toggle: false, min_height_class: "min-h-[500px]") do |sidebar| %>
-          <% sidebar.with_item(label: "New chat", href: "#", icon: icon("square-pen", class: "size-4 sm:size-4.5")) %>
-          <% sidebar.with_item(label: "Search", href: "#", icon: icon("search", class: "size-4 sm:size-4.5")) %>
-          <% sidebar.with_item(label: "Library", href: "#", icon: icon("library", class: "size-4 sm:size-4.5")) %>
-
-          <% sidebar.with_section(title: "Projects") do |section| %>
-            <% section.with_item(label: "New project", href: "#", icon: icon("folder-plus", class: "size-4 sm:size-4.5")) %>
-            <% section.with_item(label: "Rails Blocks", href: "#", icon: icon("folder", class: "size-4 sm:size-4.5")) %>
-          <% end %>
-
-          <% sidebar.with_section(title: "Chats") do |section| %>
-            <% section.with_item(label: "How to build a Rails app", href: "#") %>
-            <% section.with_item(label: "Why are gems called gems", href: "#") %>
-            <% section.with_item(label: "How to use Hotwire", href: "#") %>
-          <% end %>
+        <%= render SidebarComponent.new(variant: :inset, show_mobile_toggle: false, min_height_class: "min-h-[500px]") do |sidebar| %>
+          <% sidebar.with_item(label: "Dashboard", href: "#", active: true, icon: icon("layout-dashboard", class: "size-4 sm:size-4.5")) %>
+          <% sidebar.with_item(label: "Schedules", href: "#", icon: icon("calendar", class: "size-4 sm:size-4.5")) %>
+          <% sidebar.with_item(label: "Settings", href: "#", icon: icon("settings", class: "size-4 sm:size-4.5")) %>
 
           <% sidebar.with_footer do %>
             <button class="w-full flex items-center gap-2 rounded-md px-1 sm:px-1.5 py-1 sm:py-1.5 text-left text-sm text-neutral-700 hover:bg-neutral-100 focus-visible:bg-neutral-100 focus:outline-hidden disabled:cursor-not-allowed disabled:opacity-50 dark:text-neutral-100 dark:hover:bg-neutral-700/50 dark:focus-visible:bg-neutral-700/50">
@@ -191,13 +193,7 @@
             </button>
           <% end %>
 
-          <% sidebar.with_collapsed_footer do %>
-            <button class="w-full flex items-center gap-2 rounded-md px-1 sm:px-1.5 py-1 sm:py-1.5 text-left text-sm text-neutral-700 hover:bg-neutral-100 focus-visible:bg-neutral-100 focus:outline-hidden disabled:cursor-not-allowed disabled:opacity-50 dark:text-neutral-100 dark:hover:bg-neutral-700/50 dark:focus-visible:bg-neutral-700/50">
-              <%= render AvatarComponent.new(alt: "Jordan Lee", size: :xs) %>
-            </button>
-          <% end %>
-
-          <p class="p-6 text-sm text-muted-foreground">Sidebar content area</p>
+          <p class="p-6 text-sm text-muted-foreground">Inset sidebar content area</p>
         <% end %>
         </div>
       </div>

@@ -2,9 +2,6 @@
 
 This document outlines key pieces of strategy that are useful to know while building.
 
-For product rules (families, students, billing behavior), see
-[product-brief.md](product-brief.md).
-
 ## Main idea
 
 The core idea is a chief of staff for homeschool families that reduces the planning, administrative work, and anxiety involved in homeschooling. It would proactively help parents:

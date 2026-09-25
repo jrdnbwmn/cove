@@ -120,6 +120,7 @@ export default class extends Controller {
       html: event.detail.html,
       action: event.detail.action,
       secondaryAction: event.detail.secondaryAction,
+      autoDismiss: event.detail.autoDismiss !== false,
     };
 
     // Add toast at the beginning of the array (newest first)
@@ -220,7 +221,7 @@ export default class extends Controller {
         // Schedule auto-dismiss for visible toasts
         const activeToastIndex = activeToasts.findIndex((t) => t.id === toast.id);
         if (activeToastIndex < this.limitValue) {
-          this.scheduleAutoDismiss(toast.id);
+          if (toast.autoDismiss) this.scheduleAutoDismiss(toast.id);
         }
       }
     });
@@ -263,6 +264,7 @@ export default class extends Controller {
       toast.html ? "p-0" : "p-4"
     }`;
     span.style.transitionTimingFunction = "cubic-bezier(0.4, 0, 0.2, 1)";
+    span.setAttribute("role", ["alert", "error"].includes(toast.type) ? "alert" : "status");
 
     if (toast.html) {
       span.innerHTML = toast.html;
@@ -297,7 +299,9 @@ export default class extends Controller {
     }
 
     // Add close button
-    const closeBtn = document.createElement("span");
+    const closeBtn = document.createElement("button");
+    closeBtn.type = "button";
+    closeBtn.setAttribute("aria-label", "Dismiss notification");
     const hasActions = toast.action || toast.secondaryAction;
     closeBtn.className = `absolute right-0 p-1.5 mr-2.5 text-neutral-400 duration-100 ease-in-out rounded-full cursor-pointer hover:bg-neutral-50 dark:hover:bg-neutral-700 hover:text-neutral-500 dark:hover:text-neutral-300 ${
       !toast.description && !toast.html && !hasActions ? "top-1/2 -translate-y-1/2" : "top-0 mt-2.5"
