@@ -1,0 +1,66 @@
+<div <%= tag.attributes(controller_data) %>>
+  <% if trigger? %>
+    <%= trigger %>
+  <% else %>
+    <button class="<%= trigger_button_classes %>" data-action="drawer#show:prevent">
+      <%= trigger_text %>
+    </button>
+  <% end %>
+
+  <dialog class="<%= dialog_classes %>" data-drawer-target="dialog" data-action="mousedown->drawer#backdropClose">
+    <div class="<%= content_wrapper_classes %>">
+      <% if render_handle? %>
+        <div data-drawer-target="handle" class="<%= handle_classes %>">
+          <div class="flex h-8 w-full items-center justify-center">
+            <div class="<%= handle_bar_classes %>"></div>
+          </div>
+
+          <% if header? %>
+            <div class="<%= header_classes %>">
+              <%= header %>
+            </div>
+          <% elsif title.present? %>
+            <div class="<%= header_classes %>">
+              <h2 class="<%= title_classes %>"><%= title %></h2>
+            </div>
+          <% end %>
+        </div>
+      <% else %>
+        <% if header? %>
+          <div class="<%= header_classes %> pt-4">
+            <%= header %>
+          </div>
+        <% elsif title.present? %>
+          <div class="<%= header_classes %> pt-4">
+            <h2 class="<%= title_classes %>"><%= title %></h2>
+          </div>
+        <% end %>
+      <% end %>
+
+      <% if show_close_button %>
+        <button type="button" data-action="drawer#hide:prevent" class="<%= close_button_classes %>">
+          <%= render_close_icon %>
+          <span class="sr-only">Close</span>
+        </button>
+      <% end %>
+
+      <% if scrollable_body? %>
+        <div class="<%= body_container_classes %>" data-drawer-content>
+          <div class="<%= body_classes %>" data-drawer-scrollable>
+            <%= content %>
+          </div>
+        </div>
+      <% else %>
+        <div class="<%= body_classes %>" data-drawer-content>
+          <%= content %>
+        </div>
+      <% end %>
+
+      <% if footer? %>
+        <div class="<%= footer_classes %>">
+          <%= footer %>
+        </div>
+      <% end %>
+    </div>
+  </dialog>
+</div>

@@ -56,9 +56,9 @@ class AppShellSystemTest < ApplicationSystemTestCase
 
     find("button[aria-label='Account menu']", match: :first).click
 
-    assert_selector "dialog[open]", text: I18n.t("application.user_menu.profile")
+    assert_selector "dialog[open]", text: "Settings"
     within "dialog[open]" do
-      assert_link "Family", href: account_path(accounts(:company))
+      assert_link "Settings", href: edit_user_registration_path
     end
   end
 
@@ -71,22 +71,57 @@ class AppShellSystemTest < ApplicationSystemTestCase
 
     find("button[aria-label='Account menu']", match: :first).click
 
-    assert_selector "dialog[open]", text: I18n.t("application.user_menu.profile")
+    assert_selector "dialog[open]", text: "Settings"
   end
 
-  test "mobile drawer account menu opens its own menu" do
+  test "mobile visitor can open the floating menu drawer" do
     login_as users(:one), scope: :user
     page.current_window.resize_to(375, 900)
     visit root_path
 
-    find("button[aria-label='Open sidebar']").click
-    within "[data-sidebar-target='mobileSidebar']" do
-      find("button[aria-label='Account menu']").click
-    end
+    assert_no_selector "button[aria-label='Collapse sidebar']", visible: true
+    find("button[aria-label='Open menu']").click
 
-    assert_selector "dialog[open]", text: I18n.t("application.user_menu.profile")
+    within "dialog[open]" do
+      assert_link "Home", href: user_root_path
+      assert_link "Schedules", href: schedules_path
+      assert_link "Settings", href: edit_user_registration_path
+      assert_link "Support", href: support_path
+      assert_selector "button", text: "Sign out"
+    end
   ensure
     page.current_window.resize_to(1400, 1400)
+  end
+
+  test "tablet-width sidebar resets to collapsed on reload even after manual expand" do
+    login_as users(:one), scope: :user
+    page.current_window.resize_to(900, 800)
+    visit root_path
+
+    assert_selector "button[aria-label='Expand sidebar']", visible: true
+
+    find("button[aria-label='Expand sidebar']").click
+    assert_selector "button[aria-label='Collapse sidebar']", visible: true
+
+    visit root_path
+
+    assert_selector "button[aria-label='Expand sidebar']", visible: true
+  ensure
+    page.current_window.resize_to(1400, 1400)
+  end
+
+  test "desktop-width sidebar persists a manual collapse across reloads" do
+    login_as users(:one), scope: :user
+    visit root_path
+
+    assert_selector "button[aria-label='Collapse sidebar']", visible: true
+
+    find("button[aria-label='Collapse sidebar']").click
+    assert_selector "button[aria-label='Expand sidebar']", visible: true
+
+    visit root_path
+
+    assert_selector "button[aria-label='Expand sidebar']", visible: true
   end
 
   test "collapsed sidebar survives Turbo navigation with the destination highlighted" do
@@ -116,12 +151,21 @@ class AppShellSystemTest < ApplicationSystemTestCase
 
     find("button[aria-label='Expand sidebar']").click
     page.current_window.resize_to(375, 900)
-    find("button[aria-label='Open sidebar']").click
-    within "[data-sidebar-target='mobileSidebar']" do
+    find("button[aria-label='Open menu']").click
+    within "dialog[open]" do
       assert_selector "[data-testid='sidebar-impersonation']"
     end
+    find("dialog[open]").send_keys(:escape)
+    assert_no_selector "dialog[open]"
     page.current_window.resize_to(1400, 1400)
-    click_button "Stop impersonating"
+    # The 1024px+ restore runs off a matchMedia "change" listener, which
+    # fires asynchronously relative to resize_to returning — wait for the
+    # expanded state to land before reaching for content that's only
+    # present (rendered inside the <details>) once it has.
+    assert_selector "button[aria-label='Collapse sidebar']", visible: true
+    within "[data-sidebar-target='desktopSidebar']" do
+      click_button "Stop impersonating"
+    end
 
     assert_no_selector "[data-testid='sidebar-impersonation']"
   ensure

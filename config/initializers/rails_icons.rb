@@ -7,7 +7,7 @@ RailsIcons.configure do |config|
   # config.libraries.lucide.exclude_variants = [] # Exclude specific variants
 
   # config.libraries.lucide.outline.default.css = "size-6"
-  # config.libraries.lucide.outline.default.stroke_width = "1.5"
+  config.libraries.lucide.outline.default.stroke_width = "2"
   # config.libraries.lucide.outline.default.data = {}
 end
 

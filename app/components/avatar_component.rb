@@ -36,6 +36,7 @@ class AvatarComponent < ViewComponent::Base
   # @param status [Symbol, nil] Optional status. Currently supports :online.
   # @param status_label [String] Screen-reader label for the status indicator.
   # @param pulse [Boolean] Whether the online status indicator pulses.
+  # @param ring [Boolean] Whether the avatar renders its subtle outline ring.
   # @param classes [String, nil] Additional wrapper classes.
   # @param html_options [Hash] Additional wrapper attributes such as data, aria, id, or title.
   # @param image_options [Hash] Additional image attributes.
@@ -47,6 +48,7 @@ class AvatarComponent < ViewComponent::Base
     status: nil,
     status_label: "Online",
     pulse: true,
+    ring: true,
     classes: nil,
     html_options: {},
     image_options: {}
@@ -59,6 +61,7 @@ class AvatarComponent < ViewComponent::Base
     @status = normalize_status(status)
     @status_label = status_label
     @pulse = pulse
+    @ring = ring
     @classes = classes
     @html_options = html_options.to_h
     @image_options = image_options.to_h
@@ -87,7 +90,7 @@ class AvatarComponent < ViewComponent::Base
   def wrapper_classes
     [
       "relative isolate inline-flex shrink-0 overflow-visible rounded-full bg-neutral-100 select-none",
-      "ring-1 ring-black/10 dark:bg-neutral-800 dark:ring-white/10",
+      ("ring-1 ring-black/10 dark:bg-neutral-800 dark:ring-white/10" if @ring),
       SIZE_CLASSES.fetch(@size),
       @classes
     ].compact.reject(&:blank?).join(" ")

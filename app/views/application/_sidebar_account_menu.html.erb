@@ -18,7 +18,7 @@
         data-ui-tooltip-size-value="small"
         data-ui-dropdown-popover-target="button"
         data-action="click->ui-dropdown-popover#toggle"
-        class="flex h-8 w-8.5 items-center justify-center rounded-lg text-neutral-700 hover:bg-neutral-100 focus:outline-none focus-visible:bg-neutral-100 <%= "ring-2 ring-[var(--icon-on-warning-secondary)]" if impersonating %> dark:text-neutral-100 dark:hover:bg-neutral-800 dark:focus-visible:bg-neutral-800">
+        class="flex w-8.5 items-center justify-center rounded-lg py-2 text-neutral-700 hover:bg-neutral-100 focus:outline-none focus-visible:bg-neutral-100 <%= "ring-2 ring-[var(--icon-on-warning-secondary)]" if impersonating %> dark:text-neutral-100 dark:hover:bg-neutral-800 dark:focus-visible:bg-neutral-800">
         <%= render AvatarComponent.new(src: avatar_url_for(current_user), alt: account_label, size: :xs) %>
       </button>
     <% else %>
@@ -28,55 +28,51 @@
         aria-haspopup="menu"
         data-ui-dropdown-popover-target="button"
         data-action="click->ui-dropdown-popover#toggle"
-        class="flex w-full items-center gap-2 rounded-lg border border-neutral-200 p-1.5 text-left hover:bg-neutral-100 focus:outline-none focus-visible:bg-neutral-100 dark:border-neutral-800 dark:hover:bg-neutral-800 dark:focus-visible:bg-neutral-800">
-        <%= render AvatarComponent.new(src: avatar_url_for(current_user), alt: account_label, size: :sm) %>
-        <div class="min-w-0 flex-1">
-          <% if account_name %>
-            <div class="truncate text-sm font-medium text-neutral-900 dark:text-neutral-100" title="<%= account_name %>"><%= account_name %></div>
-            <div class="truncate text-xs text-neutral-500 dark:text-neutral-400" title="<%= current_user.email %>"><%= current_user.email %></div>
-          <% else %>
-            <div class="truncate text-sm font-medium text-neutral-900 dark:text-neutral-100" title="<%= current_user.email %>"><%= current_user.email %></div>
-          <% end %>
-        </div>
-        <%= icon "chevrons-up-down", class: "size-4 shrink-0 text-neutral-500 dark:text-neutral-400" %>
+        class="group flex w-full items-center gap-2 rounded-md px-2 py-2 text-left hover:bg-muted focus:outline-none focus-visible:bg-muted">
+        <%= render AvatarComponent.new(src: avatar_url_for(current_user), alt: account_label, size: :xs, ring: false) %>
+        <span class="sidebar-account-label min-w-0 flex-1 truncate text-base text-foreground" title="<%= account_label %>"><%= account_label %></span>
+        <%= icon "chevron-down", class: "size-4 shrink-0 text-muted-foreground transition-transform duration-200 group-data-[state=open]:rotate-180" %>
       </button>
     <% end %>
   <% end %>
 
-  <% dropdown.with_item_link text: t("application.user_menu.profile"), href: edit_user_registration_path %>
-  <% dropdown.with_item_link text: t("application.user_menu.password"), href: edit_account_password_path %>
-  <% if Devise.omniauth_configs.any? %>
-    <% dropdown.with_item_link text: t("application.user_menu.connected_accounts"), href: user_connected_accounts_path %>
+  <% dropdown.with_item_link text: "Settings", href: edit_user_registration_path, icon: icon("settings", class: "size-4"), classes: "!text-base !text-foreground hover:bg-muted" %>
+  <% dropdown.with_item_link text: "Support", href: support_path, icon: icon("life-buoy", class: "size-4"), classes: "!text-base !text-foreground hover:bg-muted" %>
+  <% dropdown.with_item_custom(unstyled: true) do %>
+    <%= button_to destroy_user_session_path, method: :delete,
+      form: {class: "w-full"},
+      class: "flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-left text-base text-foreground hover:bg-muted focus:bg-muted focus:outline-hidden" do %>
+      <%= icon "log-out", class: "size-4 text-neutral-500 dark:text-neutral-400" %>
+      <%= t("application.user_menu.sign_out") %>
+    <% end %>
   <% end %>
-  <% if Jumpstart.config.payments_enabled? %>
-    <% dropdown.with_item_link text: t("application.user_menu.billing"), href: billing_path %>
-  <% end %>
-  <% dropdown.with_item_link text: "Family", href: account_path(current_account) %>
 
   <% if Rails.env.development? %>
     <% dropdown.with_item_divider %>
     <% dropdown.with_item_label text: "Jumpstart" %>
     <% dropdown.with_item_custom(unstyled: true) do %>
-      <%= link_to "Configuration", jumpstart_path(script_name: nil), class: "flex items-center gap-2 rounded-md px-2 py-1.5 text-left text-sm text-muted-foreground focus:bg-muted focus:outline-hidden dark:text-neutral-100 dark:focus:bg-neutral-700/50", role: "menuitem", tabindex: "-1", data: {turbo: false, ui_menu_target: "item"} %>
+      <%= link_to jumpstart_path(script_name: nil), class: "flex items-center gap-2 rounded-md px-2 py-1.5 text-left text-base text-foreground hover:bg-muted focus:bg-muted focus:outline-hidden", role: "menuitem", tabindex: "-1", data: {turbo: false, ui_menu_target: "item"} do %>
+        <%= icon "settings", class: "size-4 text-neutral-500 dark:text-neutral-400" %>
+        Configuration
+      <% end %>
     <% end %>
     <% dropdown.with_item_custom(unstyled: true) do %>
-      <%= link_to "Documentation", jumpstart.docs_path, target: :_blank, class: "flex items-center gap-2 rounded-md px-2 py-1.5 text-left text-sm text-muted-foreground focus:bg-muted focus:outline-hidden dark:text-neutral-100 dark:focus:bg-neutral-700/50", role: "menuitem", tabindex: "-1", data: {turbo: false, ui_menu_target: "item"} %>
+      <%= link_to jumpstart.docs_path, target: :_blank, class: "flex items-center gap-2 rounded-md px-2 py-1.5 text-left text-base text-foreground hover:bg-muted focus:bg-muted focus:outline-hidden", role: "menuitem", tabindex: "-1", data: {turbo: false, ui_menu_target: "item"} do %>
+        <%= icon "book-open", class: "size-4 text-neutral-500 dark:text-neutral-400" %>
+        Documentation
+      <% end %>
     <% end %>
     <% dropdown.with_item_custom(unstyled: true) do %>
-      <%= link_to "Mailbin", mailbin_path(script_name: nil), target: :_blank, class: "flex items-center gap-2 rounded-md px-2 py-1.5 text-left text-sm text-muted-foreground focus:bg-muted focus:outline-hidden dark:text-neutral-100 dark:focus:bg-neutral-700/50", role: "menuitem", tabindex: "-1", data: {turbo: false, ui_menu_target: "item"} %>
+      <%= link_to mailbin_path(script_name: nil), target: :_blank, class: "flex items-center gap-2 rounded-md px-2 py-1.5 text-left text-base text-foreground hover:bg-muted focus:bg-muted focus:outline-hidden", role: "menuitem", tabindex: "-1", data: {turbo: false, ui_menu_target: "item"} do %>
+        <%= icon "inbox", class: "size-4 text-neutral-500 dark:text-neutral-400" %>
+        Mailbin
+      <% end %>
     <% end %>
   <% end %>
 
   <% dropdown.with_item_divider %>
   <% dropdown.with_item_custom(unstyled: true) do %>
-    <%= button_to t("application.user_menu.sign_out"), destroy_user_session_path, method: :delete,
-      form: {class: "w-full"},
-      class: "flex w-full items-center rounded-md px-2 py-1.5 text-left text-sm text-muted-foreground focus:bg-muted focus:outline-hidden dark:text-neutral-100 dark:focus:bg-neutral-700/50" %>
-  <% end %>
-
-  <% dropdown.with_item_divider %>
-  <% dropdown.with_item_custom(unstyled: true) do %>
-    <div class="flex items-center gap-3 px-2 py-1.5 text-xs text-muted-foreground">
+    <div class="flex items-center gap-3 px-2 py-1.5 text-sm text-foreground">
       <%= link_to t("application.footer.privacy"), privacy_path, class: "hover:underline" %>
       <%= link_to t("application.footer.terms"), terms_path, class: "hover:underline" %>
     </div>

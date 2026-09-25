@@ -19,6 +19,7 @@
 | `TooltipComponent` | Wraps content with a Rails Blocks tooltip. | `text`, `placement`, `delay`, `trigger`, `kbd` | — | `TooltipComponentPreview` |
 | `UiModalComponent` | Renders a Rails Blocks dialog without replacing Jumpstart's modal. | `title`, `size`, `prevent_dismiss`, `trigger_text` | — | `UiModalComponentPreview` |
 | `DropdownComponent` | Renders an accessible, positioned menu with item slots. | `trigger_text`, `placement`, `hover`, `portal` | — | `DropdownComponentPreview` |
+| `Drawer::Component` | Renders a Rails Blocks bottom-sheet drawer with snap points, drag gestures, and a `<dialog>` element. | `snap_points`, `title`, `dismissible`, `trigger_text`, `open` | — | `DrawerComponentPreview` |
 | `NavbarComponent` | Renders responsive primary navigation with optional dropdown panels. | `variant`, `sticky`, `show_mobile_menu` | — | `NavbarComponentPreview` |
 | `BreadcrumbComponent` | Renders an accessible page hierarchy trail. | `items`, `separator`, `variant`, `truncate_at` | — | `BreadcrumbComponentPreview` |
 | `UiTabsComponent` | Renders Rails Blocks tabs without replacing Jumpstart's tabs. | `mode`, `variant`, `orientation`, `default_tab`, `url_sync` | — | `UiTabsComponentPreview` |
@@ -461,6 +462,48 @@ static, developer-authored markup to those options and slots.
 <% end %>
 ```
 
+### Drawer::Component
+
+**Purpose:** Renders the Rails Blocks bottom-sheet drawer (mobile-friendly,
+built on the native `<dialog>` element) with snap points, drag gestures, and
+scrollable content support.
+
+**Arguments:** Use `snap_points`, `title`, `show_handle`, `dismissible`,
+`show_close_button`, `lazy_load`, `turbo_frame_src`, `close_threshold`,
+`scroll_lock_timeout`, `respect_reduced_motion`, `fade_from_index`, `classes`,
+`trigger_text`, `trigger_classes`, `open`, and `max_width` to configure the
+drawer. `snap_points` accepts an array of heights (`"180px"`, `"80%"`,
+`"auto"`) or a preset symbol: `:auto`, `:small`, `:medium`, `:large`, `:full`,
+or `:expandable`. `:auto` (or `["auto"]`) sizes the drawer to fit its content,
+capped at 80% of the viewport height (`drawer_controller.js`'s
+`measureAutoContentHeight`) — taller content scrolls within that cap rather
+than pushing the drawer past it.
+
+**Slots:** `with_header` and `with_footer` compose the drawer chrome.
+`with_trigger` supplies custom trigger markup (e.g. an icon-only button)
+instead of the default `trigger_text` button — the custom markup must include
+`data-action="drawer#show:prevent"` itself, since the drawer has no other way
+to open it.
+
+**States:** Supports dismissible (drag/ESC/backdrop) and non-dismissible
+drawers, multiple expandable snap points, and lazy-loaded content (inline
+template or Turbo Frame).
+
+**Dependencies:** Uses the locally installed `drawer` Stimulus controller.
+
+**Preview:** `DrawerComponentPreview`
+
+**Usage:**
+
+```erb
+<%= render Drawer::Component.new(snap_points: :large, title: "Menu") do |drawer| %>
+  <p>Drawer content here.</p>
+  <% drawer.with_footer do %>
+    <%= render ButtonComponent.new(text: "Close", variant: :secondary, data: { action: "drawer#hide:prevent" }) %>
+  <% end %>
+<% end %>
+```
+
 ### NavbarComponent
 
 **Purpose:** Renders responsive primary navigation with optional dropdown panels.
@@ -576,11 +619,29 @@ sections and mobile drawer behavior.
 
 **Arguments:** Use `variant`, `collapsible`, `default_collapsed`, `position`,
 `storage_key`, `width`, `collapsed_width`, `min_height_class`,
-`show_mobile_toggle`, and `classes` to configure the layout. `width` must be
-one of `"w-56"`, `"w-64"` (default), `"w-72"`, or `"w-80"` — Tailwind's
-build-time scanner needs each `open:` variant spelled out literally, so an
-unrecognized value falls back to `"w-64"` rather than silently producing an
-unstyled class.
+`show_mobile_toggle`, `mobile_overlay`, and `classes` to configure the
+layout. `width` must be one of `"w-56"`, `"w-64"` (default), `"w-72"`, or
+`"w-80"` — Tailwind's build-time scanner needs each `open:` variant spelled
+out literally, so an unrecognized value falls back to `"w-64"` rather than
+silently producing an unstyled class. Set `mobile_overlay: false` (and
+typically `show_mobile_toggle: false`) when the caller supplies its own
+mobile nav (e.g. a floating button + `Drawer::Component`) instead of the
+built-in slide-in mobile panel.
+
+**Breakpoints:** The sidebar is hidden below `md` (768px) in favor of the
+caller's own mobile nav. From `md` up to `lg` (1024px) it is *always*
+collapsed on load, ignoring any saved preference — manually expanding it
+there (via the `sidebar` Stimulus controller's `open`/`close`/`toggle`
+actions) is a live, non-persisted, per-session toggle only; it resets to
+collapsed on the next load or resize. At `lg`+ it defaults open, and a
+manual toggle there does persist across reloads via `localStorage`.
+`localStorage` is only ever read or written at `lg`+. The `<details>`
+element is server-rendered `open` by default (unless `default_collapsed:
+true`) so the common `lg`+ case paints correctly on first load —
+`sidebar_controller.js` only needs to *correct* the rarer cases (a saved
+collapse, or the `md`-`lg` band), which it does before transitions are
+re-enabled, avoiding the collapsed-then-expands flash a client-only default
+would otherwise cause on a hard reload.
 
 **Slots:** `with_logo`, `with_item`, `with_section`, `with_footer`,
 `with_collapsed_footer`, and `with_mobile_toggle_indicator` (a caller-supplied
@@ -678,7 +739,7 @@ initials fallback. Use `AvatarComponent::GroupComponent` for compact member
 groups.
 
 **Arguments:** Use `alt`, `src`, `fallback`, `size`, `status`, `status_label`,
-`pulse`, `classes`, `html_options`, and `image_options`. `alt` is required;
+`pulse`, `ring`, `classes`, `html_options`, and `image_options`. `alt` is required;
 when `src` is absent, initials are derived from it.
 
 **Variants:** Sizes are `:xs`, `:sm`, `:md`, `:lg`, and `:xl`. The only status

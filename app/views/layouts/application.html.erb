@@ -6,7 +6,17 @@
   <body data-controller="turbo-resilience bridge--menu-button <%= "bridge--notification-token" if user_signed_in? %>">
     <% if user_signed_in? && !hotwire_native_app? %>
       <%= render "flash" %>
-      <%= render "application/sidebar" %>
+      <!-- AIDEV-NOTE: fixed inset-0 (not h-dvh) pins the app shell to the viewport and takes
+           it out of body's normal flow entirely. body is a 3-row grid (min-height: 100dvh)
+           built for the signed-out header/main/footer layout; an in-flow h-dvh child there
+           made body render slightly taller than one viewport (grid row-sizing with only two
+           children), producing a second, outer window scrollbar in addition to the sidebar's
+           own internal scroll, with blank space once you scrolled past the inner content.
+           position: fixed removes it from that flow so only the sidebar's own scroll region
+           can scroll. -->
+      <div class="fixed inset-0">
+        <%= render "application/sidebar" %>
+      </div>
     <% else %>
       <header>
         <%= impersonation_banner %>
