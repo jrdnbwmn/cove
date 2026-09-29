@@ -138,7 +138,7 @@ module Drawer
 
     def body_classes
       if @dismissible
-        "outline-none small-scrollbar min-h-0 flex-1 overflow-y-auto px-6 pt-4 pb-6"
+        "outline-none small-scrollbar min-h-0 flex-1 overflow-y-auto px-6 pt-6 pb-6"
       else
         "px-6 py-4"
       end

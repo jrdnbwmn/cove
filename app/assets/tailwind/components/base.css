@@ -9,16 +9,6 @@ body {
   color: var(--foreground);
 }
 
-main {
-  padding-left: 12px;
-  padding-right: 12px;
-
-  @media (min-width: 1024px) {
-    padding-left: 0px;
-    padding-right: 0px;
-  }
-}
-
 hr {
   margin-block: calc(var(--spacing) * 8);
   border-color: var(--divider-color);
