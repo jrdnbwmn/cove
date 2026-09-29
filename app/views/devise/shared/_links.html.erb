@@ -26,7 +26,7 @@
   </p>
 <% end -%>
 
-<%- if devise_mapping.recoverable? && controller_name != "passwords" && controller_name != "registrations" %>
+<%- if devise_mapping.recoverable? && controller_name != "passwords" && controller_name != "registrations" && controller_name != "sessions" %>
   <%= link_to t(".forgot_your_password"), new_password_path(resource_name), class: "block mt-2 text-sm text-muted-foreground underline hover:text-foreground" %>
 <% end -%>
 
