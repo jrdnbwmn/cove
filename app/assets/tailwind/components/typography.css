@@ -22,24 +22,28 @@ h2, .h2 {
 }
 
 h3, .h3 {
+  font-family: var(--font-sans);
   font-size: var(--text-2xl);
   font-weight: 600;
   line-height: 1.5;
 }
 
 h4, .h4 {
+  font-family: var(--font-sans);
   font-size: var(--text-xl);
   font-weight: 600;
   line-height: 1.5;
 }
 
 h5, .h5 {
+  font-family: var(--font-sans);
   font-size: var(--text-lg);
   font-weight: 600;
   line-height: 1.5;
 }
 
 h6, .h6 {
+  font-family: var(--font-sans);
   font-weight: 600;
 }
 
