@@ -9,8 +9,6 @@
     <%= javascript_importmap_tags %>
     <%= stylesheet_link_tag "tailwind", media: "all", "data-turbo-track": "reload" %>
 
-    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
-
     <%= yield :head %>
   </head>
   <body class="h-full overflow-x-hidden font-sans font-normal leading-normal bg-offwhite dark:bg-gray-900 dark:text-gray-50">

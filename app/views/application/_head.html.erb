@@ -6,9 +6,6 @@
 <%= javascript_importmap_tags %>
 <%= stylesheet_link_tag "lexxy", "tailwind", media: "all", "data-turbo-track": "reload" %>
 <%= render "payments_dependencies" %>
-<link rel="preconnect" href="https://rsms.me/">
-<link rel="stylesheet" href="https://rsms.me/inter/inter.css">
-
 <%= yield :head %>
 
 <%# Enable PWA manifest for installable apps (make sure to enable in config/routes.rb too!) %>

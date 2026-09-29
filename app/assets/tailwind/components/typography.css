@@ -1,5 +1,6 @@
 .font-display {
   font-family: var(--font-serif);
+  font-feature-settings: var(--font-serif--font-feature-settings);
   font-size: var(--text-5xl);
   font-weight: 400;
   letter-spacing: -0.025em;
@@ -8,6 +9,7 @@
 
 h1, .h1 {
   font-family: var(--font-serif);
+  font-feature-settings: var(--font-serif--font-feature-settings);
   font-size: var(--text-4xl);
   font-weight: 400;
   letter-spacing: -0.025em;
@@ -16,6 +18,7 @@ h1, .h1 {
 
 h2, .h2 {
   font-family: var(--font-serif);
+  font-feature-settings: var(--font-serif--font-feature-settings);
   font-size: var(--text-3xl);
   font-weight: 400;
   line-height: 1.25;
