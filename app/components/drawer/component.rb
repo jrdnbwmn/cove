@@ -121,7 +121,7 @@ module Drawer
     end
 
     def title_classes
-      "text-xl font-semibold text-neutral-900 dark:text-white"
+      "font-sans text-xl font-semibold text-neutral-900 dark:text-white"
     end
 
     def header_classes
