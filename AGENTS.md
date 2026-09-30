@@ -162,7 +162,7 @@ Routes are modularized in `config/routes/`:
 - Plan rows are never deleted or re-priced — a price change is a new Stripe Price + new Plan row, old row hidden. Follow `docs/runbooks/price-change-checklist.md`.
 - No feature logic may depend on a price, amount, plan name, or Stripe ID — prices will change. Gate features on `Account#premium?` / `#plan_status`.
 - Brand palette: teal (`--primary`, `--primary-hover`), cream (`--background`), coral (`--accent-brand`, used only via `--bg-accent`/`--border-accent`). Reference these tokens; don't repeat the hex values. Neutrals (`neutral-*`, and `gray-*` which maps to it) point at Tailwind's warm `stone` scale, and the red/orange/yellow/green/blue/purple/pink scales are redefined muted in `application.css` `@theme` (same lightness steps as Tailwind's defaults, so contrast is unchanged).
-- Typography: only `h1`/`h2` (and `.font-display`) use the serif (`--font-serif`, Source Serif 4 at 600); `h3`–`h6` and body use Inter. Buttons and inputs have no drop shadows (the opt-in `fancy` button style keeps its own).
+- Typography: only `h1`/`h2` (and `.font-display`) use the serif (`--font-serif`, self-hosted Fabric Serif Web, 400 only — no other weight is installed); `h3`–`h6` and body use the sans (`--font-sans`, self-hosted Geist, static 400/500/600/700). Both carry OpenType feature settings via Tailwind v4's paired `--font-sans--font-feature-settings` / `--font-serif--font-feature-settings` theme keys — see the CSS/Tailwind gotcha below for why raw `font-family: var(--font-serif)` rules need that variable set explicitly. Buttons and inputs have no drop shadows (the opt-in `fancy` button style keeps its own).
 
 ## Development Notes
 
@@ -331,7 +331,8 @@ Routes are modularized in `config/routes/`:
 - Braintree's dark-mode selector is a mixed `:is(.dark .braintree-placeholder,
   .braintree-heading)` rule — it is not fully dark-mode-only. Preserve the
   light-mode `.braintree-heading` branch when stripping dark-mode CSS.
-- Fonts are self-hosted from `app/assets/fonts/` via `@font-face` in `application.css`. Use a plain filename in `url("...")` (not `/assets/...`) so Propshaft rewrites it to the digested path. A new `app/assets/*` subfolder isn't picked up by an already-running dev server — restart `bin/dev`. Source Serif 4 must come from Google's static (default optical size) files, not Adobe's Display/Text/Caption cuts, or headings render with different letterforms.
+- Fonts are self-hosted from `app/assets/fonts/` via `@font-face` in `application.css`: Geist (static 400/500/600/700, no variable font) for `--font-sans`, Fabric Serif Web (400 only, a purchased web license) for `--font-serif`. Use a plain filename in `url("...")` (not `/assets/...`) so Propshaft rewrites it to the digested path. A new `app/assets/*` subfolder isn't picked up by an already-running dev server — restart `bin/dev`. Before self-hosting any other downloaded font (trial or otherwise), check its actual `usWeightClass` and glyph coverage with `fonttools` rather than trusting the filename — a "Medium" file isn't always weight 500, and Klim/Monokrom trial cuts silently drop punctuation glyphs like the apostrophe (falls back to the next font in the stack, per-glyph, with no error).
+- Tailwind v4's paired `--font-<name>--font-feature-settings` theme key (e.g. `--font-serif--font-feature-settings`) only applies automatically through the generated `.font-sans`/`.font-serif` utility *classes*. A raw CSS rule that sets `font-family: var(--font-serif)` directly (as `typography.css`'s `h1`/`h2`/`.font-display` rules do) does NOT get the paired feature-settings for free — since `font-feature-settings` inherits, it silently picks up whatever the nearest ancestor set (usually `--font-sans`'s, from `<body>`) instead. Set `font-feature-settings: var(--font-serif--font-feature-settings)` explicitly on any such rule.
 - Shared control class names can be defined in more than one stylesheet with
   no error. `.form-control` is defined in both
   `app/assets/tailwind/components/forms.css` (hand-written: a real
@@ -343,7 +344,19 @@ Routes are modularized in `config/routes/`:
   which grew the field by 2px and pushed surrounding layout on focus. Check
   both files before changing a shared class, not just the one you think
   owns it; prefer a box-shadow-only focus ring so a border-width mismatch
-  like this can't reflow anything.
+  like this can't reflow anything. Same duplicate-definition trap bit again
+  as a ring *color* mismatch: `rails_blocks/base.css`'s `.form-control` and
+  `select` had a leftover `focus:ring-neutral-600` never updated when COV-36
+  moved form focus rings to `--primary` (teal) — check this file too when a
+  focus ring looks like the wrong color, not just when it reflows.
+- `h1`/`h2` tag selectors in `typography.css` set the serif display font
+  app-wide, so any component that renders its title into a bare `<h2>` (or
+  `<h1>`) — not a `.h3`-style class override — silently inherits it even
+  when the title is meant to be a small sans UI label. Hit this
+  independently in `EmptyStateComponent`, `UiModalComponent`, and
+  `Drawer::Component`'s title, all fixed the same way (add `font-sans` to
+  the title's class string). Check any *other* component that renders a
+  title into a bare heading tag for the same bug before it's reported.
 - Elements using the native Popover API (`showPopover()` / `popover`
   attribute — `UiToastComponent`'s container is one) get a UA-stylesheet
   default `background-color: canvas` (opaque white) and border. Nothing in
