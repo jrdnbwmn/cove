@@ -162,7 +162,10 @@ Routes are modularized in `config/routes/`:
 - Plan rows are never deleted or re-priced — a price change is a new Stripe Price + new Plan row, old row hidden. Follow `docs/runbooks/price-change-checklist.md`.
 - No feature logic may depend on a price, amount, plan name, or Stripe ID — prices will change. Gate features on `Account#premium?` / `#plan_status`.
 - Brand palette: teal (`--primary`, `--primary-hover`), cream (`--background`), coral (`--accent-brand`, used only via `--bg-accent`/`--border-accent`). Reference these tokens; don't repeat the hex values. Neutrals (`neutral-*`, and `gray-*` which maps to it) point at Tailwind's warm `stone` scale, and the red/orange/yellow/green/blue/purple/pink scales are redefined muted in `application.css` `@theme` (same lightness steps as Tailwind's defaults, so contrast is unchanged).
-- Typography: only `h1`/`h2` (and `.font-display`) use the serif (`--font-serif`, self-hosted Fabric Serif Web, 400 only — no other weight is installed); `h3`–`h6` and body use the sans (`--font-sans`, self-hosted Geist, static 400/500/600/700). Both carry OpenType feature settings via Tailwind v4's paired `--font-sans--font-feature-settings` / `--font-serif--font-feature-settings` theme keys — see the CSS/Tailwind gotcha below for why raw `font-family: var(--font-serif)` rules need that variable set explicitly. Buttons and inputs have no drop shadows (the opt-in `fancy` button style keeps its own).
+- Typography: only `h1`/`h2` (and `.font-display`) use the serif (`--font-serif`, self-hosted Fabric Serif Web, 400 only — no other weight is installed); `h3`–`h6` and body use the sans (`--font-sans`, self-hosted Geist, static 400/500/600/700; `h3`–`h6` are weight 500, `h1` is 2rem). Settings pages (`layouts/sidebar.html.erb`, wrapper class `settings-content`) render their sub headings (`.h3`/`.h4`, plus billing's `.section-heading`) in the serif. Both carry OpenType feature settings via Tailwind v4's paired `--font-sans--font-feature-settings` / `--font-serif--font-feature-settings` theme keys — see the CSS/Tailwind gotcha below for why raw `font-family: var(--font-serif)` rules need that variable set explicitly. Buttons and inputs have no drop shadows (the opt-in `fancy` button style keeps its own).
+
+- Brand assets: `app/assets/images/logo.svg` is the full wordmark (mark + "Cove"), used via `application/_brand` (keep its `sr-only` app name — it is the logo link's accessible name and tests assert it); `mark.svg` is the icon-only version of it, shown by `SidebarComponent`'s `collapsed_logo` slot. Both have hardcoded fills (not `currentColor`). Update `mark.svg` whenever the logo's icon changes.
+- Page content is capped at `max-w-6xl` and centered by a wrapper in each shell (`layouts/application.html.erb` for signed-out, `application/_sidebar.html.erb` for signed-in). Only one renders per request.
 
 ## Development Notes
 
@@ -202,6 +205,13 @@ Routes are modularized in `config/routes/`:
   `users` table has a `confirmed_at` column that seeds/fixtures set.
   `user.confirmed?` is not a valid method — check `confirmed_at.present?`
   instead.
+
+- A leftover gitignored `public/assets/` (from `assets:precompile`) makes the
+  dev server serve its manifest's stale digested files instead of the freshly
+  built Tailwind CSS — CSS edits then "do nothing" even after a rebuild or a
+  `bin/dev` restart (compiled `app/assets/builds/tailwind.css` is correct, but
+  the page links an old `tailwind-<digest>.css`). Fix: `bin/rails assets:clobber`,
+  then restart the server.
 
 ### Staging (Render) and Stripe credential workflow
 - Render Free-tier services provide no Shell or One-Off Jobs — there's no way
@@ -363,3 +373,18 @@ Routes are modularized in `config/routes/`:
   this app's CSS overrides that automatically; any `[popover]`-based
   component needs its own explicit `bg-transparent border-0` (or an
   intentional background) or it silently renders an unwanted white box.
+- `muted` is a *background* token (`bg-muted`), so stock Jumpstart views' `text-muted`
+  would render near-white text. An unlayered `.text-muted` rule at the end of
+  `application.css` points it at `--muted-foreground`. It has to be unlayered: a
+  Tailwind `@utility text-muted` override is ignored (the theme-derived utility wins),
+  and layer order is components < utilities < unlayered. In app code use
+  `text-muted-foreground`.
+- A heading tag with a sans-only class inherits the tag rule's font features: `h1`/`h2`
+  rules set the *serif* `font-feature-settings`, so `<h1 class="h3">` got Geist with serif
+  features (no `ss05`/`ss08` slab "I") until `.h3`–`.h6` set
+  `font-feature-settings: var(--font-sans--font-feature-settings)` themselves. Any class
+  that swaps a heading's font-family must also set its paired feature settings.
+- Google OAuth avatars (`lh3.googleusercontent.com`) fail to load in browsers when the
+  request carries the page's referrer (incl. `localhost`). Render them with
+  `referrerpolicy: "no-referrer"` (see `users/connected_accounts/_connected_account`);
+  don't set it app-wide — `redirect_back` depends on the Referer header.
