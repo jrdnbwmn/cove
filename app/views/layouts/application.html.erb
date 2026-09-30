@@ -25,7 +25,9 @@
       </header>
 
       <main>
-        <%= content_for?(:content) ? yield(:content) : yield %>
+        <div class="mx-auto w-full max-w-6xl">
+          <%= content_for?(:content) ? yield(:content) : yield %>
+        </div>
       </main>
 
       <%= render "footer" unless hotwire_native_app? %>
