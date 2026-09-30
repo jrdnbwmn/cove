@@ -28,5 +28,6 @@ Rails.application.routes.draw do
   if Rails.env.local?
     mount Lookbook::Engine, at: "/lookbook" if defined?(Lookbook::Engine)
     get "dev/kitchen_sink", to: "dev/kitchen_sink#show"
+    get "dev/typography", to: "dev/typography#show"
   end
 end

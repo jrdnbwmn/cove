@@ -36,8 +36,8 @@
     <% end %>
   <% end %>
 
-  <% dropdown.with_item_link text: "Settings", href: edit_user_registration_path, icon: icon("settings", class: "size-4"), classes: "!text-base !text-foreground hover:bg-muted" %>
-  <% dropdown.with_item_link text: "Support", href: support_path, icon: icon("life-buoy", class: "size-4"), classes: "!text-base !text-foreground hover:bg-muted" %>
+  <% dropdown.with_item_link text: "Settings", href: edit_user_registration_path, icon: icon("settings", class: "size-4"), classes: "!text-base !text-foreground hover:!bg-muted focus:!bg-muted" %>
+  <% dropdown.with_item_link text: "Support", href: support_path, icon: icon("life-buoy", class: "size-4"), classes: "!text-base !text-foreground hover:!bg-muted focus:!bg-muted" %>
   <% dropdown.with_item_custom(unstyled: true) do %>
     <%= button_to destroy_user_session_path, method: :delete,
       form: {class: "w-full"},

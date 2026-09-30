@@ -41,7 +41,7 @@ class EmptyStateComponent < ViewComponent::Base
   end
 
   def title_classes
-    ["text-neutral-900 dark:text-neutral-100 font-semibold", title_size_classes].join(" ")
+    ["font-sans text-neutral-900 dark:text-neutral-100 font-semibold", title_size_classes].join(" ")
   end
 
   def description_classes

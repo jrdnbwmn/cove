@@ -31,13 +31,18 @@
       <% if hotwire_native_app? %>
         <%= f.hidden_field :remember_me, value: true %>
       <% else %>
-        <%= render CheckboxComponent.new(
-          label: resource.class.human_attribute_name(:remember_me),
-          name: "user[remember_me]",
-          checked: resource.remember_me,
-          error: resource.errors[:remember_me].first,
-          classes: "mb-6"
-        ) %>
+        <div class="mb-6 flex items-center justify-between">
+          <%= render CheckboxComponent.new(
+            label: resource.class.human_attribute_name(:remember_me),
+            name: "user[remember_me]",
+            checked: resource.remember_me,
+            error: resource.errors[:remember_me].first
+          ) %>
+
+          <% if devise_mapping.recoverable? %>
+            <%= link_to t("devise.shared.links.forgot_your_password"), new_password_path(resource_name), class: "text-sm text-muted-foreground underline hover:text-foreground" %>
+          <% end %>
+        </div>
       <% end -%>
     <% end -%>
 

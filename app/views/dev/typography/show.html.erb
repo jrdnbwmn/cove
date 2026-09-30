@@ -1,0 +1,130 @@
+<div class="mx-auto max-w-3xl px-6 py-10">
+
+  <div class="mt-10 divide-y divide-border">
+    <section class="py-10 first:pt-0">
+      <p class="text-sm font-medium text-muted-foreground">Display &amp; H1 &mdash; serif</p>
+      <p class="font-display mt-4">Your homeschool&rsquo;s chief of staff</p>
+      <h1 class="mt-4">Your homeschool&rsquo;s chief of staff</h1>
+    </section>
+
+    <section class="py-10">
+      <p class="text-sm font-medium text-muted-foreground">H3&ndash;H6 &mdash; sans</p>
+      <div class="mt-4 space-y-3">
+        <h3>Edit Profile</h3>
+        <h4>Marketing preferences</h4>
+        <h5>Payment method</h5>
+        <h6>Danger zone</h6>
+      </div>
+    </section>
+
+    <section class="py-10">
+      <p class="text-sm font-medium text-muted-foreground">Body copy &mdash; sans</p>
+      <p class="mt-4 text-foreground">
+        Cove keeps the plans, the records, and the day-to-day running, so your time goes to
+        teaching instead of tracking. Attendance, grades, and progress are captured as you go,
+        ready whenever you need them &mdash; no more rebuilding the plan every morning.
+      </p>
+      <p class="mt-3 text-sm text-muted-foreground">
+        Free forever for one student. Upgrade to Premium for up to 10 students and both parents,
+        $12/month or $120/year.
+      </p>
+    </section>
+
+    <section class="py-10">
+      <p class="text-sm font-medium text-muted-foreground">Sans weight ramp</p>
+      <div class="mt-4 space-y-2">
+        <p class="font-normal">Regular (400) &mdash; Choose a subject to see today&rsquo;s schedule.</p>
+        <p class="font-medium">Medium (500) &mdash; Choose a subject to see today&rsquo;s schedule.</p>
+        <p class="font-semibold">Semibold (600) &mdash; Choose a subject to see today&rsquo;s schedule.</p>
+        <p class="font-bold">Bold (700) &mdash; Choose a subject to see today&rsquo;s schedule.</p>
+      </div>
+    </section>
+
+    <section class="py-10">
+      <p class="text-sm font-medium text-muted-foreground">H2 &mdash; serif</p>
+      <h2 class="mt-4">Simple pricing for your family</h2>
+      <h2 class="mt-2">Cove keeps the plans, the records, and the day-to-day running</h2>
+    </section>
+
+    <section class="py-10">
+      <p class="text-sm font-medium text-muted-foreground">UI text in context</p>
+
+      <div class="mt-6 flex flex-wrap items-center gap-6">
+        <%= render ButtonComponent.new(text: "Primary", variant: :primary) %>
+        <%= render ButtonComponent.new(text: "Secondary", variant: :secondary) %>
+        <%= render ButtonComponent.new(text: "Outline", variant: :outline) %>
+        <%= render ButtonComponent.new(text: "Ghost", variant: :ghost) %>
+        <%= render ButtonComponent.new(text: "Destructive", variant: :destructive) %>
+      </div>
+
+      <div class="mt-6 grid gap-6 md:grid-cols-2">
+        <%= render AlertComponent.new(title: "Success! Your changes have been saved", description: "All updates have been applied successfully.", variant: :success) %>
+        <%= render AlertComponent.new(title: "Something went wrong", description: "We couldn't process your request.", variant: :error) %>
+      </div>
+
+      <div class="mt-8 flex flex-wrap items-center gap-4">
+        <%= render BadgeComponent.new(text: "Neutral") %>
+        <%= render BadgeComponent.new(text: "Published", variant: :green) %>
+        <%= render BadgeComponent.new(text: "Active", variant: :blue, dot: true) %>
+        <%= render BadgeComponent.new(text: "Beta", variant: :purple, pill: true) %>
+        <%= render BadgeComponent.new(text: "Filter: Active", variant: :neutral, removable: true) %>
+      </div>
+
+      <div class="mt-6 grid items-start gap-6 md:grid-cols-2">
+          <% starter_plan = Plan.new(name: "Starter", amount: 1900, interval: "month", description: "A plan-card example with a price, features, and an action.", details: {features: ["Unlimited projects", "Email support"]}) %>
+          <%= render PlanCardComponent.new(plan: starter_plan) do %>
+            <%= render ButtonComponent.new(text: "Upgrade to Premium", href: "#", full_width: true) %>
+          <% end %>
+
+          <% card = CardComponent.new %>
+          <% card.with_header { tag.h3("Weekly schedule", class: "h4") } %>
+          <% card.with_body do %>
+            <p class="text-sm text-muted-foreground">
+              Amelia&rsquo;s plan for the week of March 3rd &mdash; 4 subjects, 12 lessons.
+            </p>
+          <% end %>
+          <% card.with_footer { render ButtonComponent.new(text: "View schedule", variant: :secondary, size: :sm) } %>
+          <%= render card %>
+      </div>
+
+      <div class="mt-6 grid gap-6 md:grid-cols-2">
+        <%= render EmptyStateComponent.new(title: "No students yet", description: "Add your first student to start building a schedule.", bordered: true) %>
+        <div class="flex flex-col items-center justify-center gap-3 rounded-xl border border-border p-8 text-center">
+          <%= render LoadingIndicatorComponent.new(type: :spinner, text: "Saving Amelia's schedule&hellip;".html_safe) %>
+        </div>
+      </div>
+
+      <div class="mt-6">
+        <% schedule_table = TableComponent.new(striped: true, hoverable: true) %>
+        <% schedule_table.with_column(label: "Subject") %>
+        <% schedule_table.with_column(label: "Student") %>
+        <% schedule_table.with_column(label: "Progress") %>
+        <% schedule_table.with_row do |row| %>
+          <% row.with_cell(primary: true) { "Algebra I" } %>
+          <% row.with_cell { "Amelia O&rsquo;Brien".html_safe } %>
+          <% row.with_cell { render BadgeComponent.new(text: "On track", variant: :green, size: :sm) } %>
+        <% end %>
+        <% schedule_table.with_row do |row| %>
+          <% row.with_cell(primary: true) { "World History" } %>
+          <% row.with_cell { "Amelia O&rsquo;Brien".html_safe } %>
+          <% row.with_cell { render BadgeComponent.new(text: "Behind", variant: :orange, size: :sm) } %>
+        <% end %>
+        <%= render schedule_table %>
+      </div>
+
+    </section>
+
+    <section class="py-10">
+      <p class="text-sm font-medium text-muted-foreground">Numerals &amp; punctuation stress test</p>
+      <p class="mt-4 text-foreground">
+        Week 12 &middot; Mon&ndash;Fri &middot; 9:00am&ndash;3:30pm &middot; 4 students, 2 parents
+      </p>
+      <p class="mt-2 text-foreground">
+        &ldquo;It&rsquo;s the Rivera family&rsquo;s 3rd year homeschooling &mdash; 100% attendance, grade A&rdquo;
+      </p>
+      <p class="mt-2 font-mono text-sm text-muted-foreground">
+        0123456789 &mdash; $12.00/mo &mdash; 50% off &mdash; #A1B2
+      </p>
+    </section>
+  </div>
+</div>

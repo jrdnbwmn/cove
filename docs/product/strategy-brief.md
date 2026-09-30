@@ -15,7 +15,7 @@ The core idea is a chief of staff for homeschool families that reduces the plann
 
 The assistant should remain gentle, nonjudgmental, and parent-controlled. Like a real chief of staff, it prepares options, recommends a path, handles logistics, and follows up—but leaves decisions to the parent.
 
-After using our product, running a homeschool should feel much lighter and much more effective.
+After using our product, running a homeschool should feel much lighter and much more effective. You'll have more time, less anxiety, avoid missing important things, and be able to focus on the really important stuff that only you can do.
 
 ## Positioning & differentiation
 
