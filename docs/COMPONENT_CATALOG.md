@@ -643,8 +643,9 @@ collapse, or the `md`-`lg` band), which it does before transitions are
 re-enabled, avoiding the collapsed-then-expands flash a client-only default
 would otherwise cause on a hard reload.
 
-**Slots:** `with_logo`, `with_item`, `with_section`, `with_footer`,
-`with_collapsed_footer`, and `with_mobile_toggle_indicator` (a caller-supplied
+**Slots:** `with_logo`, `with_collapsed_logo` (a compact mark shown in the
+collapsed rail; it swaps to the expand icon on hover/focus), `with_item`,
+`with_section`, `with_footer`, `with_collapsed_footer`, and `with_mobile_toggle_indicator` (a caller-supplied
 indicator, e.g. a status dot, rendered inside the mobile menu-toggle button).
 
 **Variants:** `:default`, `:bordered`, `:minimal`, and `:inset` (borderless,
