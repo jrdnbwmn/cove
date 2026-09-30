@@ -30,7 +30,7 @@ class SidebarComponent
     end
 
     def summary_classes
-      "flex cursor-pointer list-none items-center gap-2 rounded-md px-2 py-1.5 text-left text-sm text-neutral-700 hover:bg-neutral-100 focus-visible:bg-neutral-100 focus:outline-hidden [&::-webkit-details-marker]:hidden dark:text-neutral-100 dark:hover:bg-neutral-700/50 dark:focus-visible:bg-neutral-700/50"
+      "flex cursor-pointer list-none items-center gap-2 rounded-md px-2 py-1.5 text-left text-sm text-neutral-700 hover:bg-muted focus-visible:bg-muted focus:outline-hidden [&::-webkit-details-marker]:hidden dark:text-neutral-100 dark:hover:bg-neutral-700/50 dark:focus-visible:bg-neutral-700/50"
     end
 
     attr_reader :title, :default_open

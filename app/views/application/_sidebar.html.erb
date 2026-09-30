@@ -13,6 +13,11 @@
     <% end %>
   <% end %>
 
+  <% sidebar.with_collapsed_logo do %>
+    <%# AIDEV-NOTE: image_tag, not render_svg — render_svg injects a <title> that shows a native "Mark" tooltip on hover. %>
+    <%= image_tag "mark.svg", alt: "", class: "size-6" %>
+  <% end %>
+
   <% nav_items.each do |item| %>
     <% sidebar.with_item(label: item[:label], href: item[:href], icon: icon(item[:icon], class: "size-4 sm:size-4.5"), active: item[:active]) %>
   <% end %>
@@ -33,7 +38,9 @@
 
   <div class="flex-1 overflow-y-auto p-0 lg:p-3">
     <div class="app-content min-h-full bg-white p-6 dark:bg-neutral-950 md:rounded-lg md:border-x md:border-b md:border-border md:py-8 md:px-12 md:shadow-xs">
-      <%= content_for?(:content) ? yield(:content) : yield %>
+      <div class="mx-auto w-full max-w-6xl">
+        <%= content_for?(:content) ? yield(:content) : yield %>
+      </div>
     </div>
   </div>
 <% end %>

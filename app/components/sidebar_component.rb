@@ -17,6 +17,7 @@ class SidebarComponent < ViewComponent::Base
   }.freeze
 
   renders_one :logo
+  renders_one :collapsed_logo
   renders_one :footer
   renders_one :collapsed_footer
   renders_one :mobile_toggle_indicator

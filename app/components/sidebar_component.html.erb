@@ -27,8 +27,14 @@
                right edge sits flush against the icon. -->
           <summary class="group-open/sidebar:hidden flex <%= min_height_class %> h-full cursor-e-resize list-none flex-col items-start pt-3 pb-3 pl-3">
             <div class="flex h-13 items-center">
-              <button class="cursor-pointer flex size-10 items-center justify-center rounded-lg text-neutral-500 hover:bg-neutral-100 focus:outline-none focus-visible:bg-neutral-100 disabled:opacity-50 sm:size-9 dark:text-neutral-400 hover:text-neutral-700 dark:hover:text-neutral-100 dark:hover:bg-neutral-800 dark:focus-visible:bg-neutral-800" data-action="click->sidebar#open" aria-label="Expand sidebar">
-                <%= icon "panel-right", class: "size-4 sm:size-4.5" %>
+              <button class="group/expand cursor-pointer flex size-10 items-center justify-center rounded-lg text-neutral-500 hover:bg-muted focus:outline-none focus-visible:bg-muted disabled:opacity-50 sm:size-9 dark:text-neutral-400 hover:text-neutral-700 dark:hover:text-neutral-100 dark:hover:bg-neutral-800 dark:focus-visible:bg-neutral-800" data-action="click->sidebar#open" aria-label="Expand sidebar">
+                <% if collapsed_logo? %>
+                  <!-- AIDEV-NOTE: the mark sits where the expand icon is and swaps for it on hover/focus. -->
+                  <span class="flex items-center justify-center group-hover/expand:hidden group-focus-visible/expand:hidden"><%= collapsed_logo %></span>
+                  <%= icon "panel-right", class: "hidden size-4 sm:size-4.5 group-hover/expand:block group-focus-visible/expand:block" %>
+                <% else %>
+                  <%= icon "panel-right", class: "size-4 sm:size-4.5" %>
+                <% end %>
               </button>
             </div>
 
@@ -67,7 +73,7 @@
                       <%= logo %>
                     <% end %>
                     <div class="flex">
-                      <button class="flex size-10 cursor-pointer items-center justify-center rounded-lg text-neutral-400 hover:bg-neutral-100 focus:outline-none focus-visible:bg-neutral-100 disabled:opacity-50 sm:size-9 dark:text-neutral-400 hover:text-neutral-700 dark:hover:text-neutral-100 dark:hover:bg-neutral-800 dark:focus-visible:bg-neutral-800" aria-expanded="true" aria-label="Collapse sidebar" data-state="closed" data-action="click->sidebar#close">
+                      <button class="flex size-10 cursor-pointer items-center justify-center rounded-lg text-neutral-400 hover:bg-muted focus:outline-none focus-visible:bg-muted disabled:opacity-50 sm:size-9 dark:text-neutral-400 hover:text-neutral-700 dark:hover:text-neutral-100 dark:hover:bg-neutral-800 dark:focus-visible:bg-neutral-800" aria-expanded="true" aria-label="Collapse sidebar" data-state="closed" data-action="click->sidebar#close">
                         <%= icon "panel-left", class: "size-4 sm:size-4.5" %>
                       </button>
                     </div>
