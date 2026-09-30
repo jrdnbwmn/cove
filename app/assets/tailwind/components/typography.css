@@ -55,12 +55,25 @@ h6, .h6 {
 }
 
 /* AIDEV-NOTE: Settings pages (layouts/sidebar.html.erb) use the serif for their sub headings.
-   Serif is 400-only, so weight is reset here; headings that set their own font-semibold
-   utility (utilities layer beats this rule) must use font-serif font-normal instead. */
+   Serif is 400-only, so weight is reset here. Headings outside .h3/.h4 use .section-heading. */
 .settings-content :is(.h3, .h4) {
   font-family: var(--font-serif);
   font-feature-settings: var(--font-serif--font-feature-settings);
   font-weight: 400;
+}
+
+/* Divided section heading on settings pages (billing). Serif is 400-only. */
+.section-heading {
+  margin-top: calc(var(--spacing) * 8);
+  margin-bottom: calc(var(--spacing) * 4);
+  border-bottom: 1px solid var(--divider-color);
+  padding-bottom: calc(var(--spacing) * 2);
+  color: var(--foreground);
+  font-family: var(--font-serif);
+  font-feature-settings: var(--font-serif--font-feature-settings);
+  font-size: var(--text-lg);
+  font-weight: 400;
+  line-height: var(--text-lg--line-height);
 }
 
 .with-border {

@@ -1,4 +1,4 @@
-<h2 class="mt-8 mb-4 border-b border-(--divider-color) pb-2 font-serif text-lg font-normal text-foreground"><%= t(".title") %></h2>
+<h2 class="section-heading"><%= t(".title") %></h2>
 
 <% if (charges = current_account.pay_charges.sorted) && charges.any? %>
   <%= render TableComponent.new(hoverable: true) do |table| %>
