@@ -7,7 +7,7 @@
 <% if account_admin?(current_account, current_user) %>
   <% subscriptions = @subscriptions.to_a %>
   <%= render "plan_state", subscription: subscriptions.first %>
-  <h2 class="mt-8 mb-4 border-b border-(--divider-color) pb-2 text-lg font-semibold text-foreground"><%= t(".subscriptions") %></h2>
+  <h2 class="mt-8 mb-4 border-b border-(--divider-color) pb-2 font-serif text-lg font-normal text-foreground"><%= t(".subscriptions") %></h2>
 
   <% if subscriptions.any? %>
     <%= render partial: "billing/subscriptions/subscription", collection: subscriptions %>

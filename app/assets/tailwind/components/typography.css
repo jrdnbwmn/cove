@@ -10,7 +10,7 @@
 h1, .h1 {
   font-family: var(--font-serif);
   font-feature-settings: var(--font-serif--font-feature-settings);
-  font-size: var(--text-4xl);
+  font-size: 2rem;
   font-weight: 400;
   letter-spacing: -0.025em;
   line-height: 1.25;
@@ -26,28 +26,41 @@ h2, .h2 {
 
 h3, .h3 {
   font-family: var(--font-sans);
+  font-feature-settings: var(--font-sans--font-feature-settings);
   font-size: var(--text-2xl);
-  font-weight: 600;
+  font-weight: 500;
   line-height: 1.5;
 }
 
 h4, .h4 {
   font-family: var(--font-sans);
+  font-feature-settings: var(--font-sans--font-feature-settings);
   font-size: var(--text-xl);
-  font-weight: 600;
+  font-weight: 500;
   line-height: 1.5;
 }
 
 h5, .h5 {
   font-family: var(--font-sans);
+  font-feature-settings: var(--font-sans--font-feature-settings);
   font-size: var(--text-lg);
-  font-weight: 600;
+  font-weight: 500;
   line-height: 1.5;
 }
 
 h6, .h6 {
   font-family: var(--font-sans);
-  font-weight: 600;
+  font-feature-settings: var(--font-sans--font-feature-settings);
+  font-weight: 500;
+}
+
+/* AIDEV-NOTE: Settings pages (layouts/sidebar.html.erb) use the serif for their sub headings.
+   Serif is 400-only, so weight is reset here; headings that set their own font-semibold
+   utility (utilities layer beats this rule) must use font-serif font-normal instead. */
+.settings-content :is(.h3, .h4) {
+  font-family: var(--font-serif);
+  font-feature-settings: var(--font-serif--font-feature-settings);
+  font-weight: 400;
 }
 
 .with-border {
