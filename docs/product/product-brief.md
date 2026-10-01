@@ -32,10 +32,10 @@ features on the plan, never on a price or plan name.
 
 ## Students
 
-- Students are **data records owned by the family**, not logins or members.
-- Free limit **2** (planned; the app still enforces 1); Premium limit **10** by default, raisable per family by
-  a superadmin. The cap exists to stop co-ops and micro-schools using a
-  family plan.
+- Students are **data records owned by the family**, not logins or members. 
+  Students will eventually have their own logins (in a future version).
+- Free limit **2** (planned; the app still enforces 1); Premium limit **10** 
+  by default, raisable per family by a superadmin. The cap exists to stop co-ops and micro-schools using a family plan.
 - Past the limit: Free sees an upgrade prompt, Premium sees "Contact us".
 - **On downgrade no students are deleted.** The parent picks which stay
   editable; the rest go read-only until the family upgrades. Read-only
