@@ -18,6 +18,9 @@ erDiagram
     string complimentary_premium_note
   }
 
+  %% student_limit is the configurable Premium cap (default 10). Free-family
+  %% capacity is Account::FREE_STUDENT_LIMIT (2), intentionally not persisted.
+
   ACCOUNT_USER {
     bigint id PK
     bigint account_id FK

@@ -23,4 +23,25 @@ class AccountDeletionHelperTest < ActionView::TestCase
   test "second parent sees the login deletion copy that leaves the family unchanged" do
     assert_equal "cancel_my_account_second_parent", login_deletion_copy_key(users(:two))
   end
+
+  test "a past due family is told canceling ends the plan immediately" do
+    subscription = pay_subscriptions(:past_due)
+
+    assert cancels_immediately?(subscription)
+    assert_equal I18n.t("billing.subscriptions.cancels.show.cancel_immediately"), cancellation_end_notice(subscription)
+  end
+
+  test "an unpaid family is told canceling ends the plan immediately" do
+    subscription = pay_subscriptions(:unpaid)
+
+    assert cancels_immediately?(subscription)
+    assert_equal I18n.t("billing.subscriptions.cancels.show.cancel_immediately"), cancellation_end_notice(subscription)
+  end
+
+  test "an active family is told the plan ends at period end" do
+    subscription = pay_subscriptions(:subscribed)
+
+    assert_not cancels_immediately?(subscription)
+    assert_equal I18n.t("billing.subscriptions.cancels.show.active_until_no_refund", date: "October 15, 2026"), cancellation_end_notice(subscription)
+  end
 end

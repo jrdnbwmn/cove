@@ -1,13 +1,13 @@
 class Account < ApplicationRecord
   include Billing, Domains, Transfer, Types
 
-  FREE_STUDENT_LIMIT = 1
+  FREE_STUDENT_LIMIT = 2
 
   scope :active, -> { where(archived_at: nil) }
   scope :archived, -> { where.not(archived_at: nil) }
 
   validates :personal, exclusion: {in: [true], message: "must be false"}
-  validates :student_limit, numericality: {only_integer: true, greater_than_or_equal_to: 1}
+  validates :student_limit, numericality: {only_integer: true, greater_than_or_equal_to: FREE_STUDENT_LIMIT}
   validates :complimentary_premium_note, presence: true, if: :complimentary_premium?
 
   # AIDEV-NOTE: The database default is the single source for the Premium cap
@@ -55,8 +55,10 @@ class Account < ApplicationRecord
     !premium?
   end
 
-  # AIDEV-NOTE: The Premium cap prevents co-ops and micro-schools from using a
-  # family plan. A per-student fee or add-on may replace manual admin raises.
+  # AIDEV-NOTE: Premium is advertised as unlimited, but student_limit (default
+  # 10, raised per family by a superadmin) is the real cap that keeps co-ops
+  # and micro-schools off a family plan; families above it contact support. No
+  # per-student fee — pricing stays flat per family and Stripe quantity never changes.
   def students_allowed
     premium? ? student_limit : FREE_STUDENT_LIMIT
   end

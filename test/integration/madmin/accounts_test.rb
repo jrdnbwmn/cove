@@ -59,7 +59,7 @@ class Madmin::AccountsTest < ActionDispatch::IntegrationTest
     patch madmin_account_path(@account), params: {account: {student_limit: 0}}
 
     assert_response :unprocessable_entity
-    assert_includes response.body, "Student limit must be greater than or equal to 1"
+    assert_includes response.body, "Student limit must be greater than or equal to 2"
     assert_equal stored_limit, @account.reload.student_limit
   end
 
