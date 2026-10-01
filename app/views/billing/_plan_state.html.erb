@@ -18,6 +18,13 @@
     <%= render BadgeComponent.new(text: t("billing.show.premium"), variant: subscription&.past_due? ? :red : :green) %>
     <% if subscription&.on_grace_period? && subscription.ends_at? %>
       <%= render AlertComponent.new(title: t("billing.show.premium_until", date: l(subscription.ends_at.to_date, format: :long)), variant: :warning, classes: "mt-3") %>
+    <% elsif (pending_change = subscription&.pending_plan_change) %>
+      <%= render AlertComponent.new(
+        title: t("billing.show.pending_plan_change_title", date: l(pending_change[:starts_at].to_date, format: :long)),
+        description: t("billing.show.pending_plan_change_description", price: pay_amount_to_currency(pending_change[:plan])),
+        variant: :info,
+        classes: "mt-3"
+      ) %>
     <% elsif subscription&.current_period_end? %>
       <p class="mt-2 text-muted-foreground"><%= t("billing.show.renews_on", date: l(subscription.current_period_end.to_date, format: :long)) %></p>
     <% else %>

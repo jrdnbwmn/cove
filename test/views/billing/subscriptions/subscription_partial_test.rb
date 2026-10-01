@@ -37,6 +37,19 @@ class Billing::Subscriptions::SubscriptionPartialTest < ActionView::TestCase
     assert doc.css("a").any? { |link| link.text.strip == I18n.t("billing.subscriptions.subscription.change_plan") }, "expected a change plan link"
   end
 
+  test "subscription with a pending monthly switch shows Keep yearly instead of Change plan" do
+    subscription = subscribe(status: "active")
+    subscription.define_singleton_method(:pending_plan_change?) { true }
+
+    doc = render_subscription(subscription)
+
+    keep_yearly_link = doc.css("a").find { |link| link.text.strip == I18n.t("billing.subscriptions.subscription.keep_yearly") }
+    assert keep_yearly_link, "expected a Keep yearly link"
+    assert_equal billing_subscription_plan_change_path(subscription), keep_yearly_link[:href]
+    assert_equal "delete", keep_yearly_link["data-turbo-method"]
+    refute doc.css("a").any? { |link| link.text.strip == I18n.t("billing.subscriptions.subscription.change_plan") }, "did not expect a Change plan link"
+  end
+
   test "canceled subscription shows Canceled badge with no variant color" do
     subscription = subscribe(status: "active", ends_at: 1.day.ago)
 

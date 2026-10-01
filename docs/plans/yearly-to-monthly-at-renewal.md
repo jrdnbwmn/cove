@@ -7,14 +7,14 @@
 
 | Task | Phase | Checkpoint | Description | Assign | Done |
 | ---- | ----- | ---------- | ----------- | ------ | ---- |
-| 1 | 1 | 1 | Add Stripe schedule behavior to Pay subscriptions | Master | |
-| 2 | 1 | 1 | Guard plan changes and route each billing direction | Master | |
-| 3 | 1 | 1 | Release schedules before cancellation or family deletion | Master | |
-| 4 | 2 | 2 | Add confirmation and Keep yearly endpoints | Master | |
-| 5 | 2 | 2 | Build the confirmation page and billing copy | Master | |
-| 6 | 2 | 3 | Link plan cards to confirmation | subagent | |
-| 7 | 2 | 3 | Show the pending switch on Billing | subagent | |
-| 8 | 2 | 3 | Explain cancellation and update the price runbook | subagent | |
+| 1 | 1 | 1 | Add Stripe schedule behavior to Pay subscriptions | Master | ✅ |
+| 2 | 1 | 1 | Guard plan changes and route each billing direction | Master | ✅ |
+| 3 | 1 | 1 | Release schedules before cancellation or family deletion | Master | ✅ |
+| 4 | 2 | 2 | Add confirmation and Keep yearly endpoints | Master | ✅ |
+| 5 | 2 | 2 | Build the confirmation page and billing copy | Master | ✅ |
+| 6 | 2 | 3 | Link plan cards to confirmation | subagent | ✅ |
+| 7 | 2 | 3 | Show the pending switch on Billing | subagent | ✅ |
+| 8 | 2 | 3 | Explain cancellation and update the price runbook | subagent | ✅ |
 
 ## Prerequisites
 

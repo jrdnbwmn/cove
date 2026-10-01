@@ -27,6 +27,23 @@ class BillingPolicyCopyTest < ActionDispatch::IntegrationTest
     assert_includes response.body, I18n.t("billing.subscriptions.cancels.show.resume")
   end
 
+  test "a Family sees its dated pending monthly switch on Billing" do
+    subscription = pay_subscriptions(:subscribed)
+    switch_date = 2.weeks.from_now
+    subscription.update!(object: {"schedule" => {
+      "id" => "sub_sched_pending",
+      "phases" => [{"start_date" => switch_date.to_i, "items" => [{"price" => plans(:premium_monthly).stripe_id}]}]
+    }})
+    sign_in users(:subscribed)
+
+    get billing_path
+
+    assert_response :success
+    assert_includes response.body, I18n.t("billing.show.pending_plan_change_title", date: I18n.l(switch_date.to_date, format: :long))
+    assert_includes response.body, I18n.t("billing.show.pending_plan_change_description", price: "$12.00")
+    assert_not_includes response.body, I18n.t("billing.show.renews_on", date: I18n.l(subscription.current_period_end.to_date, format: :long))
+  end
+
   test "a paid Family shows the immediate Premium cancellation consequence on both Family pages" do
     account = accounts(:subscribed)
     sign_in users(:subscribed)

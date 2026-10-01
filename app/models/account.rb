@@ -94,6 +94,15 @@ class Account < ApplicationRecord
   end
 
   def cancel_billable_subscriptions!
-    billable_subscriptions.find_each(&:cancel_now!)
+    billable_subscriptions.find_each do |subscription|
+      # AIDEV-NOTE: Release a pending plan switch before cancelling. If the release fails, log it and still
+      # cancel: ending the paid subscription matters more than clearing the schedule.
+      begin
+        subscription.release_schedule!
+      rescue Pay::Error => error
+        Rails.logger.error("[Account] Could not release schedule for #{subscription.processor_id}: #{error.message}")
+      end
+      subscription.cancel_now!
+    end
   end
 end

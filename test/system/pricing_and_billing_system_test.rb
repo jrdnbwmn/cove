@@ -35,6 +35,22 @@ class PricingAndBillingSystemTest < ApplicationSystemTestCase
     end
   end
 
+  test "Premium family reviews a plan change before confirming it" do
+    subscription = pay_subscriptions(:subscribed)
+
+    login_as users(:subscribed), scope: :user
+    visit edit_billing_subscription_path(subscription)
+    find("[data-pricing-target='frequency'][data-frequency='yearly']").click
+
+    within pricing_group("yearly") do
+      assert_no_selector("[data-turbo-confirm]")
+      click_link I18n.t("billing.subscriptions.plan.change_plan")
+    end
+
+    assert_current_path billing_subscription_plan_change_path(subscription, plan: @premium_yearly)
+    assert_text I18n.t("billing.subscriptions.plan_changes.show.title", interval: I18n.t("billing.subscriptions.plan_changes.show.yearly"))
+  end
+
   test "signed-out visitor can start Free or get Premium" do
     visit pricing_path
 

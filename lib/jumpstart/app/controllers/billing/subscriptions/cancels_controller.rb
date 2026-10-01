@@ -9,6 +9,9 @@ class Billing::Subscriptions::CancelsController < ApplicationController
   end
 
   def destroy
+    # AIDEV-NOTE: Local change (COV-94) to Jumpstart: a pending switch to monthly would otherwise outlive the cancellation.
+    @subscription.release_schedule!
+
     # Metered subscriptions should end immediately so they don't rack up more charges
     if @subscription.metered?
       @subscription.cancel_now!(invoice_now: true)
