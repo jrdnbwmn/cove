@@ -346,6 +346,8 @@ en:
       renews_on: "Renews %{date}"
       renewal_date_unavailable: "Your renewal date is unavailable."
       premium_until: "Premium until %{date}, then Free"
+      pending_plan_change_title: "Switching to monthly on %{date}"
+      pending_plan_change_description: "You'll stay on yearly until then. After that, it's %{price}/month."
 
     info:
       extra_billing_info: "Extra Billing Information"
@@ -391,12 +393,34 @@ en:
 
       update:
         success: "Your plan has been updated successfully."
+        failure: "We couldn't change your plan. Please try again or contact support."
+
+      plan_change_guard:
+        grace_period: "Resume your plan to change it."
+        unavailable: "Plan changes aren't available right now."
+        pending: "You already have a plan change scheduled for %{date}."
+
+      plan_changes:
+        show:
+          title: "Switch to %{interval}"
+          monthly: "monthly"
+          yearly: "yearly"
+          yearly_to_monthly: "You'll keep your yearly plan until %{date}. After that, you'll pay %{price}/month. No refund or credit is issued for the rest of your year. You can change your mind any time before then."
+          monthly_to_yearly: "Your yearly plan starts today. You'll be charged %{price}, minus a credit for the unused part of this month."
+          back: "Back"
+          switch_at_renewal: "Switch at renewal"
+          switch_to_yearly: "Switch to yearly"
+          processing: "Processing..."
+        destroy:
+          success: "You'll stay on yearly."
+          failure: "We couldn't keep your yearly plan. Please try again or contact support."
 
       subscription:
         cancel_plan: "Cancel plan"
         title: "Current Plans"
         resume: "Resume plan"
         change_plan: "Change plan"
+        keep_yearly: "Keep yearly"
         pause: "Pause plan"
         canceled: "Canceled"
         incomplete: "Incomplete"
@@ -467,12 +491,14 @@ en:
           active_until_no_refund_undated: "Your plan will be canceled at the end of your billing period. No refund is issued for the remaining time."
           cancel_immediately: "Your plan will be canceled immediately. No refund is issued."
           resume: "If you change your mind, you can resume your subscription."
+          pending_plan_change: "Your switch to monthly on %{date} will also be removed."
           button: "Cancel plan"
           back: "Back to Billing"
           processing: "Cancelling..."
 
         destroy:
           resumed: "Your subscription has been canceled."
+          failure: "We couldn't cancel your plan. Please try again or contact support."
 
       upcomings:
         show:

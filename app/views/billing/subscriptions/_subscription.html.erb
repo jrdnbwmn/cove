@@ -29,7 +29,11 @@
       <% if subscription.on_grace_period? %>
         <%= render ButtonComponent.new(text: t(".resume"), href: billing_subscription_resume_path(subscription)) if subscription.resumable? %>
       <% elsif subscription.active? %>
-        <%= render ButtonComponent.new(text: t(".change_plan"), variant: :secondary, href: edit_billing_subscription_path(subscription)) %>
+        <% if subscription.pending_plan_change? %>
+          <%= render ButtonComponent.new(text: t(".keep_yearly"), variant: :secondary, href: billing_subscription_plan_change_path(subscription), data: {turbo_method: :delete}) %>
+        <% else %>
+          <%= render ButtonComponent.new(text: t(".change_plan"), variant: :secondary, href: edit_billing_subscription_path(subscription)) %>
+        <% end %>
         <%# Only show pausing for Paddle customers because their subscription cancellations can be permanent %>
         <%= render ButtonComponent.new(text: t(".pause"), variant: :secondary, href: billing_subscription_pause_path(subscription)) if subscription.paddle_classic? %>
         <%= render ButtonComponent.new(text: t(".update_payment_method"), variant: :secondary, href: new_billing_subscription_payment_method_path(subscription)) %>

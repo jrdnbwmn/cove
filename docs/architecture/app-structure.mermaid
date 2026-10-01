@@ -13,6 +13,9 @@ graph TD
   Controllers --> DevControllers[dev/]
   Controllers --> Concerns[concerns/]
   Concerns --> PremiumAccess[PremiumAccess]
+  Concerns --> PlanChangeGuard[PlanChangeGuard]
+  Controllers --> BillingControllers[billing/subscriptions/]
+  BillingControllers --> PlanChangesController[PlanChangesController]
   Controllers --> InboundWebhooksControllers[inbound_webhooks/]
   InboundWebhooksControllers --> LoopsWebhookController[LoopsController]
 
@@ -24,6 +27,7 @@ graph TD
   UserConcerns --> AccountCreatedEmail[AccountCreatedEmail]
   UserConcerns --> MarketingConsent[MarketingConsent]
   Models --> LoopsWebhookEvent[LoopsWebhookEvent]
+  Models --> PaySubscriptionConcern[pay/subscription/PlanSchedule]
 
   App --> Mailers[app/mailers]
   Mailers --> UserMailer[UserMailer]
@@ -51,6 +55,8 @@ graph TD
   Views --> DashboardViews[dashboard/]
   Views --> PublicViews[public/]
   Views --> UserViews[users/]
+  Views --> BillingViews[billing/subscriptions/]
+  BillingViews --> PlanChangeView[plan_changes/show]
 
   App --> Components[app/components]
   Components --> FormComponents[form and input components]
@@ -103,3 +109,6 @@ graph TD
   LoopsWebhookEventProcessor --> LoopsConfig
   RecurringYml --> LoopsWebhookEventPruningJob
   LoopsWebhookEventPruningJob --> LoopsWebhookEvent
+  PlanChangesController --> PlanChangeGuard
+  PlanChangesController --> PaySubscriptionConcern
+  PlanChangesController --> PlanChangeView

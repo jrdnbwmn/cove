@@ -9,6 +9,9 @@ class Billing::Subscriptions::CancelsController < ApplicationController
   end
 
   def destroy
+    # AIDEV-NOTE: Local change (COV-94) to Jumpstart: a pending switch to monthly would otherwise outlive the cancellation.
+    @subscription.release_schedule!
+
     # Metered subscriptions should end immediately so they don't rack up more charges
     if @subscription.metered?
       @subscription.cancel_now!(invoice_now: true)
@@ -26,7 +29,9 @@ class Billing::Subscriptions::CancelsController < ApplicationController
 
     redirect_to billing_path, status: :see_other
   rescue Pay::Error => e
-    flash[:alert] = e.message
+    # AIDEV-NOTE: Local change (COV-94) to Jumpstart: log Stripe's message instead of showing it (see SubscriptionsController).
+    Rails.logger.error("[Cancels] Could not cancel #{@subscription.processor_id}: #{e.message}")
+    flash[:alert] = t(".failure")
     render :show, status: :unprocessable_content
   end
 

@@ -24,6 +24,8 @@ Receipts.default_font = {
 }
 
 ActiveSupport.on_load :pay_subscription do
+  include Pay::Subscription::PlanSchedule
+
   has_prefix_id :sub
   delegate :currency, to: :plan
   # AIDEV-NOTE: Separate method names on purpose — Rails de-duplicates callbacks

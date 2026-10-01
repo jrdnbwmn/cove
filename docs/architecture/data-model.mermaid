@@ -63,6 +63,30 @@ erDiagram
     datetime processed_at
   }
 
+  PAY_CUSTOMER {
+    bigint id PK
+    bigint owner_id
+    string owner_type
+    string processor
+    string processor_id
+  }
+
+  PAY_SUBSCRIPTION {
+    integer id PK
+    bigint customer_id FK
+    string processor_id
+    string processor_plan
+    integer quantity
+    datetime current_period_end
+  }
+
+  PLAN {
+    bigint id PK
+    string name
+    string interval
+    string stripe_id
+  }
+
   USER ||--o| ACCOUNT_USER : one membership
   ACCOUNT ||--o{ ACCOUNT_USER : admin parents
 
@@ -75,6 +99,14 @@ erDiagram
   USER ||--o{ API_TOKEN : api_tokens
   USER ||--o{ CONNECTED_ACCOUNT : connected_accounts
   USER ||--o{ NOTIFICATION_TOKEN : notification_tokens
+  ACCOUNT ||--o{ PAY_CUSTOMER : billing_owner
+  PAY_CUSTOMER ||--o{ PAY_SUBSCRIPTION : subscriptions
+
+  %% Pay::Subscription::PlanSchedule adds yearly-to-monthly renewal scheduling.
+  %% Stripe stores the schedule; no local schedule table or plan FK is added.
+  %% Pay::Subscription#plan resolves Plan from processor_plan via the
+  %% processor-specific price ID (stripe_id for Stripe), not an association.
+  %% Account releases a pending schedule before cancelling billable subscriptions.
 
   %% MarketingConsent is a User concern. Consent state is stored on users,
   %% rather than in a separate record, to keep one current preference per user.

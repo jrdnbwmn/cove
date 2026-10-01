@@ -24,6 +24,8 @@ plus a new Plan row, with the old row hidden. Do all steps in one sitting.
 5. **Decide whether to move existing subscribers** to the new price. Leaving
    them on the old price is fine; moving them is a separate, deliberate step
    in Stripe.
+   - A pending yearly-to-monthly switch retains the monthly Stripe Price chosen
+     when it was scheduled, even if a newer monthly Price is introduced.
 6. **Verify `/pricing`** shows exactly one card per interval (one monthly, one
    yearly), and that each links to a working checkout.
 

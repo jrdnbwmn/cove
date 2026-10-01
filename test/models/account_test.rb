@@ -1,7 +1,9 @@
 require "test_helper"
+require_relative "../support/stripe_schedule_helper"
 
 class AccountTest < ActiveSupport::TestCase
   include ActiveJob::TestHelper
+  include StripeScheduleHelper
 
   test "validates uniqueness of domain" do
     account = accounts(:company).dup
@@ -376,5 +378,40 @@ class AccountTest < ActiveSupport::TestCase
 
     assert_predicate active_subscription.reload, :canceled?
     assert_predicate past_due_subscription.reload, :canceled?
+  end
+
+  test "destroying a family releases a pending plan switch before cancelling its subscription" do
+    stripe_api_key!
+    subscription = stripe_subscription_for(accounts(:one), plan: plans(:premium_yearly), schedule: {"id" => "sub_sched_delete", "phases" => []})
+    events = []
+    stub_stripe_release("sub_sched_delete", events: events)
+    stub_stripe_sync(subscription, events: events)
+    stub_cancel_now(subscription, events)
+
+    accounts(:one).destroy!
+
+    assert_equal [:release, :sync, :cancel], events
+  end
+
+  test "destroying a family still cancels its subscription when the schedule cannot be released" do
+    stripe_api_key!
+    subscription = stripe_subscription_for(accounts(:one), plan: plans(:premium_yearly), schedule: {"id" => "sub_sched_delete", "phases" => []})
+    events = []
+    stub_stripe_release("sub_sched_delete", events: events, status: 400)
+    stub_cancel_now(subscription, events)
+
+    accounts(:one).destroy!
+
+    assert_equal [:release, :cancel], events
+    assert_not Account.exists?(accounts(:one).id)
+  end
+
+  private
+
+  def stub_cancel_now(subscription, events)
+    stub_request(:delete, %r{https://api\.stripe\.com/v1/subscriptions/#{subscription.processor_id}}).to_return {
+      events << :cancel
+      {status: 200, body: stripe_subscription_json(subscription, "status" => "canceled", "ended_at" => Time.current.to_i).to_json}
+    }
   end
 end

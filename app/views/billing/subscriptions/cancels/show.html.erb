@@ -15,6 +15,9 @@
         <div class="font-semibold text-foreground"><%= t ".description", product: Jumpstart.config.application_name %></div>
         <div><%= t ".help_html", link: mail_to(Jumpstart.config.support_email, t(".contact_us"), subject: t(".subject", product: Jumpstart.config.application_name), class: "font-medium text-primary underline") %></div>
         <div><%= cancellation_end_notice(@subscription) %></div>
+        <% if (pending_change = @subscription.pending_plan_change) %>
+          <div><%= t(".pending_plan_change", date: l(pending_change[:starts_at].to_date, format: :long)) %></div>
+        <% end %>
         <% unless cancels_immediately?(@subscription) %>
           <div><%= t(".resume") %></div>
         <% end %>

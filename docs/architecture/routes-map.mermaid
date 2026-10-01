@@ -25,6 +25,7 @@ graph LR
     Checkout[/checkout] --> CheckoutController[CheckoutController]
     Billing[/billing] --> BillingController[BillingController]
     Subscriptions[/billing/subscriptions] --> SubscriptionsController[Billing::SubscriptionsController]
+    PlanChange[/billing/subscriptions/:subscription_id/plan_change] --> PlanChangesController[Billing::Subscriptions::PlanChangesController#show, #destroy]
   end
 
   %% Account collection, creation, and switching routes are intentionally absent.

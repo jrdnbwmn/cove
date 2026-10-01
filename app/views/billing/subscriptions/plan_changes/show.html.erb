@@ -1,0 +1,31 @@
+<% monthly = @plan.monthly? %>
+<% title = t(".title", interval: monthly ? t(".monthly") : t(".yearly")) %>
+<% Current.meta_tags.set(title: title) %>
+
+<% content_for :sidebar, render(partial: "account_navbar") %>
+
+<div class="mx-auto mt-12 max-w-xl">
+  <h1 class="h3 text-foreground"><%= title %></h1>
+
+  <%= render CardComponent.new(divide: true, classes: "mt-8") do |card| %>
+    <% card.with_header do %>
+      <%= render partial: "billing/subscriptions/summary", locals: { subscription: @subscription } %>
+    <% end %>
+    <% card.with_body do %>
+      <% if monthly %>
+        <p class="text-muted-foreground"><%= t(".yearly_to_monthly", date: l(@subscription.current_period_end.to_date, format: :long), price: pay_amount_to_currency(@plan)) %></p>
+      <% else %>
+        <p class="text-muted-foreground"><%= t(".monthly_to_yearly", price: pay_amount_to_currency(@plan)) %></p>
+      <% end %>
+    <% end %>
+    <% card.with_footer do %>
+      <div class="flex items-center justify-between gap-3">
+        <%= render ButtonComponent.new(text: t(".back"), variant: :secondary, href: edit_billing_subscription_path(@subscription)) %>
+        <%= form_with url: billing_subscription_path(@subscription), method: :patch do |form| %>
+          <%= form.hidden_field :plan, value: @plan.to_param %>
+          <%= render ButtonComponent.new(text: monthly ? t(".switch_at_renewal") : t(".switch_to_yearly"), type: "submit", data: {disable_with: t(".processing")}) %>
+        <% end %>
+      </div>
+    <% end %>
+  <% end %>
+</div>

@@ -25,10 +25,7 @@
             <% if @subscription.plan == plan %>
               <%= render ButtonComponent.new(text: t("billing.subscriptions.plan.current_plan"), variant: :secondary, full_width: true, disabled: true) %>
             <% else %>
-              <%= form_with url: billing_subscription_url(@subscription), method: :patch do |f| %>
-                <%= f.hidden_field :plan, value: plan.to_param %>
-                <%= render ButtonComponent.new(text: t("billing.subscriptions.plan.change_plan"), variant: :secondary, type: "submit", full_width: true, data: { disable_with: t("billing.subscriptions.plan.processing"), turbo_confirm: "Are you sure?" }) %>
-              <% end %>
+              <%= render ButtonComponent.new(text: t("billing.subscriptions.plan.change_plan"), variant: :secondary, full_width: true, href: billing_subscription_plan_change_path(@subscription, plan: plan)) %>
             <% end %>
           <% end %>
         <% end %>
@@ -40,10 +37,7 @@
             <% if @subscription.plan == plan %>
               <%= render ButtonComponent.new(text: t("billing.subscriptions.plan.current_plan"), variant: :secondary, full_width: true, disabled: true) %>
             <% else %>
-              <%= form_with url: billing_subscription_url(@subscription), method: :patch do |f| %>
-                <%= f.hidden_field :plan, value: plan.to_param %>
-                <%= render ButtonComponent.new(text: t("billing.subscriptions.plan.change_plan"), variant: :secondary, type: "submit", full_width: true, data: { disable_with: t("billing.subscriptions.plan.processing"), turbo_confirm: "Are you sure?" }) %>
-              <% end %>
+              <%= render ButtonComponent.new(text: t("billing.subscriptions.plan.change_plan"), variant: :secondary, full_width: true, href: billing_subscription_plan_change_path(@subscription, plan: plan)) %>
             <% end %>
           <% end %>
         <% end %>

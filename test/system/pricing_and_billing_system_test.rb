@@ -35,6 +35,53 @@ class PricingAndBillingSystemTest < ApplicationSystemTestCase
     end
   end
 
+  test "Premium family reviews a plan change before confirming it" do
+    subscription = pay_subscriptions(:subscribed)
+
+    login_as users(:subscribed), scope: :user
+    visit edit_billing_subscription_path(subscription)
+    find("[data-pricing-target='frequency'][data-frequency='yearly']").click
+
+    within pricing_group("yearly") do
+      assert_no_selector("[data-turbo-confirm]")
+      click_link I18n.t("billing.subscriptions.plan.change_plan")
+    end
+
+    assert_current_path billing_subscription_plan_change_path(subscription, plan: @premium_yearly)
+    assert_text I18n.t("billing.subscriptions.plan_changes.show.title", interval: I18n.t("billing.subscriptions.plan_changes.show.yearly"))
+  end
+
+  test "Premium family confirms a switch to yearly" do
+    subscription = pay_subscriptions(:subscribed)
+
+    login_as users(:subscribed), scope: :user
+    visit billing_subscription_plan_change_path(subscription, plan: @premium_yearly)
+    click_button I18n.t("billing.subscriptions.plan_changes.show.switch_to_yearly")
+
+    assert_current_path billing_path
+    assert_text I18n.t("billing.subscriptions.update.success")
+  end
+
+  test "Premium family with a pending monthly switch sees it on Billing and can keep yearly" do
+    subscription = pay_subscriptions(:subscribed)
+    subscription.update!(object: {"schedule" => {"id" => "sub_sched_system", "phases" => [
+      {"start_date" => 1.day.ago.to_i, "items" => [{"price" => @premium_yearly.stripe_id}]},
+      {"start_date" => 1.month.from_now.to_i, "items" => [{"price" => @premium_monthly.stripe_id}]}
+    ]}})
+
+    login_as users(:subscribed), scope: :user
+    visit billing_path
+
+    assert_text I18n.t("billing.show.pending_plan_change_title", date: I18n.l(1.month.from_now.to_date, format: :long))
+    assert_no_link I18n.t("billing.subscriptions.subscription.change_plan")
+
+    # The fixture subscription isn't on Stripe, so releasing is a no-op; this checks the Turbo DELETE round trip.
+    click_link I18n.t("billing.subscriptions.subscription.keep_yearly")
+
+    assert_current_path billing_path
+    assert_text I18n.t("billing.subscriptions.plan_changes.destroy.success")
+  end
+
   test "signed-out visitor can start Free or get Premium" do
     visit pricing_path
 
