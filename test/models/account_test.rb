@@ -163,12 +163,12 @@ class AccountTest < ActiveSupport::TestCase
     assert accounts(:subscribed).payment_processor.subscribed?
   end
 
-  test "a new family is free and allowed one student" do
+  test "a new Free family can have 2 students" do
     account = Account.new(owner: users(:admin), name: "New Family")
 
     assert_not account.premium?
     assert account.free?
-    assert_equal 1, account.students_allowed
+    assert_equal 2, account.students_allowed
   end
 
   test "a complimentary family is Premium without billing records" do
@@ -191,7 +191,7 @@ class AccountTest < ActiveSupport::TestCase
     assert_equal note, account.complimentary_premium_note
     assert account.free?
     assert_equal "free", account.plan_status
-    assert_equal 1, account.students_allowed
+    assert_equal 2, account.students_allowed
   end
 
   test "a family cannot receive complimentary Premium without a note" do
@@ -250,7 +250,7 @@ class AccountTest < ActiveSupport::TestCase
     account.pay_subscriptions.first.update!(status: "unpaid")
 
     assert account.free?
-    assert_equal 1, account.students_allowed
+    assert_equal 2, account.students_allowed
     assert_equal 14, account.student_limit
   end
 
@@ -265,7 +265,7 @@ class AccountTest < ActiveSupport::TestCase
     account = accounts(:canceled_ended)
 
     assert account.free?
-    assert_equal 1, account.students_allowed
+    assert_equal 2, account.students_allowed
   end
 
   test "a past due family remains premium while payment is retried" do
@@ -279,14 +279,14 @@ class AccountTest < ActiveSupport::TestCase
     account = accounts(:unpaid)
 
     assert account.free?
-    assert_equal 1, account.students_allowed
+    assert_equal 2, account.students_allowed
   end
 
   test "a paused family is free" do
     account = accounts(:paused)
 
     assert account.free?
-    assert_equal 1, account.students_allowed
+    assert_equal 2, account.students_allowed
   end
 
   test "a family on a hidden old price remains premium" do
@@ -299,15 +299,27 @@ class AccountTest < ActiveSupport::TestCase
     assert_equal 10, account.students_allowed
   end
 
-  test "a family rejects student limits below one or with decimals" do
+  test "a family can use a superadmin-raised Premium limit" do
+    account = accounts(:complimentary)
+
+    account.update!(student_limit: 14)
+
+    assert_equal 14, account.students_allowed
+  end
+
+  test "a family's student limit can't be below the Free limit or a decimal" do
     account = accounts(:one)
 
-    [nil, "", 0, -1, 1.5].each do |student_limit|
+    [nil, "", 0, 1, -1, 1.5].each do |student_limit|
       account.student_limit = student_limit
 
       assert_not account.valid?, "expected #{student_limit.inspect} to be invalid"
       assert_not_empty account.errors[:student_limit]
     end
+
+    account.student_limit = 2
+
+    assert account.valid?
   end
 
   test "separates active and archived families" do

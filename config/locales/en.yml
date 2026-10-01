@@ -242,8 +242,8 @@ en:
     show:
       successful: "Payment Successful"
       successful_description: "This payment was already successfully confirmed."
-      cancelled: "Payment Cancelled"
-      cancelled_description: "This payment was cancelled."
+      cancelled: "Payment Canceled"
+      cancelled_description: "This payment was canceled."
       confirm: "Confirm your %{amount} payment"
       confirm_description: "Extra confirmation is needed to process your payment. Please confirm your payment by filling out your payment details below."
       back: "Go back"
@@ -260,22 +260,25 @@ en:
       free:
         name: "Free"
         description: "Everything you need to get started. Free forever."
-        features:
-          - "%{student_limit} student"
-          - "Both parents"
+        students:
+          one: "%{count} student"
+          other: "%{count} students"
+        both_parents: "Both parents"
         get_started: "Get started free"
         current_plan: "Current plan"
       premium:
         description: "More room for your family."
         yearly_price_note: "billed %{amount} yearly"
-        features:
-          - "Up to %{student_limit} students"
-          - "Both parents"
+        students: "Unlimited students"
+        both_parents: "Both parents"
         get_premium: "Get Premium"
         upgrade: "Upgrade"
         change_plan: "Change plan"
         current_plan: "Current plan"
       no_refunds: "Cancel anytime. You keep Premium until the end of the period you have paid for. No refunds are issued for unused time."
+      more_students_html: "More than %{student_limit} students? %{link}."
+      more_students_contact: "Contact us"
+      more_students_subject: "More students on %{product}"
 
   plan_intervals:
     day:
@@ -332,7 +335,9 @@ en:
       not_subscribed: "You are not currently subscribed."
       choose_plan: "Choose a plan"
       free_title: "You're on Free"
-      free_description: "Your Family can have %{student_limit} student."
+      free_description:
+        one: "Your Family can have %{count} student."
+        other: "Your Family can have %{count} students."
       upgrade: "Upgrade to Premium"
       premium: "Premium"
       complimentary_premium: "Complimentary Premium"
@@ -460,7 +465,7 @@ en:
           subject: "Question about %{product}"
           active_until_no_refund: "Your plan will be canceled on %{date}. No refund is issued for the remaining time."
           active_until_no_refund_undated: "Your plan will be canceled at the end of your billing period. No refund is issued for the remaining time."
-          cancel_immediately: "Your plan will be cancelled immediately."
+          cancel_immediately: "Your plan will be canceled immediately. No refund is issued."
           resume: "If you change your mind, you can resume your subscription."
           button: "Cancel plan"
           back: "Back to Billing"
@@ -483,6 +488,13 @@ en:
       forms:
         stripe:
           credit_or_debit_card: "Credit or debit card"
+
+  dev:
+    typography:
+      show:
+        pricing_sample:
+          one: "Free forever for %{count} student. Upgrade to Premium for unlimited students and both parents."
+          other: "Free forever for %{count} students. Upgrade to Premium for unlimited students and both parents."
 
   checkouts:
     already_subscribed: "You are already subscribed."

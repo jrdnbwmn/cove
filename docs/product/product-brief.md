@@ -9,7 +9,7 @@ features on the plan, never on a price or plan name.
 
 | | Free | Premium |
 |---|---|---|
-| Students | 2 (planned; the app still allows 1) | 10 by default, raisable per family |
+| Students | 2 | Unlimited (advertised); 10-student cap, raisable per family |
 | Parents | Two | Two |
 
 ## Families
@@ -32,20 +32,35 @@ features on the plan, never on a price or plan name.
 
 ## Students
 
-- Students are **data records owned by the family**, not logins or members. 
+- Students are **data records owned by the family**, not logins or members.
   Students will eventually have their own logins (in a future version).
-- Free limit **2** (planned; the app still enforces 1); Premium limit **10** 
-  by default, raisable per family by a superadmin. The cap exists to stop co-ops and micro-schools using a family plan.
+- Free limit is **2**. Premium is advertised as **unlimited**, but its real
+  cap is `student_limit` (default 10, raisable per family by a superadmin).
+  Families above the cap contact support; the cap keeps co-ops and
+  micro-schools from using a family plan.
+- There is **no per-student fee**, no Stripe quantity or pricing-structure
+  change, and pricing stays flat per family.
 - Past the limit: Free sees an upgrade prompt, Premium sees "Contact us".
-- **On downgrade no students are deleted.** The parent picks which stay
-  editable; the rest go read-only until the family upgrades. Read-only
-  students still appear on calendar events they're already assigned to.
+- **On downgrade** (built in the Students ticket):
+  - No student is ever deleted.
+  - A calm banner on `/students` says something like "Premium ended. Choose
+    which 2 students stay editable." Until the parent chooses, all students
+    are read-only. Nothing else is blocked.
+  - The parent can change the pick at any time; swapping makes the previously
+    editable student read-only.
+  - Re-subscribing makes every student editable again.
+  - Read-only students still appear on calendar events they're already
+    assigned to.
 
 ## Billing behavior
 
 - Billing is flat per family. **Both parents receive receipts.**
 - Canceling stops the next renewal; Premium lasts until the paid period
-  ends.
+  ends — except canceling while `past_due` or `unpaid` ends Premium
+  immediately because `CancelsController` calls `cancel_now!`. This is
+  intended, and the cancel page says so.
+- **Yearly → monthly** takes effect at renewal, with no proration or credit
+  (built in the "Yearly → monthly takes effect at renewal" ticket).
 - **No refunds**, stated on pricing, checkout, cancel confirmation, and
   family deletion. One-off refunds are done by hand in Stripe.
 - Deleting a family ends its subscription immediately, no refund.
@@ -70,10 +85,5 @@ features on the plan, never on a price or plan name.
 
 ## Open questions
 
-- **Yearly → monthly switch mid-year** — Stripe prorates by default;
-  behavior not yet decided.
 - **Terms of Service and refund policy pages** — required before Stripe
   live activation.
-- **Downgraded families** — what they see before picking which students
-  stay editable, and whether that pick can change later. Belongs to the
-  Students feature design.

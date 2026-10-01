@@ -1,6 +1,32 @@
 require "test_helper"
 
 class BillingPolicyCopyTest < ActionDispatch::IntegrationTest
+  test "the billing page tells a Free family it can have 2 students" do
+    Jumpstart.config.stub(:payments_enabled?, true) do
+      sign_in users(:one)
+      get billing_path
+
+      assert_includes response.body, "Your Family can have 2 students."
+    end
+  end
+
+  test "a past due family's cancel page says the plan ends immediately and offers no resume" do
+    sign_in users(:past_due)
+
+    get billing_subscription_cancel_path(pay_subscriptions(:past_due))
+
+    assert_includes response.body, I18n.t("billing.subscriptions.cancels.show.cancel_immediately")
+    assert_not_includes response.body, I18n.t("billing.subscriptions.cancels.show.resume")
+  end
+
+  test "an active family's cancel page still offers resuming" do
+    sign_in users(:subscribed)
+
+    get billing_subscription_cancel_path(pay_subscriptions(:subscribed))
+
+    assert_includes response.body, I18n.t("billing.subscriptions.cancels.show.resume")
+  end
+
   test "a paid Family shows the immediate Premium cancellation consequence on both Family pages" do
     account = accounts(:subscribed)
     sign_in users(:subscribed)

@@ -7,13 +7,13 @@
 
 | Task | Phase | Checkpoint | Description | Assign | Done |
 | ---- | ----- | ---------- | ----------- | ------ | ---- |
-| 1 | 1 | 1 | Free limit 2, validation minimum, AIDEV-NOTE | Master | |
-| 2 | 1 | 1 | Pricing cards: "2 students" / "Unlimited students" | Clone | |
-| 3 | 1 | 2 | "More than N students? Contact us." line on /pricing | Clone | |
-| 4 | 1 | 2 | Billing Free description + typography sample | Clone | |
-| 5 | 2 | 3 | Cancel notice: immediate wording for past_due/unpaid | Clone | |
-| 6 | 2 | 3 | Cancel page hides resume line when canceling immediately | Clone | |
-| 7 | 2 | 3 | Product brief update | Master | |
+| 1 | 1 | 1 | Free limit 2, validation minimum, AIDEV-NOTE | Master | ✅ |
+| 2 | 1 | 1 | Pricing cards: "2 students" / "Unlimited students" | Clone | ✅ |
+| 3 | 1 | 2 | "More than N students? Contact us." line on /pricing | Clone | ✅ |
+| 4 | 1 | 2 | Billing Free description + typography sample | Clone | ✅ |
+| 5 | 2 | 3 | Cancel notice: immediate wording for past_due/unpaid | Clone | ✅ |
+| 6 | 2 | 3 | Cancel page hides resume line when canceling immediately | Clone | ✅ |
+| 7 | 2 | 3 | Product brief update | Master | ✅ |
 
 ## Prerequisites
 

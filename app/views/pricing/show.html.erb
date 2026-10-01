@@ -9,4 +9,5 @@
   <%= render "pricing/plans", monthly_plans: @monthly_plans, yearly_plans: @yearly_plans %>
 
   <p class="mt-6 text-center text-sm text-muted-foreground"><%= t(".no_refunds") %></p>
+  <p class="mt-2 text-center text-sm text-muted-foreground"><%= t(".more_students_html", student_limit: premium_student_limit, link: mail_to(Jumpstart.config.support_email, t(".more_students_contact"), subject: t(".more_students_subject", product: Jumpstart.config.application_name), class: "underline text-foreground hover:text-primary")) %></p>
 </div>

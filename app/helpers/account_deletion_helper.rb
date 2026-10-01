@@ -15,8 +15,13 @@ module AccountDeletionHelper
     end
   end
 
+  # AIDEV-NOTE: This mirrors the cancel_now! branches in Billing::Subscriptions::CancelsController#destroy; keep them in sync.
+  def cancels_immediately?(subscription)
+    subscription.metered? || subscription.past_due? || subscription.unpaid?
+  end
+
   def cancellation_end_notice(subscription)
-    if subscription.metered?
+    if cancels_immediately?(subscription)
       t("billing.subscriptions.cancels.show.cancel_immediately")
     elsif subscription.current_period_end
       t("billing.subscriptions.cancels.show.active_until_no_refund", date: l(subscription.current_period_end.to_date, format: :long))
