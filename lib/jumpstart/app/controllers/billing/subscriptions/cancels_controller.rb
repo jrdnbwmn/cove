@@ -29,7 +29,9 @@ class Billing::Subscriptions::CancelsController < ApplicationController
 
     redirect_to billing_path, status: :see_other
   rescue Pay::Error => e
-    flash[:alert] = e.message
+    # AIDEV-NOTE: Local change (COV-94) to Jumpstart: log Stripe's message instead of showing it (see SubscriptionsController).
+    Rails.logger.error("[Cancels] Could not cancel #{@subscription.processor_id}: #{e.message}")
+    flash[:alert] = t(".failure")
     render :show, status: :unprocessable_content
   end
 

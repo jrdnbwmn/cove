@@ -393,6 +393,7 @@ en:
 
       update:
         success: "Your plan has been updated successfully."
+        failure: "We couldn't change your plan. Please try again or contact support."
 
       plan_change_guard:
         grace_period: "Resume your plan to change it."
@@ -497,6 +498,7 @@ en:
 
         destroy:
           resumed: "Your subscription has been canceled."
+          failure: "We couldn't cancel your plan. Please try again or contact support."
 
       upcomings:
         show:

@@ -33,6 +33,19 @@ class SubscriptionScheduleCancellationTest < ActionDispatch::IntegrationTest
     assert_not_includes response.body, "will also be removed"
   end
 
+  test "a failed cancellation shows a fixed message instead of Stripe's error" do
+    stripe_api_key!
+    subscription = stripe_subscription_for(accounts(:subscribed), plan: plans(:premium_yearly), schedule: {"id" => "sub_sched_cancel", "phases" => []})
+    stub_stripe_release("sub_sched_cancel", status: 400)
+
+    sign_in users(:subscribed)
+    delete billing_subscription_cancel_path(subscription)
+
+    assert_response :unprocessable_content
+    assert_equal I18n.t("billing.subscriptions.cancels.destroy.failure"), flash[:alert]
+    assert_not_includes flash[:alert], "req_secret"
+  end
+
   test "cancelling a scheduled Stripe subscription releases the schedule first" do
     stripe_api_key!
     subscription = stripe_subscription_for(accounts(:subscribed), plan: plans(:premium_yearly), schedule: {"id" => "sub_sched_cancel", "phases" => []})

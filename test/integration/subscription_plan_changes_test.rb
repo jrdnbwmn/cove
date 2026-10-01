@@ -79,7 +79,6 @@ class SubscriptionPlanChangesTest < ActionDispatch::IntegrationTest
 
   test "a family on a hidden legacy plan can still switch to a visible plan" do
     Plan.update_all(currency: "usd") # fixtures leave currency NULL, which validation forbids in real data
-    plans(:hidden).update_columns(fake_processor_id: "hidden")
     sign_in users(:old_price)
 
     get billing_subscription_plan_change_path(pay_subscriptions(:old_price), plan: plans(:premium_yearly))
@@ -186,6 +185,20 @@ class SubscriptionPlanChangesTest < ActionDispatch::IntegrationTest
       URI.decode_www_form(request.body).to_h["proration_behavior"] == "always_invoice"
     end
     assert_not_requested :post, "https://api.stripe.com/v1/subscription_schedules"
+  end
+
+  test "a failed plan change shows a fixed message instead of Stripe's error" do
+    stripe_api_key!
+    subscription = stripe_subscription_for(accounts(:subscribed), plan: plans(:premium_yearly))
+    stub_request(:post, "https://api.stripe.com/v1/subscription_schedules")
+      .to_return(status: 400, body: {error: {message: "No such price: price_secret (req_secret)"}}.to_json)
+
+    sign_in users(:subscribed)
+    patch billing_subscription_path(subscription), params: {plan: plans(:premium_monthly).to_param}
+
+    assert_response :unprocessable_content
+    assert_equal I18n.t("billing.subscriptions.update.failure"), flash[:alert]
+    assert_not_includes flash[:alert], "req_secret"
   end
 
   # Keep yearly

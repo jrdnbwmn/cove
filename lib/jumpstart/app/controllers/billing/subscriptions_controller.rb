@@ -35,8 +35,11 @@ class Billing::SubscriptionsController < ApplicationController
   rescue Pay::ActionRequired => e
     redirect_to pay.payment_path(e.payment.id)
   rescue Pay::Error => e
+    # AIDEV-NOTE: Local change (COV-94) to Jumpstart: Stripe's message can include price and request ids, so log it
+    # and show a fixed message instead.
+    Rails.logger.error("[Subscriptions] Could not change plan for #{@subscription.processor_id}: #{e.message}")
     edit # Reload plans
-    flash[:alert] = e.message
+    flash[:alert] = t(".failure")
     render :edit, status: :unprocessable_content
   end
 

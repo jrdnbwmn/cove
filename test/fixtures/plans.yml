@@ -53,6 +53,7 @@ hidden:
   hidden: true
   stripe_id: hidden
   braintree_id: hidden
+  fake_processor_id: hidden
 
 per_seat:
   name: Per Seat Plan
