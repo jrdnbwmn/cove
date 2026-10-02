@@ -6,11 +6,17 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
   # who pre-registered a victim's email keep a working password on the victim's account.
   # Existing accounts must sign in with their password, then connect Google themselves.
   def google_oauth2
-    if !user_signed_in? && connected_account.blank? && auth.info.email.present? && User.by_email(auth.info.email).exists?
+    if !user_signed_in? && connected_account.blank? && existing_account_email?
       store_location_for(:user, user_connected_accounts_path)
       redirect_to new_user_session_path, alert: t("users.omniauth_callbacks.account_exists")
     else
       super
     end
+  end
+
+  private
+
+  def existing_account_email?
+    auth.info.email.present? && User.by_email(auth.info.email).exists?
   end
 end
