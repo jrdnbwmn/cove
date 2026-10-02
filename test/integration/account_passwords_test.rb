@@ -23,6 +23,29 @@ class AccountPasswordsTest < ActionDispatch::IntegrationTest
     assert_not @user.valid_password?(UNIQUE_PASSWORD)
   end
 
+  test "changing the password signs out API tokens" do
+    token = @user.api_tokens.create!(name: "Phone").token
+    new_password = Devise.friendly_token
+
+    with_loops_delivery do
+      stub_request(:post, "https://app.loops.so/api/v1/transactional")
+        .to_return(status: 200, body: {success: true}.to_json)
+
+      patch account_password_path, params: {
+        user: {
+          current_password: UNIQUE_PASSWORD,
+          password: new_password,
+          password_confirmation: new_password
+        }
+      }
+    end
+
+    assert_redirected_to account_password_path
+    reset! # AIDEV-NOTE: drop the browser session so only the Bearer token can authenticate
+    get "/api/v1/me", headers: {"Authorization" => "Bearer #{token}"}
+    assert_response :unauthorized
+  end
+
   test "wrong current password re-renders edit with an error" do
     new_password = Devise.friendly_token
 

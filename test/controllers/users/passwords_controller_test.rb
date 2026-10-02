@@ -21,6 +21,23 @@ class Users::PasswordsControllerTest < ActionDispatch::IntegrationTest
     assert user.reload.valid_password?("new-password")
   end
 
+  test "resetting a forgotten password signs out API tokens" do
+    user = users(:one)
+    token = user.api_tokens.create!(name: "Phone").token
+    reset_password_token = user.send(:set_reset_password_token)
+
+    put user_password_path, params: {user: {
+      reset_password_token: reset_password_token,
+      password: "new-password",
+      password_confirmation: "new-password"
+    }}
+
+    assert_response :redirect
+    reset! # AIDEV-NOTE: drop the browser session so only the Bearer token can authenticate
+    get "/api/v1/me", headers: {"Authorization" => "Bearer #{token}"}
+    assert_response :unauthorized
+  end
+
   test "password reset form does not display boolean placeholder text" do
     user = users(:one)
     reset_password_token = user.send(:set_reset_password_token)

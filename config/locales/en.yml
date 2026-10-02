@@ -617,7 +617,7 @@ en:
       connected_account:
         remove: "Remove"
     omniauth_callbacks:
-      account_exists: "We already have an account with this email. Login with your previous account before connecting this one."
+      account_exists: "You already have a Cove account with this email. Sign in with your password below and we'll take you to Connected Accounts to add Google. Forgot your password? Use “Forgot your password?” below."
       connected_to_another_account: "This account is already connected to another user."
     registrations:
       team_name: "%{name}'s Family"

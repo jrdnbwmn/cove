@@ -25,6 +25,24 @@ class UserTest < ActiveSupport::TestCase
     assert_nil user.family
   end
 
+  test "changing the password revokes the user's API tokens" do
+    user = users(:one)
+    assert user.api_tokens.exists?
+
+    user.update!(password: "a-new-password", password_confirmation: "a-new-password")
+
+    assert_empty user.api_tokens.reload
+    assert api_tokens(:two).reload
+  end
+
+  test "updating the name keeps API tokens" do
+    user = users(:one)
+
+    assert_no_difference "user.api_tokens.count" do
+      user.update!(name: "Renamed Parent")
+    end
+  end
+
   test "can delete user with accounts" do
     assert_difference "User.count", -1 do
       users(:one).destroy

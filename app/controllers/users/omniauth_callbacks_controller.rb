@@ -1,17 +1,14 @@
 class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
   include Jumpstart::Omniauth::Callbacks
 
+  # AIDEV-NOTE: COV-96 removed auto-linking Google to an existing account by email.
+  # Local password accounts have unverified emails, so auto-linking let an attacker
+  # who pre-registered a victim's email keep a working password on the victim's account.
+  # Existing accounts must sign in with their password, then connect Google themselves.
   def google_oauth2
-    existing_user = User.by_email(auth.info.email).first if auth.info.email.present?
-
-    if !user_signed_in? && connected_account.blank? && existing_user
-      if existing_user.connected_accounts.where(provider: auth.provider).exists?
-        redirect_to new_user_session_path, alert: t(".account_exists")
-      else
-        existing_user.connected_accounts.create!(connected_account_params)
-        sign_in_and_redirect existing_user, event: :authentication
-        success_message!(kind: auth.provider)
-      end
+    if !user_signed_in? && connected_account.blank? && auth.info.email.present? && User.by_email(auth.info.email).exists?
+      store_location_for(:user, user_connected_accounts_path)
+      redirect_to new_user_session_path, alert: t("users.omniauth_callbacks.account_exists")
     else
       super
     end
