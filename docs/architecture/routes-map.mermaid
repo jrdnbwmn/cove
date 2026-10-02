@@ -9,6 +9,7 @@ graph LR
     Devise --> Passwords[Users::PasswordsController]
     MarketingPreference[PATCH /marketing_preference] --> MarketingPreferences[MarketingPreferencesController#update]
     AccountPassword[/account/password] --> AccountPasswords[Account::PasswordsController]
+    AccountPasswordResetLink[POST /account/password_reset_link] --> AccountPasswordResetLinks[Account::PasswordResetLinksController#create]
     TwoFactor[/user/two_factor] --> TwoFactorController[Users::TwoFactorController]
     Mentions[/users/mentions] --> MentionsController[Users::MentionsController#index]
     Notifications[/notifications] --> NotificationsController[Users::NotificationsController]

@@ -10,6 +10,8 @@ graph TD
   Controllers --> AccountsControllers[accounts/]
   AccountsControllers --> FamilyInvitationsController[AccountInvitationsController]
   AccountsControllers --> FamilyTransfersController[TransfersController]
+  Controllers --> AccountControllers[account/]
+  AccountControllers --> PasswordResetLinksController[PasswordResetLinksController]
   Controllers --> DevControllers[dev/]
   Controllers --> Concerns[concerns/]
   Concerns --> PremiumAccess[PremiumAccess]

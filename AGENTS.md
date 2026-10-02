@@ -283,6 +283,10 @@ Routes are modularized in `config/routes/`:
 - Don't run system tests concurrently with another Rails test process in this
   linked worktree — it causes unrelated browser/authentication failures. Keep
   Rails test runs sequential.
+- Stimulus controllers load lazily, so a system test that assigns a remote
+  `<turbo-frame>`'s `src` before its fetch stub is installed races the
+  controller load. Assign `src` only after the stub exists — this is a real
+  ordering bug (seen in `TurboResilience`), not a flaky parallel run.
 - Browser-side date assertions need fixture timestamps at noon UTC; otherwise
   a timezone shift moves the rendered date by a day.
 - This Capybara version does not reliably resolve `click_button` against
