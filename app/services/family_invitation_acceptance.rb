@@ -13,13 +13,14 @@ class FamilyInvitationAcceptance
 
     ApplicationRecord.transaction do
       invitation.lock!
-      target = invitation.account.lock!
+      user.lock!
+      target = invitation.account
+      source = user.family
+      [target, source].compact.uniq.sort_by(&:id).each(&:lock!)
+
       return Result.new(nil, "This invitation is no longer valid") if target.archived_at.present?
       return Result.new(nil, "Family already has two parents") if target.full?
 
-      user.lock!
-      source = user.family
-      source&.lock!
       return Result.new(nil, "You are already in this family") if source == target
 
       if source
@@ -41,6 +42,8 @@ class FamilyInvitationAcceptance
     end
   rescue ActiveRecord::RecordNotUnique
     Result.new(nil, "You already belong to a family")
+  rescue ActiveRecord::Deadlocked
+    Result.new(nil, "Something changed while joining. Please try again.")
   end
 
   private

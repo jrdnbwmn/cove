@@ -104,6 +104,19 @@ class FamilyInvitationAcceptanceTest < ActiveSupport::TestCase
     assert_equal source, user.family
   end
 
+  test "a parent who canceled Premium can join another family and the old family keeps its subscription record" do
+    user = users(:canceled_in_period)
+    source = user.family
+    subscription = source.pay_subscriptions.sole
+    invitation = AccountInvitation.create!(account: accounts(:invited), invited_by: users(:user_without_billing_address), name: user.name, email: user.email)
+
+    result = FamilyInvitationAcceptance.new(invitation: invitation, user: user).call
+
+    assert_predicate result, :success?
+    assert source.reload.archived_at.present?
+    assert_equal subscription, source.pay_subscriptions.find(subscription.id)
+  end
+
   test "reports a friendly message when a concurrent acceptance wins the race" do
     user = users(:noaccount)
     invitation = AccountInvitation.create!(account: accounts(:invited), invited_by: users(:user_without_billing_address), name: user.name, email: user.email)
@@ -115,5 +128,21 @@ class FamilyInvitationAcceptanceTest < ActiveSupport::TestCase
 
     assert_not_predicate result, :success?
     assert_equal "You already belong to a family", result.error
+  end
+
+  test "a parent sees a try-again message if joining collides with another change" do
+    user = users(:noaccount)
+    invitation = AccountInvitation.create!(account: accounts(:invited), invited_by: users(:user_without_billing_address), name: user.name, email: user.email)
+    target = invitation.account
+
+    result = invitation.stub(:account, target) do
+      target.stub(:lock!, -> { raise ActiveRecord::Deadlocked, "deadlock detected" }) do
+        FamilyInvitationAcceptance.new(invitation: invitation, user: user).call
+      end
+    end
+
+    assert_not_predicate result, :success?
+    assert_equal "Something changed while joining. Please try again.", result.error
+    assert_equal accounts(:one), user.reload.family
   end
 end

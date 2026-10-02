@@ -10,8 +10,8 @@
 | 1    | 1     | 1          | Block invitations into archived families; clear them on archive (F1) | Master | ✅   |
 | 2    | 1     | 1          | Signup-by-invite surfaces acceptance failures; ignore archived invites (F1, F6) | Clone  | ✅   |
 | 3    | 1     | 1          | Allow inviting existing users; acceptance decides (F2, F11) | Master | ✅   |
-| 4    | 1     | 2          | A canceled subscription in its final paid period doesn't block joining (F3) | Master |      |
-| 5    | 1     | 2          | Lock families in ID order; handle deadlocks gracefully (F14) | Master |      |
+| 4    | 1     | 2          | A canceled subscription in its final paid period doesn't block joining (F3) | Master | ✅   |
+| 5    | 1     | 2          | Lock families in ID order; handle deadlocks gracefully (F14) | Master | ✅   |
 | 6    | 2     | 3          | Retry failed Loops webhook events; prune only processed rows (F4) | Master |      |
 | 7    | 2     | 3          | Daily sweep re-enqueues stranded Loops webhook events (F4) | Master |      |
 | 8    | 2     | 4          | Case-insensitive email lookup in the Loops webhook processor (F15) | Clone  |      |

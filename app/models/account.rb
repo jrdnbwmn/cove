@@ -73,7 +73,7 @@ class Account < ApplicationRecord
   def unjoinable_reason(user)
     return :other_members unless account_users.one? && users.exists?(user.id)
     return :other_members unless students_empty?
-    return :billable_subscription if billable_subscriptions.any?
+    return :billable_subscription if renewing_subscriptions.any?
     nil
   end
 
@@ -91,6 +91,12 @@ class Account < ApplicationRecord
 
   def billable_subscriptions
     pay_subscriptions.active.or(pay_subscriptions.past_due)
+  end
+
+  # AIDEV-NOTE: A canceled-but-still-paid subscription stays with the archived
+  # family and runs out, so it does not prevent that parent from joining another family.
+  def renewing_subscriptions
+    billable_subscriptions.where(ends_at: nil)
   end
 
   def cancel_billable_subscriptions!

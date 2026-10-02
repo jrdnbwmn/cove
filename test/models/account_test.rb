@@ -367,6 +367,12 @@ class AccountTest < ActiveSupport::TestCase
     assert_not account.joinable_by?(users(:noaccount))
   end
 
+  test "a family whose Premium is canceled but still paid through the period is joinable" do
+    account = accounts(:canceled_in_period)
+
+    assert account.joinable_by?(users(:canceled_in_period))
+  end
+
   test "destroying a family immediately cancels active and past-due subscriptions" do
     account = accounts(:one)
     customer = account.set_payment_processor(:fake_processor, allow_fake: true)
