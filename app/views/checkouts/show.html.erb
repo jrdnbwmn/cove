@@ -3,7 +3,8 @@
     <div class="mx-auto max-w-3xl">
       <h1 class="mb-6 text-center text-3xl font-bold text-foreground sm:mb-8 sm:text-4xl"><%= t(".title") %></h1>
       <%= render "checkouts/forms/stripe", client_secret: @checkout_session.client_secret %>
-      <p class="mt-4 text-center text-sm text-muted-foreground"><%= t("pricing.show.no_refunds") %></p>
+      <p class="mt-4 text-center text-sm text-muted-foreground"><%= t("checkouts.show.consent_html", app: Jumpstart.config.application_name, terms: link_to(t("checkouts.show.terms"), terms_path, target: "_blank", class: "underline text-foreground hover:text-primary")) %></p>
+      <p class="mt-2 text-center text-sm text-muted-foreground"><%= t("pricing.show.no_refunds_html", link: link_to(t("pricing.show.refund_policy"), refunds_path, target: "_blank", class: "underline text-foreground hover:text-primary")) %></p>
       <%= render "testimonial" %>
     </div>
   </div>
@@ -94,8 +95,8 @@
             <%= render 'checkouts/forms/braintree' if Jumpstart.config.braintree? %>
             <%= render 'checkouts/forms/paypal' if Jumpstart.config.paypal? %>
 
-            <p class="mt-4 text-center text-sm text-muted-foreground">By confirming your subscription, you allow <%= Jumpstart.config.application_name %> to charge your payment method for this payment and future payments in accordance with our terms.</p>
-            <p class="mt-2 text-center text-sm text-muted-foreground"><%= t("pricing.show.no_refunds") %></p>
+            <p class="mt-4 text-center text-sm text-muted-foreground"><%= t("checkouts.show.consent_html", app: Jumpstart.config.application_name, terms: link_to(t("checkouts.show.terms"), terms_path, target: "_blank", class: "underline text-foreground hover:text-primary")) %></p>
+            <p class="mt-2 text-center text-sm text-muted-foreground"><%= t("pricing.show.no_refunds_html", link: link_to(t("pricing.show.refund_policy"), refunds_path, target: "_blank", class: "underline text-foreground hover:text-primary")) %></p>
           </div>
         <% end %>
       <% end %>

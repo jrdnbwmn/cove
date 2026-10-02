@@ -1,7 +1,113 @@
-<%# Don't forget to update the Agreement updated timestamp after modifying!
+<%# AIDEV-NOTE: Revisit this page when: student logins ship, AI features launch (name providers), Cove forms an LLC (update operating party), analytics is added, or any new data processor is added. %>
+<%# AIDEV-NOTE: Body copy only (no H1/date/wrapper) — also rendered by Jumpstart's re-accept screen. Bump the Agreement `updated` date in config/initializers/agreements.rb after material edits. %>
+<section>
+  <h2>1. About these terms</h2>
+  <p>These terms are an agreement between you and <%= Jumpstart.config.business_name %> ("Cove," "we," or "us"). Our address is:</p>
+  <p><%= simple_format(Jumpstart.config.business_address, {}, wrapper_tag: "span") %></p>
+  <p>You can reach us anytime at <%= mail_to Jumpstart.config.support_email %>. By creating an account or using Cove, you agree to these terms.</p>
+</section>
 
-Some suggestions to help create your Terms of Service:
-- https://github.com/basecamp/policies
-- https://www.iubenda.com
-- https://termly.io
-- https://getterms.io %>
+<section>
+  <h2>2. Who can use Cove</h2>
+  <ul>
+    <li>Cove is available to people in the United States.</li>
+    <li>You must be at least 18 years old.</li>
+    <li>You must be the parent or legal guardian of any student you add to Cove.</li>
+    <li>Cove is for family use. It is not designed for co-ops, micro-schools, or schools.</li>
+  </ul>
+</section>
+
+<section>
+  <h2>3. Your family account</h2>
+  <p>Each family has one account. It can have one or two parents. Both parents are admins, and one of them is the owner of the account.</p>
+  <p>You are responsible for keeping your sign-in credentials safe and for what happens under your account. You can sign in with Google. If you think someone else has access to your account, tell us right away.</p>
+</section>
+
+<section>
+  <h2>4. Student information</h2>
+  <p>When you add information about your children, you confirm that you have the authority to do so. Children do not have their own logins in Cove today.</p>
+</section>
+
+<section>
+  <h2>5. Plans and billing</h2>
+  <ul>
+    <li>Cove has a Free plan and a Premium plan.</li>
+    <li>Premium is priced per family, as a flat amount. It is not charged per student or per parent.</li>
+    <li>Premium renews automatically, monthly or yearly, depending on the billing period you choose, until you cancel.</li>
+    <li>Payments are processed by Stripe. We do not store your full card number.</li>
+    <li>If we change our prices, we will tell you in advance, and the new price takes effect at your next renewal.</li>
+    <li>Prices do not include taxes. Where taxes apply, they are added at checkout.</li>
+  </ul>
+</section>
+
+<section>
+  <h2>6. Student limits</h2>
+  <p>Premium lets a single family add unlimited students, subject to reasonable use. If your family is unusually large, we may ask you to contact us so we can make sure Cove is the right fit.</p>
+</section>
+
+<section>
+  <h2>7. Cancellation, downgrades, and refunds</h2>
+  <p>You can cancel Premium at any time. Your plan stays active until the end of the period you already paid for. Our <%= link_to "Refund Policy", refunds_path %> explains when refunds are available, and it is part of these terms.</p>
+  <p>If you move from Premium to Free, nothing is deleted. Students beyond the Free plan's limit become read-only until you upgrade again or choose which students to keep active.</p>
+</section>
+
+<section>
+  <h2>8. AI features</h2>
+  <ul>
+    <li>Any AI features in Cove are optional. Everything in Cove works without them.</li>
+    <li>AI only makes suggestions. It never takes action without a parent's approval.</li>
+    <li>AI can be wrong. You are responsible for reviewing what it suggests.</li>
+    <li>We do not use your family's or your children's data to train AI models.</li>
+  </ul>
+</section>
+
+<section>
+  <h2>9. Not legal or educational advice</h2>
+  <p>Cove provides general information and organizational tools. It is not legal or educational advice. Parents are responsible for complying with their own state's homeschool laws.</p>
+</section>
+
+<section>
+  <h2>10. Your content</h2>
+  <p>You own the information you put into Cove. You give us a limited license to store, process, and display it, only as needed to operate Cove for you.</p>
+</section>
+
+<section>
+  <h2>11. Acceptable use</h2>
+  <p>Please do not:</p>
+  <ul>
+    <li>use Cove for anything illegal;</li>
+    <li>abuse, harass, or harm others, or interfere with how Cove works;</li>
+    <li>scrape or copy Cove's data or content by automated means; or</li>
+    <li>resell or share your account for use by other families.</li>
+  </ul>
+</section>
+
+<section>
+  <h2>12. Changes to Cove and these terms</h2>
+  <p>Cove will change over time. If we make a material change to these terms, we will let you know by email or in the app before it takes effect.</p>
+</section>
+
+<section>
+  <h2>13. Ending your account</h2>
+  <p>You can delete your account at any time. We may suspend or close an account that breaks these terms.</p>
+</section>
+
+<section>
+  <h2>14. Disclaimers</h2>
+  <p>Cove is provided "as is" and "as available." We do not promise that it will always be uninterrupted or error-free, and we disclaim all warranties to the fullest extent the law allows.</p>
+</section>
+
+<section>
+  <h2>15. Limitation of liability</h2>
+  <p>To the fullest extent the law allows, Cove's total liability to you for any claim related to the service is limited to the amount you paid us in the 12 months before the claim, or $50 if you have never paid us. We are not liable for indirect or consequential damages.</p>
+</section>
+
+<section>
+  <h2>16. Governing law and disputes</h2>
+  <p>These terms are governed by the laws of the State of Utah. Any dispute will be handled in the courts located in Utah County, Utah. Either of us may bring a claim in small claims court. These terms do not include an arbitration clause.</p>
+</section>
+
+<section>
+  <h2>17. Contact</h2>
+  <p>Questions about these terms? Email <%= mail_to Jumpstart.config.support_email %>.</p>
+</section>

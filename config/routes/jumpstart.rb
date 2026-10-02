@@ -23,6 +23,7 @@ scope controller: :public do
   get :about
   get :terms
   get :privacy
+  get :refunds
   get :reset_app
 end
 

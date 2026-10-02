@@ -9,6 +9,49 @@ class Jumpstart::PublicTest < ActionDispatch::IntegrationTest
     assert_not_includes response.body, 'classList.toggle("dark"'
   end
 
+  test "terms page shows when it was last updated" do
+    get terms_path
+
+    agreement = Rails.application.config.agreements.find { it.id == :terms_of_service }
+    assert_select "h1", text: "Terms of Service"
+    assert_includes response.body, I18n.t("users.agreements.show.last_updated", date: I18n.l(agreement.updated.to_date, format: :long))
+  end
+
+  test "privacy page shows when it was last updated" do
+    get privacy_path
+
+    agreement = Rails.application.config.agreements.find { it.id == :privacy_policy }
+    assert_select "h1", text: "Privacy Policy"
+    assert_includes response.body, I18n.t("users.agreements.show.last_updated", date: I18n.l(agreement.updated.to_date, format: :long))
+  end
+
+  test "legal page still renders when its agreement is missing" do
+    Rails.application.config.stub(:agreements, []) do
+      get terms_path
+    end
+
+    assert_response :success
+    assert_select "h1"
+    assert_not_includes response.body, "Last updated"
+  end
+
+  test "legal page headings are not bolded" do
+    get terms_path
+
+    assert_select "div.prose.prose-headings\\:font-normal"
+  end
+
+  test "refund policy is public and explains cancellation" do
+    get refunds_path
+
+    assert_response :success
+    assert_select "h1", text: "Refund Policy"
+    assert_includes response.body, "Last updated"
+    assert_includes response.body, "30 days"
+    assert_includes response.body, Jumpstart.config.support_email
+    assert_select "a[href=?]", terms_path
+  end
+
   test "signed-out homepage shows the hero, value points, and pricing" do
     get root_path
 
@@ -193,18 +236,31 @@ class Jumpstart::PublicTest < ActionDispatch::IntegrationTest
     assert_includes response.body, "Redirecting..."
   end
 
-  test "privacy policy explains OAuth data, marketing consent, and service providers" do
+  test "privacy policy explains children's information, Google data, and service providers" do
     get privacy_path
 
     assert_response :success
-    assert_select "h2", text: "Information we collect"
-    assert_select "h2", text: "Google sign-in"
-    assert_select "h2", text: "Marketing choices"
-    assert_select "h2", text: "Questions about your privacy"
+    assert_select "h2", text: "Children's information"
+    assert_select "h2", text: "Google user data"
+    assert_select "h2", text: "Who we share information with"
+    assert_select "h2", text: "Cookies"
+    assert_select "h2", text: "Contact us"
     assert_includes response.body, "Stripe"
     assert_includes response.body, "Loops"
     assert_includes response.body, "Honeybadger"
+    assert_includes response.body, "Render"
+    assert_includes response.body, "Google API Services User Data Policy"
+    assert_includes response.body, "Loops sends all of our account and billing emails, and marketing emails if you opt in."
     assert_includes response.body, "support@covehomeschool.com"
     assert_not_includes response.body, "Some suggestions to help create your Privacy Policy"
+  end
+
+  test "footer links to the refund policy" do
+    get about_path
+    assert_select "footer a[href='#{refunds_path}']", text: "Refunds"
+
+    sign_in users(:one)
+    get user_root_path
+    assert_select "a[href='#{refunds_path}']"
   end
 end

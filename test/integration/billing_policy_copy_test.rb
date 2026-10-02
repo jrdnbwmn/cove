@@ -54,7 +54,8 @@ class BillingPolicyCopyTest < ActionDispatch::IntegrationTest
       get path
 
       assert_response :success
-      assert_select "button[data-turbo-confirm-description=?]", "Deleting this Family ends Premium immediately and no refund is issued."
+      assert_select "button[data-turbo-confirm-description*=?]", "Deleting this Family ends Premium immediately and no refund is issued."
+      assert_select "button[data-turbo-confirm-description*=?]", %(href="#{refunds_path}")
     end
   end
 

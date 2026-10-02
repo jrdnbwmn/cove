@@ -1,0 +1,9 @@
+<%# AIDEV-NOTE: Fabric Serif only ships weight 400, and `prose` bolds headings by default, which causes faux bold — hence `prose-headings:font-normal`. %>
+<div class="max-w-prose mx-auto my-12 px-4 sm:px-0">
+  <h1 class="mb-4"><%= title %></h1>
+  <%= tag.p t("users.agreements.show.last_updated", date: l(updated, format: :long)), class: "mb-8 text-muted-foreground" if updated.present? %>
+
+  <div class="prose prose-headings:font-normal max-w-none">
+    <%= yield %>
+  </div>
+</div>

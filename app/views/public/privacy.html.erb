@@ -1,0 +1,5 @@
+<% Current.meta_tags.set(title: t(".title")) %>
+
+<%= render layout: "public/legal_page", locals: {title: t(".title"), updated: @agreement&.updated&.to_date} do %>
+  <%= render "users/agreements/privacy_policy" %>
+<% end %>

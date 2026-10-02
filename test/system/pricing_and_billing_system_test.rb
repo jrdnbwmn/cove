@@ -170,18 +170,22 @@ class PricingAndBillingSystemTest < ApplicationSystemTestCase
     login_as user, scope: :user
 
     visit pricing_path
-    assert_text I18n.t("pricing.show.no_refunds")
+    assert_link I18n.t("pricing.show.refund_policy"), href: refunds_path
 
     with_stubbed_stripe_session { visit checkout_path(plan: @premium_monthly) }
-    assert_text I18n.t("pricing.show.no_refunds")
+    assert_link I18n.t("pricing.show.refund_policy"), href: refunds_path
+    assert_selector "a[href='#{refunds_path}'][target='_blank']"
+    assert_selector "a[href='#{terms_path}'][target='_blank']"
 
     login_as users(:subscribed), scope: :user
     visit billing_subscription_cancel_path(pay_subscriptions(:subscribed))
-    assert_text I18n.t("billing.subscriptions.cancels.show.active_until_no_refund", date: "October 15, 2026")
+    assert_text "Your plan will be canceled on October 15, 2026."
+    assert_link "Refund policy", href: refunds_path
 
     pay_subscriptions(:subscribed).update!(current_period_end: nil)
     visit billing_subscription_cancel_path(pay_subscriptions(:subscribed))
-    assert_text I18n.t("billing.subscriptions.cancels.show.active_until_no_refund_undated")
+    assert_text "Your plan will be canceled at the end of your billing period."
+    assert_link "Refund policy", href: refunds_path
   end
 
   test "no trial wording appears on pricing, checkout, billing, or cancellation" do

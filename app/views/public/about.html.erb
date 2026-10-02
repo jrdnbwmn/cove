@@ -1,5 +1,37 @@
 <% Current.meta_tags.set(title: t(".title")) %>
 
-<div class="container mx-auto mt-8">
-  <h1><%= t(".title") %></h1>
-</div>
+<%= render layout: "public/legal_page", locals: {title: t(".title"), updated: nil} do %>
+  <section>
+    <h2>What Cove is</h2>
+    <p>
+      Cove is a calm place for homeschool families to plan, track, and run their school year.
+      One family account holds your students, your plans, and your records, and one or two parents can manage it together.
+    </p>
+  </section>
+
+  <section>
+    <h2>What it helps with</h2>
+    <ul>
+      <li><strong>Plan the year.</strong> Lay out subjects and schedules for every student in one place.</li>
+      <li><strong>Keep the records.</strong> Attendance, grades, and progress captured as you go, ready when you need them.</li>
+      <li><strong>Run the day.</strong> See what's next for each student without rebuilding the plan every morning.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>What we believe</h2>
+    <p>
+      Homeschooling works best when the parent is in charge. We build tools that save you time and stay out of your way,
+      and we keep your family's information private and yours.
+    </p>
+  </section>
+
+  <section>
+    <h2>Who it's for</h2>
+    <p>
+      Cove is for individual homeschool families. If you're teaching your own children at home, it's built for you.
+    </p>
+  </section>
+
+  <p>Questions? Email <%= mail_to Jumpstart.config.support_email %>.</p>
+<% end %>

@@ -179,5 +179,6 @@ class AppShellSystemTest < ApplicationSystemTestCase
     assert_link I18n.t("application.footer.about"), href: about_path
     assert_link I18n.t("application.footer.privacy"), href: privacy_path
     assert_link I18n.t("application.footer.terms"), href: terms_path
+    assert_link I18n.t("application.footer.refunds"), href: refunds_path
   end
 end

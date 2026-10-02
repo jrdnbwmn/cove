@@ -1,0 +1,63 @@
+<%# AIDEV-NOTE: Revisit this page when: student logins ship, AI features launch (name providers), Cove forms an LLC (update operating party), analytics is added, or any new data processor is added. %>
+<% Current.meta_tags.set(title: t(".title")) %>
+
+<%= render layout: "public/legal_page", locals: {title: t(".title"), updated: Date.new(2026, 10, 1)} do %>
+  <p>
+    This policy explains how canceling a Cove Premium subscription works and when we issue refunds.
+    It is part of our <%= link_to "Terms of Service", terms_path %>.
+  </p>
+
+  <section>
+    <h2>How to cancel</h2>
+    <p>
+      Any parent in your family can cancel at any time from Billing settings. Canceling stops the next renewal.
+      You don't need to contact us.
+    </p>
+  </section>
+
+  <section>
+    <h2>What happens when you cancel</h2>
+    <ul>
+      <li>You keep Premium until the end of the period you have already paid for.</li>
+      <li>After that, your family moves to the Free plan.</li>
+      <li>Nothing is deleted. Your students, plans, and records stay in your family.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>No refunds for unused time</h2>
+    <p>
+      We don't issue refunds or credits for unused time or partial billing periods, including when you cancel
+      part-way through a month or a year.
+    </p>
+    <p>
+      If you switch from a yearly plan to a monthly plan, the change takes effect at your next renewal.
+      We don't prorate or refund the difference.
+    </p>
+  </section>
+
+  <section>
+    <h2>When Premium ends immediately</h2>
+    <p>In these cases Premium ends right away, and we don't refund the rest of the period:</p>
+    <ul>
+      <li>You cancel while your payment is past due.</li>
+      <li>You delete your family.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>Exceptions</h2>
+    <p>
+      If you were charged twice for the same period, or charged because of a billing error on our side, we will refund
+      the charge when you report it within 30 days. Beyond that, we may issue refunds at our discretion.
+      Where the law requires a refund, we will provide it.
+    </p>
+  </section>
+
+  <section>
+    <h2>Contact us</h2>
+    <p>
+      Questions about a charge? Email <%= mail_to Jumpstart.config.support_email %>.
+    </p>
+  </section>
+<% end %>

@@ -1,5 +1,6 @@
-# AIDEV-NOTE: This replaces (not extends) the engine controller in lib/jumpstart, so all
-# five actions must stay in sync with it. Only `index` differs: it loads plans for the homepage.
+# AIDEV-NOTE: This replaces (not extends) the engine controller in lib/jumpstart, so it must
+# keep every engine action. It differs from the engine in two ways: `index` loads plans for
+# the homepage, and `refunds` is added (the engine has no refund policy page).
 class PublicController < ApplicationController
   def index
     @monthly_plans, @yearly_plans = Plan.visible.sorted.partition(&:monthly?)
@@ -14,6 +15,9 @@ class PublicController < ApplicationController
 
   def privacy
     @agreement = Rails.application.config.agreements.find { it.id == :privacy_policy }
+  end
+
+  def refunds
   end
 
   def reset_app
