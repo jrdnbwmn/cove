@@ -38,6 +38,8 @@ class FamilyInvitationAcceptance
 
       account_user = target.account_users.create!(user: user, admin: true)
       invitation.destroy!
+      # AIDEV-NOTE: user.family was memoized from `source` above; reload so callers see the new family.
+      user.reload
       Result.new(account_user, nil)
     end
   rescue ActiveRecord::RecordNotUnique

@@ -26,6 +26,15 @@ class BillingChargesTest < ActionDispatch::IntegrationTest
     assert_includes response.body, "$1.00"
   end
 
+  test "billing page skips charge history when the family has no subscription" do
+    sign_in users(:one)
+
+    get billing_path
+
+    assert_response :success
+    assert_not_includes response.body, I18n.t("billing.charges.title")
+  end
+
   test "billing history shows an empty state when there are no charges" do
     get billing_path
 

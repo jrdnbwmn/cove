@@ -3,7 +3,7 @@ class ActionText::EmbedsController < ApplicationController
 
   # AIDEV-NOTE: Creating embeds performs a remote oEmbed request and persists a row, so
   # require an account and cap requests before they can consume Puma workers or storage.
-  rate_limit to: 20, within: 1.minute, only: :create, with: -> { head :too_many_requests }
+  rate_limit to: 20, within: 1.minute, only: :create, by: -> { current_user.id }, with: -> { head :too_many_requests }
 
   def create
     @embed = ActionText::Embed.from_url(params[:id])

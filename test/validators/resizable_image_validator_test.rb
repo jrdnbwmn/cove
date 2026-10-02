@@ -25,6 +25,18 @@ class ResizableImageValidatorTest < ActiveSupport::TestCase
     assert_includes account.errors[:avatar], "must be smaller than 5 MB"
   end
 
+  test "a user with a legacy oversized avatar can still save unrelated changes" do
+    user = users(:one)
+    user.avatar.attach(
+      io: StringIO.new("x" * (5.megabytes + 1)),
+      filename: "legacy-avatar.png",
+      content_type: "image/png"
+    )
+    user.save!(validate: false)
+
+    assert user.reload.update(first_name: "Renamed")
+  end
+
   test "a normal-size PNG avatar is still valid" do
     user = users(:one)
     user.avatar.attach(

@@ -12,6 +12,29 @@ class BillingResilienceTest < ActionDispatch::IntegrationTest
     assert_response :not_found
   end
 
+  test "a parent can't download another family's receipt" do
+    other_charge = pay_customers(:fake).charge(1_200)
+
+    get billing_charge_path(other_charge, format: :pdf)
+
+    assert_response :not_found
+  end
+
+  test "a receipt is downloaded again after the family's billing details change" do
+    charge = pay_customers(:subscribed).charge(1_200)
+
+    get billing_charge_path(charge, format: :pdf)
+    etag = response.headers["ETag"]
+
+    travel 1.minute do
+      accounts(:subscribed).update!(extra_billing_info: "VAT 123")
+    end
+
+    get billing_charge_path(charge, format: :pdf), headers: {"If-None-Match" => etag}
+
+    assert_response :success
+  end
+
   test "requesting an unknown subscription payment method page returns not found" do
     get new_billing_subscription_payment_method_path("subscription_missing")
 

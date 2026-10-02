@@ -11,7 +11,8 @@ class ResizableImageValidator < ActiveModel::EachValidator
       record.errors.add(attribute, :image_format_not_supported)
     end
 
-    if value.blob.byte_size > MAX_SIZE
+    # AIDEV-NOTE: Only check size on a new upload so a legacy oversized avatar can't block unrelated saves.
+    if record.attachment_changes.key?(attribute.to_s) && value.blob.byte_size > MAX_SIZE
       record.errors.add(attribute, :image_too_large, count: MAX_SIZE / 1.megabyte)
     end
   end

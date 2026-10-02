@@ -5,7 +5,7 @@ class Billing::ChargesController < ApplicationController
   def show
     respond_to do |format|
       format.pdf {
-        if stale?(@charge)
+        if stale?(@charge, etag: current_account.updated_at)
           send_data @charge.receipt,
             filename: @charge.receipt_filename,
             type: "application/pdf",
@@ -18,7 +18,7 @@ class Billing::ChargesController < ApplicationController
   def invoice
     respond_to do |format|
       format.pdf {
-        if stale?(@charge)
+        if stale?(@charge, etag: current_account.updated_at)
           send_data @charge.invoice,
             filename: @charge.invoice_filename,
             type: "application/pdf",
@@ -28,6 +28,8 @@ class Billing::ChargesController < ApplicationController
     end
   end
 
+  # AIDEV-NOTE: Receipts and invoices include the family's billing details, so the ETag
+  # also keys on the account's updated_at, not just the charge.
   private
 
   def set_charge

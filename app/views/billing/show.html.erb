@@ -5,7 +5,7 @@
 <h1 class="h3"><%= t(".title") %></h1>
 
 <% if Current.account_admin? %>
-  <% subscriptions = @subscriptions.to_a %>
+  <% subscriptions = @subscriptions %>
   <%= render "plan_state", subscription: subscriptions.first %>
   <h2 class="section-heading"><%= t(".subscriptions") %></h2>
 

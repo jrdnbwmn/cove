@@ -107,7 +107,7 @@ class ActionText::Embed < ApplicationRecord
       ) { it.get(uri.request_uri).body }
       create(url: url, fields: response)
     end
-  rescue JSON::ParserError, Net::OpenTimeout, Net::ReadTimeout
+  rescue JSON::ParserError, Net::OpenTimeout, Net::ReadTimeout, SocketError, SystemCallError, OpenSSL::SSL::SSLError
   end
 
   # Returns OEmbed endpoint for URL

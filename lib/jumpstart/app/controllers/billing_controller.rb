@@ -6,8 +6,11 @@ class BillingController < ApplicationController
 
   def show
     @payment_processor = current_account.payment_processor
-    @subscriptions = current_account.pay_subscriptions.active.or(current_account.pay_subscriptions.past_due).or(current_account.pay_subscriptions.unpaid).order(created_at: :asc).includes([:customer])
-    @pagy, @charges = pagy(current_account.pay_charges.sorted, limit: 12)
+    return unless Current.account_admin?
+
+    @subscriptions = current_account.pay_subscriptions.active.or(current_account.pay_subscriptions.past_due).or(current_account.pay_subscriptions.unpaid).order(created_at: :asc).includes([:customer]).to_a
+    # AIDEV-NOTE: The charge history only renders for admins with a subscription, so skip its COUNT otherwise.
+    @pagy, @charges = pagy(current_account.pay_charges.sorted, limit: 12) if @subscriptions.any?
   end
 
   def update

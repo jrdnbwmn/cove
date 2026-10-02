@@ -32,6 +32,33 @@ class ActionTextEmbedsTest < ActionDispatch::IntegrationTest
     assert_response :not_found
   end
 
+  test "an unreachable oEmbed provider returns not found instead of an error" do
+    sign_in users(:one)
+
+    [SocketError, Errno::ECONNREFUSED, OpenSSL::SSL::SSLError].each do |error|
+      stub_request(:get, /youtube\.com/).to_raise(error)
+
+      post action_text_embeds_path(id: "https://www.youtube.com/watch?v=x")
+
+      assert_response :not_found
+    end
+  end
+
+  test "embed rate limits are tracked per signed-in user" do
+    sign_in users(:one)
+    keys = []
+
+    ActionText::EmbedsController.cache_store.stub(:increment, ->(key, *) {
+      keys << key
+      1
+    }) do
+      stub_request(:get, /youtube\.com/).to_return(status: 200, body: "{}")
+      post action_text_embeds_path(id: "https://www.youtube.com/watch?v=x")
+    end
+
+    assert keys.first.end_with?(":#{users(:one).id}")
+  end
+
   test "embed requests are rate limited" do
     sign_in users(:one)
 
