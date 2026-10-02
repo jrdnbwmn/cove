@@ -17,6 +17,11 @@ class AdminBootstrap
 
     if user.admin?
       log("already admin #{user.email}")
+    elsif !created && User.where(admin: true).exists?
+      # AIDEV-NOTE: COV-96 — emails aren't verified and bootstrap runs on every
+      # staging boot, so a leftover env var must never promote someone who
+      # registered with that email once a system admin exists.
+      log("refused to promote existing user #{user.email}: a system admin already exists", level: :error)
     else
       Jumpstart.grant_system_admin!(user)
       log("granted admin #{user.email}")

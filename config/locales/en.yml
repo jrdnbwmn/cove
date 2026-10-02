@@ -569,11 +569,18 @@ en:
       success: "Thanks for your payment."
 
   account:
+    password_reset_links:
+      create:
+        sent: "We emailed a link to %{email}. Use it to set your password."
     passwords:
       updated: "Your password was changed successfully."
       edit:
         title: "Update Password"
         update: "Update"
+        set_password:
+          title: "No password yet, or forgot it?"
+          description: "If you signed up with Google, or don't remember your current password, we'll email you a link to set one. Afterward you can sign in with Google or your password."
+          button: "Email me a link"
         two_factor:
           title: "Two-factor Authentication"
           description: "When you login, you will be required to enter a one-time code along to one of your devices."
@@ -617,7 +624,7 @@ en:
       connected_account:
         remove: "Remove"
     omniauth_callbacks:
-      account_exists: "We already have an account with this email. Login with your previous account before connecting this one."
+      account_exists: "You already have a Cove account with this email. Sign in with your password below and we'll take you to Connected Accounts to add Google. Forgot your password? Use “Forgot your password?” below."
       connected_to_another_account: "This account is already connected to another user."
     registrations:
       team_name: "%{name}'s Family"

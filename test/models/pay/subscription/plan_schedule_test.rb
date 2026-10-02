@@ -57,27 +57,29 @@ class Pay::Subscription::PlanScheduleTest < ActiveSupport::TestCase
   end
 
   test "reads only a future expanded schedule phase with a known price" do
-    subscription = stripe_subscription(object: {"schedule" => {
-      "id" => "sub_sched_123",
-      "phases" => [
-        {"start_date" => 1.day.ago.to_i, "items" => [{"price" => plans(:premium_yearly).stripe_id}]},
-        {"start_date" => 1.day.from_now.to_i, "items" => [{"price" => {"id" => plans(:premium_monthly).stripe_id}}]}
-      ]
-    }})
+    travel_to Time.zone.local(2030, 1, 1, 12) do
+      subscription = stripe_subscription(object: {"schedule" => {
+        "id" => "sub_sched_123",
+        "phases" => [
+          {"start_date" => 1.day.ago.to_i, "items" => [{"price" => plans(:premium_yearly).stripe_id}]},
+          {"start_date" => 1.day.from_now.to_i, "items" => [{"price" => {"id" => plans(:premium_monthly).stripe_id}}]}
+        ]
+      }})
 
-    pending = subscription.pending_plan_change
+      pending = subscription.pending_plan_change
 
-    assert_equal plans(:premium_monthly), pending[:plan]
-    assert_equal 1.day.from_now.to_i, pending[:starts_at].to_i
-    assert_nil stripe_subscription(object: {"schedule" => "sub_sched_123"}).pending_plan_change
-    assert_nil stripe_subscription(object: {}).pending_plan_change
-    assert_nil stripe_subscription(object: {"schedule" => {"phases" => []}}).pending_plan_change
-    assert_nil stripe_subscription(object: {"schedule" => {"phases" => [
-      {"start_date" => 1.day.from_now.to_i, "items" => [{"price" => "price_unknown"}]}
-    ]}}).pending_plan_change
-    assert_nil stripe_subscription(object: {"schedule" => {"id" => "sub_sched_123", "phases" => [
-      {"start_date" => 1.day.ago.to_i, "items" => [{"price" => plans(:premium_monthly).stripe_id}]}
-    ]}}).pending_plan_change
+      assert_equal plans(:premium_monthly), pending[:plan]
+      assert_equal 1.day.from_now.to_i, pending[:starts_at].to_i
+      assert_nil stripe_subscription(object: {"schedule" => "sub_sched_123"}).pending_plan_change
+      assert_nil stripe_subscription(object: {}).pending_plan_change
+      assert_nil stripe_subscription(object: {"schedule" => {"phases" => []}}).pending_plan_change
+      assert_nil stripe_subscription(object: {"schedule" => {"phases" => [
+        {"start_date" => 1.day.from_now.to_i, "items" => [{"price" => "price_unknown"}]}
+      ]}}).pending_plan_change
+      assert_nil stripe_subscription(object: {"schedule" => {"id" => "sub_sched_123", "phases" => [
+        {"start_date" => 1.day.ago.to_i, "items" => [{"price" => plans(:premium_monthly).stripe_id}]}
+      ]}}).pending_plan_change
+    end
   end
 
   test "releases an attached schedule even without a future phase" do

@@ -91,14 +91,12 @@ class StagingEmailRecipientGuardTest < ActiveSupport::TestCase
   def deliver_password_change_to(*emails)
     user = users(:one)
     user.email = emails.first
-    original_delivery_method = LoopsDeviseMailer.delivery_method
-    LoopsDeviseMailer.delivery_method = :loops
-    delivery = LoopsDeviseMailer.password_change(user)
-    delivery.message.to = emails
+    with_loops_delivery do
+      delivery = LoopsDeviseMailer.password_change(user)
+      delivery.message.to = emails
 
-    Rails.application.credentials.stub(:dig, "test-token") { delivery.deliver_now }
-  ensure
-    LoopsDeviseMailer.delivery_method = original_delivery_method
+      Rails.application.credentials.stub(:dig, "test-token") { delivery.deliver_now }
+    end
   end
 
   def with_registered_guard(allowlist)

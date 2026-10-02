@@ -69,7 +69,7 @@ class AccountInvitationTest < ActiveSupport::TestCase
       end
       .to_return(status: 200, body: {success: true}.to_json)
 
-    with_loops_delivery do
+    with_loops_delivery(AccountMailer) do
       assert_enqueued_jobs 1, only: LoopsMailDeliveryJob do
         assert invitation.save_and_send_invite
       end
@@ -106,22 +106,12 @@ class AccountInvitationTest < ActiveSupport::TestCase
   test "sending an invalid invitation does not enqueue or deliver mail" do
     invitation = @account.account_invitations.new(name: "", email: "")
 
-    with_loops_delivery do
+    with_loops_delivery(AccountMailer) do
       assert_enqueued_jobs 0, only: LoopsMailDeliveryJob do
         assert_not invitation.save_and_send_invite
       end
     end
 
     assert_not_requested :post, "https://app.loops.so/api/v1/transactional"
-  end
-
-  private
-
-  def with_loops_delivery
-    original_delivery_method = AccountMailer.delivery_method
-    AccountMailer.delivery_method = :loops
-    yield
-  ensure
-    AccountMailer.delivery_method = original_delivery_method
   end
 end

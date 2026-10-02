@@ -15,6 +15,7 @@ resource :signup_completion, only: [:show, :update], module: :users
 
 namespace :account do
   resource :password
+  resource :password_reset_link, only: :create
 end
 namespace :users do
   resources :mentions, only: [:index]

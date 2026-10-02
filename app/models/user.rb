@@ -3,6 +3,11 @@ class User < ApplicationRecord
 
   attr_accessor :invitation_signup
 
+  # AIDEV-NOTE: A password change revokes every API token on purpose, including the
+  # token used by Api::V1::PasswordsController. No native app ships yet, so nothing
+  # needs a re-issued token.
+  after_update :revoke_api_tokens, if: :saved_change_to_encrypted_password?
+
   scope :by_email, ->(email) { where("LOWER(email) = ?", email.to_s.downcase) }
 
   def family
@@ -18,5 +23,11 @@ class User < ApplicationRecord
     return if invitation_signup
 
     owned_accounts.create!(name: "#{name}'s Family", personal: false)
+  end
+
+  private
+
+  def revoke_api_tokens
+    api_tokens.destroy_all
   end
 end

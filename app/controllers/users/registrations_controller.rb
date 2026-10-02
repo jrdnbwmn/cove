@@ -31,7 +31,14 @@ class Users::RegistrationsController < Devise::RegistrationsController
 
   def update_resource(resource, params)
     # Jumpstart: Allow user to edit their profile without password
-    resource.update_without_password(params)
+    # AIDEV-NOTE: COV-96 exception: changing the login email requires the current password,
+    # so a stolen session can't silently re-point the account's email. update_without_password
+    # has no current_password= writer on User, hence the .except.
+    if params[:email].present? && User.normalize_value_for(:email, params[:email]) != resource.email
+      resource.update_with_password(params)
+    else
+      resource.update_without_password(params.except(:current_password))
+    end
   end
 
   def sign_up(resource_name, resource)

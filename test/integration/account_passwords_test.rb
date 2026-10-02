@@ -23,6 +23,37 @@ class AccountPasswordsTest < ActionDispatch::IntegrationTest
     assert_not @user.valid_password?(UNIQUE_PASSWORD)
   end
 
+  test "changing the password signs out API tokens" do
+    token = @user.api_tokens.create!(name: "Phone").token
+    new_password = Devise.friendly_token
+
+    with_loops_delivery do
+      stub_request(:post, "https://app.loops.so/api/v1/transactional")
+        .to_return(status: 200, body: {success: true}.to_json)
+
+      patch account_password_path, params: {
+        user: {
+          current_password: UNIQUE_PASSWORD,
+          password: new_password,
+          password_confirmation: new_password
+        }
+      }
+    end
+
+    assert_redirected_to account_password_path
+    reset! # AIDEV-NOTE: drop the browser session so only the Bearer token can authenticate
+    get "/api/v1/me", headers: {"Authorization" => "Bearer #{token}"}
+    assert_response :unauthorized
+  end
+
+  test "password page offers to email a link to set a password" do
+    get edit_account_password_path
+
+    assert_response :success
+    assert_select "h2", text: "No password yet, or forgot it?"
+    assert_select "[data-turbo-method='post'][href='#{account_password_reset_link_path}']"
+  end
+
   test "wrong current password re-renders edit with an error" do
     new_password = Devise.friendly_token
 
@@ -111,15 +142,5 @@ class AccountPasswordsTest < ActionDispatch::IntegrationTest
 
     assert_not @user.reload.valid_password?(new_password)
     assert @user.valid_password?(UNIQUE_PASSWORD)
-  end
-
-  private
-
-  def with_loops_delivery
-    original_delivery_method = LoopsDeviseMailer.delivery_method
-    LoopsDeviseMailer.delivery_method = :loops
-    yield
-  ensure
-    LoopsDeviseMailer.delivery_method = original_delivery_method
   end
 end

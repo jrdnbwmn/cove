@@ -35,18 +35,41 @@ if defined? OmniAuth
       assert_equal user, controller.current_user
     end
 
-    test "links a verified Google identity to an existing user" do
+    test "Google sign-in with an existing account's email asks the person to sign in with their password" do
       existing_user = users(:one)
       OmniAuth.config.add_mock(:google_oauth2, uid: "new-google-identity", info: {email: existing_user.email.upcase, name: "Google User"}, credentials: {token: "mock-token"})
 
-      assert_no_difference "User.count" do
-        assert_difference "ConnectedAccount.count", 1 do
-          get "/users/auth/google_oauth2/callback"
-        end
+      assert_no_difference ["User.count", "ConnectedAccount.count"] do
+        get "/users/auth/google_oauth2/callback"
       end
 
-      assert_equal existing_user, controller.current_user
-      assert_equal accounts(:company), existing_user.family
+      assert_nil controller.current_user
+      assert_redirected_to new_user_session_path
+      assert_equal I18n.t("users.omniauth_callbacks.account_exists"), flash[:alert]
+
+      follow_redirect!
+      assert_select "*", text: /#{Regexp.escape("You already have a Cove account with this email.")}/
+    end
+
+    test "a pre-registered password account cannot be entered through Google" do
+      User.create!(email: "victim@example.com", password: "attackerpass123", name: "Victim", terms_of_service: true)
+      OmniAuth.config.add_mock(:google_oauth2, uid: "victim-google-uid", info: {email: "victim@example.com", name: "Victim"}, credentials: {token: "mock-token"})
+
+      assert_no_difference ["User.count", "ConnectedAccount.count"] do
+        get "/users/auth/google_oauth2/callback"
+      end
+
+      assert_nil controller.current_user
+    end
+
+    test "after signing in with a password, the person lands on Connected Accounts" do
+      existing_user = users(:one)
+      OmniAuth.config.add_mock(:google_oauth2, uid: "new-google-identity", info: {email: existing_user.email, name: "Google User"}, credentials: {token: "mock-token"})
+      get "/users/auth/google_oauth2/callback"
+
+      post user_session_path, params: {user: {email: existing_user.email, password: UNIQUE_PASSWORD}}
+
+      assert_redirected_to user_connected_accounts_path
     end
 
     test "refuses to link a Google identity when the matched user already has a different Google UID connected" do

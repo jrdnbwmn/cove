@@ -205,6 +205,108 @@ class Users::RegistrationsControllerTest < ActionDispatch::IntegrationTest
     end
   end
 
+  class EmailChangeTest < Users::RegistrationsControllerTest
+    setup do
+      @user = users(:one)
+      sign_in @user
+    end
+
+    test "changing email without the current password is rejected" do
+      original_email = @user.email
+
+      put user_registration_path, params: {user: {name: "X", email: "new@example.com"}}
+
+      assert_response :unprocessable_content
+      assert_equal original_email, @user.reload.email
+    end
+
+    test "changing email with a wrong current password is rejected" do
+      original_email = @user.email
+
+      put user_registration_path, params: {user: {name: "X", email: "new@example.com", current_password: "not-the-password"}}
+
+      assert_response :unprocessable_content
+      assert_equal original_email, @user.reload.email
+    end
+
+    test "changing email with the correct current password succeeds" do
+      put user_registration_path, params: {user: {name: "X", email: "new@example.com", current_password: UNIQUE_PASSWORD}}
+
+      assert_response :redirect
+      assert_equal "new@example.com", @user.reload.email
+    end
+
+    test "editing only the name needs no password" do
+      put user_registration_path, params: {user: {name: "Renamed", email: @user.email}}
+
+      assert_response :redirect
+      assert_equal "Renamed", @user.reload.name
+    end
+
+    test "resubmitting the same email in different case needs no password" do
+      original_email = @user.email
+
+      put user_registration_path, params: {user: {name: "Renamed", email: original_email.upcase}}
+
+      assert_response :redirect
+      assert_equal "Renamed", @user.reload.name
+      assert_equal original_email, @user.email
+    end
+
+    test "changing email notifies the old address" do
+      old_email = @user.email
+      stub = stub_request(:post, "https://app.loops.so/api/v1/transactional")
+        .with(body: hash_including(
+          "transactionalId" => "cmurcz05y04j60j4rjx2uldt7",
+          "email" => old_email
+        ))
+        .to_return(status: 200, body: {success: true}.to_json)
+
+      with_loops_delivery do
+        put user_registration_path, params: {user: {name: "X", email: "new@example.com", current_password: UNIQUE_PASSWORD}}
+      end
+
+      assert_response :redirect
+      assert_equal "new@example.com", @user.reload.email
+      assert_requested stub, times: 1
+    end
+
+    test "a name-only update sends no email-changed notice" do
+      stub = stub_request(:post, "https://app.loops.so/api/v1/transactional")
+        .to_return(status: 200, body: {success: true}.to_json)
+
+      with_loops_delivery do
+        put user_registration_path, params: {user: {name: "Renamed", email: @user.email}}
+      end
+
+      assert_response :redirect
+      assert_not_requested stub
+    end
+  end
+
+  class CurrentPasswordFieldTest < Users::RegistrationsControllerTest
+    setup do
+      @user = users(:one)
+      sign_in @user
+    end
+
+    test "profile form asks for the current password" do
+      get edit_user_registration_path
+
+      assert_response :success
+      assert_select "input[name='user[current_password]'][autocomplete='current-password']"
+      assert_includes response.body, "Needed only to change your email."
+    end
+
+    test "a rejected email change shows the current-password error on the form" do
+      put user_registration_path, params: {user: {name: "X", email: "new@example.com", current_password: "not-the-password"}}
+
+      assert_response :unprocessable_content
+      assert_select "input[name='user[current_password]']"
+      assert_select "p.text-red-600", text: /invalid/i
+    end
+  end
+
   class InvibleCaptchaTest < Users::RegistrationsControllerTest
     test "honeypot is not filled and user creation succeeds" do
       assert_difference "User.count" do

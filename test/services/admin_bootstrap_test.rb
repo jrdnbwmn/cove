@@ -38,6 +38,7 @@ class AdminBootstrapTest < ActiveSupport::TestCase
   end
 
   test "promotes an existing user without changing profile password or marketing consent" do
+    User.where(admin: true).update_all(admin: false)
     user = users(:marketing_subscribed)
     original_attributes = user.attributes.slice("encrypted_password", "first_name", "last_name", "marketing_opt_in_at", "marketing_opt_in_source", "marketing_opt_out_at", "marketing_opt_out_reason")
 
@@ -45,6 +46,19 @@ class AdminBootstrapTest < ActiveSupport::TestCase
 
     assert_predicate result, :admin?
     assert_equal original_attributes, result.attributes.slice(*original_attributes.keys)
+  end
+
+  test "does not promote an existing user when a system admin already exists" do
+    user = users(:one)
+    assert User.where(admin: true).exists?
+
+    output, = capture_io do
+      result = AdminBootstrap.new(email: user.email, name: "Changed Name").call
+      assert_equal user, result
+    end
+
+    assert_not user.reload.admin?
+    assert_includes output, "[admin:bootstrap] refused to promote existing user #{user.email}: a system admin already exists"
   end
 
   test "already-admin user is returned without another grant" do
