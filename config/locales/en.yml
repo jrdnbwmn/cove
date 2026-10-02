@@ -534,6 +534,7 @@ en:
     testimonial: "%{product} has made my life so much easier. I can't recommend it enough."
     show:
       title: "Checkout"
+      failure: "We couldn't start checkout. Please try again."
       consent_html: "By confirming your subscription, you allow %{app} to charge your payment method for this payment and future payments in accordance with our %{terms}."
       terms: "terms"
       account: "Account"
@@ -550,6 +551,8 @@ en:
       subtotal: "Subtotal"
       tax: "Tax"
       total: "Total due today"
+    create:
+      failure: "We couldn't start checkout. Please try again."
 
   checkout:
     returns:

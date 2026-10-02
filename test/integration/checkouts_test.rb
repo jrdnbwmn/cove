@@ -53,6 +53,33 @@ class CheckoutsTest < ActionDispatch::IntegrationTest
     assert_equal @plan.stripe_id, checkout_args[:line_items].first[:price]
   end
 
+  test "a parent can't check out a hidden plan" do
+    get checkout_path(plan: plans(:hidden))
+
+    assert_redirected_to pricing_path
+  end
+
+  test "a superadmin can open checkout for a hidden plan" do
+    account = accounts(:two)
+    account.account_users.create!(user: users(:admin), admin: true)
+    account.set_payment_processor(:stripe, processor_id: "cus_admin")
+    sign_out @user
+    sign_in users(:admin)
+
+    capture_checkout_args(staging: false, plan: plans(:hidden))
+
+    assert_response :success
+  end
+
+  test "checkout errors show a friendly message instead of Stripe's" do
+    Stripe::Checkout::Session.stub(:create, ->(*) { raise Pay::Error, "Stripe request id req_secret" }) do
+      get checkout_path(plan: @plan)
+    end
+
+    assert_redirected_to pricing_path
+    assert_equal I18n.t("checkouts.show.failure"), flash[:alert]
+  end
+
   private
 
   def capture_checkout_args(staging:, plan: @plan)
