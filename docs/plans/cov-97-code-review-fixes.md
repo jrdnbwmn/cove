@@ -16,9 +16,9 @@
 | 7    | 2     | 3          | Daily sweep re-enqueues stranded Loops webhook events (F4) | Master | ✅   |
 | 8    | 2     | 4          | Case-insensitive email lookup in the Loops webhook processor (F15) | Clone  | ✅   |
 | 9    | 2     | 4          | HTTPS mailer links; fix stale render.yaml comment (F9, F16) | Clone  | ✅   |
-| 10   | 3     | 5          | Family deletion cancels every live subscription status (F8) | Master |      |
-| 11   | 3     | 5          | Family deletion handles Stripe failures and failed destroys (F8) | Clone  |      |
-| 12   | 3     | 5          | Ownership transfer requires sign-in (F10) | Clone  |      |
+| 10   | 3     | 5          | Family deletion cancels every live subscription status (F8) | Master | ✅   |
+| 11   | 3     | 5          | Family deletion handles Stripe failures and failed destroys (F8) | Clone  | ✅   |
+| 12   | 3     | 5          | Ownership transfer requires sign-in (F10) | Clone  | ✅   |
 | 13   | 3     | 6          | Checkout: hidden plans admin-only; fixed error messages (F12) | Master |      |
 | 14   | 3     | 6          | Change-plan page handles a subscription with no matching plan (F13) | Clone  |      |
 | 15   | 4     | 7          | Remove the modern-browser gate (F7) | Master |      |

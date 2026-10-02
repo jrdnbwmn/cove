@@ -16,7 +16,7 @@ class Account < ApplicationRecord
     column_defaults.fetch("student_limit").to_i
   end
 
-  before_destroy :cancel_billable_subscriptions!
+  before_destroy :cancel_live_subscriptions!
   after_update_commit :sync_plan_status_to_marketing_subscribed_parents, if: :saved_change_to_complimentary_premium?
 
   def parents
@@ -93,14 +93,18 @@ class Account < ApplicationRecord
     pay_subscriptions.active.or(pay_subscriptions.past_due)
   end
 
+  def live_subscriptions
+    pay_subscriptions.where.not(status: %w[canceled incomplete_expired])
+  end
+
   # AIDEV-NOTE: A canceled-but-still-paid subscription stays with the archived
   # family and runs out, so it does not prevent that parent from joining another family.
   def renewing_subscriptions
     billable_subscriptions.where(ends_at: nil)
   end
 
-  def cancel_billable_subscriptions!
-    billable_subscriptions.find_each do |subscription|
+  def cancel_live_subscriptions!
+    live_subscriptions.find_each do |subscription|
       # AIDEV-NOTE: Release a pending plan switch before cancelling. If the release fails, log it and still
       # cancel: ending the paid subscription matters more than clearing the schedule.
       begin

@@ -386,6 +386,25 @@ class AccountTest < ActiveSupport::TestCase
     assert_predicate past_due_subscription.reload, :canceled?
   end
 
+  test "deleting a family with an unpaid subscription cancels it in Stripe" do
+    account = accounts(:unpaid)
+    subscription = account.pay_subscriptions.sole
+
+    account.destroy!
+
+    assert_predicate subscription.reload, :canceled?
+  end
+
+  test "deleting a family with an incomplete subscription cancels it in Stripe" do
+    account = accounts(:unpaid)
+    subscription = account.pay_subscriptions.sole
+    subscription.update_columns(status: "incomplete")
+
+    account.destroy!
+
+    assert_predicate subscription.reload, :canceled?
+  end
+
   test "destroying a family releases a pending plan switch before cancelling its subscription" do
     stripe_api_key!
     subscription = stripe_subscription_for(accounts(:one), plan: plans(:premium_yearly), schedule: {"id" => "sub_sched_delete", "phases" => []})
