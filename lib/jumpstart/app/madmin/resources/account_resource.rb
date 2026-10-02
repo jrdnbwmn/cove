@@ -3,9 +3,11 @@ class AccountResource < Madmin::Resource
 
   # Attributes
   attribute :id, form: false
-  attribute :owner
+  # AIDEV-NOTE: Local change (COV-97) to Jumpstart: ownership changes go through the app's transfer flow.
+  attribute :owner, form: false
   attribute :name
-  attribute :personal
+  attribute :personal, form: false
+  attribute :archived_at, form: false
   attribute :created_at, form: false
   attribute :updated_at, form: false
   attribute :extra_billing_info

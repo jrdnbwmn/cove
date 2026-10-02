@@ -20,7 +20,7 @@ class AccountInvitation < ApplicationRecord
       return
     end
 
-    [account.owner, invited_by].uniq.each { |recipient| Account::AcceptedInviteNotifier.with(account: account, record: user).deliver(recipient) }
+    [account.owner, invited_by].compact.uniq.each { |recipient| Account::AcceptedInviteNotifier.with(account: account, record: user).deliver(recipient) }
     result.account_user
   end
 

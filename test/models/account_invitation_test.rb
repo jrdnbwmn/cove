@@ -41,6 +41,16 @@ class AccountInvitationTest < ActiveSupport::TestCase
     assert_equal users(:invited), event.user
   end
 
+  test "accepting an invitation whose inviter is gone only notifies the family owner" do
+    @account_invitation.update!(invited_by: nil)
+
+    assert_difference "Noticed::Notification.count", 1 do
+      @account_invitation.accept!(users(:invited))
+    end
+
+    assert_not Noticed::Event.where.missing(:notifications).exists?
+  end
+
   test "sending a valid invitation delivers one Loops account-invite request" do
     invitation = @account.account_invitations.new(name: "New invitee", email: "new-invitee@example.com", invited_by: users(:one))
     captured_request = nil
