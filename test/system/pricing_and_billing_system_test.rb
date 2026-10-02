@@ -64,15 +64,18 @@ class PricingAndBillingSystemTest < ApplicationSystemTestCase
 
   test "Premium family with a pending monthly switch sees it on Billing and can keep yearly" do
     subscription = pay_subscriptions(:subscribed)
+    switch_date = 1.month.from_now
     subscription.update!(object: {"schedule" => {"id" => "sub_sched_system", "phases" => [
       {"start_date" => 1.day.ago.to_i, "items" => [{"price" => @premium_yearly.stripe_id}]},
-      {"start_date" => 1.month.from_now.to_i, "items" => [{"price" => @premium_monthly.stripe_id}]}
+      {"start_date" => switch_date.to_i, "items" => [{"price" => @premium_monthly.stripe_id}]}
     ]}})
 
-    login_as users(:subscribed), scope: :user
+    user = users(:subscribed)
+    login_as user, scope: :user
     visit billing_path
 
-    assert_text I18n.t("billing.show.pending_plan_change_title", date: I18n.l(1.month.from_now.to_date, format: :long))
+    local_switch_date = switch_date.in_time_zone(user.time_zone).to_date
+    assert_text I18n.t("billing.show.pending_plan_change_title", date: I18n.l(local_switch_date, format: :long))
     assert_no_link I18n.t("billing.subscriptions.subscription.change_plan")
 
     # The fixture subscription isn't on Stripe, so releasing is a no-op; this checks the Turbo DELETE round trip.
