@@ -58,15 +58,14 @@ Each section is marked **Built** or **Decided, not built**.
 | Students | 2 | Advertised as unlimited; real cap is `student_limit` (default 10, raisable per family by a superadmin) |
 | Parents | Up to 2 | Up to 2 |
 
-- Premium means paid Premium or Complimentary Premium.
 - Pricing is flat per family. No per-student fee; Stripe quantity and pricing
   structure never change with student count.
 - No trial — Free serves that purpose.
+- Which future features are Premium is decided per feature. Don't decide
+  Premium gating for a new feature; ask.
 
 ## Families (Built)
 
-- A family holds **one or two parents** plus its students. **Both parents
-  are admins**; one is the owner.
 - Owner-only: deleting the family, transferring ownership. Admins do
   everything else, **including billing**.
 - The subscription belongs to the family and survives a parent leaving.
@@ -83,10 +82,9 @@ Each section is marked **Built** or **Decided, not built**.
 
 ## Students (Decided, not built — `/students` is a placeholder)
 
-- Students are **records owned by the family**, not logins or members.
-  Student logins are a future version.
-- Free limit is **2**. Premium's real cap is `student_limit`; families above
-  it contact support. The cap keeps co-ops and micro-schools off a family plan.
+- Student logins are a future version.
+- Families above Premium's `student_limit` contact support. The cap keeps
+  co-ops and micro-schools off a family plan.
 - Past the limit: Free sees an upgrade prompt, Premium sees "Contact us".
 - **On downgrade:**
   - No student is ever deleted.
@@ -145,7 +143,6 @@ has a non-AI path, so a parent who never uses AI still gets a complete product.
 
 ## Email and notifications
 
-- Transactional email (receipts, invites, account events) is always allowed. (Built)
 - Lifecycle and marketing email goes only to marketing-opted-in parents. (Built)
 - Plan status syncs to Loops as contact property **`planStatus`**: `free`,
   `premium`, or `complimentary` — only for opted-in parents, only in
@@ -157,7 +154,6 @@ has a non-AI path, so a parent who never uses AI still gets a complete product.
 
 ## Open questions
 
-- Which future features are Premium — decided per feature as they're built.
 - Student logins: under-13 students bring COPPA obligations. No position yet.
 - Terms, Privacy, and Refund pages (`/terms`, `/privacy`, `/refunds`) are not
   lawyer-reviewed. Revisit the copy when student logins ship, AI launches,
@@ -191,8 +187,9 @@ Manual steps before Stripe live activation.
 **In scope:** Replace `docs/product/strategy-brief.md` with the content below.
 
 **NOT in scope:** Voice/feel language (ux-notes), AI action rules
-(product-brief), any "Next", "Not doing", or "Unique advantages" section —
-deliberately omitted.
+(product-brief), any "Next", "Not doing", "Unique advantages", hypothesis,
+success criteria, primary/secondary value, or business metric section —
+deliberately omitted (the user keeps those outside the repo).
 
 ```markdown
 # Strategy Brief
@@ -220,12 +217,6 @@ deciding and teaching. Unlike spreadsheets, paper planners, and
 general-purpose apps, Cove adapts to the family's approach and takes on the
 admin work, in a calm, polished app.
 
-- **Primary value:** Running a homeschool takes less time and less worry —
-  the parent knows what to do today, and nothing important slips.
-- **Secondary benefits:** school plans that recover when life interrupts;
-  records and state requirements kept as a by-product of daily use; help
-  choosing curriculum; one place instead of scattered tools.
-
 ## Target user
 
 US homeschooling families, K–12, at any level of homeschooling experience.
@@ -234,25 +225,24 @@ US homeschooling families, K–12, at any level of homeschooling experience.
   lesson planner, and day-to-day teacher. They want an easier way to choose
   curriculum, build and adjust school plans, track progress, and meet state
   requirements, without juggling disconnected tools or spending hours on admin.
-- **Families only — not co-ops, micro-schools, or other schools.** The Premium
-  student cap enforces this.
+- **Families only — not co-ops, micro-schools, or other schools.**
 
-## Pain points (long-term vision, not current scope)
+## Pain points and how Cove would help (long-term vision, not current scope)
 
-- **Choosing curriculum is overwhelming.** Cove would help parents research,
-  compare, and choose materials — or build their own curriculum.
-- **Building a cohesive school plan takes too much work.** Cove would combine
-  curricula, homemade lessons, and extracurriculars into one school plan,
-  using AI to streamline planning.
-- **Plans fall apart when real life intervenes.** Cove would help parents
-  adjust schedules and reschedule unfinished work.
-- **Running each school day is hard to coordinate.** Cove would provide daily
-  schedules, printable schedules, and completion checklists.
-- **Tracking learning creates an administrative burden.** Cove would organize
-  homework, attendance, grades, and progress in one place.
-- **State requirements and college documentation are confusing.** Cove would
-  help parents understand requirements, track compliance, and prepare records
-  and transcripts.
+- **Choosing curriculum is overwhelming.** Help parents research, compare,
+  and choose materials — or build their own curriculum.
+- **Building a cohesive school plan takes too much work.** Combine curricula,
+  homemade lessons, and extracurriculars into one school plan, using AI to
+  streamline planning.
+- **Plans fall apart when real life intervenes.** Help parents adjust
+  schedules and reschedule unfinished work.
+- **Running each school day is hard to coordinate.** Daily schedules,
+  printable schedules, and completion checklists.
+- **Tracking learning creates an administrative burden.** Homework,
+  attendance, grades, and progress in one place.
+- **State requirements and college documentation are confusing.** Help
+  parents understand requirements, track compliance, and prepare records and
+  transcripts.
 
 ## Positioning
 
@@ -261,9 +251,8 @@ general-purpose apps. Cove differs by:
 
 - **Design quality is the product.** Every screen should feel polished, calm,
   clear, and obvious to a stressed parent.
-- **AI prepares, the parent decides.** AI drafts school plans, suggests next
-  steps, and handles paperwork within strict limits; every AI feature has a
-  non-AI path.
+- **AI prepares, the parent decides** (rules: `product-brief.md` → AI
+  behavior).
 - **Works across homeschooling approaches** — traditional, Charlotte Mason,
   classical, unschooling, eclectic, etc. Cove adapts to the family's approach
   instead of assuming one model.
@@ -271,28 +260,11 @@ general-purpose apps. Cove differs by:
   problem parents have ("what do I do today?", "am I meeting my state's
   requirements?"), not from what other tools include.
 
-## Success
+## Failure signals
 
-**Hypothesis:** If we take planning, rescheduling, and record-keeping off the
-parent's plate, parents will run their homeschool day from Cove instead of
-spreadsheets and paper, leading to steady weekly use and Premium conversion
-and retention.
-
-**Success — what users can do:**
-
-- See what to do today in under a minute.
-- Adjust the school plan when a day or week goes off-track, instead of
-  abandoning it.
-- Have the records state requirements call for without separate tracking.
-- Stop keeping a parallel spreadsheet or paper planner.
-
-**Failure signals:** parents keep their old system alongside Cove; usage stops
-after the first disrupted week; parents report feeling behind or judged; AI
-suggestions are routinely ignored or undone.
-
-**Business metric:** Free → Premium conversion. Target (hypothesis, revisit
-after ~100 families): 5% of new Free families upgrade to paid Premium within
-90 days of signup; stretch 8%. Excludes Complimentary families.
+Design against these: parents keep their old system alongside Cove; usage
+stops after the first disrupted week; parents report feeling behind or
+judged; AI suggestions are routinely ignored or undone.
 
 ## Business model
 
@@ -346,13 +318,10 @@ mean perfect consistency, high output, or matching another family's approach.
   wins, normalizes hard days, makes parents feel less alone — never
   patronizing.
 - A peer, not an expert: Cove helps parents with their goals; it doesn't
-  teach them how to homeschool or tell them what to do.
+  teach them how to homeschool or tell them what to do. Stories and
+  testimonials are peers speaking to peers.
 - Flexible enough for real family life; inclusive of different approaches.
-
-Not: cutesy, cheesy, or "magical"; corporate, clinical, bureaucratic, or
-textbook-dry; tech-bro, productivity contest, or growth funnel; pushy,
-urgent, or guilt-inducing; preachy, haughty, or condescending; dense, noisy,
-or stiff.
+- Not cutesy, "magical", corporate, clinical, or tech-bro.
 
 ## Voice and copy
 
@@ -370,9 +339,6 @@ or stiff.
 - Prefer flexible words: "next step," "adjust," "move," "pause,"
   "continue," "simplify." Avoid "failed," "behind," "missed goal," or "quit"
   unless essential and accurate to the user's own choice.
-- Use product terms consistently: Schedule (never "calendar"), school plan,
-  schedule block, family, parent, student.
-- Stories and testimonials are peers speaking to peers.
 
 | Context | Prefer | Avoid |
 | --- | --- | --- |
@@ -394,10 +360,6 @@ or stiff.
   continue, reschedule, simplify, pause, archive, or revise.
 - Destructive or sensitive actions name the item, explain the consequence,
   and use specific labels ("Delete subject").
-- One clear primary action per screen; secondary actions quieter.
-- Familiar controls, stable navigation, progressive disclosure, predictable
-  behavior. No auto-advancing, surprise navigation, unnecessary confirmation
-  dialogs, or layout shifts.
 - Phone and desktop are equally important: every flow works fully on both,
   no desktop-only features. Common tasks should be completable in short,
   interrupted moments.
@@ -418,12 +380,7 @@ color, consistent components, and handled edge cases — not low contrast,
 dense dashboards, tiny controls, hidden actions, heavy animation, or
 decoration without purpose.
 
-- WCAG AA contrast. Keyboard navigation, visible focus, semantic HTML,
-  accessible labels, usable touch targets, reduced-motion support. Never
-  color alone for meaning.
-- Design for different schedules, family structures, abilities, learning
-  needs, technical confidence, time, attention, energy, and definitions of
-  success.
+- WCAG AA plus standard accessibility basics; never color alone for meaning.
 - Explain what sensitive information is collected and why (student data rule:
   `product-brief.md`). Sharing is opt-in. Privacy, export, deletion, and
   account controls are easy to find.
@@ -431,8 +388,8 @@ decoration without purpose.
 
 **Verify:**
 
-1. `grep -n -i "calendar\|premium\|Pulling things\|That didn't work\|You're all set\|liberally" docs/product/ux-notes.md` → only the "never calendar" rule matches.
-2. `wc -w docs/product/*.md` → ux-notes ≤ ~750 words (was 1,173).
+1. `grep -n -i "calendar\|premium\|Pulling things\|That didn't work\|You're all set\|liberally" docs/product/ux-notes.md` → no matches.
+2. `wc -w docs/product/*.md` → ux-notes ≤ ~600 words (was 1,173).
 3. **Run review-changes-mini for Checkpoint 1 (Tasks 1–3).** If these tasks
    were executed as a parallel batch, the master runs it once after the whole
    batch returns, rather than this task running it itself.
