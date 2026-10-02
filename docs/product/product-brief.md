@@ -1,47 +1,46 @@
 # Product Brief
 
-This document outlines key rules about this product that are important to understand while building.
+How Cove behaves for users, and why. Code-level invariants and the glossary
+live in `AGENTS.md` and aren't repeated here.
 
-## Free vs Premium
+Each section is marked **Built** or **Decided, not built**.
 
-Premium means paid Premium or Complimentary Premium (see Testers). Gate
-features on the plan, never on a price or plan name.
+## Free vs Premium (Built)
 
 | | Free | Premium |
 |---|---|---|
-| Students | 2 | Unlimited (advertised); 10-student cap, raisable per family |
-| Parents | Two | Two |
+| Students | 2 | Advertised as unlimited; real cap is `student_limit` (default 10, raisable per family by a superadmin) |
+| Parents | Up to 2 | Up to 2 |
 
-## Families
+- Pricing is flat per family. No per-student fee; Stripe quantity and pricing
+  structure never change with student count.
+- No trial — Free serves that purpose.
+- Which future features are Premium is decided per feature. Don't decide
+  Premium gating for a new feature; ask.
 
-- One family account holds **one or two parents** plus their students.
-- **Both parents are admins**; one is the owner.
+## Families (Built)
+
 - Owner-only: deleting the family, transferring ownership. Admins do
   everything else, **including billing**.
 - The subscription belongs to the family and survives a parent leaving.
-- **One person belongs to exactly one family.** No account switching, no
-  second families.
+- **One person belongs to exactly one family.** No second families.
 - An existing user may accept another family's invite **only if their own
-  family is empty** (no students, active subscription, or other members).
-  That empty family is then archived, not deleted, so its billing history
-  is kept. A subscription must be canceled first, and a canceled subscription still in its paid period doesn't block joining; students or
-  another parent mean the invite is refused with "contact support".
+  family is empty** (no students, renewing subscription, or other members).
+  That empty family is archived, not deleted, so its billing history is kept.
+  A subscription must be canceled first; a canceled subscription still in its
+  paid period doesn't block joining. Students or another parent mean the
+  invite is refused with "contact support".
 - The owner **must transfer ownership before deleting their login** if
   another parent is in the family. A non-owner parent deleting their login
   just leaves.
 
-## Students
+## Students (Decided, not built — `/students` is a placeholder)
 
-- Students are **data records owned by the family**, not logins or members.
-  Students will eventually have their own logins (in a future version).
-- Free limit is **2**. Premium is advertised as **unlimited**, but its real
-  cap is `student_limit` (default 10, raisable per family by a superadmin).
-  Families above the cap contact support; the cap keeps co-ops and
-  micro-schools from using a family plan.
-- There is **no per-student fee**, no Stripe quantity or pricing-structure
-  change, and pricing stays flat per family.
+- Student logins are a future version.
+- Families above Premium's `student_limit` contact support. The cap keeps
+  co-ops and micro-schools off a family plan.
 - Past the limit: Free sees an upgrade prompt, Premium sees "Contact us".
-- **On downgrade** (built in the Students ticket):
+- **On downgrade:**
   - No student is ever deleted.
   - A calm banner on `/students` says something like "Premium ended. Choose
     which 2 students stay editable." Until the parent chooses, all students
@@ -49,46 +48,68 @@ features on the plan, never on a price or plan name.
   - The parent can change the pick at any time; swapping makes the previously
     editable student read-only.
   - Re-subscribing makes every student editable again.
-  - Read-only students still appear on calendar events they're already
+  - Read-only students still appear on schedule blocks they're already
     assigned to.
 
-## Billing behavior
+## Student data (Decided — applies to every feature)
 
-- Billing is flat per family. **Both parents receive receipts.**
-- Canceling stops the next renewal; Premium lasts until the paid period
-  ends — except canceling while `past_due` or `unpaid` ends Premium
-  immediately because `CancelsController` calls `cancel_now!`. This is
-  intended, and the cancel page says so.
-- **Yearly → monthly** takes effect at renewal, with no proration or credit
-  (built in the "Yearly → monthly takes effect at renewal" ticket).
-- **No refunds**, stated on pricing, checkout, cancel confirmation, and
-  family deletion. One-off refunds are done by hand in Stripe.
+The bar is high. When in doubt, don't collect it and ask.
+
+- Collect or keep a student field only if a feature cannot work without it,
+  or the parent explicitly provides it after we ask for a stated purpose.
+  Record the justification for any optional field.
+- Student data never goes to marketing, analytics, or email tools (Loops gets
+  parent plan status only), and never to any third party unless a feature
+  requires it.
+- AI features may send student data to an AI provider only for a feature the
+  parent turned on, and only to a provider that doesn't train on or keep it.
+- Deleting a student removes their data.
+- Student data never appears in logs or error reports.
+
+## AI behavior (Decided, not built)
+
+AI is proactive — it suggests next steps, drafts school plans, handles
+paperwork — but the parent decides. Without asking, AI may take an action
+only if it is **visible, undoable in one step, affects only the parent's own
+view or drafts, and doesn't contact anyone, spend money, delete anything, or
+share data.** Suggestions, drafts, and reminders qualify. Anything else —
+e.g. moving schedule blocks — needs the parent's approval. Every AI feature
+has a non-AI path, so a parent who never uses AI still gets a complete product.
+
+## Billing (Built)
+
+- **Both parents receive receipts.**
+- Canceling stops the next renewal; Premium lasts until the paid period ends —
+  except canceling while `past_due` or `unpaid` ends Premium immediately.
+  This is intended, and the cancel page says so.
+- **Yearly → monthly** takes effect at renewal, with no proration or credit.
+- **No refunds**, stated on pricing, checkout, cancel confirmation, and family
+  deletion. One-off refunds are done by hand in Stripe.
 - Deleting a family ends its subscription immediately, no refund.
 - **`past_due` keeps Premium** while Stripe retries. Free once `unpaid` or
   canceled.
 
-## Testers
+## Complimentary Premium for testers (Built)
 
-- **Complimentary Premium** is a superadmin on/off switch on the family,
-  plus a note. No end date, no Stripe records.
-- A comped family can still subscribe; a paid subscription takes
-  precedence.
+- A superadmin on/off switch on the family, plus a note. No end date, no
+  Stripe records.
+- A comped family can still subscribe; a paid subscription takes precedence.
 
-## Loops
+## Email and notifications
 
+- Lifecycle and marketing email goes only to marketing-opted-in parents. (Built)
 - Plan status syncs to Loops as contact property **`planStatus`**: `free`,
-  `premium`, or `complimentary`.
-- **Only for marketing-opted-in users, and only in production.** Every
-  opted-in parent in a family gets it.
-- This is the sole exception to the rule of not syncing plan information to
-  Loops.
+  `premium`, or `complimentary` — only for opted-in parents, only in
+  production, to every opted-in parent in the family. This is the sole
+  exception to not syncing plan information to Loops. (Built)
+- Reminders, including the day's schedule by email or in-app, are **opt-in**.
+  Never guilt-based, never about inactivity. (Decided, not built)
+- Cove never emails or messages students.
 
 ## Open questions
 
-- **Terms, Privacy, and Refund Policy pages** — drafted and implemented at `/terms`,
-  `/privacy`, `/refunds` (COV-92); not lawyer-reviewed. Still to do by hand
-  before Stripe live activation: in the Stripe Dashboard (Settings → Public
-  details) set the Terms, Privacy, and Refund policy URLs; in the Google Cloud
-  Console OAuth consent screen set the homepage/privacy/terms links and
-  authorized domain, then submit for brand verification. Revisit the copy when
-  student logins ship, AI launches, the LLC forms, or analytics is added.
+- Student logins: under-13 students bring COPPA obligations. No position yet.
+- Terms, Privacy, and Refund pages (`/terms`, `/privacy`, `/refunds`) are not
+  lawyer-reviewed. Revisit the copy when student logins ship, AI launches,
+  the LLC forms, or analytics is added. Launch to-dos:
+  `docs/runbooks/launch-checklist.md`.
