@@ -15,13 +15,13 @@ class AccountUser < ApplicationRecord
   def user_has_no_other_family
     return if user_id.blank? || self.class.where(user_id: user_id).where.not(id: id).none?
 
-    errors.add(:user, "already belongs to a family")
+    errors.add(:user, :other_family)
   end
 
   def family_has_capacity
     return unless account&.full?
 
-    errors.add(:base, "Family already has two parents")
+    errors.add(:base, :full)
   end
 
   def enqueue_plan_status_sync

@@ -5,7 +5,7 @@ class Api::V1::MeController < Api::BaseController
 
   def destroy
     if current_user.must_transfer_family_before_deletion?
-      render json: {error: "Transfer family ownership before deleting your login"}, status: :unprocessable_content
+      render json: {error: t("users.transfer_family_before_deletion")}, status: :unprocessable_content
     else
       current_user.destroy!
       render json: {}

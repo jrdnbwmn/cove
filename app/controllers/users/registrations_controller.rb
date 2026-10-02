@@ -6,7 +6,7 @@ class Users::RegistrationsController < Devise::RegistrationsController
 
   def destroy
     if current_user.must_transfer_family_before_deletion?
-      redirect_to edit_user_registration_path, alert: "Transfer family ownership before deleting your login"
+      redirect_to edit_user_registration_path, alert: t("users.transfer_family_before_deletion")
     else
       super
     end

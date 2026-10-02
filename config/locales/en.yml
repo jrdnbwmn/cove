@@ -28,6 +28,16 @@
 #       enabled: "ON"
 
 en:
+  family_invitation_acceptance:
+    wrong_recipient: "This invitation was sent to someone else"
+    archived: "This invitation is no longer valid"
+    full: "Family already has two parents"
+    already_member: "You are already in this family"
+    already_belongs: "You already belong to a family"
+    other_members: "Your family has another parent. Contact support to join a new family."
+    billable_subscription: "Cancel your Premium subscription first, then accept this invitation."
+    try_again: "Something changed while joining. Please try again."
+
   are_you_sure: "Are you sure?"
   back: "Back"
   cancel: "Cancel"
@@ -576,6 +586,7 @@ en:
     dark: "Dark"
 
   users:
+    transfer_family_before_deletion: "Transfer family ownership before deleting your login"
     signup_completions:
       show:
         title: "Finish setting up your account"
@@ -702,6 +713,10 @@ en:
               invited: "has already been invited"
         account_user:
           attributes:
+            user:
+              other_family: "already belongs to a family"
+            base:
+              full: "Family already has two parents"
             admin:
               cannot_be_removed: "role cannot be removed for the account owner"
         plan:

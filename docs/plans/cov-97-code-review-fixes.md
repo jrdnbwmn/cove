@@ -21,9 +21,9 @@
 | 12   | 3     | 5          | Ownership transfer requires sign-in (F10) | Clone  | ✅   |
 | 13   | 3     | 6          | Checkout: hidden plans admin-only; fixed error messages (F12) | Master | ✅   |
 | 14   | 3     | 6          | Change-plan page handles a subscription with no matching plan (F13) | Clone  | ✅   |
-| 15   | 4     | 7          | Remove the modern-browser gate (F7) | Master |      |
-| 16   | 4     | 7          | Move family/invite model + service messages to i18n (F17) | Master |      |
-| 17   | 4     | 7          | Move family/invite controller messages to i18n (F17) | Clone  |      |
+| 15   | 4     | 7          | Remove the modern-browser gate (F7) | Master | ✅   |
+| 16   | 4     | 7          | Move family/invite model + service messages to i18n (F17) | Master | ✅   |
+| 17   | 4     | 7          | Move family/invite controller messages to i18n (F17) | Clone  | ✅   |
 | 18   | 4     | 8          | Signup completion: current status symbol + `params.expect` (F18) | Clone  |      |
 | 19   | 4     | 8          | Skip nil recipients on invite-accepted notifications (F23) | Clone  |      |
 | 20   | 4     | 8          | Madmin account: owner/personal read-only, show archived_at (F22) | Clone  |      |
