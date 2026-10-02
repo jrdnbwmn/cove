@@ -21,6 +21,10 @@ class Api::BaseController < ActionController::API
 
   private
 
+  def render_rate_limited
+    render json: {error: I18n.t("try_again_later")}, status: :too_many_requests
+  end
+
   def require_api_authentication
     if (user = user_from_token)
       sign_in user, store: false

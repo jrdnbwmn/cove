@@ -1,6 +1,6 @@
 <h2 class="section-heading"><%= t(".title") %></h2>
 
-<% if @charges.any? %>
+<% if @charges.present? %>
   <%= render TableComponent.new(hoverable: true) do |table| %>
     <% table.with_column(label: t(".date")) %>
     <% table.with_column(label: t(".amount")) %>

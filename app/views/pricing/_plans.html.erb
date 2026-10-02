@@ -1,7 +1,8 @@
 <%# AIDEV-NOTE: Visible plan record cache keys include updated_at, so adding or hiding a plan
     changes this signed-out fragment key. Signed-in visitors remain uncached because their
-    free-family and subscription state is specific to their family. %>
-<% cache_unless user_signed_in?, ["pricing-plans", I18n.locale, Account.default_student_limit, monthly_plans, yearly_plans] do %>
+    free-family and subscription state is specific to their family. The fragment key doesn't
+    track ViewComponent templates or locale copy, so expires_in bounds staleness after a deploy. %>
+<% cache_unless user_signed_in?, ["pricing-plans", I18n.locale, Account.default_student_limit, monthly_plans, yearly_plans], expires_in: 1.hour do %>
   <div data-controller="pricing"
        data-pricing-active-frequency-class="shadow-xs text-black hover:text-black bg-white dark:text-white dark:hover:text-white dark:bg-gray-900"
        data-pricing-inactive-plans-class="hidden"

@@ -12,7 +12,7 @@ class ResizableImageValidator < ActiveModel::EachValidator
     end
 
     if value.blob.byte_size > MAX_SIZE
-      record.errors.add(attribute, :image_too_large, count: 5)
+      record.errors.add(attribute, :image_too_large, count: MAX_SIZE / 1.megabyte)
     end
   end
 end

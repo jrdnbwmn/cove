@@ -1,8 +1,6 @@
 class LoopsContactSyncJob < ApplicationJob
   include LoopsRetryable
 
-  queue_with_priority 10
-
   def perform(user_id, intent, previously_consented: nil)
     user = User.find_by(id: user_id)
     return unless user
