@@ -19,6 +19,7 @@ class LoopsDeviseMailerTest < ActiveSupport::TestCase
     assert_equal "cmt95d4t100gq0jyvqpknv5vi", transactional[:account_created]
     assert_equal "cmsdnzduk02k40jx72rv3uwe2", transactional[:reset_password_instructions]
     assert_equal "cmsdo8ixv001e0j1zu027i3s7", transactional[:password_change]
+    assert_equal "cmurcz05y04j60j4rjx2uldt7", transactional[:email_changed]
     assert_equal "cmsdr01rw02s00j3ozshehy4f", transactional[:invite]
     assert_equal "cmsdrmznp040g0jzsnkt9hpsa", transactional[:cancellation_reason]
     assert_equal "cmsdrk6tf03rb0jzw194l0rl5", transactional[:receipt]
@@ -32,6 +33,7 @@ class LoopsDeviseMailerTest < ActiveSupport::TestCase
       account_created
       reset_password_instructions
       password_change
+      email_changed
       invite
       cancellation_reason
       receipt
@@ -114,5 +116,18 @@ class LoopsDeviseMailerTest < ActiveSupport::TestCase
     message = ExplodingLoopsDeviseMailer.password_change(@user).message
 
     assert_equal "cmsdo8ixv001e0j1zu027i3s7", message["X-Loops-Transactional-Id"].value
+  end
+
+  test "email-changed notice goes to the old address with the new address in its data" do
+    @user.email = "new@example.com"
+
+    message = ExplodingLoopsDeviseMailer.email_changed(@user, to: "old@example.com").message
+
+    assert_equal ["old@example.com"], message.to
+    assert_equal "cmurcz05y04j60j4rjx2uldt7", message["X-Loops-Transactional-Id"].value
+    assert_equal(
+      {"recipient_email" => "old@example.com", "new_email" => "new@example.com"},
+      JSON.parse(message["X-Loops-Data-Variables"].value)
+    )
   end
 end

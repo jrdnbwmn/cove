@@ -148,7 +148,7 @@ Devise.setup do |config|
   # config.pepper = 'cf210ab2d2bacc549862e94128a10eeba5fbfd939c2147a9a4b1d615dd41db0f53f75085ad47673f241e3660e4fa4117151e17b5dfe0fe1670c3746f107d3309'
 
   # Send a notification to the original email when the user's email is changed.
-  # config.send_email_changed_notification = false
+  config.send_email_changed_notification = true
 
   # Send a notification email when the user's password is changed.
   config.send_password_change_notification = true

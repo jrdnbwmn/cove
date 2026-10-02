@@ -14,8 +14,8 @@
 | 5    | 2     | 2          | "Set a password" button on Settings → Password | Clone  | ✅   |
 | 6    | 3     | 3          | Require current password to change email (controller) | Master | ✅   |
 | 7    | 3     | 3          | "Current password" field + hint on the profile form | Clone  | ✅   |
-| 8    | 3     | 4          | Loops "email changed" mailer method | Master |      |
-| 9    | 3     | 4          | Turn on Devise email-changed notification | Clone  |      |
+| 8    | 3     | 4          | Loops "email changed" mailer method | Master | ✅   |
+| 9    | 3     | 4          | Turn on Devise email-changed notification | Clone  | ✅   |
 | 10   | 4     | 5          | Admin bootstrap only promotes when no system admin exists | Clone  | ✅   |
 
 ## Prerequisites

@@ -252,6 +252,46 @@ class Users::RegistrationsControllerTest < ActionDispatch::IntegrationTest
       assert_equal "Renamed", @user.reload.name
       assert_equal original_email, @user.email
     end
+
+    test "changing email notifies the old address" do
+      old_email = @user.email
+      stub = stub_request(:post, "https://app.loops.so/api/v1/transactional")
+        .with(body: hash_including(
+          "transactionalId" => "cmurcz05y04j60j4rjx2uldt7",
+          "email" => old_email
+        ))
+        .to_return(status: 200, body: {success: true}.to_json)
+
+      with_loops_delivery do
+        put user_registration_path, params: {user: {name: "X", email: "new@example.com", current_password: UNIQUE_PASSWORD}}
+      end
+
+      assert_response :redirect
+      assert_equal "new@example.com", @user.reload.email
+      assert_requested stub, times: 1
+    end
+
+    test "a name-only update sends no email-changed notice" do
+      stub = stub_request(:post, "https://app.loops.so/api/v1/transactional")
+        .to_return(status: 200, body: {success: true}.to_json)
+
+      with_loops_delivery do
+        put user_registration_path, params: {user: {name: "Renamed", email: @user.email}}
+      end
+
+      assert_response :redirect
+      assert_not_requested stub
+    end
+
+    private
+
+    def with_loops_delivery
+      original_delivery_method = LoopsDeviseMailer.delivery_method
+      LoopsDeviseMailer.delivery_method = :loops
+      yield
+    ensure
+      LoopsDeviseMailer.delivery_method = original_delivery_method
+    end
   end
 
   class CurrentPasswordFieldTest < Users::RegistrationsControllerTest

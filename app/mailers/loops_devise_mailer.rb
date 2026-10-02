@@ -28,4 +28,17 @@ class LoopsDeviseMailer < Devise::Mailer
       body: ""
     ))
   end
+
+  # AIDEV-NOTE: Devise passes the OLD address as opts[:to]; it stays the recipient so the
+  # previous owner of the login is warned. record.email is already the new address.
+  def email_changed(record, opts = {})
+    transactional_id = loops_transactional_id(:email_changed)
+    data_variables = {recipient_email: opts[:to] || record.email, new_email: record.email}
+
+    devise_mail(record, :email_changed, opts.merge(
+      "X-Loops-Transactional-Id": transactional_id,
+      "X-Loops-Data-Variables": data_variables.to_json,
+      body: ""
+    ))
+  end
 end
