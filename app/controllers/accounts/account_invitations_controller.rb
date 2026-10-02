@@ -9,13 +9,8 @@ class Accounts::AccountInvitationsController < Accounts::BaseController
   def new = @account_invitation = AccountInvitation.new
 
   def create
-    if @account.account_users_count + @account.account_invitations.count >= 2
-      redirect_to @account, alert: "Family already has two parents"
-      return
-    end
-
-    if User.by_email(invitation_params[:email]).joins(:accounts).exists?
-      redirect_to @account, alert: "That parent already belongs to a family"
+    if @account.invitations_full?
+      redirect_to @account, alert: t("family_invitation_acceptance.full")
       return
     end
 

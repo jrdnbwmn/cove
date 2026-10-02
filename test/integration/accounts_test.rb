@@ -1,6 +1,9 @@
 require "test_helper"
+require_relative "../support/stripe_schedule_helper"
 
 class Jumpstart::AccountsTest < ActionDispatch::IntegrationTest
+  include StripeScheduleHelper
+
   test "removed collection and switching routes are unroutable" do
     sign_in users(:one)
     get "/accounts/new"
@@ -27,6 +30,22 @@ class Jumpstart::AccountsTest < ActionDispatch::IntegrationTest
     end
 
     assert_redirected_to root_path
+  end
+
+  test "a family owner sees a calm error if billing can't be canceled during deletion" do
+    account = accounts(:one)
+    stripe_api_key!
+    subscription = stripe_subscription_for(account, plan: plans(:premium_yearly))
+    stub_request(:delete, %r{https://api\.stripe\.com/v1/subscriptions/#{subscription.processor_id}})
+      .to_return(status: 500, body: {error: {message: "Stripe is unavailable"}}.to_json)
+
+    sign_in users(:noaccount)
+
+    delete account_path(account)
+
+    assert_redirected_to edit_account_path(account)
+    assert_equal I18n.t("accounts.destroy.failure"), flash[:alert]
+    assert Account.exists?(account.id)
   end
 
   test "a parent cannot update complimentary Premium fields" do

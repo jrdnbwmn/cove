@@ -1,4 +1,5 @@
 class Accounts::TransfersController < Accounts::BaseController
+  before_action :authenticate_user!
   before_action :set_account
   before_action :require_account_owner!
 

@@ -7,6 +7,8 @@ class AccountInvitation < ApplicationRecord
   belongs_to :invited_by, class_name: "User", optional: true
   has_secure_token
 
+  scope :for_active_account, -> { joins(:account).merge(Account.active) }
+
   validates :name, :email, presence: true
   validates :email, uniqueness: {scope: :account_id, message: :invited}
 
@@ -20,7 +22,7 @@ class AccountInvitation < ApplicationRecord
       return
     end
 
-    [account.owner, invited_by].uniq.each { |recipient| Account::AcceptedInviteNotifier.with(account: account, record: user).deliver(recipient) }
+    [account.owner, invited_by].compact.uniq.each { |recipient| Account::AcceptedInviteNotifier.with(account: account, record: user).deliver(recipient) }
     result.account_user
   end
 

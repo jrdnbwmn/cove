@@ -19,6 +19,8 @@ class Billing::SubscriptionsController < ApplicationController
   def edit
     # Include current plan even if hidden
     @current_plan = @subscription.plan
+    # AIDEV-NOTE: Local change (COV-97) to Jumpstart: subscriptions for retired Stripe prices may not have a Plan row.
+    return redirect_to(billing_path, alert: t("billing.subscriptions.plan_change_guard.unavailable")) unless @current_plan
 
     plans = Plan.visible.sorted.or(Plan.where(id: @current_plan.id))
     @monthly_plans, @yearly_plans = plans.partition(&:monthly?)

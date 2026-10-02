@@ -26,15 +26,15 @@ class LoopsWebhookEventJobTest < ActiveJob::TestCase
     end
   end
 
-  test "a processor exception leaves processed_at nil and re-raises" do
+  test "a webhook event that fails processing is retried" do
     event = loops_webhook_events(:unprocessed)
     failing_processor = Object.new
     def failing_processor.call(_event)
       raise StandardError, "boom"
     end
 
-    LoopsWebhookEventProcessor.stub(:new, failing_processor) do
-      assert_raises(StandardError) do
+    LoopsWebhookEventProcessor.stub(:new, -> { failing_processor }) do
+      assert_enqueued_with(job: LoopsWebhookEventJob) do
         LoopsWebhookEventJob.perform_now(event.id)
       end
     end

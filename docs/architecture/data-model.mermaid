@@ -13,6 +13,7 @@ erDiagram
     bigint owner_id FK
     boolean personal
     datetime archived_at
+    integer account_users_count
     integer student_limit
     boolean complimentary_premium
     string complimentary_premium_note
@@ -27,6 +28,10 @@ erDiagram
     bigint user_id FK
     jsonb roles
   }
+
+  %% account_users.account_id and account_users.user_id are required. The
+  %% counter cache on accounts is also required and backfilled by the
+  %% EnforceMembershipColumnNulls migration.
 
   ACCOUNT_INVITATION {
     bigint id PK

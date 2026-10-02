@@ -26,6 +26,14 @@ class AccountInvitationTest < ActiveSupport::TestCase
     end
   end
 
+  test "invitations to archived families are not found for an active account" do
+    assert_includes AccountInvitation.for_active_account, @account_invitation
+
+    @account.archive!
+
+    assert_not_includes AccountInvitation.for_active_account, @account_invitation
+  end
+
   test "reject" do
     assert_difference "AccountInvitation.count", -1 do
       @account_invitation.reject!
@@ -39,6 +47,16 @@ class AccountInvitationTest < ActiveSupport::TestCase
     event = Noticed::Event.last
     assert_equal @account, event.account
     assert_equal users(:invited), event.user
+  end
+
+  test "accepting an invitation whose inviter is gone only notifies the family owner" do
+    @account_invitation.update!(invited_by: nil)
+
+    assert_difference "Noticed::Notification.count", 1 do
+      @account_invitation.accept!(users(:invited))
+    end
+
+    assert_not Noticed::Event.where.missing(:notifications).exists?
   end
 
   test "sending a valid invitation delivers one Loops account-invite request" do

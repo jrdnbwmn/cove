@@ -333,6 +333,24 @@ class AccountTest < ActiveSupport::TestCase
     assert_not_includes Account.active, account
   end
 
+  test "a pending invitation holds a seat so a family can't invite past two parents" do
+    account = accounts(:invited)
+
+    assert_predicate account, :invitations_full?
+
+    account.account_invitations.destroy_all
+
+    assert_not_predicate account.reload, :invitations_full?
+  end
+
+  test "a family reports whether it is archived" do
+    account = accounts(:one)
+
+    assert_not_predicate account, :archived?
+    account.archive!
+    assert_predicate account, :archived?
+  end
+
   test "parents are the family admins" do
     assert_equal accounts(:company).admins.order(:id).to_a, accounts(:company).parents.order(:id).to_a
   end
@@ -367,6 +385,12 @@ class AccountTest < ActiveSupport::TestCase
     assert_not account.joinable_by?(users(:noaccount))
   end
 
+  test "a family whose Premium is canceled but still paid through the period is joinable" do
+    account = accounts(:canceled_in_period)
+
+    assert account.joinable_by?(users(:canceled_in_period))
+  end
+
   test "destroying a family immediately cancels active and past-due subscriptions" do
     account = accounts(:one)
     customer = account.set_payment_processor(:fake_processor, allow_fake: true)
@@ -378,6 +402,25 @@ class AccountTest < ActiveSupport::TestCase
 
     assert_predicate active_subscription.reload, :canceled?
     assert_predicate past_due_subscription.reload, :canceled?
+  end
+
+  test "deleting a family with an unpaid subscription cancels it in Stripe" do
+    account = accounts(:unpaid)
+    subscription = account.pay_subscriptions.sole
+
+    account.destroy!
+
+    assert_predicate subscription.reload, :canceled?
+  end
+
+  test "deleting a family with an incomplete subscription cancels it in Stripe" do
+    account = accounts(:unpaid)
+    subscription = account.pay_subscriptions.sole
+    subscription.update_columns(status: "incomplete")
+
+    account.destroy!
+
+    assert_predicate subscription.reload, :canceled?
   end
 
   test "destroying a family releases a pending plan switch before cancelling its subscription" do

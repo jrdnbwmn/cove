@@ -9,6 +9,12 @@ class Jumpstart::PublicTest < ActionDispatch::IntegrationTest
     assert_not_includes response.body, 'classList.toggle("dark"'
   end
 
+  test "visitors on an older iPad can see the homepage" do
+    get root_path, headers: {"User-Agent" => "Mozilla/5.0 (iPad; CPU OS 16_7 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/16.6 Mobile/15E148 Safari/604.1"}
+
+    assert_response :success
+  end
+
   test "terms page shows when it was last updated" do
     get terms_path
 

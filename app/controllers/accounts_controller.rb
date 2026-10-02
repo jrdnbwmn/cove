@@ -21,8 +21,14 @@ class AccountsController < Accounts::BaseController
   end
 
   def destroy
-    @account.destroy
-    redirect_to root_path, status: :see_other, notice: t(".destroyed")
+    if @account.destroy
+      redirect_to root_path, status: :see_other, notice: t(".destroyed")
+    else
+      redirect_to edit_account_path(@account), status: :see_other, alert: t(".failure")
+    end
+  rescue Pay::Error => e
+    Rails.logger.error("[Accounts] Could not delete family #{@account.id}: #{e.message}")
+    redirect_to edit_account_path(@account), status: :see_other, alert: t(".failure")
   end
 
   private

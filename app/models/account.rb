@@ -2,6 +2,9 @@ class Account < ApplicationRecord
   include Billing, Domains, Transfer, Types
 
   FREE_STUDENT_LIMIT = 2
+  MAX_PARENTS = 2
+  # Pay statuses of a subscription that has ended; everything else can still bill and so needs cancelling on delete.
+  ENDED_SUBSCRIPTION_STATUSES = %w[canceled incomplete_expired].freeze
 
   scope :active, -> { where(archived_at: nil) }
   scope :archived, -> { where.not(archived_at: nil) }
@@ -16,7 +19,7 @@ class Account < ApplicationRecord
     column_defaults.fetch("student_limit").to_i
   end
 
-  before_destroy :cancel_billable_subscriptions!
+  before_destroy :cancel_live_subscriptions!
   after_update_commit :sync_plan_status_to_marketing_subscribed_parents, if: :saved_change_to_complimentary_premium?
 
   def parents
@@ -24,7 +27,16 @@ class Account < ApplicationRecord
   end
 
   def full?
-    account_users_count >= 2
+    account_users_count >= MAX_PARENTS
+  end
+
+  # Pending invitations hold a seat, so a family can't invite past its parent limit.
+  def invitations_full?
+    account_users_count + account_invitations.count >= MAX_PARENTS
+  end
+
+  def archived?
+    archived_at.present?
   end
 
   def archive!
@@ -73,7 +85,7 @@ class Account < ApplicationRecord
   def unjoinable_reason(user)
     return :other_members unless account_users.one? && users.exists?(user.id)
     return :other_members unless students_empty?
-    return :billable_subscription if billable_subscriptions.any?
+    return :billable_subscription if renewing_subscriptions.any?
     nil
   end
 
@@ -89,12 +101,26 @@ class Account < ApplicationRecord
     !respond_to?(:students) || students.none?
   end
 
+  # AIDEV-NOTE: Three deliberately different subscription sets. Billable = paying now (Pay's `active` scope also
+  # covers trials and paid-through cancellations) and drives Premium. Live = anything not ended, which deletion must
+  # cancel. Renewing = billable and not set to cancel, which is what blocks joining another family. Plan changes
+  # (PlanChangeGuard) ask a different question about one subscription, so they don't share these.
   def billable_subscriptions
     pay_subscriptions.active.or(pay_subscriptions.past_due)
   end
 
-  def cancel_billable_subscriptions!
-    billable_subscriptions.find_each do |subscription|
+  def live_subscriptions
+    pay_subscriptions.where.not(status: ENDED_SUBSCRIPTION_STATUSES)
+  end
+
+  # AIDEV-NOTE: A canceled-but-still-paid subscription stays with the archived
+  # family and runs out, so it does not prevent that parent from joining another family.
+  def renewing_subscriptions
+    billable_subscriptions.where(ends_at: nil)
+  end
+
+  def cancel_live_subscriptions!
+    live_subscriptions.find_each do |subscription|
       # AIDEV-NOTE: Release a pending plan switch before cancelling. If the release fails, log it and still
       # cancel: ending the paid subscription matters more than clearing the schedule.
       begin

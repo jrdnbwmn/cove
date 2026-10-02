@@ -14,11 +14,11 @@ class LoopsWebhookEventTest < ActiveSupport::TestCase
   end
 
   test "prunable returns only events older than the retention window" do
-    assert_equal [loops_webhook_events(:stale)], LoopsWebhookEvent.prunable.to_a
+    assert_equal [loops_webhook_events(:stale), loops_webhook_events(:old_unprocessed)], LoopsWebhookEvent.prunable.order(:id).to_a
   end
 
   test "unprocessed returns only events without processed_at" do
-    assert_equal [loops_webhook_events(:unprocessed)], LoopsWebhookEvent.unprocessed.to_a
+    assert_equal [loops_webhook_events(:old_unprocessed), loops_webhook_events(:unprocessed)], LoopsWebhookEvent.unprocessed.order(:id).to_a
   end
 
   test "processed! stamps processed_at" do

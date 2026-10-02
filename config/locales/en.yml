@@ -28,6 +28,16 @@
 #       enabled: "ON"
 
 en:
+  family_invitation_acceptance:
+    wrong_recipient: "This invitation was sent to someone else"
+    archived: "This invitation is no longer valid"
+    full: "Family already has two parents"
+    already_member: "You are already in this family"
+    already_belongs: "You already belong to a family"
+    other_members: "Your family has another parent. Contact support to join a new family."
+    billable_subscription: "Cancel your Premium subscription first, then accept this invitation."
+    try_again: "Something changed while joining. Please try again."
+
   are_you_sure: "Are you sure?"
   back: "Back"
   cancel: "Cancel"
@@ -118,6 +128,8 @@ en:
     created_and_switch_html: "Account was successfully created. <a class=\"underline\" href=\"%{link}\">Switch account</a>"
     updated: "Account was successfully updated."
     destroyed: "Account was successfully destroyed."
+    destroy:
+      failure: "We couldn't delete your family right now. Please try again or contact support."
     admin_required: "Only account admins are allowed to do that."
     personal:
       cannot_delete: "You cannot delete your personal account."
@@ -532,6 +544,7 @@ en:
     testimonial: "%{product} has made my life so much easier. I can't recommend it enough."
     show:
       title: "Checkout"
+      failure: "We couldn't start checkout. Please try again."
       consent_html: "By confirming your subscription, you allow %{app} to charge your payment method for this payment and future payments in accordance with our %{terms}."
       terms: "terms"
       account: "Account"
@@ -548,6 +561,8 @@ en:
       subtotal: "Subtotal"
       tax: "Tax"
       total: "Total due today"
+    create:
+      failure: "We couldn't start checkout. Please try again."
 
   checkout:
     returns:
@@ -571,6 +586,7 @@ en:
     dark: "Dark"
 
   users:
+    transfer_family_before_deletion: "Transfer family ownership before deleting your login"
     signup_completions:
       show:
         title: "Finish setting up your account"
@@ -697,6 +713,8 @@ en:
               invited: "has already been invited"
         account_user:
           attributes:
+            user:
+              other_family: "already belongs to a family"
             admin:
               cannot_be_removed: "role cannot be removed for the account owner"
         plan:

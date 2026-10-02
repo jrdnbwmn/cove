@@ -17,7 +17,7 @@ class Users::SignupCompletionsController < ApplicationController
 
     if @user.first_name.blank?
       @user.errors.add(:first_name, :blank)
-      render :show, status: :unprocessable_entity
+      render :show, status: :unprocessable_content
       return
     end
 
@@ -31,7 +31,7 @@ class Users::SignupCompletionsController < ApplicationController
 
     redirect_to stored_location_for(:user) || root_path
   rescue ActiveRecord::RecordInvalid
-    render :show, status: :unprocessable_entity
+    render :show, status: :unprocessable_content
   end
 
   private
@@ -41,7 +41,7 @@ class Users::SignupCompletionsController < ApplicationController
   end
 
   def signup_completion_params
-    params.require(:user).permit(:first_name, :last_name)
+    params.expect(user: [:first_name, :last_name])
   end
 
   def marketing_opt_in?

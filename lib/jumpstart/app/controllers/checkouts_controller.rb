@@ -20,7 +20,8 @@ class CheckoutsController < ApplicationController
       payment_processor.api_record
     end
   rescue Pay::Error => e
-    flash[:alert] = e.message
+    Rails.logger.error("[Checkouts] Could not start checkout: #{e.message}")
+    flash[:alert] = t(".failure")
     redirect_to pricing_path
   end
 
@@ -38,15 +39,16 @@ class CheckoutsController < ApplicationController
   rescue Pay::ActionRequired => e
     redirect_to pay.payment_path(e.payment.id)
   rescue Pay::Error => e
-    flash[:alert] = e.message
+    Rails.logger.error("[Checkouts] Could not create checkout: #{e.message}")
+    flash[:alert] = t(".failure")
     render :new, status: :unprocessable_content
   end
 
   private
 
-  # Pricing page will only display visible plans, but hidden plans are included here to make customer support easier.
+  # AIDEV-NOTE: Local change (COV-97) to Jumpstart: support staff may use hidden plans, but parents cannot reach retired prices through a crafted URL.
   def set_plan
-    @plan = Plan.find_by_prefix_id!(params[:plan])
+    @plan = (current_user&.admin? ? Plan : Plan.visible).find_by_prefix_id!(params[:plan])
   rescue ActiveRecord::RecordNotFound
     redirect_to pricing_path
   end

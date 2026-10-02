@@ -104,6 +104,15 @@ class LoopsWebhookEventProcessorTest < ActiveSupport::TestCase
     assert_equal "user_loops", user.reload.marketing_opt_out_reason
   end
 
+  test "an unsubscribe for a mixed-case email still opts the parent out" do
+    user = users(:marketing_subscribed)
+    e = event(user, "contact.unsubscribed", payload: {"contactIdentity" => {"email" => user.email.upcase}})
+
+    processor.call(e)
+
+    assert_not_nil user.reload.marketing_opt_out_at
+  end
+
   test "testing.testEvent is a no-op" do
     user = users(:marketing_subscribed)
     assert_nothing_raised { processor.call(event(user, "testing.testEvent")) }

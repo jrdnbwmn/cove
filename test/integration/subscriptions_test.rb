@@ -53,6 +53,17 @@ class Jumpstart::SubscriptionsTest < ActionDispatch::IntegrationTest
       end
     end
 
+    test "a parent whose subscription price isn't in the plan catalog is sent back to billing" do
+      subscription = pay_subscriptions(:subscribed)
+      subscription.update_columns(processor_plan: "price_unknown")
+      sign_in users(:subscribed)
+
+      get edit_billing_subscription_path(subscription)
+
+      assert_redirected_to billing_path
+      assert_equal I18n.t("billing.subscriptions.plan_change_guard.unavailable"), flash[:alert]
+    end
+
     test "can manage a fake processor subscription lifecycle" do
       monthly_plan = plans(:per_seat)
       changed_plan = plans(:enterprise)

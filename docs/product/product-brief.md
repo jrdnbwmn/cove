@@ -24,7 +24,7 @@ features on the plan, never on a price or plan name.
 - An existing user may accept another family's invite **only if their own
   family is empty** (no students, active subscription, or other members).
   That empty family is then archived, not deleted, so its billing history
-  is kept. An active subscription must be canceled first; students or
+  is kept. A subscription must be canceled first, and a canceled subscription still in its paid period doesn't block joining; students or
   another parent mean the invite is refused with "contact support".
 - The owner **must transfer ownership before deleting their login** if
   another parent is in the family. A non-owner parent deleting their login

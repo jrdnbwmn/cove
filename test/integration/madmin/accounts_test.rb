@@ -26,6 +26,25 @@ class Madmin::AccountsTest < ActionDispatch::IntegrationTest
     assert_select "th", {text: "Student Limit", count: 0}
   end
 
+  test "the admin family edit form doesn't offer owner or personal fields" do
+    get edit_madmin_account_path(@account)
+
+    assert_response :success
+    assert_select "select[name='account[owner_id]'], input[name='account[owner_id]']", count: 0
+    assert_select "input[name='account[personal]']", count: 0
+  end
+
+  test "the admin family page shows when a family was archived" do
+    archived_at = Time.zone.parse("2026-10-01 12:00:00 UTC")
+    @account.update!(archived_at: archived_at)
+
+    get madmin_account_path(@account)
+
+    assert_response :success
+    assert_select "th", text: "Archived At"
+    assert_includes response.body, archived_at.strftime("%Y-%m-%d %H:%M:%S UTC")
+  end
+
   test "superadmin sees the complimentary flag on index show and edit but not its note on index" do
     get edit_madmin_account_path(@account)
 

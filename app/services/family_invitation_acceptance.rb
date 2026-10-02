@@ -9,27 +9,30 @@ class FamilyInvitationAcceptance
   end
 
   def call
-    return Result.new(nil, "This invitation was sent to someone else") unless invitation.email.casecmp?(user.email)
+    return Result.new(nil, I18n.t("family_invitation_acceptance.wrong_recipient")) unless invitation.email.casecmp?(user.email)
 
     ApplicationRecord.transaction do
       invitation.lock!
-      target = invitation.account.lock!
-      return Result.new(nil, "Family already has two parents") if target.full?
-
       user.lock!
+      target = invitation.account
       source = user.family
-      source&.lock!
-      return Result.new(nil, "You are already in this family") if source == target
+      [target, source].compact.uniq.sort_by(&:id).each(&:lock!)
+
+      return Result.new(nil, I18n.t("family_invitation_acceptance.archived")) if target.archived?
+      return Result.new(nil, I18n.t("family_invitation_acceptance.full")) if target.full?
+
+      return Result.new(nil, I18n.t("family_invitation_acceptance.already_member")) if source == target
 
       if source
         case source.unjoinable_reason(user)
         when :other_members
-          return Result.new(nil, "Your family has another parent. Contact support to join a new family.")
+          return Result.new(nil, I18n.t("family_invitation_acceptance.other_members"))
         when :billable_subscription
-          return Result.new(nil, "Cancel your Premium subscription first, then accept this invitation.")
+          return Result.new(nil, I18n.t("family_invitation_acceptance.billable_subscription"))
         end
 
         source.account_users.find_by!(user: user).destroy!
+        source.account_invitations.destroy_all
         source.archive!
       end
 
@@ -38,7 +41,9 @@ class FamilyInvitationAcceptance
       Result.new(account_user, nil)
     end
   rescue ActiveRecord::RecordNotUnique
-    Result.new(nil, "You already belong to a family")
+    Result.new(nil, I18n.t("family_invitation_acceptance.already_belongs"))
+  rescue ActiveRecord::Deadlocked
+    Result.new(nil, I18n.t("family_invitation_acceptance.try_again"))
   end
 
   private
