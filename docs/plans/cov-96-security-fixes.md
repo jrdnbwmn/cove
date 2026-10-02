@@ -9,9 +9,9 @@
 | ---- | ----- | ---------- | ----------- | ------ | ---- |
 | 1    | 1     | 1          | Google sign-in refuses existing accounts, with a clear alert | Master | ✅   |
 | 2    | 1     | 1          | Revoke API tokens whenever the password changes | Clone  | ✅   |
-| 3    | 2     | 2          | "Email me a link to set a password" endpoint | Master |      |
-| 4    | 2     | 2          | Password reset links work while signed in | Master |      |
-| 5    | 2     | 2          | "Set a password" button on Settings → Password | Clone  |      |
+| 3    | 2     | 2          | "Email me a link to set a password" endpoint | Master | ✅   |
+| 4    | 2     | 2          | Password reset links work while signed in | Master | ✅   |
+| 5    | 2     | 2          | "Set a password" button on Settings → Password | Clone  | ✅   |
 | 6    | 3     | 3          | Require current password to change email (controller) | Master |      |
 | 7    | 3     | 3          | "Current password" field + hint on the profile form | Clone  |      |
 | 8    | 3     | 4          | Loops "email changed" mailer method | Master |      |

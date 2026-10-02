@@ -21,6 +21,23 @@ class Users::PasswordsControllerTest < ActionDispatch::IntegrationTest
     assert user.reload.valid_password?("new-password")
   end
 
+  test "a signed-in user can open their emailed reset link and set a password" do
+    user = users(:one)
+    sign_in user
+    raw_token = user.send(:set_reset_password_token)
+
+    get edit_user_password_path(reset_password_token: raw_token)
+    assert_response :success
+
+    put user_password_path, params: {user: {
+      reset_password_token: raw_token,
+      password: "brand-new-password",
+      password_confirmation: "brand-new-password"
+    }}
+
+    assert user.reload.valid_password?("brand-new-password")
+  end
+
   test "resetting a forgotten password signs out API tokens" do
     user = users(:one)
     token = user.api_tokens.create!(name: "Phone").token

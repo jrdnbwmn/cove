@@ -46,6 +46,14 @@ class AccountPasswordsTest < ActionDispatch::IntegrationTest
     assert_response :unauthorized
   end
 
+  test "password page offers to email a link to set a password" do
+    get edit_account_password_path
+
+    assert_response :success
+    assert_select "h2", text: "No password yet, or forgot it?"
+    assert_select "[data-turbo-method='post'][href='#{account_password_reset_link_path}']"
+  end
+
   test "wrong current password re-renders edit with an error" do
     new_password = Devise.friendly_token
 
