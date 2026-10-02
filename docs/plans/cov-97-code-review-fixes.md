@@ -27,7 +27,7 @@
 | 18   | 4     | 8          | Signup completion: current status symbol + `params.expect` (F18) | Clone  | ✅   |
 | 19   | 4     | 8          | Skip nil recipients on invite-accepted notifications (F23) | Clone  | ✅   |
 | 20   | 4     | 8          | Madmin account: owner/personal read-only, show archived_at (F22) | Clone  | ✅   |
-| 21   | 4     | 9          | NOT NULL constraints on membership columns (F21) | Master |      |
+| 21   | 4     | 9          | NOT NULL constraints on membership columns (F21) | Master | ✅   |
 
 ## Prerequisites
 
