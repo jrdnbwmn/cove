@@ -146,11 +146,21 @@ Routes are modularized in `config/routes/`:
 - Dark mode is intentionally disabled. Keep the inert Tailwind `@variant dark`
   declaration so existing `dark:` utilities stay inactive; do not restore theme
   wiring or a system-preference fallback without an explicit product decision.
-- Product rules (families, students, billing behavior, testers, Loops plan
-  status) live in `docs/product/product-brief.md`. Read it before changing
-  those areas.
-- Jumpstart's `Account` is the user-facing Family; `AccountUser` admins are
-  its parents.
+- Product docs in `docs/product/`: `product-brief.md` — behavior rules;
+  read before changing families, students, billing, plan status,
+  notifications, AI behavior, or anything that stores student data.
+  `ux-notes.md` — read before writing user-facing text or screen states.
+  `strategy-brief.md` — who Cove is for and its positioning.
+- Glossary (use these terms in UI copy and docs):
+  - **Family** = `Account`. **Parent** = an `AccountUser` (all are admins);
+    **Owner** = the one parent who can delete the family or transfer ownership.
+  - **Student** = a record owned by the family, not a login.
+  - **Premium** = the paid plan (or Complimentary Premium) — never a design
+    adjective; say "polished". **Complimentary** = superadmin-granted Premium.
+  - **Plan** in code = billing plan (`Plan` model). In UI copy, the
+    learning plan is a **school plan**.
+  - **Schedule** = the time-based view (never "calendar"); its items are
+    **schedule blocks**.
 - Adding or removing a parent must not change subscription quantity.
 - Normal sessions never switch families; derive the current family from the
   user membership rather than an account cookie.

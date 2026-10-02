@@ -10,7 +10,7 @@
 | 1    | 1     | 1          | Rewrite `docs/product/product-brief.md`; move launch to-dos to a runbook | Master | ✅   |
 | 2    | 1     | 1          | Rewrite `docs/product/strategy-brief.md` | Clone  | ✅   |
 | 3    | 1     | 1          | Rewrite `docs/product/ux-notes.md` | Clone  | ✅   |
-| 4    | 1     | 2          | Update `AGENTS.md`: glossary + product-doc pointers | Master |      |
+| 4    | 1     | 2          | Update `AGENTS.md`: glossary + product-doc pointers | Master | ✅   |
 
 ## Prerequisites
 
