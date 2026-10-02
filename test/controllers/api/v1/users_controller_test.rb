@@ -8,6 +8,17 @@ class UsersControllerTest < ActionDispatch::IntegrationTest
     assert_equal [I18n.t("errors.messages.blank")], response.parsed_body["errors"]["email"]
   end
 
+  test "sign-up attempts are rate limited" do
+    Api::V1::UsersController.cache_store.stub(:increment, 11) do
+      assert_no_difference "User.count" do
+        post api_v1_users_url, params: {user: {email: "rate-limited@example.com"}}
+      end
+    end
+
+    assert_response :too_many_requests
+    assert_equal I18n.t("try_again_later"), response.parsed_body["error"]
+  end
+
   test "returns user and api token on success" do
     email = "api-user@example.com"
 

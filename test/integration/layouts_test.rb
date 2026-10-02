@@ -28,4 +28,11 @@ class LayoutsTest < ActionDispatch::IntegrationTest
       assert_not_includes response.body, "data-theme-preference-value"
     end
   end
+
+  test "pages preload the main fonts" do
+    get root_path
+
+    assert_select "link[rel=preload][as=font][type='font/woff2'][crossorigin][href*='Geist-Regular']"
+    assert_select "link[rel=preload][as=font][type='font/woff2'][crossorigin][href*='FabricSerifWeb-Regular']"
+  end
 end

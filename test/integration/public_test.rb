@@ -73,6 +73,12 @@ class Jumpstart::PublicTest < ActionDispatch::IntegrationTest
     assert_select "h2", text: I18n.t("public.index.pricing_heading")
   end
 
+  test "homepage hero image reserves its space" do
+    get root_path
+
+    assert_select "img[src*='homepage-lake-sunset'][width='1448'][height='1086'][fetchpriority='high']"
+  end
+
   test "homepage value points are cards, each with an icon" do
     get root_path
 

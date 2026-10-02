@@ -98,10 +98,16 @@ class ActionText::Embed < ApplicationRecord
   def self.from_oembed(url)
     if (endpoint = endpoint_for(url))
       uri = URI.parse(endpoint).tap { it.query = {url: url}.to_query }
-      response = JSON.parse Net::HTTP.get(uri)
+      response = JSON.parse Net::HTTP.start(
+        uri.host,
+        uri.port,
+        use_ssl: uri.scheme == "https",
+        open_timeout: 5,
+        read_timeout: 5
+      ) { it.get(uri.request_uri).body }
       create(url: url, fields: response)
     end
-  rescue JSON::ParserError
+  rescue JSON::ParserError, Net::OpenTimeout, Net::ReadTimeout
   end
 
   # Returns OEmbed endpoint for URL

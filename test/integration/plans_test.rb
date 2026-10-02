@@ -17,6 +17,54 @@ class Jumpstart::PlansTest < ActionDispatch::IntegrationTest
     end
   end
 
+  test "pricing page loads visible plans once" do
+    plan_queries = []
+    callback = ->(_name, _start, _finish, _id, payload) do
+      plan_queries << payload[:sql] if payload[:sql]&.match?(/\ASELECT .* FROM ["`]plans["`]/i)
+    end
+
+    ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+      get pricing_path
+    end
+
+    assert_equal 1, plan_queries.count
+  end
+
+  test "signed-out visitors get a cached plan grid that expires when plans change" do
+    original_perform_caching = ActionController::Base.perform_caching
+    original_cache_store = ActionController::Base.cache_store
+    original_rails_cache = Rails.cache
+    cache_store = ActiveSupport::Cache::MemoryStore.new
+    cache_reads = []
+    subscriber = ActiveSupport::Notifications.subscribe("cache_read.active_support") do |_name, _start, _finish, _id, payload|
+      cache_reads << payload if payload[:key].to_s.include?("pricing-plans")
+    end
+
+    ActionController::Base.perform_caching = true
+    ActionController::Base.cache_store = cache_store
+    Rails.cache = cache_store
+
+    plan = plans(:enterprise)
+    plan.update!(currency: "usd")
+    get pricing_path
+    assert_response :success
+    assert_includes response.body, plan.name
+
+    get pricing_path
+    assert_response :success
+    assert cache_reads.any? { it[:hit] }, "expected the second request to read the cached plan grid"
+
+    plan.update!(hidden: true)
+    get pricing_path
+    assert_response :success
+    assert_not_includes response.body, plan.name
+  ensure
+    ActiveSupport::Notifications.unsubscribe(subscriber) if subscriber
+    ActionController::Base.perform_caching = original_perform_caching
+    ActionController::Base.cache_store = original_cache_store
+    Rails.cache = original_rails_cache
+  end
+
   test "pricing page uses the Premium action label" do
     get "/pricing"
 

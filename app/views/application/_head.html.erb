@@ -3,8 +3,11 @@
 <%= csp_meta_tag %>
 <%= viewport_meta_tag %>
 
+<%# AIDEV-NOTE: preload the above-the-fold fonts (body + h1/h2); hrefs are digested Propshaft paths matching the @font-face URLs. %>
+<%= preload_link_tag "Geist-Regular.woff2", as: "font", type: "font/woff2", crossorigin: "anonymous" %>
+<%= preload_link_tag "FabricSerifWeb-Regular.woff2", as: "font", type: "font/woff2", crossorigin: "anonymous" %>
 <%= javascript_importmap_tags %>
-<%= stylesheet_link_tag "lexxy", "tailwind", media: "all", "data-turbo-track": "reload" %>
+<%= stylesheet_link_tag "tailwind", media: "all", "data-turbo-track": "reload" %>
 <%= render "payments_dependencies" %>
 <%= yield :head %>
 

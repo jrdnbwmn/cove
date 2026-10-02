@@ -7,24 +7,24 @@
 
 | Task | Phase | Checkpoint | Description | Assign | Done |
 | ---- | ----- | ---------- | ----------- | ------ | ---- |
-| 1    | 1     | 1          | Lock down the Action Text embeds endpoint | Master |      |
-| 2    | 1     | 1          | Rate-limit 2FA sign-in, sudo, and API auth/sign-up | Master |      |
-| 3    | 1     | 1          | Cap avatar upload size | Clone  |      |
-| 4    | 2     | 2          | Skip the notification-count query for web requests | Master |      |
-| 5    | 2     | 2          | Memoize `Account#paid_premium?` and `User#family` | Master |      |
-| 6    | 2     | 2          | Remove repeated admin/avatar queries on family settings | Clone  |      |
-| 7    | 2     | 3          | Pricing: single plan query + cache plan grid for signed-out visitors | Clone  |      |
-| 8    | 2     | 3          | Paginate billing charge history | Clone  |      |
-| 9    | 2     | 3          | Charges/payment-method 404s, receipt ETags, announcements read-marking | Clone  |      |
-| 10   | 3     | 4          | Run Loops jobs at low priority | Master |      |
-| 11   | 3     | 4          | Add missing indexes; index-friendly `User.by_email` | Master |      |
-| 12   | 3     | 4          | Throttle API token `last_used_at` writes | Clone  |      |
-| 13   | 4     | 5          | Delete unused JS (motion pins, lazysrc, accounts controller) | Clone  |      |
-| 14   | 4     | 5          | Lazy-load Stimulus controllers | Master |      |
+| 1    | 1     | 1          | Lock down the Action Text embeds endpoint | Master | ✅   |
+| 2    | 1     | 1          | Rate-limit 2FA sign-in, sudo, and API auth/sign-up | Master | ✅   |
+| 3    | 1     | 1          | Cap avatar upload size | Clone  | ✅   |
+| 4    | 2     | 2          | Skip the notification-count query for web requests | Master | ✅   |
+| 5    | 2     | 2          | Memoize `Account#paid_premium?` and `User#family` | Master | ✅   |
+| 6    | 2     | 2          | Remove repeated admin/avatar queries on family settings | Clone  | ✅   |
+| 7    | 2     | 3          | Pricing: single plan query + cache plan grid for signed-out visitors | Clone  | ✅   |
+| 8    | 2     | 3          | Paginate billing charge history | Clone  | ✅   |
+| 9    | 2     | 3          | Charges/payment-method 404s, receipt ETags, announcements read-marking | Clone  | ✅   |
+| 10   | 3     | 4          | Run Loops jobs at low priority | Master | ✅   |
+| 11   | 3     | 4          | Add missing indexes; index-friendly `User.by_email` | Master | ✅   |
+| 12   | 3     | 4          | Throttle API token `last_used_at` writes | Clone  | ✅   |
+| 13   | 4     | 5          | Delete unused JS (motion pins, lazysrc, accounts controller) | Clone  | ✅   |
+| 14   | 4     | 5          | Lazy-load Stimulus controllers | Master | ✅   |
 | 15   | 4     | 5          | Load Stripe.js only on checkout | Master |      |
-| 16   | 4     | 6          | Move Lexxy (rich text) JS out of the global bundle | Master |      |
-| 17   | 4     | 6          | Load Lexxy CSS/JS only on announcement pages | Master |      |
-| 18   | 4     | 6          | Homepage hero image sizing + font preloads | Clone  |      |
+| 16   | 4     | 6          | Move Lexxy (rich text) JS out of the global bundle | Master | ✅   |
+| 17   | 4     | 6          | Load Lexxy CSS/JS only on announcement pages | Master | ✅   |
+| 18   | 4     | 6          | Homepage hero image sizing + font preloads | Clone  | ✅   |
 
 ## Prerequisites
 
@@ -499,6 +499,8 @@ task using a temporary local server. Check the browser console for
 3. **Verify:** `bin/rails test test/integration/javascript_payload_test.rb test/integration/checkouts_test.rb` + `bin/rails test:system`. Browser: as a Free family admin, start a checkout from pricing **via a Turbo link** (not a hard reload) — the embedded Stripe checkout mounts; hard reload of the checkout page also mounts. If local Stripe test keys aren't configured, say so in the report and flag this for staging verification — don't mark the task Done on unverified checkout.
 
    Then run **review-changes-mini for Checkpoint 5 (Tasks 13–15)**. If Tasks 13–15 ran as a parallel batch, the master runs this review once the whole batch returns instead of this task. Either way it runs exactly once for the checkpoint.
+
+   **Status (2026-10-02):** code + focused tests done. Browser checkout check NOT done locally (no eligible Free family admin session); deferred to **staging verification** — Turbo-link checkout from pricing and hard reload must both mount Stripe. Left unmarked per the rule above.
 
 ---
 

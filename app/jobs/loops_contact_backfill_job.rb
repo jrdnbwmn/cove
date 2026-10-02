@@ -1,6 +1,10 @@
 class LoopsContactBackfillJob < ApplicationJob
   include LoopsRetryable
 
+  # AIDEV-NOTE: Solid Queue runs lower numbers first, so marketing backfills
+  # yield to mail and Pay jobs at priority 0.
+  queue_with_priority 10
+
   BATCH_SIZE = 100
   THROTTLE_INTERVAL = 0.2
 

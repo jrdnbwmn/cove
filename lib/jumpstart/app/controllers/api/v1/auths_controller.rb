@@ -1,6 +1,7 @@
 class Api::V1::AuthsController < Api::BaseController
   skip_before_action :require_api_authentication
   before_action :authenticate, only: [:create]
+  rate_limit to: 10, within: 3.minutes, only: :create, prepend: true, with: -> { render json: {error: I18n.t("try_again_later")}, status: :too_many_requests }
 
   def create
     if hotwire_native_app?

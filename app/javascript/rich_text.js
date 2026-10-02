@@ -1,5 +1,7 @@
+import "@rails/actiontext"
 import * as Lexxy from "lexxy"
 
+Lexxy.highlightCode()
 document.addEventListener("turbo:load", () => Lexxy.highlightCode())
 document.addEventListener("turbo:morph", () => Lexxy.highlightCode())
 

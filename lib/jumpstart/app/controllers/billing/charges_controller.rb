@@ -5,10 +5,12 @@ class Billing::ChargesController < ApplicationController
   def show
     respond_to do |format|
       format.pdf {
-        send_data @charge.receipt,
-          filename: @charge.receipt_filename,
-          type: "application/pdf",
-          disposition: :inline
+        if stale?(@charge)
+          send_data @charge.receipt,
+            filename: @charge.receipt_filename,
+            type: "application/pdf",
+            disposition: :inline
+        end
       }
     end
   end
@@ -16,10 +18,12 @@ class Billing::ChargesController < ApplicationController
   def invoice
     respond_to do |format|
       format.pdf {
-        send_data @charge.invoice,
-          filename: @charge.invoice_filename,
-          type: "application/pdf",
-          disposition: :inline
+        if stale?(@charge)
+          send_data @charge.invoice,
+            filename: @charge.invoice_filename,
+            type: "application/pdf",
+            disposition: :inline
+        end
       }
     end
   end
@@ -27,6 +31,6 @@ class Billing::ChargesController < ApplicationController
   private
 
   def set_charge
-    @charge = current_account.pay_charges.find_by_prefix_id(params[:id])
+    @charge = current_account.pay_charges.find_by_prefix_id!(params[:id])
   end
 end

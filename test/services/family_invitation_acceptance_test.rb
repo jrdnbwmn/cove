@@ -44,7 +44,7 @@ class FamilyInvitationAcceptanceTest < ActiveSupport::TestCase
 
     assert_predicate result, :success?
     assert source.reload.archived_at.present?
-    assert_equal accounts(:invited), user.family
+    assert_equal accounts(:invited), user.reload.family
   end
 
   test "joining a new family withdraws the old family's pending invitations" do

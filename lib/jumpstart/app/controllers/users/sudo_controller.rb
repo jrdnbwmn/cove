@@ -1,5 +1,6 @@
 class Users::SudoController < ApplicationController
   before_action :authenticate_user!
+  rate_limit to: 10, within: 3.minutes, only: :create, with: -> { redirect_back fallback_location: root_path, alert: I18n.t("try_again_later") }
 
   def create
     if current_user.valid_password?(params[:password])

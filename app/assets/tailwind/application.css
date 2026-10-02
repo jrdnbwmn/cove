@@ -186,7 +186,6 @@
 /* AIDEV-NOTE: These reference control rules must override generated utilities. */
 @import "./rails_blocks/form_controls.css";
 @import "./components/tom_select.css" layer(components);
-@import "./components/lexxy.css";
 
 /* AIDEV-NOTE: `muted` is a background token here (bg-muted), so the stock Jumpstart views'
    `text-muted` rendered text in a near-white tint. This rule is deliberately unlayered: Tailwind's

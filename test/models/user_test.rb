@@ -9,6 +9,20 @@ class UserTest < ActiveSupport::TestCase
     assert_equal [accounts(:company)], user.accounts.to_a
   end
 
+  test "looking up a user's family repeatedly only queries once" do
+    user = users(:one).reload
+
+    assert_queries_count(1) { 3.times { user.family } }
+  end
+
+  test "reload clears the cached family" do
+    user = users(:one)
+    assert_equal accounts(:company), user.family
+    AccountUser.where(user: user).delete_all
+
+    assert_nil user.reload.family
+  end
+
   test "new users receive one owner-admin family with an automatic name" do
     user = User.create!(name: "Test Parent", email: "test-parent@example.com", password: "password", password_confirmation: "password", terms_of_service: true)
 
@@ -56,5 +70,11 @@ class UserTest < ActiveSupport::TestCase
 
   test "can search users by name generated column" do
     assert_equal users(:one), User.search("one").first
+  end
+
+  test "finds a user by email regardless of case or surrounding spaces" do
+    user = users(:one)
+
+    assert_equal user, User.by_email("  #{user.email.upcase} ").sole
   end
 end

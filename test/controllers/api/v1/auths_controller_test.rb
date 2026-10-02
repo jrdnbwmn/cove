@@ -10,6 +10,15 @@ class AuthsControllerTest < ActionDispatch::IntegrationTest
     assert_response :unauthorized
   end
 
+  test "authentication attempts are rate limited before credentials are checked" do
+    Api::V1::AuthsController.cache_store.stub(:increment, 11) do
+      post api_v1_auth_url, params: {email: users(:one).email, password: UNIQUE_PASSWORD}
+    end
+
+    assert_response :too_many_requests
+    assert_equal I18n.t("try_again_later"), response.parsed_body["error"]
+  end
+
   test "returns an api token on successful auth" do
     user = users(:one)
     post api_v1_auth_url, params: {email: user.email, password: UNIQUE_PASSWORD}
