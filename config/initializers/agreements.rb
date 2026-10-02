@@ -19,21 +19,24 @@ Agreement = Data.define(:id, :title, :column, :updated, :prompt_when_updated) do
   end
 end
 
-# Uncomment these to enforce user agreement changes are accepted by users
-# Set prompt_when_updated: true to ask the user to accept the new version
+# AIDEV-NOTE: These entries exist so the Terms and Privacy pages can show a
+# "Last updated" date. Nobody is prompted to re-accept because
+# `require_accepted_latest_agreements!` only checks agreements with
+# `prompt_when_updated: true`. For a future material change, bump `updated` and
+# set `prompt_when_updated: true` so every user re-accepts once.
 Rails.application.config.agreements = [
-  # Agreement.new(
-  #   id: :terms_of_service,
-  #   title: "Terms Of Service",
-  #   column: :accepted_terms_at,
-  #   updated: Time.parse("2022-01-01 00:00:00"),
-  #   prompt_when_updated: true
-  # ),
-  # Agreement.new(
-  #   id: :privacy_policy,
-  #   title: "Privacy Policy",
-  #   column: :accepted_privacy_at,
-  #   updated: Time.parse("2022-01-01 00:00:00"),
-  #   prompt_when_updated: true
-  # )
+  Agreement.new(
+    id: :terms_of_service,
+    title: "Terms of Service",
+    column: :accepted_terms_at,
+    updated: Time.zone.parse("2026-10-01 00:00:00"),
+    prompt_when_updated: false
+  ),
+  Agreement.new(
+    id: :privacy_policy,
+    title: "Privacy Policy",
+    column: :accepted_privacy_at,
+    updated: Time.zone.parse("2026-10-01 00:00:00"),
+    prompt_when_updated: false
+  )
 ]

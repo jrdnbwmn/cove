@@ -113,7 +113,7 @@ en:
       title: "Edit Family"
     deletion:
       free_description: "Deleting this Family permanently removes its data."
-      paid_description: "Deleting this Family ends Premium immediately and no refund is issued."
+      paid_description_html: "Deleting this Family ends Premium immediately and no refund is issued. %{link}"
     created: "Account was successfully created."
     created_and_switch_html: "Account was successfully created. <a class=\"underline\" href=\"%{link}\">Switch account</a>"
     updated: "Account was successfully updated."
@@ -188,6 +188,7 @@ en:
       about: "About"
       privacy: "Privacy"
       terms: "Terms"
+      refunds: "Refunds"
     account_menu:
       manage_accounts: "Manage accounts"
     account_navbar:
@@ -275,7 +276,8 @@ en:
         upgrade: "Upgrade"
         change_plan: "Change plan"
         current_plan: "Current plan"
-      no_refunds: "Cancel anytime. You keep Premium until the end of the period you have paid for. No refunds are issued for unused time."
+      no_refunds_html: "Cancel anytime. You keep Premium until the end of the period you have paid for. No refunds are issued for unused time. %{link}"
+      refund_policy: "See our refund policy."
       more_students_html: "More than %{student_limit} students? %{link}."
       more_students_contact: "Contact us"
       more_students_subject: "More students on %{product}"
@@ -322,8 +324,10 @@ en:
           body: "See what's next for each student without rebuilding the plan every morning."
     privacy:
       title: "Privacy Policy"
+    refunds:
+      title: "Refund Policy"
     terms:
-      title: "Terms Of Service"
+      title: "Terms of Service"
 
   billing:
     updated: "Billing settings have been updated successfully."
@@ -487,8 +491,9 @@ en:
           help_html: "Need to talk to someone? %{link} -- we'd love to help."
           contact_us: "Contact us"
           subject: "Question about %{product}"
-          active_until_no_refund: "Your plan will be canceled on %{date}. No refund is issued for the remaining time."
-          active_until_no_refund_undated: "Your plan will be canceled at the end of your billing period. No refund is issued for the remaining time."
+          active_until_no_refund_html: "Your plan will be canceled on %{date}. No refund is issued for the remaining time. %{link}"
+          active_until_no_refund_undated_html: "Your plan will be canceled at the end of your billing period. No refund is issued for the remaining time. %{link}"
+          refund_policy: "Refund policy"
           cancel_immediately: "Your plan will be canceled immediately. No refund is issued."
           resume: "If you change your mind, you can resume your subscription."
           pending_plan_change: "Your switch to monthly on %{date} will also be removed."
@@ -527,6 +532,8 @@ en:
     testimonial: "%{product} has made my life so much easier. I can't recommend it enough."
     show:
       title: "Checkout"
+      consent_html: "By confirming your subscription, you allow %{app} to charge your payment method for this payment and future payments in accordance with our %{terms}."
+      terms: "terms"
       account: "Account"
       billing_address: "Billing Address"
       payment_method: "Payment Method"

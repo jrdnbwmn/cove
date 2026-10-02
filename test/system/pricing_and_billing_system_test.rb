@@ -64,15 +64,18 @@ class PricingAndBillingSystemTest < ApplicationSystemTestCase
 
   test "Premium family with a pending monthly switch sees it on Billing and can keep yearly" do
     subscription = pay_subscriptions(:subscribed)
+    switch_date = 1.month.from_now
     subscription.update!(object: {"schedule" => {"id" => "sub_sched_system", "phases" => [
       {"start_date" => 1.day.ago.to_i, "items" => [{"price" => @premium_yearly.stripe_id}]},
-      {"start_date" => 1.month.from_now.to_i, "items" => [{"price" => @premium_monthly.stripe_id}]}
+      {"start_date" => switch_date.to_i, "items" => [{"price" => @premium_monthly.stripe_id}]}
     ]}})
 
-    login_as users(:subscribed), scope: :user
+    user = users(:subscribed)
+    login_as user, scope: :user
     visit billing_path
 
-    assert_text I18n.t("billing.show.pending_plan_change_title", date: I18n.l(1.month.from_now.to_date, format: :long))
+    local_switch_date = switch_date.in_time_zone(user.time_zone).to_date
+    assert_text I18n.t("billing.show.pending_plan_change_title", date: I18n.l(local_switch_date, format: :long))
     assert_no_link I18n.t("billing.subscriptions.subscription.change_plan")
 
     # The fixture subscription isn't on Stripe, so releasing is a no-op; this checks the Turbo DELETE round trip.
@@ -167,18 +170,22 @@ class PricingAndBillingSystemTest < ApplicationSystemTestCase
     login_as user, scope: :user
 
     visit pricing_path
-    assert_text I18n.t("pricing.show.no_refunds")
+    assert_link I18n.t("pricing.show.refund_policy"), href: refunds_path
 
     with_stubbed_stripe_session { visit checkout_path(plan: @premium_monthly) }
-    assert_text I18n.t("pricing.show.no_refunds")
+    assert_link I18n.t("pricing.show.refund_policy"), href: refunds_path
+    assert_selector "a[href='#{refunds_path}'][target='_blank']"
+    assert_selector "a[href='#{terms_path}'][target='_blank']"
 
     login_as users(:subscribed), scope: :user
     visit billing_subscription_cancel_path(pay_subscriptions(:subscribed))
-    assert_text I18n.t("billing.subscriptions.cancels.show.active_until_no_refund", date: "October 15, 2026")
+    assert_text "Your plan will be canceled on October 15, 2026."
+    assert_link "Refund policy", href: refunds_path
 
     pay_subscriptions(:subscribed).update!(current_period_end: nil)
     visit billing_subscription_cancel_path(pay_subscriptions(:subscribed))
-    assert_text I18n.t("billing.subscriptions.cancels.show.active_until_no_refund_undated")
+    assert_text "Your plan will be canceled at the end of your billing period."
+    assert_link "Refund policy", href: refunds_path
   end
 
   test "no trial wording appears on pricing, checkout, billing, or cancellation" do

@@ -4,7 +4,10 @@ class AccountDeletionHelperTest < ActionView::TestCase
   include AccountDeletionHelper
 
   test "paid family deletion warns that Premium ends with no refund" do
-    assert_equal I18n.t("accounts.deletion.paid_description"), family_deletion_description(accounts(:subscribed))
+    description = family_deletion_description(accounts(:subscribed))
+
+    assert_includes description, "no refund is issued"
+    assert_includes description, 'href="/refunds"'
   end
 
   test "free and complimentary family deletion only warns about data removal" do
@@ -42,6 +45,19 @@ class AccountDeletionHelperTest < ActionView::TestCase
     subscription = pay_subscriptions(:subscribed)
 
     assert_not cancels_immediately?(subscription)
-    assert_equal I18n.t("billing.subscriptions.cancels.show.active_until_no_refund", date: "October 15, 2026"), cancellation_end_notice(subscription)
+    notice = cancellation_end_notice(subscription)
+
+    assert_includes notice, "October 15, 2026"
+    assert_includes notice, 'href="/refunds"'
+  end
+
+  test "an active family without a period end date is still told the plan ends at period end" do
+    subscription = pay_subscriptions(:subscribed)
+    subscription.current_period_end = nil
+
+    notice = cancellation_end_notice(subscription)
+
+    assert_includes notice, "end of your billing period"
+    assert_includes notice, 'href="/refunds"'
   end
 end

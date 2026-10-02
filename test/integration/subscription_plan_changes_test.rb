@@ -127,9 +127,11 @@ class SubscriptionPlanChangesTest < ActionDispatch::IntegrationTest
 
   test "a parent cannot start another change while a switch is pending" do
     subscription = pay_subscriptions(:subscribed)
-    subscription.update!(object: {"schedule" => pending_schedule(from: plans(:premium_yearly), to: plans(:premium_monthly))})
-    switch_date = I18n.l(1.year.from_now.to_date, format: :long)
-    sign_in users(:subscribed)
+    schedule = pending_schedule(from: plans(:premium_yearly), to: plans(:premium_monthly))
+    subscription.update!(object: {"schedule" => schedule})
+    user = users(:subscribed)
+    switch_date = I18n.l(Time.find_zone!(user.time_zone).at(schedule["phases"].last["start_date"]).to_date, format: :long)
+    sign_in user
 
     get edit_billing_subscription_path(subscription)
     assert_redirected_to billing_path

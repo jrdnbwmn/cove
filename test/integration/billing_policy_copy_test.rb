@@ -34,12 +34,14 @@ class BillingPolicyCopyTest < ActionDispatch::IntegrationTest
       "id" => "sub_sched_pending",
       "phases" => [{"start_date" => switch_date.to_i, "items" => [{"price" => plans(:premium_monthly).stripe_id}]}]
     }})
-    sign_in users(:subscribed)
+    user = users(:subscribed)
+    sign_in user
 
     get billing_path
 
     assert_response :success
-    assert_includes response.body, I18n.t("billing.show.pending_plan_change_title", date: I18n.l(switch_date.to_date, format: :long))
+    local_switch_date = switch_date.in_time_zone(user.time_zone).to_date
+    assert_includes response.body, I18n.t("billing.show.pending_plan_change_title", date: I18n.l(local_switch_date, format: :long))
     assert_includes response.body, I18n.t("billing.show.pending_plan_change_description", price: "$12.00")
     assert_not_includes response.body, I18n.t("billing.show.renews_on", date: I18n.l(subscription.current_period_end.to_date, format: :long))
   end
@@ -52,7 +54,8 @@ class BillingPolicyCopyTest < ActionDispatch::IntegrationTest
       get path
 
       assert_response :success
-      assert_select "button[data-turbo-confirm-description=?]", "Deleting this Family ends Premium immediately and no refund is issued."
+      assert_select "button[data-turbo-confirm-description*=?]", "Deleting this Family ends Premium immediately and no refund is issued."
+      assert_select "button[data-turbo-confirm-description*=?]", %(href="#{refunds_path}")
     end
   end
 
