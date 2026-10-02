@@ -44,7 +44,7 @@ graph LR
 
   subgraph Shared application routes
     Announcements[/announcements] --> AnnouncementsController[AnnouncementsController]
-    StaticPages[/about, /terms, /privacy] --> PublicController
+    StaticPages[/about, /terms, /privacy, /refunds] --> PublicController
     Error404[/404] --> ErrorsController[ErrorsController#not_found]
     Error500[/500] --> ErrorsController
   end

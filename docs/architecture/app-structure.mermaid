@@ -39,6 +39,7 @@ graph TD
   Jobs --> LoopsRetryable[concerns/loops_retryable]
   Jobs --> LoopsWebhookEventJob[LoopsWebhookEventJob]
   Jobs --> LoopsWebhookEventPruningJob[LoopsWebhookEventPruningJob]
+  Jobs --> LoopsWebhookEventSweepJob[LoopsWebhookEventSweepJob]
 
   App --> Services[app/services]
   Services --> LoopsContactSynchronizer[LoopsContactSynchronizer]
@@ -108,7 +109,10 @@ graph TD
   LoopsWebhookEventProcessor --> User
   LoopsWebhookEventProcessor --> LoopsConfig
   RecurringYml --> LoopsWebhookEventPruningJob
+  RecurringYml --> LoopsWebhookEventSweepJob
   LoopsWebhookEventPruningJob --> LoopsWebhookEvent
+  LoopsWebhookEventSweepJob --> LoopsWebhookEvent
+  LoopsWebhookEventSweepJob --> LoopsWebhookEventJob
   PlanChangesController --> PlanChangeGuard
   PlanChangesController --> PaySubscriptionConcern
   PlanChangesController --> PlanChangeView
