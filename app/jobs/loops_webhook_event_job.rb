@@ -1,5 +1,5 @@
-# AIDEV-NOTE: Active Job retries failed event processing. Task 7's daily sweep
-# covers rows whose job was never enqueued; processed_at makes retries safe.
+# AIDEV-NOTE: Active Job retries failed event processing. LoopsWebhookEventSweepJob's
+# daily sweep covers rows whose job was never enqueued; processed_at makes retries safe.
 class LoopsWebhookEventJob < ApplicationJob
   retry_on StandardError, wait: :polynomially_longer, attempts: 10
 
