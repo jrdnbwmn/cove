@@ -34,6 +34,16 @@ module ActiveSupport
       JSON.decode(response.body)
     end
 
+    # Sends the mailer's mail through the real :loops delivery method (WebMock-stubbed
+    # in each test) instead of the test delivery method, restoring it afterwards.
+    def with_loops_delivery(mailer = LoopsDeviseMailer)
+      original_delivery_method = mailer.delivery_method
+      mailer.delivery_method = :loops
+      yield
+    ensure
+      mailer.delivery_method = original_delivery_method
+    end
+
     def sign_loops_webhook(webhook_id, timestamp, payload, secret: LOOPS_WEBHOOK_TEST_SECRET)
       key = Base64.decode64(secret.split("_")[1])
       digest = OpenSSL::HMAC.digest("SHA256", key, "#{webhook_id}.#{timestamp}.#{payload}")

@@ -182,14 +182,4 @@ class Users::PasswordsControllerTest < ActionDispatch::IntegrationTest
       end
     end
   end
-
-  private
-
-  def with_loops_delivery
-    original_delivery_method = LoopsDeviseMailer.delivery_method
-    LoopsDeviseMailer.delivery_method = :loops
-    yield
-  ensure
-    LoopsDeviseMailer.delivery_method = original_delivery_method
-  end
 end
