@@ -43,6 +43,16 @@
     <% end %>
   <% end %>
 
+  <%= render PasswordComponent.new(
+    label: resource.class.human_attribute_name(:current_password),
+    name: "user[current_password]",
+    id: "user_current_password",
+    autocomplete: "current-password",
+    error: resource.errors[:current_password].first,
+    hint: t(".current_password_hint"),
+    classes: "mb-6"
+  ) %>
+
   <% if devise_mapping.confirmable? && resource.pending_reconfirmation? %>
     <%= render AlertComponent.new(title: t(".currently_waiting_confirmation_for_email", email: resource.unconfirmed_email), variant: :warning, classes: "mb-4") %>
   <% end %>
