@@ -1,6 +1,8 @@
 require "test_helper"
 
 class Jumpstart::AccountsAccountInvitationsTest < ActionDispatch::IntegrationTest
+  include ActionMailer::TestHelper
+
   test "a full family cannot create another invitation" do
     sign_in users(:one)
 
@@ -30,5 +32,41 @@ class Jumpstart::AccountsAccountInvitationsTest < ActionDispatch::IntegrationTes
     end
 
     assert_equal "Family already has two parents", flash[:alert]
+  end
+
+  test "a parent can invite someone who already has a Cove login" do
+    account = accounts(:one)
+    user = users(:twofactor)
+    sign_in users(:noaccount)
+
+    assert_difference "AccountInvitation.count", 1 do
+      assert_enqueued_email_with AccountMailer, :invite, params: ->(params) { params[:account_invitation].email == user.email } do
+        post account_account_invitations_path(account), params: {account_invitation: {name: user.name, email: user.email}}
+      end
+    end
+
+    assert_equal user.email, account.account_invitations.last.email
+  end
+
+  test "an invited parent with an empty family joins and their old family is archived" do
+    user = users(:twofactor)
+    source = user.family
+    invitation = AccountInvitation.create!(account: accounts(:invited), invited_by: users(:user_without_billing_address), name: user.name, email: user.email)
+    sign_in user
+
+    patch account_invitation_path(invitation)
+
+    assert_equal accounts(:invited), user.reload.family
+    assert source.reload.archived_at.present?
+  end
+
+  test "an invited parent whose family has another parent is told to contact support" do
+    user = users(:one)
+    invitation = AccountInvitation.create!(account: accounts(:invited), invited_by: users(:user_without_billing_address), name: user.name, email: user.email)
+    sign_in user
+
+    patch account_invitation_path(invitation)
+
+    assert_equal "Your family has another parent. Contact support to join a new family.", flash[:alert]
   end
 end

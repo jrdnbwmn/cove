@@ -14,11 +14,6 @@ class Accounts::AccountInvitationsController < Accounts::BaseController
       return
     end
 
-    if User.by_email(invitation_params[:email]).joins(:accounts).exists?
-      redirect_to @account, alert: "That parent already belongs to a family"
-      return
-    end
-
     @account_invitation = @account.account_invitations.new(invitation_params.merge(invited_by: current_user, admin: true))
     if @account_invitation.save_and_send_invite
       redirect_to @account, notice: t(".sent", email: @account_invitation.email)

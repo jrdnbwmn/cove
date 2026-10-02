@@ -20,6 +20,21 @@ class FamilyInvitationAcceptanceTest < ActiveSupport::TestCase
     assert_equal "This invitation was sent to someone else", result.error
   end
 
+  test "a parent can't accept an invitation from an archived family" do
+    user = users(:noaccount)
+    invitation = AccountInvitation.create!(account: accounts(:invited), invited_by: users(:user_without_billing_address), name: user.name, email: user.email)
+    invitation.account.archive!
+
+    result = nil
+    assert_no_difference "AccountUser.count" do
+      result = FamilyInvitationAcceptance.new(invitation: invitation, user: user).call
+    end
+
+    assert_not_predicate result, :success?
+    assert_equal "This invitation is no longer valid", result.error
+    assert AccountInvitation.exists?(invitation.id)
+  end
+
   test "archives an existing joinable family before moving its parent" do
     user = users(:noaccount)
     source = user.family
@@ -30,6 +45,18 @@ class FamilyInvitationAcceptanceTest < ActiveSupport::TestCase
     assert_predicate result, :success?
     assert source.reload.archived_at.present?
     assert_equal accounts(:invited), user.family
+  end
+
+  test "joining a new family withdraws the old family's pending invitations" do
+    user = users(:noaccount)
+    source = user.family
+    pending_invitation = AccountInvitation.create!(account: source, invited_by: user, name: "Pending Parent", email: "pending@example.com")
+    invitation = AccountInvitation.create!(account: accounts(:invited), invited_by: users(:user_without_billing_address), name: user.name, email: user.email)
+
+    result = FamilyInvitationAcceptance.new(invitation: invitation, user: user).call
+
+    assert_predicate result, :success?
+    assert_not AccountInvitation.exists?(pending_invitation.id)
   end
 
   test "refuses when the invitee is already a member of the target family" do

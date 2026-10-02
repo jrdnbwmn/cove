@@ -62,6 +62,28 @@ class Jumpstart::AccountInvitationsTest < ActionDispatch::IntegrationTest
     end
   end
 
+  test "signing up from an invitation to a full family explains why the parent wasn't added" do
+    AccountUser.create!(account: @account, user: @invited, admin: true)
+    invitation = @account.account_invitations.create!(name: "New Invited User", email: "new@inviteduser.com", invited_by: @inviter, admin: true)
+
+    post user_registration_path(invite: invitation.token), params: {
+      user: {name: "New Invited User", email: invitation.email, password: "password", password_confirmation: "password", terms_of_service: "1"}
+    }
+
+    assert_redirected_to user_root_path
+    assert_equal "Family already has two parents", flash[:alert]
+  end
+
+  test "an invitation from an archived family is treated as not found" do
+    @account.archive!
+    sign_in @invited
+
+    get account_invitation_path(@account_invitation)
+
+    assert_redirected_to root_path
+    assert_equal "Whoops, we weren't able to find this invitation. Check with your account admin for a new invitation.", flash[:alert]
+  end
+
   test "invited-user registration enqueues the invitation and account-created emails" do
     invitation = @account.account_invitations.new(
       name: "New Invited User",

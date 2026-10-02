@@ -14,6 +14,7 @@ class FamilyInvitationAcceptance
     ApplicationRecord.transaction do
       invitation.lock!
       target = invitation.account.lock!
+      return Result.new(nil, "This invitation is no longer valid") if target.archived_at.present?
       return Result.new(nil, "Family already has two parents") if target.full?
 
       user.lock!
@@ -30,6 +31,7 @@ class FamilyInvitationAcceptance
         end
 
         source.account_users.find_by!(user: user).destroy!
+        source.account_invitations.destroy_all
         source.archive!
       end
 
