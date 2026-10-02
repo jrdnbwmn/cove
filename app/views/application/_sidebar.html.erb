@@ -8,7 +8,7 @@
 
 <%= render SidebarComponent.new(variant: :inset, storage_key: "appSidebar", width: "w-56", show_mobile_toggle: false, mobile_overlay: false) do |sidebar| %>
   <% sidebar.with_logo do %>
-    <%= link_to root_path, class: "flex items-center text-primary", aria: {label: Jumpstart.config.application_name} do %>
+    <%= link_to root_path, class: "flex items-center pl-1.25 text-primary", aria: {label: Jumpstart.config.application_name} do %>
       <%= render "application/brand" %>
     <% end %>
   <% end %>
