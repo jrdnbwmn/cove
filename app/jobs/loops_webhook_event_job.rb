@@ -1,7 +1,8 @@
-# AIDEV-NOTE: no LoopsRetryable here — there are no HTTP calls in this job,
-# so standard ActiveJob retry semantics apply. processed_at stays nil on
-# failure, leaving the row retryable by a subsequent job attempt.
+# AIDEV-NOTE: Active Job retries failed event processing. Task 7's daily sweep
+# covers rows whose job was never enqueued; processed_at makes retries safe.
 class LoopsWebhookEventJob < ApplicationJob
+  retry_on StandardError, wait: :polynomially_longer, attempts: 10
+
   def perform(event_id)
     event = LoopsWebhookEvent.find_by(id: event_id)
     return unless event

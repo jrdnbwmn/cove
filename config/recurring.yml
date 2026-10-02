@@ -3,6 +3,10 @@ production:
     class: LoopsWebhookEventPruningJob
     queue: background
     schedule: every day
+  loops_webhook_event_sweep:
+    class: LoopsWebhookEventSweepJob
+    queue: background
+    schedule: every day at 4am
 
 # production:
 #   periodic_cleanup:

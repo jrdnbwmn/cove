@@ -12,8 +12,8 @@
 | 3    | 1     | 1          | Allow inviting existing users; acceptance decides (F2, F11) | Master | ✅   |
 | 4    | 1     | 2          | A canceled subscription in its final paid period doesn't block joining (F3) | Master | ✅   |
 | 5    | 1     | 2          | Lock families in ID order; handle deadlocks gracefully (F14) | Master | ✅   |
-| 6    | 2     | 3          | Retry failed Loops webhook events; prune only processed rows (F4) | Master |      |
-| 7    | 2     | 3          | Daily sweep re-enqueues stranded Loops webhook events (F4) | Master |      |
+| 6    | 2     | 3          | Retry failed Loops webhook events; prune only processed rows (F4) | Master | ✅   |
+| 7    | 2     | 3          | Daily sweep re-enqueues stranded Loops webhook events (F4) | Master | ✅   |
 | 8    | 2     | 4          | Case-insensitive email lookup in the Loops webhook processor (F15) | Clone  |      |
 | 9    | 2     | 4          | HTTPS mailer links; fix stale render.yaml comment (F9, F16) | Clone  |      |
 | 10   | 3     | 5          | Family deletion cancels every live subscription status (F8) | Master |      |

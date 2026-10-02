@@ -1,5 +1,5 @@
 class LoopsWebhookEventPruningJob < ApplicationJob
   def perform
-    LoopsWebhookEvent.prunable.delete_all
+    LoopsWebhookEvent.prunable.where.not(processed_at: nil).delete_all
   end
 end

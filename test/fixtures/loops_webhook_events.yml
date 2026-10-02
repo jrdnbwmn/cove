@@ -19,3 +19,11 @@ stale:
   payload: {}
   processed_at: <%= 31.days.ago %>
   created_at: <%= 31.days.ago %>
+
+old_unprocessed:
+  webhook_id: wh_old_unprocessed
+  event_name: contact.unsubscribed
+  event_time: <%= 40.days.ago %>
+  payload: {}
+  processed_at:
+  created_at: <%= 40.days.ago %>

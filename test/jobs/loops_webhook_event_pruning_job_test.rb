@@ -16,6 +16,14 @@ class LoopsWebhookEventPruningJobTest < ActiveJob::TestCase
     assert LoopsWebhookEvent.exists?(loops_webhook_events(:unprocessed).id)
   end
 
+  test "old unprocessed webhook events are kept for reprocessing" do
+    event = loops_webhook_events(:old_unprocessed)
+
+    LoopsWebhookEventPruningJob.perform_now
+
+    assert LoopsWebhookEvent.exists?(event.id)
+  end
+
   test "is safe to run against an empty table" do
     LoopsWebhookEvent.delete_all
 
