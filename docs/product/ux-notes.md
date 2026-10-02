@@ -92,7 +92,6 @@ color, consistent components, and handled edge cases — not low contrast,
 dense dashboards, tiny controls, hidden actions, heavy animation, or
 decoration without purpose.
 
-- WCAG AA plus standard accessibility basics; never color alone for meaning.
 - Explain what sensitive information is collected and why (student data rule:
   `product-brief.md`). Sharing is opt-in. Privacy, export, deletion, and
   account controls are easy to find.

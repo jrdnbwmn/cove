@@ -109,7 +109,3 @@ has a non-AI path, so a parent who never uses AI still gets a complete product.
 ## Open questions
 
 - Student logins: under-13 students bring COPPA obligations. No position yet.
-- Terms, Privacy, and Refund pages (`/terms`, `/privacy`, `/refunds`) are not
-  lawyer-reviewed. Revisit the copy when student logins ship, AI launches,
-  the LLC forms, or analytics is added. Launch to-dos:
-  `docs/runbooks/launch-checklist.md`.

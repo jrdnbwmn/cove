@@ -57,7 +57,7 @@ general-purpose apps. Cove differs by:
 
 - **Design quality is the product.** Every screen should feel polished, calm,
   clear, and obvious to a stressed parent.
-- **AI prepares, the parent decides** (rules: `product-brief.md` → AI
+- **AI prepares and aids, the parent decides** (rules: `product-brief.md` → AI
   behavior).
 - **Works across homeschooling approaches** — traditional, Charlotte Mason,
   classical, unschooling, eclectic, etc. Cove adapts to the family's approach
