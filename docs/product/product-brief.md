@@ -85,5 +85,10 @@ features on the plan, never on a price or plan name.
 
 ## Open questions
 
-- **Terms of Service and refund policy pages** — required before Stripe
-  live activation.
+- **Terms, Privacy, and Refund Policy pages** — drafted and implemented at `/terms`,
+  `/privacy`, `/refunds` (COV-92); not lawyer-reviewed. Still to do by hand
+  before Stripe live activation: in the Stripe Dashboard (Settings → Public
+  details) set the Terms, Privacy, and Refund policy URLs; in the Google Cloud
+  Console OAuth consent screen set the homepage/privacy/terms links and
+  authorized domain, then submit for brand verification. Revisit the copy when
+  student logins ship, AI launches, the LLC forms, or analytics is added.

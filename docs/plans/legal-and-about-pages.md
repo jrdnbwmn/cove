@@ -7,16 +7,16 @@
 
 | Task | Phase | Checkpoint | Description | Assign | Done |
 | ---- | ----- | ---------- | ----------- | ------ | ---- |
-| 1    | 1     | 1          | Enable Terms/Privacy agreements (no re-accept prompt) | Master |      |
-| 2    | 1     | 1          | Shared legal page layout; Terms/Privacy use it | Master |      |
-| 3    | 1     | 1          | `/refunds` route, action, page + Refund Policy copy | Master |      |
-| 4    | 2     | 2          | Terms of Service copy | Clone  |      |
-| 5    | 2     | 2          | Privacy Policy rewrite | Clone  |      |
-| 6    | 2     | 2          | About page copy | Clone  |      |
-| 7    | 3     | 3          | Refunds link in footer + sidebar account menu | Clone  |      |
-| 8    | 3     | 3          | Refund + terms links on pricing and checkout | Master |      |
-| 9    | 3     | 3          | Refund links on cancel page + family-deletion notice | Master |      |
-| 10   | 3     | 4          | Screenshot check, final dates, product-brief update | Master |      |
+| 1    | 1     | 1          | Enable Terms/Privacy agreements (no re-accept prompt) | Master | ✅   |
+| 2    | 1     | 1          | Shared legal page layout; Terms/Privacy use it | Master | ✅   |
+| 3    | 1     | 1          | `/refunds` route, action, page + Refund Policy copy | Master | ✅   |
+| 4    | 2     | 2          | Terms of Service copy | Clone  | ✅   |
+| 5    | 2     | 2          | Privacy Policy rewrite | Clone  | ✅   |
+| 6    | 2     | 2          | About page copy | Clone  | ✅   |
+| 7    | 3     | 3          | Refunds link in footer + sidebar account menu | Clone  | ✅   |
+| 8    | 3     | 3          | Refund + terms links on pricing and checkout | Master | ✅   |
+| 9    | 3     | 3          | Refund links on cancel page + family-deletion notice | Master | ✅   |
+| 10   | 3     | 4          | Screenshot check, final dates, product-brief update | Master | ✅   |
 
 ## Prerequisites
 
