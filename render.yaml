@@ -25,8 +25,8 @@ services:
       - key: WEB_CONCURRENCY
         value: "0"
       # Left off: the free plan's 512MB cap can't absorb the embedded
-      # Supervisor + Dispatcher + Worker processes on top of Puma, and this
-      # app has no custom background jobs yet to justify running them.
+      # Supervisor + Dispatcher + Worker processes on top of Puma. Staging
+      # runs jobs with the in-process :async adapter, which loses jobs on restart.
       # - key: SOLID_QUEUE_IN_PUMA
       #   value: true
       - key: DATABASE_URL

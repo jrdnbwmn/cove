@@ -14,8 +14,8 @@
 | 5    | 1     | 2          | Lock families in ID order; handle deadlocks gracefully (F14) | Master | ✅   |
 | 6    | 2     | 3          | Retry failed Loops webhook events; prune only processed rows (F4) | Master | ✅   |
 | 7    | 2     | 3          | Daily sweep re-enqueues stranded Loops webhook events (F4) | Master | ✅   |
-| 8    | 2     | 4          | Case-insensitive email lookup in the Loops webhook processor (F15) | Clone  |      |
-| 9    | 2     | 4          | HTTPS mailer links; fix stale render.yaml comment (F9, F16) | Clone  |      |
+| 8    | 2     | 4          | Case-insensitive email lookup in the Loops webhook processor (F15) | Clone  | ✅   |
+| 9    | 2     | 4          | HTTPS mailer links; fix stale render.yaml comment (F9, F16) | Clone  | ✅   |
 | 10   | 3     | 5          | Family deletion cancels every live subscription status (F8) | Master |      |
 | 11   | 3     | 5          | Family deletion handles Stripe failures and failed destroys (F8) | Clone  |      |
 | 12   | 3     | 5          | Ownership transfer requires sign-in (F10) | Clone  |      |

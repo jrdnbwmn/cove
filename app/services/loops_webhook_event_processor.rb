@@ -44,7 +44,7 @@ class LoopsWebhookEventProcessor
     end
 
     if (email = contact_identity["email"]).present?
-      return User.find_by(email: email)
+      return User.by_email(email).first
     end
 
     nil
