@@ -1,4 +1,6 @@
 class ResizableImageValidator < ActiveModel::EachValidator
+  MAX_SIZE = 5.megabytes
+
   # Only allow resizable image formats
   # SVGs aren't allowed because they can contain XSS
   #
@@ -7,6 +9,11 @@ class ResizableImageValidator < ActiveModel::EachValidator
 
     if ActiveStorage.variable_content_types.exclude?(value.content_type)
       record.errors.add(attribute, :image_format_not_supported)
+    end
+
+    # AIDEV-NOTE: Only check size on a new upload so a legacy oversized avatar can't block unrelated saves.
+    if record.attachment_changes.key?(attribute.to_s) && value.blob.byte_size > MAX_SIZE
+      record.errors.add(attribute, :image_too_large, count: MAX_SIZE / 1.megabyte)
     end
   end
 end

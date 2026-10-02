@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_10_02_180949) do
+ActiveRecord::Schema[8.1].define(version: 2026_10_02_215523) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -136,6 +136,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_02_180949) do
     t.string "uid"
     t.datetime "updated_at", precision: nil, null: false
     t.index ["owner_id", "owner_type"], name: "index_connected_accounts_on_owner_id_and_owner_type"
+    t.index ["provider", "uid"], name: "index_connected_accounts_on_provider_and_uid"
   end
 
   create_table "inbound_webhooks", force: :cascade do |t|
@@ -153,6 +154,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_02_180949) do
     t.datetime "processed_at"
     t.datetime "updated_at", null: false
     t.string "webhook_id", null: false
+    t.index ["created_at"], name: "index_loops_webhook_events_on_created_at"
+    t.index ["created_at"], name: "index_loops_webhook_events_on_unprocessed_created_at", where: "(processed_at IS NULL)"
     t.index ["webhook_id"], name: "index_loops_webhook_events_on_webhook_id", unique: true
   end
 
@@ -223,6 +226,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_02_180949) do
     t.string "type"
     t.datetime "updated_at", precision: nil, null: false
     t.index ["customer_id", "processor_id"], name: "index_pay_charges_on_customer_id_and_processor_id", unique: true
+    t.index ["subscription_id"], name: "index_pay_charges_on_subscription_id"
   end
 
   create_table "pay_customers", force: :cascade do |t|

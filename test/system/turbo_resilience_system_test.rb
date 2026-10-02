@@ -243,17 +243,25 @@ class TurboResilienceSystemTest < ApplicationSystemTestCase
   end
 
   def create_remote_frame(timeout: nil)
+    page.document.synchronize do
+      connected = page.evaluate_script("!!window.Stimulus?.getControllerForElementAndIdentifier(document.body, 'turbo-resilience')")
+      raise Capybara::ExpectationNotMet, "turbo-resilience controller not connected" unless connected
+    end
+
     page.execute_script(<<~JAVASCRIPT, timeout)
       const frame = document.createElement("turbo-frame")
       frame.id = "turbo-resilience-test-frame"
-      frame.src = "/turbo-resilience-test-frame"
       if (arguments[0] !== null) frame.dataset.turboResilienceTimeout = arguments[0]
       document.body.append(frame)
     JAVASCRIPT
   end
 
   def load_remote_frame
-    page.execute_script("document.querySelector('turbo-frame#turbo-resilience-test-frame').reload()")
+    page.execute_script(<<~JAVASCRIPT)
+      const frame = document.querySelector('turbo-frame#turbo-resilience-test-frame')
+      frame.src = "/turbo-resilience-test-frame"
+      frame.reload()
+    JAVASCRIPT
   end
 
   def set_registration_form_timeout(value)

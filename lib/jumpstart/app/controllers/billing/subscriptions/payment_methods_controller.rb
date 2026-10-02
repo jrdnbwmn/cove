@@ -26,6 +26,6 @@ class Billing::Subscriptions::PaymentMethodsController < ApplicationController
   private
 
   def set_subscription
-    @subscription = current_account.pay_subscriptions.find_by_prefix_id(params[:subscription_id])
+    @subscription = current_account.pay_subscriptions.find_by_prefix_id!(params[:subscription_id])
   end
 end

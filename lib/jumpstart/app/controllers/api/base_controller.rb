@@ -21,6 +21,10 @@ class Api::BaseController < ActionController::API
 
   private
 
+  def render_rate_limited
+    render json: {error: I18n.t("try_again_later")}, status: :too_many_requests
+  end
+
   def require_api_authentication
     if (user = user_from_token)
       sign_in user, store: false
@@ -29,7 +33,7 @@ class Api::BaseController < ActionController::API
     end
   end
 
-  def user_from_token = api_token&.tap { it.touch(:last_used_at) }&.user
+  def user_from_token = api_token&.tap { it.touch_last_used! }&.user
 
   def api_token
     @_api_token ||= ApiToken.find_by(token: token_from_header)

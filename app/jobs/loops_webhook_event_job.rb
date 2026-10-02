@@ -2,6 +2,7 @@
 # daily sweep covers rows whose job was never enqueued; processed_at makes retries safe.
 class LoopsWebhookEventJob < ApplicationJob
   retry_on StandardError, wait: :polynomially_longer, attempts: 10
+  queue_with_priority 10
 
   def perform(event_id)
     event = LoopsWebhookEvent.find_by(id: event_id)

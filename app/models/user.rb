@@ -8,10 +8,17 @@ class User < ApplicationRecord
   # needs a re-issued token.
   after_update :revoke_api_tokens, if: :saved_change_to_encrypted_password?
 
-  scope :by_email, ->(email) { where("LOWER(email) = ?", email.to_s.downcase) }
+  scope :by_email, ->(email) { where(email: email.to_s.strip.downcase) }
 
   def family
-    accounts.active.first
+    # AIDEV-NOTE: This is memoized per model instance only; callers that change
+    # membership mid-request must reload before asking again.
+    @family ||= accounts.active.first
+  end
+
+  def reload(*)
+    remove_instance_variable(:@family) if defined?(@family)
+    super
   end
 
   def must_transfer_family_before_deletion?

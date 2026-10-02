@@ -1,5 +1,5 @@
 class AnnouncementsController < ApplicationController
-  before_action :mark_as_read, if: :user_signed_in?
+  before_action :mark_as_read, if: :user_signed_in?, only: :index
 
   rescue_from ActiveRecord::RecordNotFound do
     redirect_to announcements_path
@@ -16,6 +16,6 @@ class AnnouncementsController < ApplicationController
   private
 
   def mark_as_read
-    current_user.update(announcements_read_at: Time.current)
+    current_user.update_column(:announcements_read_at, Time.current)
   end
 end

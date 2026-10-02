@@ -4,7 +4,9 @@ class Users::SessionsController < Devise::SessionsController
   # We need to intercept the Sessions#create action for processing OTP
   prepend_before_action :authenticate_with_two_factor, only: [:create]
 
-  rate_limit to: 10, within: 3.minutes, only: :create, with: -> { redirect_to new_user_session_path, alert: I18n.t("try_again_later") }
+  # AIDEV-NOTE: This must be prepended after the OTP filter so password and OTP
+  # guesses are counted before authenticate_with_two_factor can halt the request.
+  rate_limit to: 10, within: 3.minutes, only: :create, prepend: true, with: -> { redirect_to new_user_session_path, alert: I18n.t("try_again_later") }
 
   def authenticate_with_two_factor
     if sign_in_params[:email]

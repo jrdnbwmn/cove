@@ -211,6 +211,22 @@ class AccountTest < ActiveSupport::TestCase
     assert_equal "free", accounts(:one).plan_status
   end
 
+  test "checking premium status repeatedly only queries once" do
+    account = accounts(:one).reload
+
+    assert_queries_count(1) { 3.times { account.paid_premium? } }
+  end
+
+  test "reload picks up a new subscription" do
+    account = accounts(:one)
+    assert_not account.paid_premium?
+
+    customer = account.set_payment_processor(:fake_processor, allow_fake: true)
+    customer.subscriptions.create!(name: "default", processor_id: "fake_new", processor_plan: plans(:premium_monthly).fake_processor_id, quantity: 1, status: "active")
+
+    assert account.reload.paid_premium?
+  end
+
   test "a paid subscription takes precedence over complimentary Premium" do
     account = accounts(:subscribed)
     account.update!(complimentary_premium: true, complimentary_premium_note: "Converted tester")
@@ -251,7 +267,7 @@ class AccountTest < ActiveSupport::TestCase
 
     account.pay_subscriptions.first.update!(status: "unpaid")
 
-    assert account.free?
+    assert account.reload.free?
     assert_equal 2, account.students_allowed
     assert_equal 14, account.student_limit
   end

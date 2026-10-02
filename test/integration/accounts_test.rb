@@ -61,4 +61,25 @@ class Jumpstart::AccountsTest < ActionDispatch::IntegrationTest
     assert_not_predicate account.reload, :complimentary_premium?
     assert_nil account.complimentary_premium_note
   end
+
+  test "family settings page checks admin status once" do
+    account = accounts(:one)
+    account.account_invitations.create!(name: "Pending Parent", email: "pending@example.com", invited_by: users(:noaccount))
+    account_user_queries = []
+
+    sign_in users(:noaccount)
+
+    subscriber = ActiveSupport::Notifications.subscribe("sql.active_record") do |_event, _started, _finished, _id, payload|
+      account_user_queries << payload[:sql] if payload[:sql].match?(/FROM "account_users"/i)
+    end
+
+    get account_path(account)
+
+    assert_response :success
+    assert_operator account_user_queries.count, :<=, 2
+    assert_select "a[href='#{edit_account_path(account)}']", text: I18n.t("accounts.show.edit_account")
+    assert_select "a[href='#{new_account_account_invitation_path(account)}']", text: I18n.t("accounts.show.invite")
+  ensure
+    ActiveSupport::Notifications.unsubscribe(subscriber) if subscriber
+  end
 end

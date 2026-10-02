@@ -60,7 +60,16 @@ class Account < ApplicationRecord
   end
 
   def paid_premium?
-    billable_subscriptions.exists?
+    # AIDEV-NOTE: This is memoized per model instance only; callers that change
+    # subscriptions mid-request must reload before asking again.
+    return @paid_premium if defined?(@paid_premium)
+
+    @paid_premium = billable_subscriptions.exists?
+  end
+
+  def reload(*)
+    remove_instance_variable(:@paid_premium) if defined?(@paid_premium)
+    super
   end
 
   def free?

@@ -1,4 +1,5 @@
 <% Current.meta_tags.set(title: @account.name) %>
+<% is_admin = account_admin?(@account, current_user) %>
 
 <% content_for :sidebar, render(partial: "account_navbar") %>
 
@@ -9,7 +10,7 @@
   </div>
 
   <div class="shrink-0 mt-3 sm:mt-0 sm:text-right">
-    <%= render ButtonComponent.new(text: t(".edit_account"), variant: :secondary, href: edit_account_path(@account)) if !@account.personal? && account_admin?(@account, current_user) %>
+    <%= render ButtonComponent.new(text: t(".edit_account"), variant: :secondary, href: edit_account_path(@account)) if !@account.personal? && is_admin %>
   </div>
 </div>
 
@@ -23,7 +24,7 @@
     <% table.with_column(label: "") %>
     <% table.with_column(label: "", align: :right) %>
 
-    <% @account.account_users.includes(:user).each do |account_user| %>
+    <% @account.account_users.includes(user: {avatar_attachment: :blob}).each do |account_user| %>
       <% user = account_user.user %>
       <% table.with_row do |row| %>
         <% row.with_cell(primary: true) do %>
@@ -57,7 +58,7 @@
           <% end %>
         <% end %>
         <% row.with_cell(align: :right) do %>
-          <%= render ButtonComponent.new(text: t(".edit"), variant: :secondary, size: :sm, href: edit_account_account_user_path(@account, account_user)) if account_admin?(@account, current_user) %>
+          <%= render ButtonComponent.new(text: t(".edit"), variant: :secondary, size: :sm, href: edit_account_account_user_path(@account, account_user)) if is_admin %>
         <% end %>
       <% end %>
     <% end %>
@@ -82,16 +83,16 @@
         <% end %>
         <% row.with_cell(align: :right) do %>
           <div class="flex gap-2 justify-end">
-            <%= button_to t(".resend_invite"), resend_account_account_invitation_path(@account, account_invitation), class: "inline-flex items-center justify-center gap-1.5 font-medium whitespace-nowrap transition-all duration-100 ease-in-out select-none focus-visible:outline-2 focus-visible:outline-offset-2 disabled:cursor-not-allowed disabled:opacity-50 px-3.5 py-2 text-sm rounded-[var(--radius)] border border-black/10 bg-white/90 text-neutral-800 shadow-xs hover:bg-muted focus-visible:outline-neutral-600 dark:border-white/10 dark:bg-neutral-700/50 dark:text-neutral-50 dark:hover:bg-neutral-700/75 dark:focus-visible:outline-neutral-200" if account_admin?(@account, current_user) %>
-            <%= render ButtonComponent.new(text: t(".copy_link"), variant: :secondary, size: :sm, data: {controller: "clipboard", clipboard_text: account_invitation_url(account_invitation)}) if account_admin?(@account, current_user) %>
-            <%= render ButtonComponent.new(text: t(".edit"), variant: :secondary, size: :sm, href: edit_account_account_invitation_path(@account, account_invitation)) if account_admin?(@account, current_user) %>
+            <%= button_to t(".resend_invite"), resend_account_account_invitation_path(@account, account_invitation), class: "inline-flex items-center justify-center gap-1.5 font-medium whitespace-nowrap transition-all duration-100 ease-in-out select-none focus-visible:outline-2 focus-visible:outline-offset-2 disabled:cursor-not-allowed disabled:opacity-50 px-3.5 py-2 text-sm rounded-[var(--radius)] border border-black/10 bg-white/90 text-neutral-800 shadow-xs hover:bg-muted focus-visible:outline-neutral-600 dark:border-white/10 dark:bg-neutral-700/50 dark:text-neutral-50 dark:hover:bg-neutral-700/75 dark:focus-visible:outline-neutral-200" if is_admin %>
+            <%= render ButtonComponent.new(text: t(".copy_link"), variant: :secondary, size: :sm, data: {controller: "clipboard", clipboard_text: account_invitation_url(account_invitation)}) if is_admin %>
+            <%= render ButtonComponent.new(text: t(".edit"), variant: :secondary, size: :sm, href: edit_account_account_invitation_path(@account, account_invitation)) if is_admin %>
           </div>
         <% end %>
       <% end %>
     <% end %>
   <% end %>
 
-  <%= render ButtonComponent.new(text: t(".invite"), variant: :secondary, href: new_account_account_invitation_path(@account), classes: "mt-2") if @account.account_users_count < 2 && account_admin?(@account, current_user) %>
+  <%= render ButtonComponent.new(text: t(".invite"), variant: :secondary, href: new_account_account_invitation_path(@account), classes: "mt-2") if @account.account_users_count < 2 && is_admin %>
   <% if @account.owner?(current_user) %>
     <%= button_to t(".delete_family"), account_path(@account), method: :delete, class: "mt-2", data: {turbo_confirm: t("are_you_sure"), turbo_confirm_description: family_deletion_description(@account)} %>
   <% end %>

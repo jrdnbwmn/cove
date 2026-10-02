@@ -1,6 +1,7 @@
 class Api::V1::UsersController < Api::BaseController
   skip_before_action :require_api_authentication, only: [:create]
   before_action :configure_permitted_parameters, only: [:create]
+  rate_limit to: 10, within: 3.minutes, only: :create, with: -> { render_rate_limited }
 
   def create
     user = User.new(devise_parameter_sanitizer.sanitize(:sign_up))
