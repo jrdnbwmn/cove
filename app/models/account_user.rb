@@ -21,7 +21,7 @@ class AccountUser < ApplicationRecord
   def family_has_capacity
     return unless account&.full?
 
-    errors.add(:base, :full)
+    errors.add(:base, I18n.t("family_invitation_acceptance.full"))
   end
 
   def enqueue_plan_status_sync

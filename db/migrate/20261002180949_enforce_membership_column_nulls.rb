@@ -1,5 +1,10 @@
 class EnforceMembershipColumnNulls < ActiveRecord::Migration[8.1]
   def up
+    orphans = select_value("SELECT COUNT(*) FROM account_users WHERE account_id IS NULL OR user_id IS NULL").to_i
+    if orphans.positive?
+      raise "#{orphans} account_users row(s) have a NULL account_id or user_id. Review and fix or delete them by hand, then re-run this migration."
+    end
+
     execute <<~SQL
       UPDATE accounts
       SET account_users_count = (

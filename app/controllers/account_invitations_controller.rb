@@ -23,7 +23,7 @@ class AccountInvitationsController < ApplicationController
   private
 
   def set_account_invitation
-    @account_invitation = AccountInvitation.joins(:account).merge(Account.active).find_by!(token: params[:id])
+    @account_invitation = AccountInvitation.for_active_account.find_by!(token: params[:id])
   rescue ActiveRecord::RecordNotFound
     redirect_to root_path, alert: t(".not_found")
   end

@@ -18,7 +18,7 @@ class Users::RegistrationsController < Devise::RegistrationsController
     self.resource = resource_class.new_with_session(hash, session)
 
     # Registering to accept an invitation should display the invitation on sign up
-    if params[:invite] && (invite = AccountInvitation.joins(:account).merge(Account.active).find_by(token: params[:invite]))
+    if params[:invite] && (invite = AccountInvitation.for_active_account.find_by(token: params[:invite]))
       @account_invitation = invite
 
       # Use name/email from the invite if not already provided. Email defaults to "" so it must use a presence check.

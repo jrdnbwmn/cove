@@ -7,6 +7,8 @@ class AccountInvitation < ApplicationRecord
   belongs_to :invited_by, class_name: "User", optional: true
   has_secure_token
 
+  scope :for_active_account, -> { joins(:account).merge(Account.active) }
+
   validates :name, :email, presence: true
   validates :email, uniqueness: {scope: :account_id, message: :invited}
 

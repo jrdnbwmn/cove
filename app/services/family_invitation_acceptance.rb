@@ -18,7 +18,7 @@ class FamilyInvitationAcceptance
       source = user.family
       [target, source].compact.uniq.sort_by(&:id).each(&:lock!)
 
-      return Result.new(nil, I18n.t("family_invitation_acceptance.archived")) if target.archived_at.present?
+      return Result.new(nil, I18n.t("family_invitation_acceptance.archived")) if target.archived?
       return Result.new(nil, I18n.t("family_invitation_acceptance.full")) if target.full?
 
       return Result.new(nil, I18n.t("family_invitation_acceptance.already_member")) if source == target

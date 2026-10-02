@@ -715,8 +715,6 @@ en:
           attributes:
             user:
               other_family: "already belongs to a family"
-            base:
-              full: "Family already has two parents"
             admin:
               cannot_be_removed: "role cannot be removed for the account owner"
         plan:

@@ -2,6 +2,9 @@ class Account < ApplicationRecord
   include Billing, Domains, Transfer, Types
 
   FREE_STUDENT_LIMIT = 2
+  MAX_PARENTS = 2
+  # Pay statuses of a subscription that has ended; everything else can still bill and so needs cancelling on delete.
+  ENDED_SUBSCRIPTION_STATUSES = %w[canceled incomplete_expired].freeze
 
   scope :active, -> { where(archived_at: nil) }
   scope :archived, -> { where.not(archived_at: nil) }
@@ -24,7 +27,16 @@ class Account < ApplicationRecord
   end
 
   def full?
-    account_users_count >= 2
+    account_users_count >= MAX_PARENTS
+  end
+
+  # Pending invitations hold a seat, so a family can't invite past its parent limit.
+  def invitations_full?
+    account_users_count + account_invitations.count >= MAX_PARENTS
+  end
+
+  def archived?
+    archived_at.present?
   end
 
   def archive!
@@ -89,12 +101,16 @@ class Account < ApplicationRecord
     !respond_to?(:students) || students.none?
   end
 
+  # AIDEV-NOTE: Three deliberately different subscription sets. Billable = paying now (Pay's `active` scope also
+  # covers trials and paid-through cancellations) and drives Premium. Live = anything not ended, which deletion must
+  # cancel. Renewing = billable and not set to cancel, which is what blocks joining another family. Plan changes
+  # (PlanChangeGuard) ask a different question about one subscription, so they don't share these.
   def billable_subscriptions
     pay_subscriptions.active.or(pay_subscriptions.past_due)
   end
 
   def live_subscriptions
-    pay_subscriptions.where.not(status: %w[canceled incomplete_expired])
+    pay_subscriptions.where.not(status: ENDED_SUBSCRIPTION_STATUSES)
   end
 
   # AIDEV-NOTE: A canceled-but-still-paid subscription stays with the archived

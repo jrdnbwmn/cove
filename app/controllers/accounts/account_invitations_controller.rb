@@ -9,7 +9,7 @@ class Accounts::AccountInvitationsController < Accounts::BaseController
   def new = @account_invitation = AccountInvitation.new
 
   def create
-    if @account.account_users_count + @account.account_invitations.count >= 2
+    if @account.invitations_full?
       redirect_to @account, alert: t("family_invitation_acceptance.full")
       return
     end

@@ -333,6 +333,24 @@ class AccountTest < ActiveSupport::TestCase
     assert_not_includes Account.active, account
   end
 
+  test "a pending invitation holds a seat so a family can't invite past two parents" do
+    account = accounts(:invited)
+
+    assert_predicate account, :invitations_full?
+
+    account.account_invitations.destroy_all
+
+    assert_not_predicate account.reload, :invitations_full?
+  end
+
+  test "a family reports whether it is archived" do
+    account = accounts(:one)
+
+    assert_not_predicate account, :archived?
+    account.archive!
+    assert_predicate account, :archived?
+  end
+
   test "parents are the family admins" do
     assert_equal accounts(:company).admins.order(:id).to_a, accounts(:company).parents.order(:id).to_a
   end

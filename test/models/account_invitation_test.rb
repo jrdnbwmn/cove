@@ -26,6 +26,14 @@ class AccountInvitationTest < ActiveSupport::TestCase
     end
   end
 
+  test "invitations to archived families are not found for an active account" do
+    assert_includes AccountInvitation.for_active_account, @account_invitation
+
+    @account.archive!
+
+    assert_not_includes AccountInvitation.for_active_account, @account_invitation
+  end
+
   test "reject" do
     assert_difference "AccountInvitation.count", -1 do
       @account_invitation.reject!
