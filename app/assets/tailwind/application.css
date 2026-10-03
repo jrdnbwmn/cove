@@ -159,6 +159,18 @@
 @import "./themes/light.css" layer(theme);
 @import "./theme/_tokens.css";
 
+/* AIDEV-NOTE: Student colors. One token per Student::COLORS key; views reference var(--student-<key>), never hex. Each measures >=3:1 against white (3.9-5.2) and the cream --background (3.7-4.9), so a dot/swatch is visible on cards and the page, and the white check mark on the form swatch stays visible. */
+:root {
+  --student-sage: #5F8A6B;
+  --student-sea: #3F8A8C;
+  --student-sky: #4F83B0;
+  --student-lavender: #8174B0;
+  --student-rose: #B5677A;
+  --student-clay: #B0654A;
+  --student-ochre: #9A7A1E;
+  --student-slate: #5E6E82;
+}
+
 @import "./components/base.css" layer(components);
 @import "./components/alert.css" layer(components);
 @import "./components/animation.css" layer(components);

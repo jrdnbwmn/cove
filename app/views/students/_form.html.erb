@@ -1,0 +1,17 @@
+<%= form_with model: student, class: "flex flex-col gap-y-5" do |form| %>
+  <%= render FormFieldComponent.new(label: t("students.form.name"), name: "student[name]", required: true, error: student.errors[:name].first) do |field| %>
+    <% field.with_input do %>
+      <%= form.text_field :name, required: true, autofocus: true, maxlength: Student::MAX_LENGTH, autocomplete: "off", class: class_names("form-control", error: student.errors[:name].any?) %>
+    <% end %>
+  <% end %>
+
+  <%= render FormFieldComponent.new(label: t("students.form.grade_level"), name: "student[grade_level]", error: student.errors[:grade_level].first) do |field| %>
+    <% field.with_input do %>
+      <%= form.text_field :grade_level, maxlength: Student::MAX_LENGTH, autocomplete: "off", placeholder: t("students.form.grade_level_placeholder"), class: class_names("form-control", error: student.errors[:grade_level].any?) %>
+    <% end %>
+  <% end %>
+
+  <%= render "students/color_picker", form: form, student: student %>
+
+  <%= render ButtonComponent.new(text: t(student.new_record? ? "students.form.add" : "students.form.save"), type: "submit", full_width: true, classes: "sm:w-auto sm:self-start") %>
+<% end %>

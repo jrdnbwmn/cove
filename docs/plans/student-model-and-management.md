@@ -13,9 +13,9 @@
 | 4 | 1 — Data foundation | 2 | Add copy, privacy filtering, and demo students | Master | ✅ |
 | 5 | 2 — Modal foundation | 3 | Add a custom trigger slot to `UiModalComponent` | Master | ✅ |
 | 6 | 2 — Modal foundation | 3 | Document the modal trigger slot | Master | ✅ |
-| 7 | 3 — Add and edit | 4 | Add student routes and create/update actions | Master | |
-| 8 | 3 — Add and edit | 4 | Build the framed add/edit forms and color picker | subagent | |
-| 9 | 3 — Add and edit | 4 | Replace the placeholder with the active-student list | subagent | |
+| 7 | 3 — Add and edit | 4 | Add student routes and create/update actions | Master | ✅ |
+| 8 | 3 — Add and edit | 4 | Build the framed add/edit forms and color picker | subagent | ✅ |
+| 9 | 3 — Add and edit | 4 | Replace the placeholder with the active-student list | subagent | ✅ |
 | 10 | 4 — Archive and delete | 5 | Add archive and restore actions | Master | |
 | 11 | 4 — Archive and delete | 5 | Add permanent deletion and confirmation | Master | |
 | 12 | 4 — Archive and delete | 5 | Complete archived views and verify modal navigation | Master | |

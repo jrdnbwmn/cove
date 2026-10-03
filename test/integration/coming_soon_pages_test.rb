@@ -43,16 +43,14 @@ class ComingSoonPagesTest < ActionDispatch::IntegrationTest
     assert_redirected_to new_user_session_path
   end
 
-  test "shows a coming-soon empty state for signed-in users on students" do
+  test "shows the students page instead of a coming-soon placeholder for signed-in users" do
     sign_in users(:one)
 
     get students_path
 
     assert_response :success
     assert_select "h1", text: "Students"
-    assert_select "h2", text: "Coming soon"
-    assert_select "p", text: "Student management will be available here."
-    assert_select "svg circle[cx='9'][cy='7'][r='4']"
+    assert_select "h2", text: "Coming soon", count: 0
   end
 
   test "redirects guests to sign in for support" do
