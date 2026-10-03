@@ -417,7 +417,8 @@ modal.
 
 **States:** Supports dismissible dialogs, non-dismissible confirmations, lazy
 content, and keyboard/backdrop close behavior. It uses `ui-modal`, leaving
-Jumpstart's `modal` controller intact.
+Jumpstart's `modal` controller intact. Lazy loading replaces only the modal
+content region, preserving the title and close control.
 
 **Preview:** `UiModalComponentPreview`
 

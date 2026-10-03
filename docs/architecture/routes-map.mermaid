@@ -29,6 +29,11 @@ graph LR
     PlanChange[/billing/subscriptions/:subscription_id/plan_change] --> PlanChangesController[Billing::Subscriptions::PlanChangesController#show, #destroy]
   end
 
+  subgraph Students
+    Students[/students] --> StudentsController[StudentsController#index, #new, #create, #edit, #update, #delete, #destroy]
+    StudentArchive[POST/DELETE /students/:student_id/archive] --> StudentArchivesController[Students::ArchivesController#create, #destroy]
+  end
+
   %% Account collection, creation, and switching routes are intentionally absent.
 
   subgraph API v1 JSON
