@@ -1,3 +1,11 @@
 <%= turbo_frame_tag "modal-lazy-content" do %>
   <%= render "form", student: @student %>
+
+  <%# AIDEV-NOTE: Outside the edit form on purpose: forms can't nest, and these are separate actions. %>
+  <div class="mt-6 flex flex-col gap-3 border-t border-border pt-5 sm:flex-row sm:items-center sm:justify-between">
+    <%= form_with url: student_archive_path(@student), method: :post do %>
+      <%= render ButtonComponent.new(text: t("students.form.archive", name: @student.name), variant: :secondary, type: "submit", full_width: true) %>
+    <% end %>
+    <%= render ButtonComponent.new(text: t("students.form.delete", name: @student.name), variant: :ghost, href: delete_student_path(@student), classes: "text-red-600") %>
+  </div>
 <% end %>

@@ -85,6 +85,15 @@ export default class extends Controller {
     if (!frame) return
 
     event.preventDefault()
+
+    // A successful frame form redirects to a page without the frame (e.g. a modal form saving and
+    // redirecting to the list). That is success, not a missing frame: visit it as a full page.
+    const response = event.detail.response
+    if (response?.redirected && response.ok) {
+      event.detail.visit(response)
+      return
+    }
+
     this.showFrameFailure(frame)
   }
 

@@ -1,0 +1,37 @@
+<%# locals: (student:, archived: false) %>
+<div data-student="<%= student.id %>">
+  <%= render CardComponent.new do |card| %>
+    <% card.with_body do %>
+      <%# AIDEV-NOTE: Archived cards mute only the identity block; action controls stay at full contrast. %>
+      <div class="flex items-start gap-3 <%= "opacity-60" if archived %>">
+        <%= render "students/color_dot", student: student %>
+        <div class="min-w-0">
+          <p class="font-medium break-words"><%= student.name %></p>
+          <% if student.grade_level.present? %>
+            <p class="text-sm text-muted-foreground break-words"><%= student.grade_level %></p>
+          <% end %>
+        </div>
+      </div>
+    <% end %>
+    <% card.with_footer do %>
+      <% if archived %>
+        <div class="flex flex-wrap items-center gap-2">
+          <%= form_with url: student_archive_path(student), method: :delete do %>
+            <%= render ButtonComponent.new(text: t("students.index.restore"), variant: :secondary, size: :sm, type: "submit") %>
+          <% end %>
+          <%= render UiModalComponent.new(title: t("students.index.delete_title", name: student.name), lazy_load: true, turbo_frame_src: delete_student_path(student)) do |modal| %>
+            <% modal.with_trigger do %>
+              <%= render ButtonComponent.new(text: t("students.index.delete"), variant: :ghost, size: :sm, classes: "text-red-600", data: {action: "click->ui-modal#open:prevent"}) %>
+            <% end %>
+          <% end %>
+        </div>
+      <% else %>
+        <%= render UiModalComponent.new(title: t("students.index.edit_title", name: student.name), lazy_load: true, turbo_frame_src: edit_student_path(student)) do |modal| %>
+          <% modal.with_trigger do %>
+            <%= render ButtonComponent.new(text: t("students.index.edit"), variant: :secondary, size: :sm, data: {action: "click->ui-modal#open:prevent"}) %>
+          <% end %>
+        <% end %>
+      <% end %>
+    <% end %>
+  <% end %>
+</div>

@@ -1,10 +1,13 @@
 class StudentsController < ApplicationController
   before_action :authenticate_user!
-  before_action :set_student, only: %i[edit update]
+  before_action :set_student, only: %i[edit update delete destroy]
   before_action :redirect_archived_student, only: %i[edit update]
 
   def index
     @students = Current.account.students.active.ordered
+    @archived_students = Current.account.students.archived.ordered
+    @archived_count = @archived_students.size
+    @show_archived = params[:archived] == "1" && @archived_count.positive?
   end
 
   def new
@@ -34,6 +37,14 @@ class StudentsController < ApplicationController
     end
   rescue ActiveRecord::RecordNotUnique
     render_duplicate_name(:edit)
+  end
+
+  def delete
+  end
+
+  def destroy
+    @student.destroy!
+    redirect_to students_path, status: :see_other, notice: t("students.notices.deleted", name: @student.name)
   end
 
   private

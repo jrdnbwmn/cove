@@ -1,0 +1,15 @@
+<%= turbo_frame_tag "modal-lazy-content" do %>
+  <h2 class="font-sans text-lg font-semibold"><%= t(".heading", name: @student.name) %></h2>
+  <p class="mt-2 text-muted-foreground"><%= t(".body", name: @student.name) %></p>
+
+  <div class="mt-6 flex flex-col gap-3 sm:flex-row sm:justify-end">
+    <% if @student.archived? %>
+      <%= render ButtonComponent.new(text: t(".cancel"), variant: :secondary, data: {action: "click->ui-modal#close:prevent"}) %>
+    <% else %>
+      <%= render ButtonComponent.new(text: t(".cancel"), variant: :secondary, href: edit_student_path(@student)) %>
+    <% end %>
+    <%= form_with url: student_path(@student), method: :delete do %>
+      <%= render ButtonComponent.new(text: t(".confirm", name: @student.name), variant: :destructive, type: "submit", full_width: true) %>
+    <% end %>
+  </div>
+<% end %>

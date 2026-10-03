@@ -198,6 +198,72 @@ class StudentsTest < ActionDispatch::IntegrationTest
     assert_equal "Outsider", @other_family_student.reload.name
   end
 
+  test "the edit form offers archive and delete for an active student" do
+    sign_in users(:one)
+
+    get edit_student_path(@maya)
+
+    assert_select "form[action='#{student_archive_path(@maya)}'][method='post'] button", text: /Archive Maya/
+    assert_select "a[href='#{delete_student_path(@maya)}']", text: "Delete Maya"
+  end
+
+  test "a parent sees a delete confirmation inside the modal frame" do
+    sign_in users(:one)
+
+    get delete_student_path(@maya)
+
+    assert_response :success
+    assert_select "turbo-frame#modal-lazy-content"
+    assert_match "Delete Maya?", response.body
+    assert_match "permanently removes Maya", response.body
+    assert_select "form[action='#{student_path(@maya)}'] input[name='_method'][value='delete']"
+    assert_select "a[href='#{edit_student_path(@maya)}']", text: "Cancel"
+  end
+
+  test "cancelling the confirmation for an archived student closes the modal" do
+    sign_in users(:one)
+
+    get delete_student_path(students(:archived))
+
+    assert_response :success
+    assert_select "a[href='#{edit_student_path(students(:archived))}']", count: 0
+    assert_select "button[data-action='click->ui-modal#close:prevent']", text: "Cancel"
+  end
+
+  test "a parent can permanently delete a student" do
+    sign_in users(:one)
+
+    assert_difference -> { @family.students.count }, -1 do
+      delete student_path(@maya)
+    end
+
+    assert_redirected_to students_path
+    assert_equal "Maya deleted.", flash[:notice]
+    assert_not Student.exists?(@maya.id)
+  end
+
+  test "the other parent can delete a student and an archived student can be deleted" do
+    sign_in users(:two)
+
+    delete student_path(students(:archived))
+
+    assert_redirected_to students_path
+    assert_not Student.exists?(students(:archived).id)
+  end
+
+  test "another family's student cannot be deleted or confirmed for deletion" do
+    sign_in users(:one)
+
+    get delete_student_path(@other_family_student)
+    assert_response :not_found
+
+    sign_in users(:one)
+    assert_no_difference -> { Student.count } do
+      delete student_path(@other_family_student)
+    end
+    assert_response :not_found
+  end
+
   private
 
   # AIDEV-NOTE: Simulates two parents saving the same name at once: with the friendly

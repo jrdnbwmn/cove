@@ -18,27 +18,29 @@
   <% else %>
     <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
       <% @students.each do |student| %>
-        <%= render CardComponent.new do |card| %>
-          <% card.with_body do %>
-            <div class="flex items-start gap-3">
-              <%= render "color_dot", student: student %>
-              <div class="min-w-0">
-                <p class="font-medium break-words"><%= student.name %></p>
-                <% if student.grade_level.present? %>
-                  <p class="text-sm text-muted-foreground break-words"><%= student.grade_level %></p>
-                <% end %>
-              </div>
-            </div>
-          <% end %>
-          <% card.with_footer do %>
-            <%= render UiModalComponent.new(title: t(".edit_title", name: student.name), lazy_load: true, turbo_frame_src: edit_student_path(student)) do |modal| %>
-              <% modal.with_trigger do %>
-                <%= render ButtonComponent.new(text: t(".edit"), variant: :secondary, size: :sm, data: {action: "click->ui-modal#open:prevent"}) %>
-              <% end %>
-            <% end %>
-          <% end %>
-        <% end %>
+        <%= render "student_card", student: student %>
       <% end %>
     </div>
+  <% end %>
+
+  <% if @archived_count.positive? %>
+    <p class="mt-6">
+      <% if @show_archived %>
+        <%= link_to t(".hide_archived"), students_path, class: "text-sm underline" %>
+      <% else %>
+        <%= link_to t(".show_archived", count: @archived_count), students_path(archived: 1), class: "text-sm underline" %>
+      <% end %>
+    </p>
+  <% end %>
+
+  <% if @show_archived %>
+    <section class="mt-6" aria-labelledby="archived-heading">
+      <h2 id="archived-heading" class="mb-4 font-sans text-lg font-semibold"><%= t(".archived_heading") %></h2>
+      <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <% @archived_students.each do |student| %>
+          <%= render "student_card", student: student, archived: true %>
+        <% end %>
+      </div>
+    </section>
   <% end %>
 </div>
