@@ -19,9 +19,28 @@ class StudentFormsTest < ActionDispatch::IntegrationTest
   test "the add form offers the next color pre-selected and an Add student button" do
     get new_student_path
 
-    assert_select "button[type=submit]", text: /Add student/
+    assert_select "button[type=submit][form='student-form']", text: /Add student/
     assert_select "input[type=radio][name='student[color]'][checked]", 1
     assert_select "input[type=radio][name='student[color]'][value='#{Student.next_color_for(@family)}'][checked]"
+  end
+
+  test "the add form puts Cancel then the main action on the right and has no archive or delete" do
+    get new_student_path
+
+    assert_select "form#student-form button[type=submit]", count: 0
+    assert_select "button[type=submit][form='student-form']", text: /Add student/
+    assert_select "button[data-action='click->ui-modal#close:prevent']", text: /Cancel/
+    assert_select "form[action$='/archive']", count: 0
+    assert_select "a[href*='/delete']", count: 0
+    assert_actions_in_order ["Cancel", "Add student"]
+  end
+
+  test "the edit form puts Delete on the left and Cancel, Archive, Save on the right" do
+    get edit_student_path(@maya)
+
+    assert_select "button[type=submit][form='student-form']", text: /Save/
+    assert_select "button[data-action='click->ui-modal#close:prevent']", text: /Cancel/
+    assert_actions_in_order ["Delete", "Cancel", "Archive", "Save"]
   end
 
   test "the color picker is a radio group of eight named swatches with a check mark each" do
@@ -41,7 +60,7 @@ class StudentFormsTest < ActionDispatch::IntegrationTest
     get edit_student_path(@maya)
 
     assert_select "input#student_name[value='Maya']"
-    assert_select "button[type=submit]", text: /Save/
+    assert_select "button[type=submit][form='student-form']", text: /Save/
     assert_select "input[type=radio][name='student[color]'][checked]", 1
     assert_select "input[type=radio][name='student[color]'][value='#{@maya.color}'][checked]"
   end
@@ -62,5 +81,13 @@ class StudentFormsTest < ActionDispatch::IntegrationTest
     assert_no_match(/#[0-9a-fA-F]{6}\b/, response.body[/<fieldset.*<\/fieldset>/m].to_s)
     assert_select "label[for='student_color_sage'] span.student-color[data-student-color='sage']"
     assert_select "span.student-color[style]", count: 0
+  end
+
+  private
+
+  # The action row's controls read left to right in DOM order.
+  def assert_actions_in_order(labels)
+    texts = css_select("[data-student-actions] a, [data-student-actions] button").map { |node| node.text.squish.sub(/ Working\.\.\.\z/, "") }
+    assert_equal labels, texts
   end
 end

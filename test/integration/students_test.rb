@@ -205,8 +205,8 @@ class StudentsTest < ActionDispatch::IntegrationTest
 
     get edit_student_path(@maya)
 
-    assert_select "form[action='#{student_archive_path(@maya)}'][method='post'] button", text: /Archive Maya/
-    assert_select "a[href='#{delete_student_path(@maya)}']", text: "Delete Maya"
+    assert_select "form[action='#{student_archive_path(@maya)}'][method='post'] button", text: /\AArchive/
+    assert_select "a[href='#{delete_student_path(@maya)}']", text: "Delete"
   end
 
   test "a parent sees a delete confirmation inside the modal frame" do

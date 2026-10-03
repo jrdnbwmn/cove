@@ -718,8 +718,9 @@ en:
       color: "Color"
       add: "Add student"
       save: "Save"
-      archive: "Archive %{name}"
-      delete: "Delete %{name}"
+      cancel: "Cancel"
+      archive: "Archive"
+      delete: "Delete"
     delete:
       heading: "Delete %{name}?"
       body: "This permanently removes %{name} and can't be undone. To keep their records, archive instead."

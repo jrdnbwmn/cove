@@ -31,6 +31,27 @@ class StudentsSystemTest < ApplicationSystemTestCase
     assert_no_selector "dialog[open]"
   end
 
+  test "cancel closes the add and edit modals without saving, and the cross stays available" do
+    visit students_path
+    open_add_modal
+
+    within("dialog[open]") do
+      assert_selector "button", text: "Close"
+      fill_in "Name", with: "Nora"
+      click_button "Cancel"
+    end
+    assert_no_selector "dialog[open]"
+    assert_not Student.exists?(name: "Nora")
+
+    open_edit_modal("Maya")
+    within("dialog[open]") do
+      fill_in "Name", with: "Changed"
+      click_button "Cancel"
+    end
+    assert_no_selector "dialog[open]"
+    assert_equal "Maya", students(:one).reload.name
+  end
+
   test "adding a student closes the modal, shows the student and a toast" do
     visit students_path
     open_add_modal
@@ -86,7 +107,7 @@ class StudentsSystemTest < ApplicationSystemTestCase
     visit students_path
     open_edit_modal("Maya")
 
-    within("dialog[open]") { click_button "Archive Maya" }
+    within("dialog[open]") { click_button "Archive" }
 
     assert_text "Maya archived."
     assert_no_selector "dialog[open]"
@@ -100,7 +121,7 @@ class StudentsSystemTest < ApplicationSystemTestCase
     open_edit_modal("Maya")
 
     within("dialog[open]") do
-      click_link "Delete Maya"
+      click_link "Delete"
       assert_text "Delete Maya?"
       click_button "Delete Maya"
     end

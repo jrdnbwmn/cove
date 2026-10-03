@@ -56,6 +56,7 @@ outline, ghost, and destructive variants.
 | `href` | `String` | `nil` | Renders an anchor instead of a button. |
 | `target` | `String` | `nil` | Target browsing context when rendering an anchor; `_blank` adds `rel="noopener"`. |
 | `type` | `String` | `"button"` | Native button type when rendering a button. |
+| `form` | `String` | `nil` | ID of the form a submit button belongs to, for a button placed outside that form. |
 | `classes` | `String` | `nil` | Additional CSS classes. |
 | `data` | `Hash` | `{}` | HTML data attributes. |
 

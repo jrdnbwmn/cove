@@ -19,6 +19,7 @@ class ButtonComponent < ViewComponent::Base
   # @param href [String] If provided, renders as an anchor tag instead of button
   # @param target [String] Target browsing context when rendering an anchor
   # @param type [String] Button type attribute: "button" (default), "submit", "reset"
+  # @param form [String] ID of the form a submit button belongs to, when it sits outside that form
   # @param classes [String] Additional CSS classes for the wrapper
   # @param data [Hash] Data attributes for the button
   def initialize(
@@ -36,6 +37,7 @@ class ButtonComponent < ViewComponent::Base
     href: nil,
     target: nil,
     type: "button",
+    form: nil,
     classes: nil,
     data: {}
   )
@@ -55,6 +57,7 @@ class ButtonComponent < ViewComponent::Base
     @href = href
     @target = target
     @type = type
+    @form = form
     @classes = classes
     @data = data
   end
@@ -88,6 +91,7 @@ class ButtonComponent < ViewComponent::Base
       attrs[:"aria-disabled"] = @disabled if @disabled
     else
       attrs[:type] = @type
+      attrs[:form] = @form if @form.present?
       attrs[:disabled] = @disabled if @disabled
     end
 
