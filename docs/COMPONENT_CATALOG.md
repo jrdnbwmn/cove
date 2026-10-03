@@ -408,7 +408,11 @@ continues to serve its existing behavior.
 
 **Variants:** Supports `:sm`, `:md`, `:lg`, `:xl`, `:"2xl"` through `:"7xl"`,
 and `:fullscreen` sizes. Header and footer slots replace the default title and
-add dialog actions.
+add dialog actions. The `trigger` slot replaces the built-in white outline
+trigger button with any caller-supplied control, such as a `ButtonComponent`.
+Without it, `trigger_text` renders the default trigger. A custom trigger must
+carry `data-action="click->ui-modal#open:prevent"` or it will not open the
+modal.
 
 **States:** Supports dismissible dialogs, non-dismissible confirmations, lazy
 content, and keyboard/backdrop close behavior. It uses `ui-modal`, leaving
@@ -423,6 +427,16 @@ Jumpstart's `modal` controller intact.
   <p>Archived projects can be restored later.</p>
   <% modal.with_footer do %>
     <%= render ButtonComponent.new(text: "Cancel", variant: :secondary, data: { action: "click->ui-modal#close:prevent" }) %>
+  <% end %>
+<% end %>
+```
+
+Custom trigger:
+
+```erb
+<%= render UiModalComponent.new(title: "Add student", lazy_load: true, turbo_frame_src: new_student_path) do |modal| %>
+  <% modal.with_trigger do %>
+    <%= render ButtonComponent.new(text: "Add student", data: { action: "click->ui-modal#open:prevent" }) %>
   <% end %>
 <% end %>
 ```
