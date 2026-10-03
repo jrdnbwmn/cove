@@ -171,6 +171,15 @@
   --student-slate: #5E6E82;
 }
 
+.student-color[data-student-color="sage"] { background-color: var(--student-sage); }
+.student-color[data-student-color="sea"] { background-color: var(--student-sea); }
+.student-color[data-student-color="sky"] { background-color: var(--student-sky); }
+.student-color[data-student-color="lavender"] { background-color: var(--student-lavender); }
+.student-color[data-student-color="rose"] { background-color: var(--student-rose); }
+.student-color[data-student-color="clay"] { background-color: var(--student-clay); }
+.student-color[data-student-color="ochre"] { background-color: var(--student-ochre); }
+.student-color[data-student-color="slate"] { background-color: var(--student-slate); }
+
 @import "./components/base.css" layer(components);
 @import "./components/alert.css" layer(components);
 @import "./components/animation.css" layer(components);

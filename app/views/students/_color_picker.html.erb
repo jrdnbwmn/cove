@@ -6,7 +6,7 @@
       <% color_name = t("students.colors.#{color}") %>
       <%= form.label "color_#{color}", title: color_name, class: "cursor-pointer" do %>
         <%= form.radio_button :color, color, class: "sr-only peer" %>
-        <span class="relative flex size-9 items-center justify-center rounded-full ring-offset-2 ring-offset-background peer-checked:ring-2 peer-checked:ring-primary peer-focus-visible:ring-2 peer-focus-visible:ring-primary peer-checked:[&>svg]:opacity-100" style="background-color: var(--student-<%= color %>)">
+        <span class="student-color relative flex size-9 items-center justify-center rounded-full ring-offset-2 ring-offset-background peer-checked:ring-2 peer-checked:ring-primary peer-focus-visible:ring-2 peer-focus-visible:ring-primary peer-checked:[&>svg]:opacity-100" data-student-color="<%= color %>">
           <%= icon "check", class: "size-5 text-white opacity-0", "aria-hidden": true %>
         </span>
         <span class="sr-only"><%= color_name %></span>

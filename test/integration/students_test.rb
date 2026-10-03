@@ -23,6 +23,8 @@ class StudentsTest < ActionDispatch::IntegrationTest
     assert_response :success
     assert_select "turbo-frame#modal-lazy-content"
     assert_select "input[name='student[name]']"
+    assert_select "span.student-color[data-student-color='sage']"
+    assert_select "span.student-color[style]", count: 0
   end
 
   test "a parent can add a student with only a name and gets a color automatically" do

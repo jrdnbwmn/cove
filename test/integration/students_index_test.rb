@@ -28,8 +28,9 @@ class StudentsIndexTest < ActionDispatch::IntegrationTest
 
     get students_path
 
-    assert_select ".grid span[aria-hidden='true'][style*='var(--student-sage)']", count: 1
-    assert_select ".grid span[aria-hidden='true'][style*='var(--student-sea)']", count: 1
+    assert_select ".grid span.student-color[data-student-color='sage'][aria-hidden='true']", count: 1
+    assert_select ".grid span.student-color[data-student-color='sea'][aria-hidden='true']", count: 1
+    assert_select ".grid span.student-color[style]", count: 0
   end
 
   test "a parent can open the add student modal from the header" do

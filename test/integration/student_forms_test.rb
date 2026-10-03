@@ -60,6 +60,7 @@ class StudentFormsTest < ActionDispatch::IntegrationTest
     get new_student_path
 
     assert_no_match(/#[0-9a-fA-F]{6}\b/, response.body[/<fieldset.*<\/fieldset>/m].to_s)
-    assert_select "label[for='student_color_sage'] [style*='var(--student-sage)']"
+    assert_select "label[for='student_color_sage'] span.student-color[data-student-color='sage']"
+    assert_select "span.student-color[style]", count: 0
   end
 end
