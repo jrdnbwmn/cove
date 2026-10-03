@@ -7,6 +7,36 @@ class StudentsTest < ActionDispatch::IntegrationTest
     @other_family_student = Student.create!(account: accounts(:one), name: "Outsider")
   end
 
+  # The Free fixture family starts at its 2-student limit; archiving Theo opens a slot.
+  def open_student_slot
+    students(:two).archive!
+  end
+
+  test "a parent cannot add a student past the family limit and keeps what they typed" do
+    sign_in users(:one)
+
+    assert_no_difference -> { Student.count } do
+      post students_path, params: {student: {name: "Nora", grade_level: "5th"}}
+    end
+
+    assert_response :unprocessable_content
+    assert_select "input[name='student[name]'][value='Nora']"
+    assert_select "input[name='student[grade_level]'][value='5th']"
+  end
+
+  test "a parent can still edit and archive students while over the family limit" do
+    sign_in users(:one)
+    Student.new(account: @family, name: "Extra", color: "rose").save!(validate: false)
+
+    patch student_path(@maya), params: {student: {grade_level: "4th"}}
+    assert_redirected_to students_path
+    assert_equal "4th", @maya.reload.grade_level
+
+    post student_archive_path(@maya)
+    assert_redirected_to students_path
+    assert @maya.reload.archived?
+  end
+
   test "guests are sent to sign in" do
     get new_student_path
     assert_redirected_to new_user_session_path
@@ -28,6 +58,7 @@ class StudentsTest < ActionDispatch::IntegrationTest
   end
 
   test "a parent can add a student with only a name and gets a color automatically" do
+    open_student_slot
     sign_in users(:one)
 
     assert_difference -> { @family.students.count }, 1 do
@@ -42,6 +73,7 @@ class StudentsTest < ActionDispatch::IntegrationTest
   end
 
   test "a parent can add a student with a grade level and color" do
+    open_student_slot
     sign_in users(:one)
 
     post students_path, params: {student: {name: "Nora", grade_level: "5th", color: "slate"}}
@@ -52,6 +84,7 @@ class StudentsTest < ActionDispatch::IntegrationTest
   end
 
   test "the other parent in the family can also add and edit students" do
+    open_student_slot
     sign_in users(:two)
 
     post students_path, params: {student: {name: "Nora"}}
@@ -63,6 +96,7 @@ class StudentsTest < ActionDispatch::IntegrationTest
   end
 
   test "student params cannot reassign the family" do
+    open_student_slot
     sign_in users(:one)
 
     post students_path, params: {student: {name: "Nora", account_id: accounts(:one).id, archived_at: Time.current}}
@@ -107,6 +141,7 @@ class StudentsTest < ActionDispatch::IntegrationTest
   end
 
   test "a duplicate created by the other parent at the same moment is shown as a duplicate" do
+    open_student_slot
     sign_in users(:one)
 
     with_friendly_uniqueness_check_disabled do

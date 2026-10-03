@@ -43,8 +43,10 @@ class StudentTest < ActiveSupport::TestCase
 end
 
 class StudentBehaviorTest < ActiveSupport::TestCase
+  # AIDEV-NOTE: General student behavior runs on a Premium family so tests that
+  # create many students aren't stopped by the Free limit; limit tests use Free families.
   setup do
-    @family = accounts(:company)
+    @family = accounts(:subscribed)
     @other_family = accounts(:one)
     Student.where(account: @family).delete_all
   end
@@ -192,5 +194,116 @@ class StudentBehaviorTest < ActiveSupport::TestCase
     assert_nil student.reload.archived_at
     assert_equal "ochre", student.color
     assert_nothing_raised { student.restore! }
+  end
+end
+
+class StudentLimitTest < ActiveSupport::TestCase
+  setup do
+    @free = accounts(:one)
+    Student.where(account: @free).delete_all
+  end
+
+  test "a Free family can add a second student but not a third" do
+    Student.create!(account: @free, name: "Maya")
+    assert Student.new(account: @free, name: "Theo").save
+
+    third = Student.new(account: @free, name: "Iris")
+    assert_not third.save
+    assert_equal ["Free includes 2 students. Upgrade to Premium to add more."], third.errors[:base]
+  end
+
+  test "a Premium family is refused past its limit with Premium copy" do
+    family = accounts(:subscribed)
+    family.update!(student_limit: 3)
+    Student.where(account: family).delete_all
+    3.times { |i| Student.create!(account: family, name: "S#{i}") }
+
+    student = Student.new(account: family, name: "Extra")
+    assert_not student.save
+    assert_equal ["Premium includes 3 students. Contact us to add more."], student.errors[:base]
+  end
+
+  test "a complimentary Premium family sees the Premium copy" do
+    family = accounts(:complimentary)
+    Student.where(account: family).delete_all
+    10.times { |i| Student.create!(account: family, name: "S#{i}") }
+
+    student = Student.new(account: family, name: "Extra")
+    assert_not student.save
+    assert_equal ["Premium includes 10 students. Contact us to add more."], student.errors[:base]
+  end
+
+  test "a student cannot be restored while the family is at its limit" do
+    Student.create!(account: @free, name: "Maya")
+    Student.create!(account: @free, name: "Theo")
+    archived = Student.create!(account: @free, name: "Iris", archived_at: Time.current)
+
+    assert_raises(ActiveRecord::RecordInvalid) { archived.restore! }
+    assert archived.reload.archived?
+  end
+
+  test "a student can be restored once a slot opens" do
+    maya = Student.create!(account: @free, name: "Maya")
+    Student.create!(account: @free, name: "Theo")
+    archived = Student.create!(account: @free, name: "Iris", archived_at: Time.current)
+
+    maya.archive!
+    archived.restore!
+
+    assert_not archived.reload.archived?
+  end
+
+  test "an archived student can be created at the limit" do
+    Student.create!(account: @free, name: "Maya")
+    Student.create!(account: @free, name: "Theo")
+
+    assert Student.new(account: @free, name: "Iris", archived_at: Time.current).save
+  end
+
+  test "editing and archiving still work when a family is over its limit" do
+    students = %w[Maya Theo Iris].map { |name| Student.new(account: @free, name: name, color: "sage").tap { |s| s.save!(validate: false) } }
+
+    assert students.first.update(grade_level: "4th")
+    assert_nothing_raised { students.first.archive! }
+    assert students.first.reload.archived?
+  end
+
+  test "a family's limit does not depend on other families' students" do
+    Student.create!(account: accounts(:two), name: "Maya")
+    Student.create!(account: accounts(:two), name: "Theo")
+
+    assert Student.new(account: @free, name: "Maya").save
+  end
+end
+
+class StudentLimitConcurrencyTest < ActiveSupport::TestCase
+  # AIDEV-NOTE: Needs real commits across separate connections, so it can't run
+  # inside the usual per-test transaction; teardown removes what it created.
+  self.use_transactional_tests = false
+
+  setup do
+    @family_id = accounts(:one).id
+    Student.where(account_id: @family_id).delete_all
+    Student.create!(account_id: @family_id, name: "Maya")
+  end
+
+  teardown do
+    Student.where(account_id: @family_id).delete_all
+  end
+
+  test "two parents saving the last free slot at once only get one student" do
+    start = Queue.new
+    results = %w[Theo Iris].map do |name|
+      Thread.new do
+        ActiveRecord::Base.connection_pool.with_connection do
+          start.pop
+          Student.new(account_id: @family_id, name: name).save
+        end
+      end
+    end
+    2.times { start << true }
+
+    assert_equal [false, true], results.map(&:value).sort_by { |saved| saved ? 1 : 0 }
+    assert_equal 2, Student.active.where(account_id: @family_id).count
   end
 end

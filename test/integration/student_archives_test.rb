@@ -48,6 +48,7 @@ class StudentArchivesTest < ActionDispatch::IntegrationTest
 
   test "a parent can restore an archived student and the color is unchanged" do
     sign_in users(:one)
+    students(:two).archive!
     color = @archived.color
 
     delete student_archive_path(@archived)
@@ -56,6 +57,17 @@ class StudentArchivesTest < ActionDispatch::IntegrationTest
     assert_equal "Iris restored.", flash[:notice]
     assert_not @archived.reload.archived?
     assert_equal color, @archived.color
+  end
+
+  test "restoring past the family limit is refused and the student stays archived" do
+    sign_in users(:one)
+
+    delete student_archive_path(@archived)
+
+    assert_redirected_to students_path
+    assert_response :see_other
+    assert_equal "Free includes 2 students. Upgrade to Premium to add more.", flash[:alert]
+    assert @archived.reload.archived?
   end
 
   test "restoring an active student changes nothing and still confirms" do

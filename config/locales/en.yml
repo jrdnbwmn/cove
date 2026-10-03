@@ -773,6 +773,13 @@ en:
               cannot_be_removed: "role cannot be removed for the account owner"
         student:
           attributes:
+            base:
+              student_limit_free:
+                one: "Free includes %{count} student. Upgrade to Premium to add more."
+                other: "Free includes %{count} students. Upgrade to Premium to add more."
+              student_limit_premium:
+                one: "Premium includes %{count} student. Contact us to add more."
+                other: "Premium includes %{count} students. Contact us to add more."
             name:
               blank: "Enter a name to continue."
               taken_active: "You already have a student named %{name}."

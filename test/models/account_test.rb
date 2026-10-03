@@ -165,6 +165,71 @@ class AccountTest < ActiveSupport::TestCase
     assert accounts(:subscribed).payment_processor.subscribed?
   end
 
+  test "a Free family can add students until it has 2 active" do
+    account = accounts(:one)
+
+    assert account.can_add_student?
+
+    Student.create!(account: account, name: "Maya")
+    assert account.can_add_student?
+
+    Student.create!(account: account, name: "Theo")
+    assert_not account.can_add_student?
+  end
+
+  test "a paid Premium family can add students until it reaches its limit" do
+    account = accounts(:subscribed)
+    account.update!(student_limit: 3)
+    2.times { |i| Student.create!(account: account, name: "Student #{i}") }
+
+    assert account.can_add_student?
+
+    Student.create!(account: account, name: "Student 3")
+    assert_not account.can_add_student?
+  end
+
+  test "a complimentary Premium family gets the Premium student limit" do
+    account = accounts(:complimentary)
+    9.times { |i| Student.create!(account: account, name: "Student #{i}") }
+
+    assert account.can_add_student?
+
+    Student.create!(account: account, name: "Student 9")
+    assert_not account.can_add_student?
+  end
+
+  test "a raised student limit lets a Premium family add more students immediately" do
+    account = accounts(:subscribed)
+    10.times { |i| Student.create!(account: account, name: "Student #{i}") }
+    assert_not account.can_add_student?
+
+    account.update!(student_limit: 12)
+
+    assert account.can_add_student?
+  end
+
+  test "archived students do not use up a student slot" do
+    account = accounts(:company)
+    assert_equal 2, account.students.active.count
+    assert_equal 1, account.students.archived.count
+    assert_not account.can_add_student?
+
+    students(:two).archive!
+
+    assert account.can_add_student?
+  end
+
+  test "student capacity stays current when students were already loaded" do
+    account = accounts(:one)
+    account.students.load
+    assert account.can_add_student?
+
+    Student.create!(account: account, name: "Maya")
+    Student.create!(account: account, name: "Theo")
+
+    assert_not account.can_add_student?
+  end
+
   test "a new Free family can have 2 students" do
     account = Account.new(owner: users(:admin), name: "New Family")
 
