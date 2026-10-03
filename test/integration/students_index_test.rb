@@ -34,6 +34,7 @@ class StudentsIndexTest < ActionDispatch::IntegrationTest
   end
 
   test "a parent can open the add student modal from the header" do
+    students(:two).archive!
     sign_in users(:one)
 
     get students_path
@@ -41,6 +42,105 @@ class StudentsIndexTest < ActionDispatch::IntegrationTest
     assert_select "[data-ui-modal-turbo-frame-src-value='#{new_student_path}']", count: 1
     assert_select "h2", text: "Add student"
     assert_select "button[data-action='click->ui-modal#open:prevent']", text: /Add student/
+  end
+
+  test "a Free family at its limit sees an upgrade prompt instead of the Add trigger" do
+    sign_in users(:one)
+
+    get students_path
+
+    assert_response :success
+    assert_select "p.text-muted-foreground", text: "Free includes 2 students."
+    assert_select "a[href='#{pricing_path}']", text: /Upgrade to Premium/
+    assert_select "[data-ui-modal-turbo-frame-src-value='#{new_student_path}']", count: 0
+  end
+
+  test "a Premium family at its limit is told to contact support" do
+    account = accounts(:subscribed)
+    account.update!(student_limit: 3)
+    3.times { |i| Student.create!(account: account, name: "Student #{i}") }
+    sign_in users(:subscribed)
+
+    get students_path
+
+    assert_select "p.text-muted-foreground", text: /Premium includes 3 students\. Need more\? Contact us\./
+    assert_select "a[href^='mailto:']", text: "Contact us"
+    assert_select "a[href='#{pricing_path}']", count: 0
+    assert_select "[data-ui-modal-turbo-frame-src-value='#{new_student_path}']", count: 0
+  end
+
+  test "a Complimentary Premium family at its limit is told to contact support" do
+    account = accounts(:complimentary)
+    10.times { |i| Student.create!(account: account, name: "Student #{i}") }
+    sign_in users(:complimentary)
+
+    get students_path
+
+    assert_select "p.text-muted-foreground", text: /Premium includes 10 students\. Need more\?/
+    assert_select "a[href^='mailto:']", text: "Contact us"
+    assert_select "[data-ui-modal-turbo-frame-src-value='#{new_student_path}']", count: 0
+  end
+
+  test "a Premium family with a raised limit can add students again" do
+    account = accounts(:subscribed)
+    account.update!(student_limit: 3)
+    3.times { |i| Student.create!(account: account, name: "Student #{i}") }
+    account.update!(student_limit: 4)
+    sign_in users(:subscribed)
+
+    get students_path
+
+    assert_select "[data-ui-modal-turbo-frame-src-value='#{new_student_path}']", count: 1
+    assert_select "a[href^='mailto:']", count: 0
+  end
+
+  test "a family under its limit sees the Add trigger and no prompt" do
+    students(:two).archive!
+    sign_in users(:one)
+
+    get students_path
+
+    assert_select "[data-ui-modal-turbo-frame-src-value='#{new_student_path}']", count: 1
+    assert_select "a[href='#{pricing_path}']", count: 0
+    assert_no_match "Free includes", response.body
+  end
+
+  test "a Free family at its limit cannot restore an archived student and is told to upgrade" do
+    students(:two).archive!
+    Student.create!(account: accounts(:company), name: "Iris Two")
+    sign_in users(:one)
+
+    get students_path(archived: 1)
+
+    assert_select "section[aria-labelledby='archived-heading'] p.text-muted-foreground", text: /To restore a student, archive one first or upgrade to Premium\./
+    assert_select "section[aria-labelledby='archived-heading'] a[href='#{pricing_path}']", text: "upgrade to Premium"
+    assert_select "section[aria-labelledby='archived-heading'] form[action='#{student_archive_path(students(:two))}']", count: 0
+    assert_select "section[aria-labelledby='archived-heading'] button", text: /Delete/
+  end
+
+  test "a Premium family at its limit is told to contact us before restoring" do
+    account = accounts(:subscribed)
+    account.update!(student_limit: 3)
+    3.times { |i| Student.create!(account: account, name: "Student #{i}") }
+    Student.create!(account: account, name: "Old", archived_at: 1.day.ago)
+    sign_in users(:subscribed)
+
+    get students_path(archived: 1)
+
+    assert_select "section[aria-labelledby='archived-heading'] p.text-muted-foreground", text: /To restore a student, archive one first or contact us\./
+    assert_select "section[aria-labelledby='archived-heading'] a[href^='mailto:']", text: "contact us"
+    assert_select "section[aria-labelledby='archived-heading'] form[method='post'] input[name='_method'][value='delete']", count: 0
+  end
+
+  test "a family under its limit can restore archived students with no note" do
+    students(:two).archive!
+    sign_in users(:one)
+
+    get students_path(archived: 1)
+
+    assert_select "section[aria-labelledby='archived-heading'] form[action='#{student_archive_path(students(:two))}']", count: 1
+    assert_select "section[aria-labelledby='archived-heading'] button", text: /Restore/
+    assert_no_match "To restore a student", response.body
   end
 
   test "each card has an edit trigger for that student" do

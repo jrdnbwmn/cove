@@ -20,6 +20,7 @@ class StudentsTest < ActionDispatch::IntegrationTest
     end
 
     assert_response :unprocessable_content
+    assert_match "Free includes 2 students. Upgrade to Premium to add more.", response.body
     assert_select "input[name='student[name]'][value='Nora']"
     assert_select "input[name='student[grade_level]'][value='5th']"
   end

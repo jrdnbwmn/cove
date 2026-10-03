@@ -709,8 +709,22 @@ en:
       hide_archived: "Hide archived"
       archived_heading: "Archived"
       restore: "Restore"
+      restore_blocked_free_html: "To restore a student, archive one first or %{link}."
+      restore_blocked_premium_html: "To restore a student, archive one first or %{link}."
+      restore_upgrade: "upgrade to Premium"
+      restore_contact: "contact us"
       delete: "Delete"
       delete_title: "Delete %{name}"
+    limit_prompt:
+      limit_free:
+        one: "Free includes %{limit} student."
+        other: "Free includes %{limit} students."
+      upgrade: "Upgrade to Premium"
+      limit_premium_html:
+        one: "Premium includes %{limit} student. Need more? %{link}."
+        other: "Premium includes %{limit} students. Need more? %{link}."
+      more_students_contact: "Contact us"
+      more_students_subject: "More students on %{product}"
     form:
       name: "Name"
       grade_level: "Grade level"
