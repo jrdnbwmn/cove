@@ -252,7 +252,8 @@ class TurboResilienceSystemTest < ApplicationSystemTestCase
       const frame = document.createElement("turbo-frame")
       frame.id = "turbo-resilience-test-frame"
       if (arguments[0] !== null) frame.dataset.turboResilienceTimeout = arguments[0]
-      document.body.append(frame)
+      const mount = document.querySelector(".app-content") || document.querySelector("main") || document.body
+      mount.append(frame)
     JAVASCRIPT
   end
 
