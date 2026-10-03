@@ -4,7 +4,7 @@ class StudentsController < ApplicationController
   before_action :redirect_archived_student, only: %i[edit update]
 
   def index
-    @students = Current.account.students.active.ordered
+    @students = Current.account.students.active.ordered.load
     @archived_students = Current.account.students.archived.ordered
     @archived_count = @archived_students.size
     @show_archived = params[:archived] == "1" && @archived_count.positive?
