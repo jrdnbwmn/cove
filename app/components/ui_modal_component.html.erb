@@ -22,7 +22,10 @@
         <h2 class="<%= title_classes %>"><%= title %></h2>
       <% end %>
 
-      <%= content %>
+      <%# AIDEV-NOTE: Lazy loading replaces only this region, preserving the dialog title and Close control. %>
+      <div data-ui-modal-content>
+        <%= content %>
+      </div>
 
       <% if footer? %>
         <div class="<%= footer_classes %>">

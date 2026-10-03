@@ -19,6 +19,18 @@ class StudentsSystemTest < ApplicationSystemTestCase
     assert_selector "dialog[open]"
   end
 
+  test "a parent can see the add student title and close the modal" do
+    visit students_path
+    open_add_modal
+
+    within("dialog[open]") do
+      assert_selector "h2", text: "Add student"
+      click_button "Close"
+    end
+
+    assert_no_selector "dialog[open]"
+  end
+
   test "adding a student closes the modal, shows the student and a toast" do
     visit students_path
     open_add_modal
