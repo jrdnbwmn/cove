@@ -35,6 +35,7 @@ en:
     already_member: "You are already in this family"
     already_belongs: "You already belong to a family"
     other_members: "Your family has another parent. Contact support to join a new family."
+    has_students: "Your family has students in it. Contact support to join a new family."
     billable_subscription: "Cancel your Premium subscription first, then accept this invitation."
     try_again: "Something changed while joining. Please try again."
 
@@ -694,6 +695,51 @@ en:
     updated: "Your marketing preferences have been updated."
     invalid: "Choose whether you want to receive marketing updates."
     protected: "You can't restore this marketing subscription from Cove."
+
+  students:
+    index:
+      title: "Students"
+      add: "Add student"
+      add_title: "Add student"
+      edit: "Edit"
+      edit_title: "Edit %{name}"
+      empty_title: "Add your first student"
+      empty_description: "Each student gets a color so you can spot them across Cove."
+      show_archived: "Show archived (%{count})"
+      hide_archived: "Hide archived"
+      archived_heading: "Archived"
+      restore: "Restore"
+      delete: "Delete"
+      delete_title: "Delete %{name}"
+    form:
+      name: "Name"
+      grade_level: "Grade level"
+      grade_level_placeholder: "e.g. 3rd, Pre-K"
+      color: "Color"
+      add: "Add student"
+      save: "Save"
+      archive: "Archive %{name}"
+      delete: "Delete %{name}"
+    delete:
+      heading: "Delete %{name}?"
+      body: "This permanently removes %{name} and can't be undone. To keep their records, archive instead."
+      confirm: "Delete %{name}"
+      cancel: "Cancel"
+    colors:
+      sage: "Sage"
+      sea: "Sea"
+      sky: "Sky"
+      lavender: "Lavender"
+      rose: "Rose"
+      clay: "Clay"
+      ochre: "Ochre"
+      slate: "Slate"
+    notices:
+      created: "%{name} added."
+      updated: "Saved."
+      archived: "%{name} archived."
+      restored: "%{name} restored."
+      deleted: "%{name} deleted."
 
   activerecord:
     attributes:
