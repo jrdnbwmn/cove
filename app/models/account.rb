@@ -6,6 +6,8 @@ class Account < ApplicationRecord
   # Pay statuses of a subscription that has ended; everything else can still bill and so needs cancelling on delete.
   ENDED_SUBSCRIPTION_STATUSES = %w[canceled incomplete_expired].freeze
 
+  has_many :students, dependent: :destroy
+
   scope :active, -> { where(archived_at: nil) }
   scope :archived, -> { where.not(archived_at: nil) }
 
@@ -93,7 +95,7 @@ class Account < ApplicationRecord
   # acceptance shows a different message per reason).
   def unjoinable_reason(user)
     return :other_members unless account_users.one? && users.exists?(user.id)
-    return :other_members unless students_empty?
+    return :has_students unless students_empty?
     return :billable_subscription if renewing_subscriptions.any?
     nil
   end
@@ -107,7 +109,7 @@ class Account < ApplicationRecord
   private
 
   def students_empty?
-    !respond_to?(:students) || students.none?
+    students.none?
   end
 
   # AIDEV-NOTE: Three deliberately different subscription sets. Billable = paying now (Pay's `active` scope also

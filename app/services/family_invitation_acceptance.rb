@@ -27,6 +27,8 @@ class FamilyInvitationAcceptance
         case source.unjoinable_reason(user)
         when :other_members
           return Result.new(nil, I18n.t("family_invitation_acceptance.other_members"))
+        when :has_students
+          return Result.new(nil, I18n.t("family_invitation_acceptance.has_students"))
         when :billable_subscription
           return Result.new(nil, I18n.t("family_invitation_acceptance.billable_subscription"))
         end

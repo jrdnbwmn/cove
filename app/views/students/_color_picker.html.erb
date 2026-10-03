@@ -1,0 +1,16 @@
+<%# AIDEV-NOTE: Native radios (sr-only peer) keep arrow-key navigation and form semantics with no JavaScript. Each radio sits inside its label so its swatch and check mark can react via peer-checked; the check mark means selection never relies on color alone. %>
+<fieldset class="flex flex-col gap-y-2">
+  <legend class="text-sm font-medium text-neutral-700 mb-2"><%= t("students.form.color") %></legend>
+  <div class="flex flex-wrap gap-3">
+    <% Student::COLORS.each do |color| %>
+      <% color_name = t("students.colors.#{color}") %>
+      <%= form.label "color_#{color}", title: color_name, class: "cursor-pointer" do %>
+        <%= form.radio_button :color, color, class: "sr-only peer" %>
+        <span class="student-color relative flex size-9 items-center justify-center rounded-full ring-offset-2 ring-offset-background peer-checked:ring-2 peer-checked:ring-primary peer-focus-visible:ring-2 peer-focus-visible:ring-primary peer-checked:[&>svg]:opacity-100" data-student-color="<%= color %>">
+          <%= icon "check", class: "size-5 text-white opacity-0", "aria-hidden": true %>
+        </span>
+        <span class="sr-only"><%= color_name %></span>
+      <% end %>
+    <% end %>
+  </div>
+</fieldset>

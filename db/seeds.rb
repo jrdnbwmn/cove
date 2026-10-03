@@ -56,6 +56,10 @@ if Rails.env.local?
     AccountUser.create!(account: family, user: admin, admin: true)
   end
 
+  [["Maya", "3rd"], ["Theo", "Pre-K"]].each do |name, grade_level|
+    family.students.find_or_create_by!(name: name) { |student| student.grade_level = grade_level }
+  end
+
   features = ["Placeholder feature"]
 
   seed_premium_plan = ->(fake_processor_id:, interval:, amount:) do

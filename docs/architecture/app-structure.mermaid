@@ -12,6 +12,9 @@ graph TD
   AccountsControllers --> FamilyTransfersController[TransfersController]
   Controllers --> AccountControllers[account/]
   AccountControllers --> PasswordResetLinksController[PasswordResetLinksController]
+  Controllers --> StudentsController[StudentsController]
+  Controllers --> StudentControllers[students/]
+  StudentControllers --> StudentArchivesController[ArchivesController]
   Controllers --> DevControllers[dev/]
   Controllers --> Concerns[concerns/]
   Concerns --> PremiumAccess[PremiumAccess]
@@ -24,6 +27,7 @@ graph TD
   App --> Models[app/models]
   Models --> User[User]
   Models --> Account[Account]
+  Models --> Student[Student]
   Models --> Current[Current]
   Models --> UserConcerns[user/]
   UserConcerns --> AccountCreatedEmail[AccountCreatedEmail]
@@ -56,6 +60,7 @@ graph TD
   Views --> AccountInvitationViews[account_invitations/]
   Views --> AccountUserViews[account_users/]
   Views --> DashboardViews[dashboard/]
+  Views --> StudentViews[students/]
   Views --> PublicViews[public/]
   Views --> UserViews[users/]
   Views --> BillingViews[billing/subscriptions/]
@@ -118,3 +123,6 @@ graph TD
   PlanChangesController --> PlanChangeGuard
   PlanChangesController --> PaySubscriptionConcern
   PlanChangesController --> PlanChangeView
+  StudentsController --> Student
+  StudentArchivesController --> Student
+  Student --> Account

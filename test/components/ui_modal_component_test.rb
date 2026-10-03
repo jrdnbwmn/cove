@@ -14,6 +14,30 @@ class UiModalComponentTest < ViewComponent::TestCase
     assert_text "Modal content"
   end
 
+  test "keeps the default trigger button when no trigger slot is given" do
+    render_inline(UiModalComponent.new(title: "Confirm", trigger_text: "Open modal")) { "Modal content" }
+
+    assert_selector "button[data-action='click->ui-modal#open:prevent']", text: "Open modal", count: 1
+  end
+
+  test "a caller-supplied button replaces the default trigger and opens the modal" do
+    render_inline(UiModalComponent.new(title: "Add student", trigger_text: "Default text")) do |modal|
+      modal.with_trigger { '<button data-action="click->ui-modal#open:prevent">Add student</button>'.html_safe }
+      "Modal content"
+    end
+
+    assert_selector "[data-controller='ui-modal'] button[data-action='click->ui-modal#open:prevent']", text: "Add student", count: 1
+    assert_no_text "Default text"
+    assert_selector "dialog[data-ui-modal-target='dialog']", visible: :all
+  end
+
+  test "renders the custom trigger preview" do
+    render_preview(:custom_trigger)
+
+    assert_selector "button[data-action='click->ui-modal#open:prevent']", text: "Add student", count: 1
+    assert_selector "button.bg-primary, button[class*='primary']", text: "Add student"
+  end
+
   test "renders the confirmation preview" do
     render_preview(:confirmation)
 

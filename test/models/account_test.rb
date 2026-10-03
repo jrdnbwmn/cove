@@ -401,6 +401,54 @@ class AccountTest < ActiveSupport::TestCase
     assert_not account.joinable_by?(users(:noaccount))
   end
 
+  test "a family with active students is not joinable and reports has_students" do
+    account = accounts(:one)
+    Student.create!(account: account, name: "Maya")
+
+    assert_not account.joinable_by?(users(:noaccount))
+    assert_equal :has_students, account.unjoinable_reason(users(:noaccount))
+  end
+
+  test "a family with only archived students is not joinable" do
+    account = accounts(:one)
+    Student.create!(account: account, name: "Maya", archived_at: Time.current)
+
+    assert_equal :has_students, account.unjoinable_reason(users(:noaccount))
+  end
+
+  test "another parent takes precedence over students when explaining why a family is not joinable" do
+    account = accounts(:company)
+
+    assert account.students.any?
+    assert_equal :other_members, account.unjoinable_reason(users(:one))
+  end
+
+  test "students block joining before a billable subscription does" do
+    account = accounts(:one)
+    Student.create!(account: account, name: "Maya")
+    customer = account.set_payment_processor(:fake_processor, allow_fake: true)
+    customer.subscribe(name: "active", plan: "per_seat")
+
+    assert_equal :has_students, account.unjoinable_reason(users(:noaccount))
+  end
+
+  test "student emptiness is read from the association without a respond_to guard" do
+    account = accounts(:company)
+    account.define_singleton_method(:respond_to?) { |name, *args| (name == :students) ? false : super(name, *args) }
+
+    assert_not account.send(:students_empty?)
+  end
+
+  test "destroying a family destroys its students" do
+    account = accounts(:company)
+    student_ids = account.students.pluck(:id)
+    assert_not_empty student_ids
+
+    account.destroy!
+
+    assert_empty Student.where(id: student_ids)
+  end
+
   test "a family whose Premium is canceled but still paid through the period is joinable" do
     account = accounts(:canceled_in_period)
 

@@ -7,6 +7,10 @@ class UiModalComponentPreview < ViewComponent::Preview
     render UiModalComponent.new(size: :lg, title: "Project settings", trigger_text: "Open settings").with_content("Settings content appears here.")
   end
 
+  def custom_trigger
+    render_with_template
+  end
+
   def confirmation
     render_with_template
   end

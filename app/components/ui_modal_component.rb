@@ -4,6 +4,9 @@ class UiModalComponent < ViewComponent::Base
   # AIDEV-NOTE: This keeps Rails Blocks' modal separate from Jumpstart's existing ModalComponent.
   SIZES = %i[sm md lg xl 2xl 3xl 4xl 5xl 6xl 7xl fullscreen].freeze
 
+  # AIDEV-NOTE: When supplied, replaces the built-in white outline trigger so callers can open
+  # the modal with any ButtonComponent. The caller must add data-action="click->ui-modal#open:prevent".
+  renders_one :trigger
   renders_one :header
   renders_one :footer
 

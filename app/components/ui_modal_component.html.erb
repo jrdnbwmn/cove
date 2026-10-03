@@ -1,7 +1,11 @@
 <div <%= tag.attributes(controller_data) %>>
-  <button class="<%= trigger_button_classes %>" data-action="click->ui-modal#open:prevent">
-    <%= trigger_text %>
-  </button>
+  <% if trigger? %>
+    <%= trigger %>
+  <% else %>
+    <button class="<%= trigger_button_classes %>" data-action="click->ui-modal#open:prevent">
+      <%= trigger_text %>
+    </button>
+  <% end %>
 
   <dialog class="<%= dialog_classes %>" data-ui-modal-target="dialog" data-action="mousedown->ui-modal#backdropClose">
     <div class="<%= content_wrapper_classes %>">
@@ -18,7 +22,10 @@
         <h2 class="<%= title_classes %>"><%= title %></h2>
       <% end %>
 
-      <%= content %>
+      <%# AIDEV-NOTE: Lazy loading replaces only this region, preserving the dialog title and Close control. %>
+      <div data-ui-modal-content>
+        <%= content %>
+      </div>
 
       <% if footer? %>
         <div class="<%= footer_classes %>">

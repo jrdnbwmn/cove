@@ -19,7 +19,10 @@ Rails.application.routes.draw do
 
   resources :schedules, only: :index
   resources :subjects, only: :index
-  resources :students, only: :index
+  resources :students, except: :show do
+    get :delete, on: :member
+    resource :archive, only: %i[create destroy], module: :students
+  end
   resource :support, only: :show, controller: :support
 
   # Public marketing homepage

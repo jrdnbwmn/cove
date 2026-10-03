@@ -23,6 +23,12 @@ class ButtonComponentTest < ViewComponent::TestCase
     assert_selector 'a[href="https://example.com"][target="_blank"][rel~="noopener"]', text: "Read the Docs"
   end
 
+  test "a submit button can belong to a form elsewhere in the page" do
+    render_inline(ButtonComponent.new(text: "Save", type: "submit", form: "student-form"))
+
+    assert_selector "button[type='submit'][form='student-form']"
+  end
+
   test "renders a submit button with its custom pending label" do
     render_inline(ButtonComponent.new(text: "Save changes", type: "submit", data: {disable_with: "Saving..."}))
 
