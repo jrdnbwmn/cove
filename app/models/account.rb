@@ -6,6 +6,8 @@ class Account < ApplicationRecord
   # Pay statuses of a subscription that has ended; everything else can still bill and so needs cancelling on delete.
   ENDED_SUBSCRIPTION_STATUSES = %w[canceled incomplete_expired].freeze
 
+  has_many :students, dependent: :destroy
+
   scope :active, -> { where(archived_at: nil) }
   scope :archived, -> { where.not(archived_at: nil) }
 

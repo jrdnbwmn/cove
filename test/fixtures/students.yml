@@ -1,0 +1,17 @@
+one:
+  account: company
+  name: "Maya"
+  grade_level: "3rd"
+  color: sage
+
+two:
+  account: company
+  name: "Theo"
+  color: sea
+
+archived:
+  account: company
+  name: "Iris"
+  grade_level: "6th"
+  color: sky
+  archived_at: <%= 1.day.ago %>

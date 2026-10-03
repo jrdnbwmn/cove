@@ -7,8 +7,8 @@
 
 | Task | Phase | Checkpoint | Description | Assign | Done |
 | ---- | ----- | ---------- | ----------- | ------ | ---- |
-| 1 | 1 — Data foundation | 1 | Create the students table and database constraints | Master | |
-| 2 | 1 — Data foundation | 1 | Implement student behavior and fixtures | Master | |
+| 1 | 1 — Data foundation | 1 | Create the students table and database constraints | Master | ✅ |
+| 2 | 1 — Data foundation | 1 | Implement student behavior and fixtures | Master | ✅ |
 | 3 | 1 — Data foundation | 2 | Protect families with students during invitation acceptance | Master | |
 | 4 | 1 — Data foundation | 2 | Add copy, privacy filtering, and demo students | Master | |
 | 5 | 2 — Modal foundation | 3 | Add a custom trigger slot to `UiModalComponent` | Master | |

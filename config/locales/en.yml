@@ -724,6 +724,12 @@ en:
               other_family: "already belongs to a family"
             admin:
               cannot_be_removed: "role cannot be removed for the account owner"
+        student:
+          attributes:
+            name:
+              blank: "Enter a name to continue."
+              taken_active: "You already have a student named %{name}."
+              taken_archived: "You already have an archived student named %{name}. Restore them from archived students, or use a different name."
         plan:
           attributes:
             base:
