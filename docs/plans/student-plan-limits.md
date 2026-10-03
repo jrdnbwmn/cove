@@ -10,9 +10,9 @@
 | 1 | 1 | 1 | Add and test the family capacity rule | Master | ✅ |
 | 2 | 1 | 1 | Enforce capacity when a student becomes active | Master | ✅ |
 | 3 | 1 | 1 | Handle direct create and restore refusals | Master | ✅ |
-| 4 | 1 | 2 | Show the plan-specific prompt on the students page | subagent | |
-| 5 | 1 | 2 | Explain and disable restoration at capacity | subagent | |
-| 6 | 1 | 2 | Verify browser flows and existing student behavior | subagent | |
+| 4 | 1 | 2 | Show the plan-specific prompt on the students page | subagent | ✅ |
+| 5 | 1 | 2 | Explain and disable restoration at capacity | subagent | ✅ |
+| 6 | 1 | 2 | Verify browser flows and existing student behavior | subagent | ✅ |
 
 ## Prerequisites
 
