@@ -16,6 +16,15 @@ class StudentFormsTest < ActionDispatch::IntegrationTest
     assert_select "input#student_grade_level[name='student[grade_level]'][maxlength='50'][placeholder='e.g. 3rd, Pre-K']"
   end
 
+  test "a rejected add at the family limit shows the limit message and keeps what was typed" do
+    post students_path, params: {student: {name: "Nora", grade_level: "5th"}}
+
+    assert_response :unprocessable_content
+    assert_select "form#student-form h3", text: /Free includes 2 students\. Upgrade to Premium to add more\./
+    assert_select "input#student_name[value='Nora']"
+    assert_select "input#student_grade_level[value='5th']"
+  end
+
   test "the add form offers the next color pre-selected and an Add student button" do
     get new_student_path
 

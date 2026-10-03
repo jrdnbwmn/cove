@@ -10,6 +10,9 @@ class Students::ArchivesController < ApplicationController
   def destroy
     @student.restore!
     redirect_to students_path, status: :see_other, notice: t("students.notices.restored", name: @student.name)
+  rescue ActiveRecord::RecordInvalid => e
+    # AIDEV-NOTE: The model owns the limit copy, so the alert reuses its message.
+    redirect_to students_path, status: :see_other, alert: e.record.errors.full_messages.to_sentence
   end
 
   private

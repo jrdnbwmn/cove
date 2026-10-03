@@ -628,6 +628,7 @@ export default class extends Controller {
     window.addEventListener("blur", this.boundPointerLeave);
     document.addEventListener("turbo:before-cache", this.boundBeforeCache);
     this.startDialogStateObserver();
+    window.dispatchEvent(new CustomEvent("ui-toast:ready"));
   }
 
   removePrimaryListeners() {

@@ -6,6 +6,7 @@ class StudentsSystemTest < ApplicationSystemTestCase
   end
 
   test "a duplicate name shows its error inside the open modal" do
+    open_slot
     visit students_path
     open_add_modal
 
@@ -20,6 +21,7 @@ class StudentsSystemTest < ApplicationSystemTestCase
   end
 
   test "a parent can see the add student title and close the modal" do
+    open_slot
     visit students_path
     open_add_modal
 
@@ -32,6 +34,7 @@ class StudentsSystemTest < ApplicationSystemTestCase
   end
 
   test "cancel closes the add and edit modals without saving, and the cross stays available" do
+    open_slot
     visit students_path
     open_add_modal
 
@@ -53,6 +56,7 @@ class StudentsSystemTest < ApplicationSystemTestCase
   end
 
   test "adding a student closes the modal, shows the student and a toast" do
+    open_slot
     visit students_path
     open_add_modal
 
@@ -87,6 +91,7 @@ class StudentsSystemTest < ApplicationSystemTestCase
   end
 
   test "archived students are hidden until toggled and can be restored" do
+    open_slot
     visit students_path
 
     assert_no_selector "h2", text: "Archived"
@@ -145,7 +150,47 @@ class StudentsSystemTest < ApplicationSystemTestCase
     assert_not Student.exists?(ActiveRecord::FixtureSet.identify(:archived))
   end
 
+  test "a family at its Free limit sees the upgrade prompt instead of Add student" do
+    visit students_path
+
+    assert_text "Free includes 2 students."
+    assert_link "Upgrade to Premium"
+    assert_no_selector "button", text: "Add student"
+  end
+
+  test "an archived student has no Restore button while the family is at its limit" do
+    visit students_path(archived: 1)
+
+    assert_selector "p", text: "Iris"
+    assert_text "To restore a student, archive one first"
+    assert_no_button "Restore"
+  end
+
+  test "a stale Add modal keeps the typed name and shows the limit error inside the modal" do
+    open_slot
+    visit students_path
+    open_add_modal
+
+    Student.create!(account: accounts(:company), name: "Sam", color: "sky")
+
+    within("dialog[open]") do
+      fill_in "Name", with: "Nora"
+      click_button "Add student"
+
+      assert_text "Free includes 2 students. Upgrade to Premium to add more."
+      assert_field "Name", with: "Nora"
+    end
+    assert_selector "dialog[open]"
+    assert_not Student.exists?(name: "Nora")
+  end
+
   private
+
+  # AIDEV-NOTE: the Free fixture family starts at its 2 active student limit;
+  # remove one active student so tests that add or restore have an open slot.
+  def open_slot
+    students(:two).destroy!
+  end
 
   def open_add_modal
     find("button", text: "Add student", match: :first).click

@@ -1,4 +1,4 @@
-<%# locals: (student:, archived: false) %>
+<%# locals: (student:, archived: false, can_restore: true) %>
 <div data-student="<%= student.id %>">
   <%= render CardComponent.new do |card| %>
     <% card.with_body do %>
@@ -16,8 +16,10 @@
     <% card.with_footer do %>
       <% if archived %>
         <div class="flex flex-wrap items-center gap-2">
-          <%= form_with url: student_archive_path(student), method: :delete do %>
-            <%= render ButtonComponent.new(text: t("students.index.restore"), variant: :secondary, size: :sm, type: "submit") %>
+          <% if can_restore %>
+            <%= form_with url: student_archive_path(student), method: :delete do %>
+              <%= render ButtonComponent.new(text: t("students.index.restore"), variant: :secondary, size: :sm, type: "submit") %>
+            <% end %>
           <% end %>
           <%= render UiModalComponent.new(title: t("students.index.delete_title", name: student.name), lazy_load: true, turbo_frame_src: delete_student_path(student)) do |modal| %>
             <% modal.with_trigger do %>

@@ -86,6 +86,11 @@ class Account < ApplicationRecord
     premium? ? student_limit : FREE_STUDENT_LIMIT
   end
 
+  # Fresh count query (not students.size) so a loaded association can't answer stale.
+  def can_add_student?
+    students.active.count < students_allowed
+  end
+
   def joinable_by?(user)
     unjoinable_reason(user).nil?
   end

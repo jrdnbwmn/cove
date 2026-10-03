@@ -1,0 +1,9 @@
+<% limit = account.students_allowed %>
+<div class="flex flex-wrap items-center gap-3">
+  <% if account.premium? %>
+    <p class="text-sm text-muted-foreground"><%= t(".limit_premium_html", count: limit, limit: limit, link: mail_to(Jumpstart.config.support_email, t(".more_students_contact"), subject: t(".more_students_subject", product: Jumpstart.config.application_name), class: "underline text-foreground hover:text-primary")) %></p>
+  <% else %>
+    <p class="text-sm text-muted-foreground"><%= t(".limit_free", count: limit, limit: limit) %></p>
+    <%= render ButtonComponent.new(text: t(".upgrade"), href: pricing_path) %>
+  <% end %>
+</div>

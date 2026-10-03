@@ -15,6 +15,7 @@ class Student < ApplicationRecord
   validates :grade_level, length: {maximum: MAX_LENGTH}
   validates :color, inclusion: {in: COLORS}
   validate :name_unique_within_account
+  validate :within_student_limit, if: :becoming_active?
 
   scope :active, -> { where(archived_at: nil) }
   scope :archived, -> { where.not(archived_at: nil) }
@@ -40,6 +41,28 @@ class Student < ApplicationRecord
   end
 
   private
+
+  def becoming_active?
+    if new_record?
+      archived_at.nil?
+    else
+      archived_at_changed? && archived_at.nil?
+    end
+  end
+
+  # AIDEV-NOTE: Locking the family row serializes concurrent saves. Validations
+  # run inside the save's transaction, so the lock holds until commit and a
+  # second parent saving at the same moment re-counts after the first finishes.
+  # A restoring student is still archived in the DB here, so it isn't counted.
+  def within_student_limit
+    return unless account
+
+    account.lock!
+    return if account.can_add_student?
+
+    key = account.premium? ? :student_limit_premium : :student_limit_free
+    errors.add(:base, key, count: account.students_allowed)
+  end
 
   def assign_color
     self.color = self.class.next_color_for(account) if color.blank? && account
