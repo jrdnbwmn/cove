@@ -19,20 +19,6 @@
   <%= render "students/color_picker", form: form, student: student %>
 <% end %>
 
-<%# AIDEV-NOTE: The actions sit outside the form because Archive is its own form and forms can't nest.
-    Save/Add points back at the form with the HTML form attribute. On phones the main action stacks first. %>
-<div data-student-actions class="mt-6 flex flex-col-reverse gap-3 sm:flex-row sm:items-center">
-  <% if student.persisted? %>
-    <%= render ButtonComponent.new(text: t("students.form.delete"), variant: :ghost, href: delete_student_path(student), classes: "text-red-600") %>
-  <% end %>
-
-  <div class="flex flex-col-reverse gap-3 sm:ml-auto sm:flex-row sm:items-center">
-    <%= render ButtonComponent.new(text: t("students.form.cancel"), variant: :outline, data: {action: "click->ui-modal#close:prevent"}) %>
-    <% if student.persisted? %>
-      <%= form_with url: student_archive_path(student), method: :post, class: "contents" do %>
-        <%= render ButtonComponent.new(text: t("students.form.archive"), variant: :secondary, type: "submit") %>
-      <% end %>
-    <% end %>
-    <%= render ButtonComponent.new(text: t(student.new_record? ? "students.form.add" : "students.form.save"), type: "submit", form: "student-form") %>
-  </div>
-</div>
+<%= render layout: "students/actions", locals: {student: student} do %>
+  <%= render ButtonComponent.new(text: t(student.new_record? ? "students.form.add" : "students.form.save"), type: "submit", form: "student-form") %>
+<% end %>

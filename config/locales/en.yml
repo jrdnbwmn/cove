@@ -697,12 +697,24 @@ en:
     protected: "You can't restore this marketing subscription from Cove."
 
   students:
+    free_limit_banner:
+      heading: "Premium ended. Choose which %{limit} students stay editable."
+      description: "Nothing's been deleted. You can change this anytime."
+      choose: "Choose students"
+      picked: "%{limit} students are editable on Free."
+      change: "Change"
+      upgrade: "Upgrade instead"
+    kept:
+      title: "Choose students to keep editable"
+      intro: "Choose %{limit}. The rest stay saved and read-only until you upgrade or archive some."
+      error: "Choose %{limit} students to keep editable."
     index:
       title: "Students"
       add: "Add student"
       add_title: "Add student"
       edit: "Edit"
       edit_title: "Edit %{name}"
+      read_only_badge: "Read-only"
       empty_title: "Add your first student"
       empty_description: "Each student gets a color so you can spot them across Cove."
       show_archived: "Show archived (%{count})"
@@ -751,6 +763,8 @@ en:
       slate: "Slate"
     notices:
       created: "%{name} added."
+      kept: "Saved. %{names} stay editable."
+      read_only: "%{name} can't be edited on Free. You can still archive or delete this student."
       updated: "Saved."
       archived: "%{name} archived."
       restored: "%{name} restored."

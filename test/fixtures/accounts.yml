@@ -80,3 +80,9 @@ old_price:
   name: "Old Price Family"
   personal: false
   account_users_count: 1
+
+downgraded:
+  owner: downgraded
+  name: "Downgraded Family"
+  personal: false
+  account_users_count: 1

@@ -15,6 +15,7 @@ graph TD
   Controllers --> StudentsController[StudentsController]
   Controllers --> StudentControllers[students/]
   StudentControllers --> StudentArchivesController[ArchivesController]
+  StudentControllers --> StudentKeptController[KeptController]
   Controllers --> DevControllers[dev/]
   Controllers --> Concerns[concerns/]
   Concerns --> PremiumAccess[PremiumAccess]
@@ -126,4 +127,5 @@ graph TD
   PlanChangesController --> PlanChangeView
   StudentsController --> Student
   StudentArchivesController --> Student
+  StudentKeptController --> Student
   Student --> Account

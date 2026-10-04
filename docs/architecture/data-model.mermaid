@@ -38,6 +38,7 @@ erDiagram
     string grade_level
     string color
     datetime archived_at
+    boolean kept_on_free
   }
 
   %% account_users.account_id and account_users.user_id are required. The
@@ -114,6 +115,8 @@ erDiagram
   %% case-insensitive duplicate names within that family; archived_at supports
   %% restoring a student without deleting their record. Only active students
   %% consume the Family's student_limit / FREE_STUDENT_LIMIT capacity.
+  %% kept_on_free marks the students a downgraded (Free) family chose to keep
+  %% active when over FREE_STUDENT_LIMIT; set via Account#keep_students_on_free.
   USER ||--o{ ACCOUNT : owns
   ACCOUNT ||--o{ ACCOUNT_INVITATION : invitations
   USER o|--o{ ACCOUNT_INVITATION : invites

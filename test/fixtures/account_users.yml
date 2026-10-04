@@ -81,3 +81,9 @@ old_price:
   account: old_price
   roles:
     admin: true
+
+downgraded:
+  user: downgraded
+  account: downgraded
+  roles:
+    admin: true

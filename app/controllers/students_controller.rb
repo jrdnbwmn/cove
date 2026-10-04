@@ -1,7 +1,9 @@
 class StudentsController < ApplicationController
   before_action :authenticate_user!
-  before_action :set_student, only: %i[edit update delete destroy]
+  before_action :set_student, only: %i[show edit update delete destroy]
   before_action :redirect_archived_student, only: %i[edit update]
+  before_action :redirect_read_only_student, only: %i[edit update]
+  before_action :redirect_editable_student, only: :show
 
   def index
     @students = Current.account.students.active.ordered.load
@@ -27,6 +29,9 @@ class StudentsController < ApplicationController
   end
 
   def edit
+  end
+
+  def show
   end
 
   def update
@@ -57,6 +62,17 @@ class StudentsController < ApplicationController
 
   def redirect_archived_student
     redirect_to students_path if @student.archived?
+  end
+
+  # AIDEV-NOTE: The View modal explains why a student is read-only, so a stale link to an editable one goes to Edit.
+  def redirect_editable_student
+    redirect_to edit_student_path(@student) if @student.editable?
+  end
+
+  def redirect_read_only_student
+    return if @student.editable?
+
+    redirect_to students_path, alert: t("students.notices.read_only", name: @student.name)
   end
 
   def student_params

@@ -587,3 +587,69 @@ class AccountTest < ActiveSupport::TestCase
     }
   end
 end
+
+class AccountStudentDowngradeTest < ActiveSupport::TestCase
+  setup do
+    @family = accounts(:downgraded)
+  end
+
+  test "a Free family over two active students needs a student pick" do
+    assert @family.over_free_student_limit?
+    assert_not @family.student_pick_needed?
+
+    @family.keep_students_on_free([students(:kept).id, students(:kept_two).id])
+
+    assert_not @family.student_pick_needed?
+  end
+
+  test "the over limit result is memoized until the family reloads" do
+    @family.paid_premium?
+    assert_queries_count(1) { 3.times { @family.over_free_student_limit? } }
+
+    students(:read_only_three).archive!
+    students(:read_only_two).archive!
+    students(:read_only).archive!
+
+    assert @family.over_free_student_limit?
+    assert_not @family.reload.over_free_student_limit?
+  end
+
+  test "a family can replace which students stay editable on Free" do
+    assert @family.keep_students_on_free([students(:read_only).id, students(:read_only_two).id])
+
+    assert_predicate students(:read_only).reload, :kept_on_free?
+    assert_predicate students(:read_only_two).reload, :kept_on_free?
+    assert_not students(:kept).reload.kept_on_free?
+    assert_not students(:kept_two).reload.kept_on_free?
+  end
+
+  test "a family cannot save an incomplete, duplicate, archived, or other family student pick" do
+    archived = @family.students.create!(name: "Archived", archived_at: Time.current)
+    attempts = [
+      [students(:kept).id],
+      [students(:kept).id, students(:kept).id],
+      [students(:kept).id, archived.id],
+      [students(:kept).id, students(:one).id]
+    ]
+
+    attempts.each do |ids|
+      assert_not @family.keep_students_on_free(ids), ids.inspect
+      assert_not_empty @family.errors[:base]
+      assert students(:kept).reload.kept_on_free?
+      assert students(:kept_two).reload.kept_on_free?
+    end
+  end
+
+  test "Premium and past due families do not need a pick and retain it for a later downgrade" do
+    @family.update!(complimentary_premium: true, complimentary_premium_note: "Temporary Premium")
+
+    assert_not @family.over_free_student_limit?
+    assert_not @family.student_pick_needed?
+    assert students(:kept).kept_on_free?
+
+    @family.update!(complimentary_premium: false)
+    assert @family.reload.over_free_student_limit?
+    assert students(:kept).reload.kept_on_free?
+    assert_not accounts(:past_due).over_free_student_limit?
+  end
+end

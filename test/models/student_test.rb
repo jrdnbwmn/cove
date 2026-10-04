@@ -19,6 +19,15 @@ class StudentTest < ActiveSupport::TestCase
     end
   end
 
+  test "database defaults kept on free to false and requires a value" do
+    student = StudentRow.create!(row_attributes)
+    assert_not student.kept_on_free?
+
+    assert_raises(ActiveRecord::NotNullViolation) do
+      StudentRow.new(row_attributes(name: "Kept", kept_on_free: nil)).save!(validate: false)
+    end
+  end
+
   test "database rejects a student for a family that does not exist" do
     assert_raises(ActiveRecord::InvalidForeignKey) do
       StudentRow.create!(row_attributes(account_id: 0))
@@ -187,6 +196,25 @@ class StudentBehaviorTest < ActiveSupport::TestCase
     assert_equal stamp, student.reload.archived_at
   end
 
+  test "archiving clears a selected student while leaving the other selected student intact" do
+    kept = students(:kept)
+    other_kept = students(:kept_two)
+
+    kept.archive!
+
+    assert_not kept.reload.kept_on_free?
+    assert_predicate other_kept.reload, :kept_on_free?
+  end
+
+  test "archiving an already archived selected student clears its selection" do
+    student = students(:kept)
+    student.update!(archived_at: Time.current)
+
+    student.archive!
+
+    assert_not student.reload.kept_on_free?
+  end
+
   test "restoring is idempotent and keeps the color" do
     student = Student.create!(account: @family, name: "Maya", color: "ochre", archived_at: Time.current)
     student.restore!
@@ -194,6 +222,37 @@ class StudentBehaviorTest < ActiveSupport::TestCase
     assert_nil student.reload.archived_at
     assert_equal "ochre", student.color
     assert_nothing_raised { student.restore! }
+  end
+end
+
+class StudentEditabilityTest < ActiveSupport::TestCase
+  setup do
+    @family = accounts(:downgraded)
+    @kept = students(:kept)
+    @read_only = students(:read_only)
+  end
+
+  test "a selected student is editable while an unselected student is read-only after a Free downgrade" do
+    assert_predicate @kept, :editable?
+    assert_not_predicate @read_only, :editable?
+  end
+
+  test "reaching two active students makes both selected and unselected students editable" do
+    students(:read_only).archive!
+    students(:read_only_two).archive!
+    students(:read_only_three).archive!
+
+    assert_not @family.reload.over_free_student_limit?
+    assert_predicate @kept, :editable?
+    assert_predicate @read_only, :editable?
+  end
+
+  test "re-subscribing makes all students editable while retaining the later-downgrade selection" do
+    @family.update!(complimentary_premium: true, complimentary_premium_note: "Temporary Premium")
+
+    assert_predicate @kept, :editable?
+    assert_predicate @read_only, :editable?
+    assert_predicate @kept.reload, :kept_on_free?
   end
 end
 
