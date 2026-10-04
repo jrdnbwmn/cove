@@ -32,6 +32,7 @@ graph LR
   subgraph Students
     Students[/students] --> StudentsController[StudentsController#index, #new, #create, #edit, #update, #delete, #destroy]
     StudentArchive[POST/DELETE /students/:student_id/archive] --> StudentArchivesController[Students::ArchivesController#create, #destroy]
+    StudentKept[GET/PATCH /students/kept/edit, /students/kept] --> StudentKeptController[Students::KeptController#edit, #update]
   end
 
   %% Account collection, creation, and switching routes are intentionally absent.
