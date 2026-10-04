@@ -7,17 +7,17 @@
 
 | Task | Phase | Checkpoint | Description | Assign | Done |
 | ---- | ----- | ---------- | ----------- | ------ | ---- |
-| 1 | 1 | 1 | Add the `kept_on_free` column | Master | |
-| 2 | 1 | 1 | Add downgraded-family fixtures | subagent | |
-| 3 | 1 | 2 | Add family limit and picker rules | Master | |
-| 4 | 1 | 2 | Compute student editability and clear picks on archive | subagent | |
-| 5 | 2 | 3 | Block direct edits to read-only students | Master | |
-| 6 | 2 | 3 | Add the picker route, controller, and modal | Master | |
-| 7 | 2 | 3 | Add the read-only View modal and delete return path | Master | |
-| 8 | 3 | 4 | Show the downgrade banner and suppress header actions | Master | |
-| 9 | 3 | 4 | Show read-only cards with View actions | subagent | |
-| 10 | 3 | 4 | Add picker interaction and system coverage | subagent | |
-| 11 | 3 | 5 | Update the product brief and run final verification | Master | |
+| 1 | 1 | 1 | Add the `kept_on_free` column | Master | ✅ |
+| 2 | 1 | 1 | Add downgraded-family fixtures | subagent | ✅ |
+| 3 | 1 | 2 | Add family limit and picker rules | Master | ✅ |
+| 4 | 1 | 2 | Compute student editability and clear picks on archive | subagent | ✅ |
+| 5 | 2 | 3 | Block direct edits to read-only students | Master | ✅ |
+| 6 | 2 | 3 | Add the picker route, controller, and modal | Master | ✅ |
+| 7 | 2 | 3 | Add the read-only View modal and delete return path | Master | ✅ |
+| 8 | 3 | 4 | Show the downgrade banner and suppress header actions | Master | ✅ |
+| 9 | 3 | 4 | Show read-only cards with View actions | subagent | ✅ |
+| 10 | 3 | 4 | Add picker interaction and system coverage | subagent | ✅ |
+| 11 | 3 | 5 | Update the product brief and run final verification | Master | ✅ |
 
 ## Prerequisites
 

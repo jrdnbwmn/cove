@@ -6,7 +6,7 @@
     <% if @student.archived? %>
       <%= render ButtonComponent.new(text: t(".cancel"), variant: :secondary, data: {action: "click->ui-modal#close:prevent"}) %>
     <% else %>
-      <%= render ButtonComponent.new(text: t(".cancel"), variant: :secondary, href: edit_student_path(@student)) %>
+      <%= render ButtonComponent.new(text: t(".cancel"), variant: :secondary, href: @student.editable? ? edit_student_path(@student) : student_path(@student)) %>
     <% end %>
     <%= form_with url: student_path(@student), method: :delete do %>
       <%= render ButtonComponent.new(text: t(".confirm", name: @student.name), variant: :destructive, type: "submit", full_width: true) %>

@@ -71,6 +71,7 @@ class Account < ApplicationRecord
 
   def reload(*)
     remove_instance_variable(:@paid_premium) if defined?(@paid_premium)
+    remove_instance_variable(:@over_free_student_limit) if defined?(@over_free_student_limit)
     super
   end
 
@@ -89,6 +90,34 @@ class Account < ApplicationRecord
   # Fresh count query (not students.size) so a loaded association can't answer stale.
   def can_add_student?
     students.active.count < students_allowed
+  end
+
+  # AIDEV-NOTE: The result is memoized for one rendered page because every
+  # student card asks it. Reload clears it when a request changes the family.
+  def over_free_student_limit?
+    return @over_free_student_limit if defined?(@over_free_student_limit)
+
+    @over_free_student_limit = free? && students.active.count > FREE_STUDENT_LIMIT
+  end
+
+  def student_pick_needed?
+    over_free_student_limit? && students.active.where(kept_on_free: true).count < FREE_STUDENT_LIMIT
+  end
+
+  def keep_students_on_free(ids)
+    errors.clear
+    ids = Array(ids)
+
+    with_lock do
+      valid_ids = ids.size == FREE_STUDENT_LIMIT && ids.uniq.size == FREE_STUDENT_LIMIT &&
+        students.active.where(id: ids).count == FREE_STUDENT_LIMIT
+      return invalid_student_pick unless valid_ids
+
+      students.update_all(kept_on_free: false)
+      students.active.where(id: ids).update_all(kept_on_free: true)
+    end
+
+    true
   end
 
   def joinable_by?(user)
@@ -115,6 +144,11 @@ class Account < ApplicationRecord
 
   def students_empty?
     students.none?
+  end
+
+  def invalid_student_pick
+    errors.add(:base, I18n.t("students.kept.error", limit: FREE_STUDENT_LIMIT))
+    false
   end
 
   # AIDEV-NOTE: Three deliberately different subscription sets. Billable = paying now (Pay's `active` scope also

@@ -184,6 +184,40 @@ class StudentsSystemTest < ApplicationSystemTestCase
     assert_not Student.exists?(name: "Nora")
   end
 
+  test "a parent chooses which two students remain editable on Free" do
+    logout(:user)
+    login_as users(:downgraded), scope: :user
+    visit students_path
+
+    click_button "Change"
+
+    within("dialog[open]") do
+      assert_checked_field "Avery"
+      assert_checked_field "Blake"
+      assert_field "Casey", disabled: true
+      assert_button "Save", disabled: false
+
+      uncheck "Avery"
+
+      assert_field "Casey", disabled: false
+      assert_button "Save", disabled: true
+
+      check "Casey"
+
+      assert_field "Avery", disabled: true
+      assert_button "Save", disabled: false
+      click_button "Save"
+    end
+
+    assert_no_selector "dialog[open]"
+    assert_text "Saved. Blake and Casey stay editable."
+
+    within("[data-student='#{students(:kept).id}']") { click_button "View" }
+    within("dialog[open]") do
+      assert_text "Avery can't be edited on Free. You can still archive or delete this student."
+    end
+  end
+
   private
 
   # AIDEV-NOTE: the Free fixture family starts at its 2 active student limit;

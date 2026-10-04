@@ -6,7 +6,12 @@
       <div class="flex items-start gap-3 <%= "opacity-60" if archived %>">
         <%= render "students/color_dot", student: student %>
         <div class="min-w-0">
-          <p class="font-medium break-words"><%= student.name %></p>
+          <div class="flex flex-wrap items-center gap-2">
+            <p class="font-medium break-words"><%= student.name %></p>
+            <% if !archived && !student.editable? %>
+              <%= render BadgeComponent.new(text: t("students.index.read_only_badge"), variant: :neutral, size: :sm) %>
+            <% end %>
+          </div>
           <% if student.grade_level.present? %>
             <p class="text-sm text-muted-foreground break-words"><%= student.grade_level %></p>
           <% end %>
@@ -27,10 +32,16 @@
             <% end %>
           <% end %>
         </div>
-      <% else %>
+      <% elsif student.editable? %>
         <%= render UiModalComponent.new(title: t("students.index.edit_title", name: student.name), lazy_load: true, turbo_frame_src: edit_student_path(student)) do |modal| %>
           <% modal.with_trigger do %>
             <%= render ButtonComponent.new(text: t("students.index.edit"), variant: :secondary, size: :sm, data: {action: "click->ui-modal#open:prevent"}) %>
+          <% end %>
+        <% end %>
+      <% else %>
+        <%= render UiModalComponent.new(title: student.name, lazy_load: true, turbo_frame_src: student_path(student)) do |modal| %>
+          <% modal.with_trigger do %>
+            <%= render ButtonComponent.new(text: t("view"), variant: :secondary, size: :sm, data: {action: "click->ui-modal#open:prevent"}) %>
           <% end %>
         <% end %>
       <% end %>

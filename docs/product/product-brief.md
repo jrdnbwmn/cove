@@ -34,12 +34,17 @@ Each section is marked **Built** or **Decided, not built**.
   another parent is in the family. A non-owner parent deleting their login
   just leaves.
 
-## Students (Decided, not built — `/students` is a placeholder)
+## Students (Built — `/students`)
 
 - Student logins are a future version.
 - Families above Premium's `student_limit` contact support. The cap keeps
   co-ops and micro-schools off a family plan.
-- Past the limit: Free sees an upgrade prompt, Premium sees "Contact us".
+- Only active students count toward a family's limit. Creating or restoring a
+  student uses a slot; archived students do not. Free includes two students
+  and sees an upgrade prompt at the limit; Premium uses its configured cap and
+  sees "Contact us" at that limit.
+- Parents can archive students to keep their records or delete them permanently.
+  Restore remains unavailable while it would exceed the applicable limit.
 - **On downgrade:**
   - No student is ever deleted.
   - A calm banner on `/students` says something like "Premium ended. Choose
@@ -49,7 +54,8 @@ Each section is marked **Built** or **Decided, not built**.
     editable student read-only.
   - Re-subscribing makes every student editable again.
   - Read-only students still appear on schedule blocks they're already
-    assigned to.
+    assigned to, but future features must not allow new subjects, schedule
+    blocks, or other records to be assigned to them.
 
 ## Student data (Decided — applies to every feature)
 

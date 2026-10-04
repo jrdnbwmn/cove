@@ -25,9 +25,10 @@ class StudentsTest < ActionDispatch::IntegrationTest
     assert_select "input[name='student[grade_level]'][value='5th']"
   end
 
-  test "a parent can still edit and archive students while over the family limit" do
+  test "a parent can still edit and archive a selected student while over the family limit" do
     sign_in users(:one)
     Student.new(account: @family, name: "Extra", color: "rose").save!(validate: false)
+    @maya.update!(kept_on_free: true)
 
     patch student_path(@maya), params: {student: {grade_level: "4th"}}
     assert_redirected_to students_path
@@ -223,6 +224,30 @@ class StudentsTest < ActionDispatch::IntegrationTest
     assert_equal "Iris", students(:archived).reload.name
   end
 
+  test "a parent cannot open or directly save a read-only student's edit form" do
+    student = students(:read_only)
+    sign_in users(:downgraded)
+
+    get edit_student_path(student)
+    assert_redirected_to students_path
+    assert_equal "Casey can't be edited on Free. You can still archive or delete this student.", flash[:alert]
+
+    patch student_path(student), params: {student: {name: "Changed"}}
+    assert_redirected_to students_path
+    assert_equal "Casey", student.reload.name
+  end
+
+  test "a selected student and all students after re-subscribing can be edited" do
+    sign_in users(:downgraded)
+
+    get edit_student_path(students(:kept))
+    assert_response :success
+
+    accounts(:downgraded).update!(complimentary_premium: true, complimentary_premium_note: "Temporary Premium")
+    get edit_student_path(students(:read_only))
+    assert_response :success
+  end
+
   test "another family's student cannot be edited or updated" do
     sign_in users(:one)
 
@@ -256,6 +281,38 @@ class StudentsTest < ActionDispatch::IntegrationTest
     assert_match "permanently removes Maya", response.body
     assert_select "form[action='#{student_path(@maya)}'] input[name='_method'][value='delete']"
     assert_select "a[href='#{edit_student_path(@maya)}']", text: "Cancel"
+  end
+
+  test "a parent can view a read-only student and return there from delete confirmation" do
+    sign_in users(:downgraded)
+
+    get student_path(students(:read_only))
+    assert_response :success
+    assert_select "turbo-frame#modal-lazy-content"
+    assert_select "p", text: /Casey can't be edited on Free/
+
+    get delete_student_path(students(:read_only))
+    assert_select "a[href='#{student_path(students(:read_only))}']", text: "Cancel"
+  end
+
+  test "viewing an editable student sends the parent to the edit form instead" do
+    sign_in users(:downgraded)
+
+    get student_path(students(:kept))
+    assert_redirected_to edit_student_path(students(:kept))
+
+    sign_in users(:one)
+    get student_path(students(:one))
+    assert_redirected_to edit_student_path(students(:one))
+  end
+
+  test "guests and other families cannot view a student" do
+    get student_path(students(:read_only))
+    assert_redirected_to new_user_session_path
+
+    sign_in users(:one)
+    get student_path(students(:read_only))
+    assert_response :not_found
   end
 
   test "cancelling the confirmation for an archived student closes the modal" do

@@ -15,3 +15,38 @@ archived:
   grade_level: "6th"
   color: sky
   archived_at: <%= 1.day.ago %>
+
+kept:
+  account: downgraded
+  name: "Avery"
+  grade_level: "3rd"
+  color: sage
+  kept_on_free: true
+
+kept_two:
+  account: downgraded
+  name: "Blake"
+  grade_level: "4th"
+  color: sea
+  kept_on_free: true
+
+read_only:
+  account: downgraded
+  name: "Casey"
+  grade_level: "5th"
+  color: sky
+  kept_on_free: false
+
+read_only_two:
+  account: downgraded
+  name: "Dakota"
+  grade_level: "6th"
+  color: lavender
+  kept_on_free: false
+
+read_only_three:
+  account: downgraded
+  name: "Emerson"
+  grade_level: "7th"
+  color: rose
+  kept_on_free: false

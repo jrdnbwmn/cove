@@ -32,8 +32,14 @@ class Student < ApplicationRecord
     archived_at.present?
   end
 
+  # AIDEV-NOTE: kept_on_free deliberately survives re-subscribing (it only matters while the family is over the Free
+  # limit), so a later downgrade reuses the earlier pick. Only archiving or choosing again clears it.
+  def editable?
+    !account.over_free_student_limit? || kept_on_free?
+  end
+
   def archive!
-    update!(archived_at: Time.current) unless archived?
+    update!(archived_at: archived_at || Time.current, kept_on_free: false)
   end
 
   def restore!

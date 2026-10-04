@@ -46,6 +46,27 @@ class StudentArchivesTest < ActionDispatch::IntegrationTest
     assert_equal stamp.to_i, @archived.reload.archived_at.to_i
   end
 
+  test "archiving a selected student clears only that student's selection" do
+    sign_in users(:downgraded)
+
+    post student_archive_path(students(:kept))
+
+    assert_redirected_to students_path
+    assert students(:kept).reload.archived?
+    assert_not students(:kept).kept_on_free?
+    assert_predicate students(:kept_two).reload, :kept_on_free?
+  end
+
+  test "archiving an already archived selected student clears its selection" do
+    @archived.update!(kept_on_free: true)
+    sign_in users(:one)
+
+    post student_archive_path(@archived)
+
+    assert_redirected_to students_path
+    assert_not @archived.reload.kept_on_free?
+  end
+
   test "a parent can restore an archived student and the color is unchanged" do
     sign_in users(:one)
     students(:two).archive!

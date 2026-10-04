@@ -105,6 +105,67 @@ class StudentsIndexTest < ActionDispatch::IntegrationTest
     assert_no_match "Free includes", response.body
   end
 
+  test "a downgraded family sees the pick banner instead of student actions" do
+    students(:kept).update!(kept_on_free: false)
+    students(:kept_two).update!(kept_on_free: false)
+    sign_in users(:downgraded)
+
+    get students_path
+
+    assert_select "p", text: "Premium ended. Choose which 2 students stay editable."
+    assert_select "[data-ui-modal-turbo-frame-src-value='#{edit_students_kept_path}']", count: 1
+    assert_select "a[href='#{pricing_path}']", text: "Upgrade instead"
+    assert_select "[data-ui-modal-turbo-frame-src-value='#{new_student_path}']", count: 0
+    assert_no_match "Free includes 2 students.", response.body
+  end
+
+  test "a downgraded family with a saved pick sees the quiet change note" do
+    sign_in users(:downgraded)
+
+    get students_path
+
+    assert_select "p", text: "2 students are editable on Free."
+    assert_select "button", text: "Change"
+  end
+
+  test "a downgraded family can view read-only students while its selected students remain editable" do
+    sign_in users(:downgraded)
+
+    get students_path
+
+    [students(:kept), students(:kept_two)].each do |student|
+      assert_select "[data-student='#{student.id}']" do
+        assert_select "[data-ui-modal-turbo-frame-src-value='#{edit_student_path(student)}']", count: 1
+        assert_select "span", text: "Read-only", count: 0
+      end
+    end
+
+    [students(:read_only), students(:read_only_two), students(:read_only_three)].each do |student|
+      assert_select "[data-student='#{student.id}']" do
+        assert_select "span", text: "Read-only", count: 1
+        assert_select "[data-ui-modal-turbo-frame-src-value='#{student_path(student)}']", count: 1
+        assert_select "[data-ui-modal-turbo-frame-src-value='#{edit_student_path(student)}']", count: 0
+        assert_select "button[data-action='click->ui-modal#open:prevent']", text: "View"
+      end
+    end
+  end
+
+  test "a Premium family can edit students even over the Free limit" do
+    account = accounts(:subscribed)
+    students = 3.times.map { |i| Student.create!(account: account, name: "Student #{i}") }
+    sign_in users(:subscribed)
+
+    get students_path
+
+    students.each do |student|
+      assert_select "[data-student='#{student.id}']" do
+        assert_select "[data-ui-modal-turbo-frame-src-value='#{edit_student_path(student)}']", count: 1
+        assert_select "span", text: "Read-only", count: 0
+        assert_select "[data-ui-modal-turbo-frame-src-value='#{student_path(student)}']", count: 0
+      end
+    end
+  end
+
   test "a Free family at its limit cannot restore an archived student and is told to upgrade" do
     students(:two).archive!
     Student.create!(account: accounts(:company), name: "Iris Two")
