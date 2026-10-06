@@ -30,7 +30,7 @@ graph LR
   end
 
   subgraph Learners
-    Learners[/learners] --> LearnersController[LearnersController#index, #new, #create, #edit, #update, #delete, #destroy]
+    Learners[/learners] --> LearnersController[LearnersController#index, #new, #create, #show, #edit, #update, #delete, #destroy]
     LearnerArchive[POST/DELETE /learners/:learner_id/archive] --> LearnerArchivesController[Learners::ArchivesController#create, #destroy]
     LearnerKept[GET/PATCH /learners/kept/edit, /learners/kept] --> LearnerKeptController[Learners::KeptController#edit, #update]
   end
