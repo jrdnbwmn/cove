@@ -24,9 +24,9 @@ they're executed.
 | 10   | B     | 5          | Settings tabs: regroup, hide API, fix phone overflow (U-2, U-28, U-29) | Master | ✅   |
 | 11   | B     | 5          | Security tab: password, two-factor, connected accounts (U-8, U-17, U-18, U-19) | Master | ✅   |
 | 12   | B     | 5          | Family page: parents as rows, invite note, delete at the bottom (F-1 to F-5, F-11) | Master | ✅   |
-| 13   | B     | 6          | Remove the Edit parent page (F-12 to F-14) | Master |      |
-| 14   | B     | 6          | Edit family as a modal; transfer ownership (F-6 to F-10) | Master |      |
-| 15   | B     | 6          | Invite a parent as a modal (F-15 to F-18) | Master |      |
+| 13   | B     | 6          | Remove the Edit parent page (F-12 to F-14) | Master | ✅   |
+| 14   | B     | 6          | Edit family as a modal; transfer ownership (F-6 to F-10) | Master | ✅   |
+| 15   | B     | 6          | Invite a parent as a modal (F-15 to F-18) | Master | ✅   |
 | 16   | B     | 7          | Cancel and resume as modals (F-30 to F-34) | Master |      |
 | 17   | B     | 7          | Plan change as a focused page (F-35, F-36) | Master |      |
 | 18   | B     | 7          | Two-factor: enable on POST, not GET (U-15) | Master |      |

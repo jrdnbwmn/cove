@@ -130,6 +130,8 @@ en:
       parent_limit: "A family can have up to two parents."
       remove_invitation: "Remove invitation"
       remove_invitation_confirm: "Remove the invitation for %{email}?"
+      remove_parent: "Remove %{name}"
+      remove_parent_confirm: "Remove %{name}? They will get a new family of their own. Your students will stay here."
       delete_confirm: "Delete %{name}? This permanently removes the family and its data."
       resend_invite: "Resend Invite"
       2fa: "2FA"

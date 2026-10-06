@@ -3,13 +3,19 @@
 <% content_for :sidebar, render(partial: "account_navbar") %>
 
 <%= render PageHeaderComponent.new(title: @account.name) do |header| %>
-  <% if is_admin %><% header.with_primary_action { render ButtonComponent.new(text: t(".edit_account"), variant: :secondary, href: edit_account_path(@account)) } %><% end %>
+  <% if is_admin %>
+    <% header.with_primary_action do %>
+      <%= render UiModalComponent.new(title: t(".edit_account"), lazy_load: true, turbo_frame_src: edit_account_path(@account)) do |modal| %>
+        <% modal.with_trigger do %><%= render ButtonComponent.new(text: t(".edit_account"), variant: :secondary, data: {action: "click->ui-modal#open:prevent"}) %><% end %>
+      <% end %>
+    <% end %>
+  <% end %>
 <% end %>
 
 <section>
   <div class="mb-4 flex flex-wrap items-center justify-between gap-3">
     <h2 class="h3"><%= t(".parents") %></h2>
-    <%= render ButtonComponent.new(text: t(".invite"), variant: :secondary, href: new_account_account_invitation_path(@account)) if is_admin %>
+    <% if is_admin %><%= render UiModalComponent.new(title: t(".invite"), lazy_load: true, turbo_frame_src: new_account_account_invitation_path(@account)) do |modal| %><% modal.with_trigger do %><%= render ButtonComponent.new(text: t(".invite"), variant: :secondary, data: {action: "click->ui-modal#open:prevent"}) %><% end %><% end %><% end %>
   </div>
   <% if @account.account_users_count >= 2 %><p class="mb-4 text-sm text-muted-foreground"><%= t(".parent_limit") %></p><% end %>
   <div class="divide-y divide-neutral-200 rounded-md border border-neutral-200 dark:divide-neutral-700 dark:border-neutral-700">
@@ -17,13 +23,13 @@
       <% user = account_user.user %>
       <div class="flex items-center justify-between gap-4 p-4" data-family-row>
         <div class="flex min-w-0 items-center gap-3"><%= render AvatarComponent.new(src: avatar_url_for(user), alt: user.name || user.email, size: :sm) %><div class="min-w-0"><p class="font-medium"><%= user.name || user.email %> <%= render BadgeComponent.new(text: "Owner", size: :sm) if @account.owner?(user) %></p><p class="text-sm text-muted-foreground"><%= user.email %></p></div></div>
-        <% if is_admin %><%= render DropdownComponent.new(trigger_variant: :icon, placement: "bottom-end") do |dropdown| %><% dropdown.with_item_link(text: t(".edit"), href: edit_account_account_user_path(@account, account_user)) %><% end %><% end %>
+        <% if is_admin && !@account.owner?(user) %><%= render DropdownComponent.new(trigger_variant: :icon, placement: "bottom-end") do |dropdown| %><% dropdown.with_item_custom(unstyled: true) do %><%= button_to t(".remove_parent", name: user.name || user.email), account_account_user_path(@account, account_user), method: :delete, class: "block w-full px-3 py-2 text-left text-sm text-red-600", data: {turbo_confirm: t(".remove_parent_confirm", name: user.name || user.email)} %><% end %><% end %><% end %>
       </div>
     <% end %>
     <% @account.account_invitations.each do |invitation| %>
       <div class="flex items-center justify-between gap-4 p-4" data-family-row>
         <div class="min-w-0"><p class="font-medium"><%= invitation.name %> <%= render BadgeComponent.new(text: t(".awaiting_response"), size: :sm) %></p><p class="text-sm text-muted-foreground"><%= invitation.email %></p></div>
-        <% if is_admin %><%= render DropdownComponent.new(trigger_variant: :icon, placement: "bottom-end") do |dropdown| %><% dropdown.with_item_link(text: t(".edit"), href: edit_account_account_invitation_path(@account, invitation)) %><% dropdown.with_item_custom(unstyled: true) do %><%= button_to t(".remove_invitation"), account_account_invitation_path(@account, invitation), method: :delete, class: "block w-full px-3 py-2 text-left text-sm text-red-600", data: {turbo_confirm: t(".remove_invitation_confirm", email: invitation.email)} %><% end %><% end %><% end %>
+        <% if is_admin %><%= render DropdownComponent.new(trigger_variant: :icon, placement: "bottom-end") do |dropdown| %><% dropdown.with_item_button(text: t(".edit"), type: "submit", form: dom_id(invitation, :edit)) %><% dropdown.with_item_custom(unstyled: true) do %><%= button_to t(".remove_invitation"), account_account_invitation_path(@account, invitation), method: :delete, class: "block w-full px-3 py-2 text-left text-sm text-red-600", data: {turbo_confirm: t(".remove_invitation_confirm", email: invitation.email)} %><% end %><% end %><%= render UiModalComponent.new(title: t(".edit"), lazy_load: true, turbo_frame_src: edit_account_account_invitation_path(@account, invitation)) do |modal| %><% modal.with_trigger do %><%= form_with url: "#", id: dom_id(invitation, :edit), class: "hidden", data: {action: "submit->ui-modal#open:prevent"} do %><% end %><% end %><% end %><% end %>
       </div>
     <% end %>
   </div>
