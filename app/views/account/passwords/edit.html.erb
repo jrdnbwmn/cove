@@ -68,7 +68,13 @@
     ) %>
   </div>
 <% else %>
-    <%= form_with url: backup_codes_user_two_factor_path do %><%= render ButtonComponent.new(text: t(".two_factor.enable"), variant: :secondary, type: "submit") %><% end %>
+    <%= render UiModalComponent.new(title: t(".two_factor.title")) do |modal| %>
+      <% modal.with_trigger do %><%= render ButtonComponent.new(text: t(".two_factor.enable"), variant: :secondary, data: {action: "click->ui-modal#open:prevent"}) %><% end %>
+      <%= turbo_frame_tag "modal-lazy-content" do %>
+        <p class="text-muted-foreground">Set up an authenticator app to protect your account.</p>
+        <%= form_with url: backup_codes_user_two_factor_path, class: "mt-6 flex justify-end" do %><%= render ButtonComponent.new(text: "Next", type: "submit") %><% end %>
+      <% end %>
+    <% end %>
 <% end %>
 </div>
 

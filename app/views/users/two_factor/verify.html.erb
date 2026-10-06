@@ -1,0 +1,8 @@
+<%= turbo_frame_tag "modal-lazy-content" do %>
+  <h3 class="font-sans text-lg font-semibold"><%= t(".verify_header") %></h3>
+  <p class="mt-2 text-sm text-muted-foreground"><%= t(".verify_description") %></p>
+  <%= form_with url: user_two_factor_path, class: "mt-6" do |form| %>
+    <%= render FormFieldComponent.new(label: t("users.two_factor.verification_code"), name: "code", error: flash[:alert]) do |field| %><% field.with_input do %><%= form.text_field :code, required: true, class: "form-control" %><% end %><% end %>
+    <div class="mt-6 flex flex-col-reverse gap-3 sm:flex-row sm:justify-end"><%= render ButtonComponent.new(text: t("cancel"), variant: :secondary, data: {action: "click->ui-modal#close:prevent"}) %><%= render ButtonComponent.new(text: t(".verify"), type: "submit") %></div>
+  <% end %>
+<% end %>

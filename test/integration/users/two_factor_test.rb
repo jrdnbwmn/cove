@@ -24,5 +24,6 @@ class Users::TwoFactorTest < ActionDispatch::IntegrationTest
     assert_response :success
     assert_predicate user.reload.otp_secret, :present?
     assert_predicate user.otp_backup_codes, :present?
+    assert_select "turbo-frame#modal-lazy-content"
   end
 end

@@ -30,9 +30,9 @@ they're executed.
 | 16   | B     | 7          | Cancel and resume as modals (F-30 to F-34) | Master | ✅   |
 | 17   | B     | 7          | Plan change as a focused page (F-35, F-36) | Master | ✅   |
 | 18   | B     | 7          | Two-factor: enable on POST, not GET (U-15) | Master | ✅   |
-| 19   | B     | 8          | Two-factor setup as a modal flow (U-10, U-12 to U-14, U-16) | Master |      |
-| 20   | B     | 8          | Billing page: one plan summary, one primary, spacing (F-20 to F-23, F-25) | Master |      |
-| 21   | B     | 8          | Billing dates and charges as rows (F-24, F-28) | Master |      |
+| 19   | B     | 8          | Two-factor setup as a modal flow (U-10, U-12 to U-14, U-16) | Master | ✅   |
+| 20   | B     | 8          | Billing page: one plan summary, one primary, spacing (F-20 to F-23, F-25) | Master | ✅   |
+| 21   | B     | 8          | Billing dates and charges as rows (F-24, F-28) | Master | ✅   |
 | 22   | B     | 9          | Billing email and info forms (F-26, F-27) | Clone  |      |
 | 23   | B     | 9          | One h1 per Settings page; Profile form layout (U-1, U-3, U-5, U-6, U-9, U-11) | Master |      |
 | 24   | B     | 10         | Invitation accept page (F-19) | Clone  |      |
