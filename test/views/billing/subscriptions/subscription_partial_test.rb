@@ -116,8 +116,8 @@ class Billing::Subscriptions::SubscriptionPartialTest < ActionView::TestCase
     doc = render_subscription(subscription)
 
     refute_includes doc.text, "Your plan will be canceled on"
-    link = doc.css("a").find { |a| a.text.strip == I18n.t("billing.subscriptions.subscription.resume") }
-    assert link, "expected a resume link"
-    assert_equal billing_subscription_resume_path(subscription), link[:href]
+    trigger = doc.css("button").find { |button| button.text.strip == I18n.t("billing.subscriptions.subscription.resume") }
+    assert trigger, "expected a resume modal trigger"
+    assert_equal "click->ui-modal#open:prevent", trigger["data-action"]
   end
 end

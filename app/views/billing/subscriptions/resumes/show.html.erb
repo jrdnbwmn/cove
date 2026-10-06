@@ -1,9 +1,8 @@
 <% Current.meta_tags.set(title: t(".title")) %>
 
-<% content_for :sidebar, render(partial: "account_navbar") %>
-
-<div class="mx-auto mt-12 max-w-xl">
-  <h1 class="h3 text-foreground"><%= t ".title" %></h1>
+<%= turbo_frame_tag "modal-lazy-content" do %>
+<div class="max-w-xl">
+  <h2 class="font-sans text-lg font-semibold"><%= t ".title" %></h2>
 
   <%= render CardComponent.new(divide: true, classes: "mt-8") do |card| %>
     <% card.with_header do %>
@@ -15,13 +14,11 @@
     <% end %>
 
     <% card.with_footer do %>
-      <div class="flex items-center justify-between gap-3">
-        <%= render ButtonComponent.new(text: t(".back"), variant: :secondary, href: billing_path) %>
-
-        <%= button_to billing_subscription_resume_path(@subscription), method: :patch, class: "inline-flex items-center justify-center gap-1.5 rounded-[var(--radius)] border border-neutral-400/30 bg-primary px-3.5 py-2 text-sm font-medium whitespace-nowrap text-primary-foreground shadow-sm transition-all duration-100 ease-in-out hover:bg-primary-hover focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-neutral-600 dark:hover:bg-neutral-100 dark:focus-visible:outline-neutral-200", form: { data: { turbo_confirm: t("are_you_sure") } } do %>
-          <%= button_text t(".button"), disable_with: t(".processing") %>
-        <% end %>
+      <div class="flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
+        <%= render ButtonComponent.new(text: t("cancel"), variant: :secondary, data: {action: "click->ui-modal#close:prevent"}) %>
+        <%= form_with url: billing_subscription_resume_path(@subscription), method: :patch do %><%= render ButtonComponent.new(text: t(".button"), type: "submit", data: {disable_with: t(".processing")}) %><% end %>
       </div>
     <% end %>
   <% end %>
 </div>
+<% end %>

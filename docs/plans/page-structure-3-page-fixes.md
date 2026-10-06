@@ -27,9 +27,9 @@ they're executed.
 | 13   | B     | 6          | Remove the Edit parent page (F-12 to F-14) | Master | ✅   |
 | 14   | B     | 6          | Edit family as a modal; transfer ownership (F-6 to F-10) | Master | ✅   |
 | 15   | B     | 6          | Invite a parent as a modal (F-15 to F-18) | Master | ✅   |
-| 16   | B     | 7          | Cancel and resume as modals (F-30 to F-34) | Master |      |
-| 17   | B     | 7          | Plan change as a focused page (F-35, F-36) | Master |      |
-| 18   | B     | 7          | Two-factor: enable on POST, not GET (U-15) | Master |      |
+| 16   | B     | 7          | Cancel and resume as modals (F-30 to F-34) | Master | ✅   |
+| 17   | B     | 7          | Plan change as a focused page (F-35, F-36) | Master | ✅   |
+| 18   | B     | 7          | Two-factor: enable on POST, not GET (U-15) | Master | ✅   |
 | 19   | B     | 8          | Two-factor setup as a modal flow (U-10, U-12 to U-14, U-16) | Master |      |
 | 20   | B     | 8          | Billing page: one plan summary, one primary, spacing (F-20 to F-23, F-25) | Master |      |
 | 21   | B     | 8          | Billing dates and charges as rows (F-24, F-28) | Master |      |

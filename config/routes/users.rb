@@ -23,6 +23,7 @@ end
 namespace :user, module: :users do
   resource :two_factor, controller: :two_factor do
     get :backup_codes
+    post :backup_codes, action: :create_backup_codes
     get :verify
   end
   resources :connected_accounts

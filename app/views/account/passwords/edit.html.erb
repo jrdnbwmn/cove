@@ -68,7 +68,7 @@
     ) %>
   </div>
 <% else %>
-  <%= render ButtonComponent.new(text: t(".two_factor.enable"), variant: :secondary, href: backup_codes_user_two_factor_path) %>
+    <%= form_with url: backup_codes_user_two_factor_path do %><%= render ButtonComponent.new(text: t(".two_factor.enable"), variant: :secondary, type: "submit") %><% end %>
 <% end %>
 </div>
 

@@ -2,9 +2,8 @@
 <% title = t(".title", interval: monthly ? t(".monthly") : t(".yearly")) %>
 <% Current.meta_tags.set(title: title) %>
 
-<% content_for :sidebar, render(partial: "account_navbar") %>
-
-<div class="mx-auto mt-12 max-w-xl">
+<div class="mx-auto mt-12 max-w-xl px-6">
+  <%= render ButtonComponent.new(text: "Back to Billing", variant: :ghost, href: billing_path) %>
   <h1 class="h3 text-foreground"><%= title %></h1>
 
   <%= render CardComponent.new(divide: true, classes: "mt-8") do |card| %>
