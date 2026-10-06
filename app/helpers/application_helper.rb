@@ -60,8 +60,8 @@ module ApplicationHelper
     current_page_or_descendant?(subjects_path)
   end
 
-  def students_nav_active?
-    current_page_or_descendant?(students_path)
+  def learners_nav_active?
+    current_page_or_descendant?(learners_path)
   end
 
   def support_nav_active?

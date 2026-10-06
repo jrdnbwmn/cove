@@ -1,12 +1,12 @@
 require "test_helper"
 
 class BillingPolicyCopyTest < ActionDispatch::IntegrationTest
-  test "the billing page tells a Free family it can have 2 students" do
+  test "the billing page tells a Free family it can have 2 learners" do
     Jumpstart.config.stub(:payments_enabled?, true) do
       sign_in users(:one)
       get billing_path
 
-      assert_includes response.body, "Your Family can have 2 students."
+      assert_includes response.body, "Your Family can have 2 learners."
     end
   end
 

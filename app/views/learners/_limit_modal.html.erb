@@ -1,0 +1,20 @@
+<%# locals: (account:) %>
+<%# AIDEV-NOTE: At the learner limit the header's Add button stays and opens this modal instead of the add form (ux-notes: plan limits). It isn't lazy-loaded; everything it needs is already known. %>
+<% limit = account.learners_allowed %>
+<% premium = account.premium? %>
+<% title = premium ? t(".title_premium", count: limit, limit: limit) : t(".title_free", count: limit, limit: limit) %>
+<%= render UiModalComponent.new(title: title) do |modal| %>
+  <% modal.with_trigger do %>
+    <%= render ButtonComponent.new(text: t("learners.index.add"), icon: icon("plus", class: "size-full"), data: {action: "click->ui-modal#open:prevent"}) %>
+  <% end %>
+  <p class="text-muted-foreground"><%= premium ? t(".body_premium") : t(".body_free") %></p>
+  <%# Close sits left of the action on desktop; on phones the action stacks on top. %>
+  <div class="mt-6 flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
+    <%= render ButtonComponent.new(text: t(".close"), variant: :secondary, classes: "w-full sm:w-auto", data: {action: "click->ui-modal#close:prevent"}) %>
+    <% if premium %>
+      <%= render ButtonComponent.new(text: t(".contact"), href: "mailto:#{Jumpstart.config.support_email}?subject=#{ERB::Util.url_encode(t(".more_learners_subject", product: Jumpstart.config.application_name))}", classes: "w-full sm:w-auto") %>
+    <% else %>
+      <%= render ButtonComponent.new(text: t(".see_plans"), href: pricing_path, classes: "w-full sm:w-auto") %>
+    <% end %>
+  </div>
+<% end %>

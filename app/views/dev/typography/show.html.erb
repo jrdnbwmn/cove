@@ -25,7 +25,7 @@
         ready whenever you need them &mdash; no more rebuilding the plan every morning.
       </p>
       <p class="mt-3 text-sm text-muted-foreground">
-        <%= t("dev.typography.show.pricing_sample", count: Account::FREE_STUDENT_LIMIT) %>
+        <%= t("dev.typography.show.pricing_sample", count: Account::FREE_LEARNER_LIMIT) %>
       </p>
     </section>
 
@@ -87,7 +87,7 @@
       </div>
 
       <div class="mt-6 grid gap-6 md:grid-cols-2">
-        <%= render EmptyStateComponent.new(title: "No students yet", description: "Add your first student to start building a schedule.", bordered: true) %>
+        <%= render EmptyStateComponent.new(title: "No learners yet", description: "Add your first learner to start building a schedule.", bordered: true) %>
         <div class="flex flex-col items-center justify-center gap-3 rounded-xl border border-border p-8 text-center">
           <%= render LoadingIndicatorComponent.new(type: :spinner, text: "Saving Amelia's schedule&hellip;".html_safe) %>
         </div>
@@ -96,7 +96,7 @@
       <div class="mt-6">
         <% schedule_table = TableComponent.new(striped: true, hoverable: true) %>
         <% schedule_table.with_column(label: "Subject") %>
-        <% schedule_table.with_column(label: "Student") %>
+        <% schedule_table.with_column(label: "Learner") %>
         <% schedule_table.with_column(label: "Progress") %>
         <% schedule_table.with_row do |row| %>
           <% row.with_cell(primary: true) { "Algebra I" } %>
@@ -116,7 +116,7 @@
     <section class="py-10">
       <p class="text-sm font-medium text-muted-foreground">Numerals &amp; punctuation stress test</p>
       <p class="mt-4 text-foreground">
-        Week 12 &middot; Mon&ndash;Fri &middot; 9:00am&ndash;3:30pm &middot; 4 students, 2 parents
+        Week 12 &middot; Mon&ndash;Fri &middot; 9:00am&ndash;3:30pm &middot; 4 learners, 2 parents
       </p>
       <p class="mt-2 text-foreground">
         &ldquo;It&rsquo;s the Rivera family&rsquo;s 3rd year homeschooling &mdash; 100% attendance, grade A&rdquo;

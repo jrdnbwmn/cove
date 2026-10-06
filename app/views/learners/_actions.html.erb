@@ -1,0 +1,17 @@
+<%# AIDEV-NOTE: The actions sit outside the form because Archive is its own form and forms can't nest.
+    Save/Add points back at the form with the HTML form attribute. On phones the main action stacks first. %>
+<div data-learner-actions class="mt-6 flex flex-col-reverse gap-3 sm:flex-row sm:items-center">
+  <% if learner.persisted? %>
+    <%= render ButtonComponent.new(text: t("learners.form.delete"), href: delete_learner_path(learner), variant: :ghost, classes: "text-red-600") %>
+  <% end %>
+
+  <div class="flex flex-col-reverse gap-3 sm:ml-auto sm:flex-row sm:items-center">
+    <%= render ButtonComponent.new(text: t("learners.form.cancel"), variant: :outline, data: {action: "click->ui-modal#close:prevent"}) %>
+    <% if learner.persisted? %>
+      <%= form_with url: learner_archive_path(learner), method: :post, class: "contents" do %>
+        <%= render ButtonComponent.new(text: t("learners.form.archive"), variant: :secondary, type: "submit") %>
+      <% end %>
+    <% end %>
+    <%= yield %>
+  </div>
+</div>

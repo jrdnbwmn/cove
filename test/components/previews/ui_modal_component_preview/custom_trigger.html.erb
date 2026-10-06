@@ -1,6 +1,6 @@
-<%= render UiModalComponent.new(title: "Add student") do |modal| %>
+<%= render UiModalComponent.new(title: "Add learner") do |modal| %>
   <% modal.with_trigger do %>
-    <%= render ButtonComponent.new(text: "Add student", data: {action: "click->ui-modal#open:prevent"}) %>
+    <%= render ButtonComponent.new(text: "Add learner", data: {action: "click->ui-modal#open:prevent"}) %>
   <% end %>
-  <p>Enter the student's name to add them to your family.</p>
+  <p>Enter the learner's name to add them to your family.</p>
 <% end %>

@@ -439,9 +439,9 @@ content region, preserving the title and close control.
 Custom trigger:
 
 ```erb
-<%= render UiModalComponent.new(title: "Add student", lazy_load: true, turbo_frame_src: new_student_path) do |modal| %>
+<%= render UiModalComponent.new(title: "Add learner", lazy_load: true, turbo_frame_src: new_learner_path) do |modal| %>
   <% modal.with_trigger do %>
-    <%= render ButtonComponent.new(text: "Add student", data: { action: "click->ui-modal#open:prevent" }) %>
+    <%= render ButtonComponent.new(text: "Add learner", data: { action: "click->ui-modal#open:prevent" }) %>
   <% end %>
 <% end %>
 ```
@@ -591,9 +591,9 @@ rendered only when a secondary action or menu slot is present.
 **Usage:**
 
 ```erb
-<%= render PageHeaderComponent.new(title: "Students", description: "Manage your family’s learners.") do |header| %>
+<%= render PageHeaderComponent.new(title: "Learners", description: "Manage your family’s learners.") do |header| %>
   <% header.with_primary_action do %>
-    <%= render ButtonComponent.new(text: "Add student") %>
+    <%= render ButtonComponent.new(text: "Add learner") %>
   <% end %>
   <% header.with_secondary_action do %>
     <%= render ButtonComponent.new(text: "Import", variant: :secondary) %>

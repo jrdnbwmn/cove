@@ -1,5 +1,0 @@
-<%= render UiModalComponent.new(title: t("students.index.add_title"), lazy_load: true, turbo_frame_src: new_student_path) do |modal| %>
-  <% modal.with_trigger do %>
-    <%= render ButtonComponent.new(text: t("students.index.add"), icon: icon("plus", class: "size-full"), data: {action: "click->ui-modal#open:prevent"}) %>
-  <% end %>
-<% end %>

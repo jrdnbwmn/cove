@@ -29,10 +29,10 @@ graph LR
     PlanChange[/billing/subscriptions/:subscription_id/plan_change] --> PlanChangesController[Billing::Subscriptions::PlanChangesController#show, #destroy]
   end
 
-  subgraph Students
-    Students[/students] --> StudentsController[StudentsController#index, #new, #create, #edit, #update, #delete, #destroy]
-    StudentArchive[POST/DELETE /students/:student_id/archive] --> StudentArchivesController[Students::ArchivesController#create, #destroy]
-    StudentKept[GET/PATCH /students/kept/edit, /students/kept] --> StudentKeptController[Students::KeptController#edit, #update]
+  subgraph Learners
+    Learners[/learners] --> LearnersController[LearnersController#index, #new, #create, #show, #edit, #update, #delete, #destroy]
+    LearnerArchive[POST/DELETE /learners/:learner_id/archive] --> LearnerArchivesController[Learners::ArchivesController#create, #destroy]
+    LearnerKept[GET/PATCH /learners/kept/edit, /learners/kept] --> LearnerKeptController[Learners::KeptController#edit, #update]
   end
 
   %% Account collection, creation, and switching routes are intentionally absent.

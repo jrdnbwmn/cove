@@ -29,14 +29,14 @@ Rails.application.config.agreements = [
     id: :terms_of_service,
     title: "Terms of Service",
     column: :accepted_terms_at,
-    updated: Time.zone.parse("2026-10-01 00:00:00"),
+    updated: Time.zone.parse("2026-10-06 00:00:00"),
     prompt_when_updated: false
   ),
   Agreement.new(
     id: :privacy_policy,
     title: "Privacy Policy",
     column: :accepted_privacy_at,
-    updated: Time.zone.parse("2026-10-01 00:00:00"),
+    updated: Time.zone.parse("2026-10-06 00:00:00"),
     prompt_when_updated: false
   )
 ]

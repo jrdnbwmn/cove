@@ -3,7 +3,7 @@
 # Configure parameters to be partially matched (e.g. passw matches password) and filtered from the log file.
 # Use this to limit dissemination of sensitive information.
 # See the ActiveSupport::ParameterFilter documentation for supported notations and behaviors.
-# AIDEV-NOTE: Honeybadger's request.filter_keys inherits this list, so fields added here are filtered from both logs and error reports. Student name and grade_level are filtered; add other homeschool-domain fields (birthdate, notes, transcript) here when those models land.
+# AIDEV-NOTE: Honeybadger's request.filter_keys inherits this list, so fields added here are filtered from both logs and error reports. Learner name and grade_level are filtered; add other homeschool-domain fields (birthdate, notes, transcript) here when those models land.
 Rails.application.config.filter_parameters += [
   :passw, :email, :secret, :token, :_key, :crypt, :salt, :certificate, :otp, :ssn, :cvv, :cvc,
   :otp_attempt,

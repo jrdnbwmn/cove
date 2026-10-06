@@ -22,12 +22,12 @@ class UiModalComponentTest < ViewComponent::TestCase
   end
 
   test "a caller-supplied button replaces the default trigger and opens the modal" do
-    render_inline(UiModalComponent.new(title: "Add student", trigger_text: "Default text")) do |modal|
-      modal.with_trigger { '<button data-action="click->ui-modal#open:prevent">Add student</button>'.html_safe }
+    render_inline(UiModalComponent.new(title: "Add learner", trigger_text: "Default text")) do |modal|
+      modal.with_trigger { '<button data-action="click->ui-modal#open:prevent">Add learner</button>'.html_safe }
       "Modal content"
     end
 
-    assert_selector "[data-controller~='ui-modal'] button[data-action='click->ui-modal#open:prevent']", text: "Add student", count: 1
+    assert_selector "[data-controller~='ui-modal'] button[data-action='click->ui-modal#open:prevent']", text: "Add learner", count: 1
     assert_no_text "Default text"
     assert_selector "dialog[data-ui-modal-target='dialog']", visible: :all
   end
@@ -35,8 +35,8 @@ class UiModalComponentTest < ViewComponent::TestCase
   test "renders the custom trigger preview" do
     render_preview(:custom_trigger)
 
-    assert_selector "button[data-action='click->ui-modal#open:prevent']", text: "Add student", count: 1
-    assert_selector "button.bg-primary, button[class*='primary']", text: "Add student"
+    assert_selector "button[data-action='click->ui-modal#open:prevent']", text: "Add learner", count: 1
+    assert_selector "button.bg-primary, button[class*='primary']", text: "Add learner"
   end
 
   test "renders the confirmation preview" do
@@ -48,7 +48,7 @@ class UiModalComponentTest < ViewComponent::TestCase
   end
 
   test "uses a full-height phone sheet and a sized desktop dialog" do
-    render_inline(UiModalComponent.new(size: :md, title: "Add student")) { "Modal content" }
+    render_inline(UiModalComponent.new(size: :md, title: "Add learner")) { "Modal content" }
 
     # AIDEV-NOTE: sm:h-fit, not sm:h-auto. A <dialog> is fixed with inset 0, so height:auto stretches it
     # to the window; fit-content (its browser default) sizes it to the content.
@@ -58,7 +58,7 @@ class UiModalComponentTest < ViewComponent::TestCase
   end
 
   test "keeps larger modal widths behind the small-screen breakpoint" do
-    render_inline(UiModalComponent.new(size: :lg, title: "Add student")) { "Modal content" }
+    render_inline(UiModalComponent.new(size: :lg, title: "Add learner")) { "Modal content" }
 
     assert_selector "dialog.sm\\:max-w-lg"
     assert_no_selector "dialog[class*='max-w-[100vw-2rem]']"

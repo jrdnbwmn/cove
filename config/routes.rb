@@ -19,13 +19,13 @@ Rails.application.routes.draw do
 
   resources :schedules, only: :index
   resources :subjects, only: :index
-  # AIDEV-NOTE: Must stay above `resources :students`, or /students/kept/edit matches students#edit with id "kept".
-  scope :students, as: :students, module: :students do
+  # AIDEV-NOTE: Must stay above `resources :learners`, or /learners/kept/edit matches learners#edit with id "kept".
+  scope :learners, as: :learners, module: :learners do
     resource :kept, only: %i[edit update], controller: :kept
   end
-  resources :students do
+  resources :learners do
     get :delete, on: :member
-    resource :archive, only: %i[create destroy], module: :students
+    resource :archive, only: %i[create destroy], module: :learners
   end
   resource :support, only: :show, controller: :support
 

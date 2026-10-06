@@ -66,16 +66,16 @@ class UiTabsComponentTest < ViewComponent::TestCase
   end
 
   test "labels links-mode navigation when given a label" do
-    render_inline(UiTabsComponent.new(mode: :links, label: "Filter students")) do |tabs|
-      tabs.with_tab(title: "Active", href: "/students", active: true)
+    render_inline(UiTabsComponent.new(mode: :links, label: "Filter learners")) do |tabs|
+      tabs.with_tab(title: "Active", href: "/learners", active: true)
     end
 
-    assert_selector "nav[aria-label='Filter students']"
+    assert_selector "nav[aria-label='Filter learners']"
   end
 
   test "does not label links-mode navigation without a label" do
     render_inline(UiTabsComponent.new(mode: :links)) do |tabs|
-      tabs.with_tab(title: "Active", href: "/students", active: true)
+      tabs.with_tab(title: "Active", href: "/learners", active: true)
     end
 
     assert_no_selector "nav[aria-label]"

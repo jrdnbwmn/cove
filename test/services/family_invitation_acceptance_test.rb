@@ -90,21 +90,21 @@ class FamilyInvitationAcceptanceTest < ActiveSupport::TestCase
     assert_equal accounts(:company), user.family
   end
 
-  test "refuses with a students message when the invitee's family has students" do
+  test "refuses with a learners message when the invitee's family has learners" do
     user = users(:noaccount)
-    Student.create!(account: user.family, name: "Maya")
+    Learner.create!(account: user.family, name: "Maya")
     invitation = AccountInvitation.create!(account: accounts(:invited), invited_by: users(:user_without_billing_address), name: user.name, email: user.email)
 
     result = FamilyInvitationAcceptance.new(invitation: invitation, user: user).call
 
     assert_not_predicate result, :success?
-    assert_equal "Your family has students in it. Contact support to join a new family.", result.error
+    assert_equal "Your family has learners in it. Contact support to join a new family.", result.error
     assert_equal accounts(:one), user.reload.family
   end
 
-  test "the other-parent message wins when the invitee's family has another parent and students" do
+  test "the other-parent message wins when the invitee's family has another parent and learners" do
     user = users(:one)
-    assert user.family.students.any?
+    assert user.family.learners.any?
     invitation = AccountInvitation.create!(account: accounts(:invited), invited_by: users(:user_without_billing_address), name: user.name, email: user.email)
 
     result = FamilyInvitationAcceptance.new(invitation: invitation, user: user).call

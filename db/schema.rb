@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_10_04_044708) do
+ActiveRecord::Schema[8.1].define(version: 2026_10_06_213137) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -47,10 +47,10 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_04_044708) do
     t.datetime "created_at", null: false
     t.string "domain"
     t.text "extra_billing_info"
+    t.integer "learner_limit", default: 10, null: false
     t.string "name", null: false
     t.bigint "owner_id"
     t.boolean "personal", default: false, null: false
-    t.integer "student_limit", default: 10, null: false
     t.string "subdomain"
     t.datetime "updated_at", null: false
     t.index ["archived_at"], name: "index_accounts_on_archived_at"
@@ -144,6 +144,19 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_04_044708) do
     t.datetime "created_at", null: false
     t.integer "status", default: 0, null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "learners", force: :cascade do |t|
+    t.bigint "account_id", null: false
+    t.datetime "archived_at"
+    t.string "color", null: false
+    t.datetime "created_at", null: false
+    t.string "grade_level"
+    t.boolean "kept_on_free", default: false, null: false
+    t.string "name", null: false
+    t.datetime "updated_at", null: false
+    t.index "account_id, lower((name)::text)", name: "index_learners_on_account_id_and_lower_name", unique: true
+    t.index ["account_id"], name: "index_learners_on_account_id"
   end
 
   create_table "loops_webhook_events", force: :cascade do |t|
@@ -332,19 +345,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_04_044708) do
     t.datetime "updated_at", precision: nil, null: false
   end
 
-  create_table "students", force: :cascade do |t|
-    t.bigint "account_id", null: false
-    t.datetime "archived_at"
-    t.string "color", null: false
-    t.datetime "created_at", null: false
-    t.string "grade_level"
-    t.boolean "kept_on_free", default: false, null: false
-    t.string "name", null: false
-    t.datetime "updated_at", null: false
-    t.index "account_id, lower((name)::text)", name: "index_students_on_account_id_and_lower_name", unique: true
-    t.index ["account_id"], name: "index_students_on_account_id"
-  end
-
   create_table "users", force: :cascade do |t|
     t.datetime "accepted_privacy_at", precision: nil
     t.datetime "accepted_terms_at", precision: nil
@@ -399,8 +399,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_04_044708) do
   add_foreign_key "accounts", "users", column: "owner_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "api_tokens", "users"
+  add_foreign_key "learners", "accounts"
   add_foreign_key "pay_charges", "pay_customers", column: "customer_id"
   add_foreign_key "pay_payment_methods", "pay_customers", column: "customer_id"
   add_foreign_key "pay_subscriptions", "pay_customers", column: "customer_id"
-  add_foreign_key "students", "accounts"
 end

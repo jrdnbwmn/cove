@@ -6,24 +6,24 @@ class Madmin::AccountsTest < ActionDispatch::IntegrationTest
     @account = accounts(:one)
   end
 
-  test "superadmin sees the student limit on edit and show but not index" do
+  test "superadmin sees the learner limit on edit and show but not index" do
     get edit_madmin_account_path(@account)
 
     assert_response :success
-    assert_select "input[type=number][name='account[student_limit]'][value='#{@account.student_limit}']"
+    assert_select "input[type=number][name='account[learner_limit]'][value='#{@account.learner_limit}']"
 
     get madmin_account_path(@account)
 
     assert_response :success
     assert_match(
-      /<th[^>]*>\s*Student Limit\s*<\/th>\s*<td>\s*#{@account.student_limit}\s*<\/td>/,
+      /<th[^>]*>\s*Learner Limit\s*<\/th>\s*<td>\s*#{@account.learner_limit}\s*<\/td>/,
       response.body
     )
 
     get madmin_accounts_path
 
     assert_response :success
-    assert_select "th", {text: "Student Limit", count: 0}
+    assert_select "th", {text: "Learner Limit", count: 0}
   end
 
   test "the admin family edit form doesn't offer owner or personal fields" do
@@ -65,21 +65,21 @@ class Madmin::AccountsTest < ActionDispatch::IntegrationTest
     assert_select "th", {text: "Complimentary Premium Note", count: 0}
   end
 
-  test "superadmin can update a family student limit" do
-    patch madmin_account_path(@account), params: {account: {student_limit: 14}}
+  test "superadmin can update a family learner limit" do
+    patch madmin_account_path(@account), params: {account: {learner_limit: 14}}
 
     assert_redirected_to madmin_account_path(@account)
-    assert_equal 14, @account.reload.student_limit
+    assert_equal 14, @account.reload.learner_limit
   end
 
-  test "invalid student limit update shows errors and retains the stored value" do
-    stored_limit = @account.student_limit
+  test "invalid learner limit update shows errors and retains the stored value" do
+    stored_limit = @account.learner_limit
 
-    patch madmin_account_path(@account), params: {account: {student_limit: 0}}
+    patch madmin_account_path(@account), params: {account: {learner_limit: 0}}
 
     assert_response :unprocessable_entity
-    assert_includes response.body, "Student limit must be greater than or equal to 2"
-    assert_equal stored_limit, @account.reload.student_limit
+    assert_includes response.body, "Learner limit must be greater than or equal to 2"
+    assert_equal stored_limit, @account.reload.learner_limit
   end
 
   test "superadmin can grant complimentary Premium with a note" do
