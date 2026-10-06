@@ -295,9 +295,11 @@ findings
 
 ## Part B tasks (from the Phase 2 audit)
 
-Tasks 7–26 are proposed from the audit's Fix groups, in its priority order.
-**Do not execute any of them until the user approves this list.** Each task
-lists the audit finding IDs it closes; read those entries in
+Tasks 7–26 are approved from the audit's Fix groups, in its priority order.
+Approval recorded 6 Oct 2026: Task 7 should first attempt a stacked delete
+confirmation; Task 8's Subjects state has no action; Task 26 is included; and
+Tasks 18 and 19 remain separate for the two-factor correctness fix and layout.
+Each task lists the audit finding IDs it closes; read those entries in
 `.context/page-structure-audit.md` and the "Decisions" there first. Tasks marked
 [Clone] touch files no other task in their checkpoint touches, so they can run
 in parallel.
@@ -348,8 +350,7 @@ copy"
 **In scope:**
 
 - Subjects: replace "Coming soon" with an empty state that says what will
-  live here and when it matters. Add one action only if a real one exists
-  (see the question in "Questions for approval"); otherwise no button.
+  live here and when it matters, with no action until a real one exists.
 - Support: a real way to get help: a `mailto:` button to
   `Jumpstart.config.support_email` with a subject, plus one line on what to
   include.
@@ -835,12 +836,12 @@ changed them); the `friendly_date` helpers
 2. **Implement:** the view.
 3. **Verify:** `bin/rails test`
 
-### Task 26 [Master] (optional): Cleanup of dead code (U-4, U-7, F-29, F-37, F-43)
+### Task 26 [Master]: Cleanup of dead code (U-4, U-7, F-29, F-37, F-43)
 
 **Skills:** write-tests
 **Reference:** audit U-4, U-7, F-29, F-37, F-43
 
-**In scope:** (skip the whole task if the user would rather not touch these)
+**In scope:**
 
 - Remove the unreachable reconfirmation alert (`User` isn't `:confirmable`),
   the unreachable non-admin billing branch, and the upcoming-invoice page
@@ -861,19 +862,6 @@ changed them); the `friendly_date` helpers
 3. **Verify:** `bin/rails test`
 4. **Checkpoint:** run review-changes-mini covering checkpoint 10 (Tasks
    24–26; if Task 26 is skipped, after Task 25).
-
-## Questions for approval
-
-- **Task 8, Subjects:** there's no real action yet. Should the empty state
-  have no button until subjects exist, or point somewhere (for example, "Add a
-  student")? The plan assumes no button.
-- **Task 7:** stacking the delete confirmation on the Edit modal is my
-  proposal. The audit's alternative (moving each modal's title into its
-  content) is bigger. OK to try stacking first?
-- **Task 26:** do it, or skip?
-- **Task 19 and the audit's "L" for two-factor:** I split it into Task 18
-  (the correctness bug) and Task 19 (the layout) so each is independently
-  verifiable.
 
 ## Deferred
 
