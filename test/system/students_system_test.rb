@@ -162,7 +162,7 @@ class StudentsSystemTest < ApplicationSystemTestCase
     open_edit_modal("Maya")
 
     within("dialog[open]") do
-      click_link "Delete"
+      click_button "Delete"
       assert_text "Delete Maya?"
       click_button "Delete Maya"
     end
@@ -171,6 +171,32 @@ class StudentsSystemTest < ApplicationSystemTestCase
     assert_no_selector "dialog[open]"
     assert_no_selector "p", text: "Maya"
     assert_not Student.exists?(ActiveRecord::FixtureSet.identify(:one))
+  end
+
+  test "cancelling Delete returns to the open edit modal with its fields intact" do
+    visit students_path
+    open_edit_modal("Maya")
+
+    within("dialog[open]") do
+      fill_in "Grade level", with: "4th"
+      click_button "Delete"
+    end
+
+    assert_selector "dialog[open]", count: 2
+    within(all("dialog[open]").last) do
+      assert_text "Delete Maya?"
+      click_button "Cancel"
+    end
+
+    assert_selector "dialog[open]", count: 1
+    within("dialog[open]") { assert_field "Grade level", with: "4th" }
+
+    within("dialog[open]") { click_button "Delete" }
+    assert_selector "dialog[open]", count: 2
+    page.send_keys(:escape)
+
+    assert_selector "dialog[open]", count: 1
+    within("dialog[open]") { assert_field "Grade level", with: "4th" }
   end
 
   test "an archived student can be deleted from the archived list" do

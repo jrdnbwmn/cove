@@ -18,9 +18,9 @@ they're executed.
 | 4    | A     | 2          | Students: card opens on click; actions in a "…" menu | Master | ✅   |
 | 5    | A     | 2          | Students: final pass against the audit | Master | ✅   |
 | 6    | B     | 3          | Turn audit fix groups into tasks; get approval | Master | ✅   |
-| 7    | B     | 4          | Students: Delete confirmation stacks on top of Edit (M-11) | Master |      |
-| 8    | B     | 4          | Subjects and Support placeholder empty states (M-14, M-17) | Clone  |      |
-| 9    | B     | 4          | Remove the Notifications page (M-21) | Clone  |      |
+| 7    | B     | 4          | Students: Delete confirmation stacks on top of Edit (M-11) | Master | ✅   |
+| 8    | B     | 4          | Subjects and Support placeholder empty states (M-14, M-17) | Clone  | ✅   |
+| 9    | B     | 4          | Remove the Notifications page (M-21) | Clone  | ✅   |
 | 10   | B     | 5          | Settings tabs: regroup, hide API, fix phone overflow (U-2, U-28, U-29) | Master |      |
 | 11   | B     | 5          | Security tab: password, two-factor, connected accounts (U-8, U-17, U-18, U-19) | Master |      |
 | 12   | B     | 5          | Family page: parents as rows, invite note, delete at the bottom (F-1 to F-5, F-11) | Master |      |

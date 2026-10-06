@@ -267,7 +267,7 @@ class StudentsTest < ActionDispatch::IntegrationTest
     get edit_student_path(@maya)
 
     assert_select "form[action='#{student_archive_path(@maya)}'][method='post'] button", text: /\AArchive/
-    assert_select "a[href='#{delete_student_path(@maya)}']", text: "Delete"
+    assert_select "button", text: "Delete"
   end
 
   test "a parent sees a delete confirmation inside the modal frame" do
@@ -290,7 +290,7 @@ class StudentsTest < ActionDispatch::IntegrationTest
 
     assert_response :success
     assert_select "a[href='#{edit_student_path(@maya)}']", count: 0
-    assert_select "button[data-action='click->ui-modal#close:prevent']", text: "Cancel"
+    assert_select "button[data-action='click->ui-modal#performClose:prevent']", text: "Cancel"
     assert_select "form[action='#{student_path(@maya)}'] input[name='_method'][value='delete']"
   end
 
@@ -333,7 +333,7 @@ class StudentsTest < ActionDispatch::IntegrationTest
 
     assert_response :success
     assert_select "a[href='#{edit_student_path(students(:archived))}']", count: 0
-    assert_select "button[data-action='click->ui-modal#close:prevent']", text: "Cancel"
+    assert_select "button[data-action='click->ui-modal#performClose:prevent']", text: "Cancel"
   end
 
   test "a parent can permanently delete a student" do

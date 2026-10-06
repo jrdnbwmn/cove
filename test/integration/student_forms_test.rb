@@ -96,7 +96,8 @@ class StudentFormsTest < ActionDispatch::IntegrationTest
 
   # The action row's controls read left to right in DOM order.
   def assert_actions_in_order(labels)
-    texts = css_select("[data-student-actions] a, [data-student-actions] button").map { |node| node.text.squish.sub(/ Working\.\.\.\z/, "") }
+    selector = "[data-student-actions] > [data-controller~='ui-modal'] > button, [data-student-actions] > div:not([data-controller~='ui-modal']) > button, [data-student-actions] > div:not([data-controller~='ui-modal']) > form button"
+    texts = css_select(selector).map { |node| node.text.squish.sub(/ Working\.\.\.\z/, "") }
     assert_equal labels, texts
   end
 end

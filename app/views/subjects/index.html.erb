@@ -1,6 +1,6 @@
 <%= render PageHeaderComponent.new(title: "Subjects", description: t(".description")) %>
 
-<%= render EmptyStateComponent.new(title: "Coming soon", description: "Subject management will be available here.") do |c| %>
+<%= render EmptyStateComponent.new(title: t(".empty_title"), description: t(".empty_description")) do |c| %>
   <% c.with_icon do %>
     <%= icon "book-open", class: "w-full h-full" %>
   <% end %>

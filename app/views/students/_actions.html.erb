@@ -2,7 +2,13 @@
     Save/Add points back at the form with the HTML form attribute. On phones the main action stacks first. %>
 <div data-student-actions class="mt-6 flex flex-col-reverse gap-3 sm:flex-row sm:items-center">
   <% if student.persisted? %>
-    <%= render ButtonComponent.new(text: t("students.form.delete"), variant: :ghost, href: delete_student_path(student), classes: "text-red-600") %>
+    <%# AIDEV-NOTE: A confirmation may stack on an edit modal. Keep it inline rather than lazy-loading another modal-lazy-content frame, which would replace the edit form. %>
+    <%= render UiModalComponent.new do |modal| %>
+      <% modal.with_trigger do %>
+        <%= render ButtonComponent.new(text: t("students.form.delete"), variant: :ghost, classes: "text-red-600", data: {action: "click->ui-modal#open:prevent"}) %>
+      <% end %>
+      <%= render "students/delete_content", student: student, close_on_cancel: true %>
+    <% end %>
   <% end %>
 
   <div class="flex flex-col-reverse gap-3 sm:ml-auto sm:flex-row sm:items-center">

@@ -723,10 +723,16 @@ en:
   subjects:
     index:
       description: "What each student is learning."
+      empty_title: "Subjects will live here"
+      empty_description: "Use subjects to organize what each student is learning when you start building school plans."
 
   support:
     show:
       description: "Help with Cove, whenever you need it."
+      empty_title: "How can we help?"
+      empty_description: "Include what you were trying to do and what happened so we can help."
+      email: "Email support"
+      email_subject: "Help with Cove"
 
   students:
     free_limit_banner:
