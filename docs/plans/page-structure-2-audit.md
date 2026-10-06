@@ -11,9 +11,9 @@ changes in this phase.
 
 | Task | Phase | Checkpoint | Description | Assign | Done |
 | ---- | ----- | ---------- | ----------- | ------ | ---- |
-| 1    | 1     | 1          | Set up the audit file and checklist | Master |      |
-| 2    | 1     | 1          | Audit the main pages | Clone |      |
-| 3    | 1     | 1          | Audit Settings: user pages | Clone |      |
+| 1    | 1     | 1          | Set up the audit file and checklist | Master | ✅ |
+| 2    | 1     | 1          | Audit the main pages | Clone |  ✅ |
+| 3    | 1     | 1          | Audit Settings: user pages | Clone |  ✅ |
 | 4    | 2     | 2          | Audit Settings: family and billing pages | Clone |      |
 | 5    | 2     | 2          | Prioritize findings and propose fix groups | Master |      |
 
