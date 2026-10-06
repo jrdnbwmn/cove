@@ -55,10 +55,9 @@
   ) %>
 </div>
 
-<hr>
-
-<h2 class="h4"><%= t(".two_factor.title") %></h2>
-<p class="mt-2 mb-4 text-sm text-muted-foreground"><%= t(".two_factor.description") %></p>
+<div class="mt-12">
+  <h2 class="h4"><%= t(".two_factor.title") %></h2>
+  <p class="mt-2 mb-4 text-sm text-muted-foreground"><%= t(".two_factor.description") %></p>
 <% if current_user.otp_required_for_login? %>
   <div>
     <%= render ButtonComponent.new(
@@ -71,3 +70,17 @@
 <% else %>
   <%= render ButtonComponent.new(text: t(".two_factor.enable"), variant: :secondary, href: backup_codes_user_two_factor_path) %>
 <% end %>
+</div>
+
+<div class="mt-12">
+  <h2 class="h4"><%= t(".connected_accounts.title") %></h2>
+  <% connected_accounts = current_user.connected_accounts.order(provider: :asc, created_at: :desc) %>
+  <% if connected_accounts.any? %>
+    <div class="mt-4 grid gap-4"><%= render partial: "users/connected_accounts/connected_account", collection: connected_accounts %></div>
+  <% else %>
+    <p class="mt-2 text-sm text-muted-foreground"><%= t(".connected_accounts.empty") %></p>
+    <%= form_with url: omniauth_authorize_path(:user, :google_oauth2), class: "mt-4", data: {turbo: false} do %>
+      <%= render ButtonComponent.new(text: t(".connected_accounts.connect"), variant: :secondary, type: "submit") %>
+    <% end %>
+  <% end %>
+</div>

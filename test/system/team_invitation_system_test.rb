@@ -1,6 +1,21 @@
 require "application_system_test_case"
 
 class TeamInvitationSystemTest < ApplicationSystemTestCase
+  test "family settings show parents as responsive rows" do
+    login_as users(:one), scope: :user
+    page.current_window.resize_to(390, 900)
+    visit account_path(accounts(:company))
+
+    assert_no_selector "table"
+    assert_selector "[data-family-row]", count: 2
+    assert_selector "[data-family-row]", text: "Owner"
+    assert_link "Invite a parent"
+    assert_text "A family can have up to two parents."
+    assert_equal evaluate_script("window.innerWidth"), evaluate_script("document.documentElement.scrollWidth")
+  ensure
+    page.current_window.resize_to(1400, 1400)
+  end
+
   test "account admin can invite a teammate who joins the account" do
     account = accounts(:invited)
     invitee = users(:invited)

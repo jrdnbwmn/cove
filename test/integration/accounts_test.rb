@@ -78,7 +78,10 @@ class Jumpstart::AccountsTest < ActionDispatch::IntegrationTest
     assert_response :success
     assert_operator account_user_queries.count, :<=, 2
     assert_select "a[href='#{edit_account_path(account)}']", text: I18n.t("accounts.show.edit_account")
-    assert_select "a[href='#{new_account_account_invitation_path(account)}']", text: I18n.t("accounts.show.invite")
+    assert_select "table", count: 0
+    assert_select "[data-family-row]", count: 2
+    assert_select "[data-family-row]", text: /Owner/
+    assert_select "a[href='#{new_account_account_invitation_path(account)}']", text: "Invite a parent"
   ensure
     ActiveSupport::Notifications.unsubscribe(subscriber) if subscriber
   end

@@ -125,7 +125,12 @@ en:
       user: "user"
     show:
       awaiting_response: Awaiting response
-      invite: "Invite A User"
+      invite: "Invite a parent"
+      parents: "Parents"
+      parent_limit: "A family can have up to two parents."
+      remove_invitation: "Remove invitation"
+      remove_invitation_confirm: "Remove the invitation for %{email}?"
+      delete_confirm: "Delete %{name}? This permanently removes the family and its data."
       resend_invite: "Resend Invite"
       2fa: "2FA"
       edit: "Edit"
@@ -224,8 +229,10 @@ en:
     account_navbar:
       profile: "Profile"
       password: "Password"
+      security: "Security"
       connected_accounts: "Connected Accounts"
       billing: "Billing"
+      family: "Family"
       accounts: "Accounts"
       api_tokens: "API"
       referrals: "Referrals"
@@ -600,8 +607,12 @@ en:
           title: "No password yet, or forgot it?"
           description: "If you signed up with Google, or don't remember your current password, we'll email you a link to set one. Afterward you can sign in with Google or your password."
           button: "Email me a link"
+        connected_accounts:
+          title: "Connected accounts"
+          empty: "Connect Google to sign in another way."
+          connect: "Connect Google"
         two_factor:
-          title: "Two-factor Authentication"
+          title: "Two-factor authentication"
           description: "When you login, you will be required to enter a one-time code along to one of your devices."
           enable: "Enable two-factor authentication"
           disable: "Disable two-factor authentication"
@@ -642,6 +653,8 @@ en:
         none: "You don't have any connected accounts."
       connected_account:
         remove: "Remove"
+        disconnect: "Disconnect Google"
+        disconnect_confirm: "Disconnect Google? You will no longer be able to sign in with this Google account."
     omniauth_callbacks:
       account_exists: "You already have a Cove account with this email. Sign in with your password below and we'll take you to Connected Accounts to add Google. Forgot your password? Use “Forgot your password?” below."
       connected_to_another_account: "This account is already connected to another user."

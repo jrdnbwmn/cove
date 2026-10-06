@@ -69,7 +69,7 @@ module ApplicationHelper
   end
 
   def settings_nav_active?
-    profile_tab_active? || password_tab_active? || connected_accounts_tab_active? ||
+    profile_tab_active? || security_tab_active? || connected_accounts_tab_active? ||
       billing_tab_active? || family_tab_active? || api_tokens_tab_active? || referrals_tab_active?
   end
 
@@ -77,7 +77,7 @@ module ApplicationHelper
     current_page_or_descendant?(edit_user_registration_path)
   end
 
-  def password_tab_active?
+  def security_tab_active?
     current_page_or_descendant?(edit_account_password_path) || current_page_or_descendant?(user_two_factor_path)
   end
 

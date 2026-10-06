@@ -35,24 +35,24 @@ class ApplicationHelperTest < ActionView::TestCase
     assert_not students_nav_active?
   end
 
-  test "settings stays highlighted across profile, password, and two-factor pages" do
+  test "settings stays highlighted across profile, security, and two-factor pages" do
     request.path = edit_user_registration_path
     assert settings_nav_active?
     assert profile_tab_active?
-    assert_not password_tab_active?
+    assert_not security_tab_active?
 
     request.path = edit_account_password_path
     assert settings_nav_active?
-    assert password_tab_active?
+    assert security_tab_active?
     assert_not profile_tab_active?
 
     request.path = user_two_factor_path
     assert settings_nav_active?
-    assert password_tab_active?
+    assert security_tab_active?
 
     request.path = backup_codes_user_two_factor_path
     assert settings_nav_active?
-    assert password_tab_active?
+    assert security_tab_active?
   end
 
   test "settings stays highlighted across connected accounts and billing descendants" do
