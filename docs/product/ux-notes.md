@@ -67,7 +67,10 @@ mean perfect consistency, high output, or matching another family's approach.
   results for this filter" is a separate state that offers to clear it.
 - Plan limits and plan-locked content (Premium-only, read-only after a
   downgrade): a calm inline banner at the top of the content with the next
-  step, never a blocking modal. Show limit banners only at or near the limit.
+  step, never a modal that pops up on its own. Show limit banners only at or
+  near the limit. At the limit, the Add button stays and opens a modal
+  explaining the limit, with a button to the billing page (Premium at its
+  cap: "Contact us").
 - Errors say what failed when known, suggest the next step, preserve entered
   work, and appear inline next to the problem, never only in a toast.
 - Routine confirmations: a toast ("Saved.").
