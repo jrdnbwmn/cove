@@ -109,7 +109,7 @@ class StudentsSystemTest < ApplicationSystemTestCase
 
     click_link "Archived"
 
-    assert_selector "nav[aria-label='Filter students'] a[aria-current='true']", text: "Archived"
+    assert_selector "nav[aria-label='Filter students'] a[aria-current='page']", text: "Archived"
     assert_selector "p", text: "Iris"
     assert_no_selector "p", text: "Maya"
     open_actions_menu("Iris")
@@ -162,8 +162,12 @@ class StudentsSystemTest < ApplicationSystemTestCase
     open_edit_modal("Maya")
 
     within("dialog[open]") do
-      click_button "Delete"
+      click_link "Delete"
+    end
+    assert_selector "dialog[open]", count: 1
+    within("dialog[open]") do
       assert_text "Delete Maya?"
+      assert_no_selector "h2", text: "Edit Maya"
       click_button "Delete Maya"
     end
 
@@ -173,30 +177,48 @@ class StudentsSystemTest < ApplicationSystemTestCase
     assert_not Student.exists?(ActiveRecord::FixtureSet.identify(:one))
   end
 
-  test "cancelling Delete returns to the open edit modal with its fields intact" do
+  test "cancelling Delete returns to the saved edit form without a discard prompt" do
     visit students_path
     open_edit_modal("Maya")
 
     within("dialog[open]") do
       fill_in "Grade level", with: "4th"
-      click_button "Delete"
+      click_link "Delete"
     end
 
-    assert_selector "dialog[open]", count: 2
-    within(all("dialog[open]").last) do
+    assert_selector "dialog[open]", count: 1
+    within("dialog[open]") do
       assert_text "Delete Maya?"
+      click_link "Cancel"
+    end
+
+    assert_selector "dialog[open]", count: 1
+    within("dialog[open]") do
+      assert_field "Grade level", with: students(:one).grade_level
       click_button "Cancel"
     end
+    assert_no_selector "dialog[open]"
+  end
+
+  test "cancelling Delete returns to a read-only student in the same dialog" do
+    logout(:user)
+    login_as users(:downgraded), scope: :user
+    visit students_path
+
+    within("[data-student='#{students(:read_only).id}']") { click_button "Casey" }
+    within("dialog[open]") { click_link "Delete" }
 
     assert_selector "dialog[open]", count: 1
-    within("dialog[open]") { assert_field "Grade level", with: "4th" }
-
-    within("dialog[open]") { click_button "Delete" }
-    assert_selector "dialog[open]", count: 2
-    page.send_keys(:escape)
+    within("dialog[open]") do
+      assert_text "Delete Casey?"
+      click_link "Cancel"
+    end
 
     assert_selector "dialog[open]", count: 1
-    within("dialog[open]") { assert_field "Grade level", with: "4th" }
+    within("dialog[open]") do
+      assert_selector "h2", text: "Casey"
+      assert_text "Casey can't be edited on Free. You can still archive or delete this student."
+    end
   end
 
   test "an archived student can be deleted from the archived list" do

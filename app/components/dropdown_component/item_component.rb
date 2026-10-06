@@ -48,7 +48,8 @@ class DropdownComponent
       state = if @disabled
         "cursor-not-allowed opacity-50"
       else
-        "focus:bg-neutral-100 focus:outline-hidden dark:focus:bg-neutral-700/50"
+        hover_focus = @destructive ? "hover:bg-red-50 focus:bg-red-50" : "focus:bg-neutral-100 dark:focus:bg-neutral-700/50"
+        "#{hover_focus} focus:outline-hidden"
       end
 
       [base, text_color, state, @classes].compact.reject(&:empty?).join(" ")
@@ -84,6 +85,6 @@ class DropdownComponent
       attrs
     end
 
-    attr_reader :text, :icon, :shortcut, :badge, :tag, :disabled
+    attr_reader :text, :icon, :shortcut, :badge, :tag, :disabled, :destructive
   end
 end

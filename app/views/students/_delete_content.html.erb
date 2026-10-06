@@ -3,7 +3,7 @@
 <p class="mt-2 text-muted-foreground"><%= t("students.delete.body", name: student.name) %></p>
 
 <div class="mt-6 flex flex-col gap-3 sm:flex-row sm:justify-end">
-  <%# AIDEV-NOTE: List and archived confirms have no prior modal. The confirmation stacked on Edit closes itself and leaves the edit dialog untouched. %>
+  <%# AIDEV-NOTE: List and archived confirms close the modal on Cancel. Confirms reached from Edit or the read-only view swap their prior content back into this modal. %>
   <% if close_on_cancel %>
     <%# The delete form's hidden method field registers as a changed field. A confirmation has no entered work, so close it directly without the outer edit form's discard check. %>
     <%= render ButtonComponent.new(text: t("students.delete.cancel"), variant: :secondary, data: {action: "click->ui-modal#performClose:prevent"}) %>

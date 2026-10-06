@@ -17,6 +17,33 @@ class StudentsIndexTest < ActionDispatch::IntegrationTest
     assert_no_match "Iris", response.body
   end
 
+  test "an active student's menu offers Edit, which opens that student's edit modal" do
+    sign_in users(:one)
+
+    get students_path
+
+    form_id = ActionView::RecordIdentifier.dom_id(students(:one), :edit)
+    assert_select "button[form='#{form_id}']", text: /Edit/
+    assert_select "form##{form_id}[data-action='submit->ui-modal#open:prevent']"
+  end
+
+  test "an archived student's menu has no Edit" do
+    students(:two).archive!
+    sign_in users(:one)
+
+    get students_path(archived: 1)
+
+    assert_select "button", text: /Edit/, count: 0
+  end
+
+  test "the Delete menu item is red with a red-tinted hover background" do
+    sign_in users(:one)
+
+    get students_path
+
+    assert_select "button.text-red-600.hover\\:bg-red-50", text: /Delete/
+  end
+
   test "grade level shows only for students who have one" do
     sign_in users(:one)
 
@@ -181,7 +208,7 @@ class StudentsIndexTest < ActionDispatch::IntegrationTest
 
     get students_path(archived: 1)
 
-    assert_select "p.text-muted-foreground", text: /To restore a student, archive one first or upgrade to Premium\./
+    assert_select "p.text-muted-foreground", text: /Free accounts can have a maximum of two active students\. To restore a student, archive one first or upgrade to Premium\./
     assert_select "a[href='#{pricing_path}']", text: "upgrade to Premium"
     assert_select "form[action='#{student_archive_path(students(:two))}']", count: 0
     assert_select "button", text: /Delete/
@@ -218,7 +245,7 @@ class StudentsIndexTest < ActionDispatch::IntegrationTest
     get students_path
 
     assert_select "nav[aria-label='Filter students']" do
-      assert_select "a[href='#{students_path}'][aria-current='true']", text: /Active/
+      assert_select "a[href='#{students_path}'][aria-current='page']", text: /Active/
       assert_select "a[href='#{students_path(archived: 1)}']:not([aria-current])", text: /Archived/
     end
     assert_select "nav[aria-label='Filter students'] a", text: /Active\s*2/
@@ -238,7 +265,7 @@ class StudentsIndexTest < ActionDispatch::IntegrationTest
 
     get students_path(archived: 1)
 
-    assert_select "nav[aria-label='Filter students'] a[aria-current='true']", text: /Archived/
+    assert_select "nav[aria-label='Filter students'] a[aria-current='page']", text: /Archived/
     names = css_select(".grid p.font-medium").map { |node| node.text.strip }
     assert_includes names, "Iris"
     assert_not_includes names, "Maya"
@@ -253,7 +280,7 @@ class StudentsIndexTest < ActionDispatch::IntegrationTest
 
     get students_path
 
-    assert_select "nav[aria-label='Filter students'] a[aria-current='true']", text: /Active\s*0/
+    assert_select "nav[aria-label='Filter students'] a[aria-current='page']", text: /Active\s*0/
     assert_select "nav[aria-label='Filter students'] a[href='#{students_path(archived: 1)}']", text: /Archived\s*3/
     assert_select "h2", text: "Add your first student"
   end
@@ -266,18 +293,19 @@ class StudentsIndexTest < ActionDispatch::IntegrationTest
     assert_select "[data-student='#{students(:one).id}']" do
       assert_select "button[data-action='click->ui-modal#open:prevent']", text: "Maya"
       assert_select "[data-ui-modal-turbo-frame-src-value='#{edit_student_path(students(:one))}']", count: 1
-      assert_select "button", text: "Edit", count: 0
+      assert_select "button", text: "Edit", count: 1 # only the menu item, not a footer button
       assert_select "button[aria-label='Actions for Maya']", count: 1
     end
   end
 
-  test "an active student's actions menu offers Archive and Delete" do
+  test "an active student's actions menu offers Edit, Archive and Delete" do
     sign_in users(:one)
 
     get students_path
 
     assert_select "[data-student='#{students(:one).id}']" do
-      assert_select "[role='menuitem']", count: 2
+      assert_select "[role='menuitem']", count: 3
+      assert_select "button[role='menuitem'][type='submit'][form]", text: /Edit/
       assert_select "button[role='menuitem'][type='submit'][form]", text: /Archive/
       assert_select "button[role='menuitem']", text: /Delete/
       assert_select "form[action='#{student_archive_path(students(:one))}'][method='post']", count: 1
@@ -321,14 +349,33 @@ class StudentsIndexTest < ActionDispatch::IntegrationTest
     end
   end
 
+  test "only active student cards expose the stretched click target" do
+    students(:two).archive!
+    sign_in users(:one)
+
+    get students_path
+
+    assert_select "[data-student='#{students(:one).id}'] [data-student-card-link]", count: 1
+
+    get students_path(archived: 1)
+
+    assert_select "[data-student='#{students(:two).id}'] [data-student-card-link]", count: 0
+  end
+
   test "each card has an edit trigger for that student" do
     sign_in users(:one)
 
     get students_path
 
-    [students(:one), students(:two)].each do |student|
+    students = [students(:one), students(:two)]
+    students.each do |student|
       assert_select "[data-ui-modal-turbo-frame-src-value='#{edit_student_path(student)}']", count: 1
-      assert_select "h2", text: "Edit #{student.name}"
+      assert_select "[data-ui-modal-turbo-frame-src-value='#{edit_student_path(student)}'] h2", count: 0
+    end
+
+    students.each do |student|
+      get edit_student_path(student)
+      assert_select "turbo-frame#modal-lazy-content h2", text: "Edit #{student.name}"
     end
   end
 

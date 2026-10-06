@@ -37,6 +37,7 @@ class UiTabsComponent < ViewComponent::Base
   }
 
   # @param mode [Symbol] Tab behavior: :panels (default, client-side panel switching), :links (plain navigation anchors)
+  # @param label [String, nil] Accessible name for the links-mode navigation
   # @param variant [Symbol] Visual style: :pills, :underline, :low_contrast (:bordered is a legacy alias)
   # @param orientation [Symbol] Tab layout: :horizontal, :vertical
   # @param default_tab [Integer] Index of tab to show on load (0-based)
@@ -54,6 +55,7 @@ class UiTabsComponent < ViewComponent::Base
   # @param panel_classes [String] Additional CSS classes for all panels
   def initialize(
     mode: :panels,
+    label: nil,
     variant: :pills,
     orientation: :horizontal,
     default_tab: 0,
@@ -72,6 +74,7 @@ class UiTabsComponent < ViewComponent::Base
   )
     super()
     @mode = normalized_mode(mode)
+    @label = label
     @variant = normalized_variant(variant)
     @orientation = ORIENTATIONS.include?(orientation) ? orientation : :horizontal
     @default_tab = default_tab
@@ -126,6 +129,12 @@ class UiTabsComponent < ViewComponent::Base
 
   def links_mode?
     @mode == :links
+  end
+
+  def links_navigation_attributes
+    return {} if @label.blank?
+
+    {aria: {label: @label}}
   end
 
   def tab_list_grid_cols

@@ -267,7 +267,8 @@ class StudentsTest < ActionDispatch::IntegrationTest
     get edit_student_path(@maya)
 
     assert_select "form[action='#{student_archive_path(@maya)}'][method='post'] button", text: /\AArchive/
-    assert_select "button", text: "Delete"
+    assert_select "a[href='#{delete_student_path(@maya)}']", text: "Delete"
+    assert_select "[data-ui-modal-turbo-frame-src-value='#{delete_student_path(@maya)}']", count: 0
   end
 
   test "a parent sees a delete confirmation inside the modal frame" do

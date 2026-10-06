@@ -15,11 +15,11 @@
 <% end %>
 
 <% if @archived_count.positive? %>
-  <%# AIDEV-NOTE: Active/Archived lives in the list toolbar (ux-notes, Lists). It shows whenever archived students exist, even when no active ones do, so they stay reachable. %>
-  <div class="mb-4 flex flex-wrap items-center gap-3">
-    <%= render SegmentedControlComponent.new(label: t(".filter_label")) do |control| %>
-      <% control.with_option(text: t(".active"), href: students_path, selected: !@show_archived, count: @students.size) %>
-      <% control.with_option(text: t(".archived"), href: students_path(archived: 1), selected: @show_archived, count: @archived_count) %>
+  <%# AIDEV-NOTE: Active/Archived is an underline-tab list switch (ux-notes, Sections and tabs). It shows whenever archived students exist, even when no active ones do, so they stay reachable. %>
+  <div class="mb-4">
+    <%= render UiTabsComponent.new(mode: :links, variant: :underline, label: t(".filter_label"), tab_list_classes: "w-full border-b border-neutral-200") do |tabs| %>
+      <% tabs.with_tab(title: t(".active"), href: students_path, active: !@show_archived, meta: @students.size.to_s) %>
+      <% tabs.with_tab(title: t(".archived"), href: students_path(archived: 1), active: @show_archived, meta: @archived_count.to_s) %>
     <% end %>
   </div>
 <% end %>

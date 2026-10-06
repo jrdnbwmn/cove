@@ -145,8 +145,8 @@ Sections and tabs:
 - Serif only for page titles and major section headings; everything else is
   sans.
 - Tabs switch views of a page, never list items. Each has its own URL, about
-  five at most, scrolling sideways on phones. Filters use a filter or
-  segmented control, not tabs.
+  five at most, scrolling sideways on phones. A list's Active/Archived switch
+  uses underline tabs with counts; other filters use a filter control.
 
 Forms:
 

@@ -47,6 +47,7 @@ class StudentFormsTest < ActionDispatch::IntegrationTest
   test "the edit form puts Delete on the left and Cancel, Archive, Save on the right" do
     get edit_student_path(@maya)
 
+    assert_select "a[href='#{delete_student_path(@maya)}']", text: "Delete"
     assert_select "button[type=submit][form='student-form']", text: /Save/
     assert_select "button[data-action='click->ui-modal#close:prevent']", text: /Cancel/
     assert_actions_in_order ["Delete", "Cancel", "Archive", "Save"]
@@ -96,7 +97,7 @@ class StudentFormsTest < ActionDispatch::IntegrationTest
 
   # The action row's controls read left to right in DOM order.
   def assert_actions_in_order(labels)
-    selector = "[data-student-actions] > [data-controller~='ui-modal'] > button, [data-student-actions] > div:not([data-controller~='ui-modal']) > button, [data-student-actions] > div:not([data-controller~='ui-modal']) > form button"
+    selector = "[data-student-actions] > a, [data-student-actions] > div > button, [data-student-actions] > div > form button"
     texts = css_select(selector).map { |node| node.text.squish.sub(/ Working\.\.\.\z/, "") }
     assert_equal labels, texts
   end
