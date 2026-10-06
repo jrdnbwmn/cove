@@ -8,10 +8,12 @@ class KitchenSinkTest < ActionDispatch::IntegrationTest
     assert_select "h1", "Component Kitchen Sink"
     # 15 = the number of icon swatches in the "Icons" section demo grid
     assert_select "h2 + div svg.size-5", count: 15
-    assert_select "button.bg-primary.text-primary-foreground", count: 7
+    # The PageHeaderComponent demo adds its primary action to the existing buttons.
+    assert_select "button.bg-primary.text-primary-foreground", count: 8
     assert_select ".dark", count: 0
     assert_select "[data-controller~='ui-modal']", count: 1
-    assert_select "[data-controller='ui-dropdown-popover']", count: 1
+    # The PageHeaderComponent uses an overflow dropdown for its secondary action.
+    assert_select "[data-controller='ui-dropdown-popover']", count: 2
     assert_select "a", text: "New chat", count: 0
     assert_select "p", text: "Inset sidebar content area", count: 1
     assert_select "h4", "Starter"

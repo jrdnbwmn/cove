@@ -142,6 +142,15 @@
     <section class="py-10">
       <h2>Navigation</h2>
       <div class="mt-6 grid gap-8">
+        <%= render PageHeaderComponent.new(title: "Students", description: "The people learning with you.") do |header| %>
+          <% header.with_secondary_action do %>
+            <%= render ButtonComponent.new(text: "Export", variant: :secondary) %>
+          <% end %>
+          <% header.with_primary_action do %>
+            <%= render ButtonComponent.new(text: "Add student") %>
+          <% end %>
+        <% end %>
+
         <%= render NavbarComponent.new do |navbar| %>
           <% navbar.with_item(label: "Dashboard", href: "#") %>
           <% navbar.with_item(label: "Resources", dropdown: true, content_id: "navigation-resources") %>

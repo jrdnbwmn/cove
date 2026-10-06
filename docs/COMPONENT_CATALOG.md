@@ -17,11 +17,12 @@
 | `SkeletonComponent` | Renders a pulsing placeholder shape while content loads. | `variant`, `width`, `height`, `count` | — | `SkeletonComponentPreview` |
 | `UiToastComponent` | Provides the Rails Blocks toast container for new app UI. | `position`, `layout`, `auto_dismiss_duration`, `limit` | — | `UiToastComponentPreview` |
 | `TooltipComponent` | Wraps content with a Rails Blocks tooltip. | `text`, `placement`, `delay`, `trigger`, `kbd` | — | `TooltipComponentPreview` |
-| `UiModalComponent` | Renders a Rails Blocks dialog without replacing Jumpstart's modal. | `title`, `size`, `prevent_dismiss`, `trigger_text` | — | `UiModalComponentPreview` |
+| `UiModalComponent` | Renders a Rails Blocks dialog without replacing Jumpstart's modal. | `title`, `size`, `prevent_dismiss`, `trigger_text` | `ButtonComponent` | `UiModalComponentPreview` |
 | `DropdownComponent` | Renders an accessible, positioned menu with item slots. | `trigger_text`, `placement`, `hover`, `portal` | — | `DropdownComponentPreview` |
 | `Drawer::Component` | **Don't use for new work.** Renders a Rails Blocks bottom-sheet drawer with snap points, drag gestures, and a `<dialog>` element. | `snap_points`, `title`, `dismissible`, `trigger_text`, `open` | — | `DrawerComponentPreview` |
 | `NavbarComponent` | Renders responsive primary navigation with optional dropdown panels. | `variant`, `sticky`, `show_mobile_menu` | — | `NavbarComponentPreview` |
 | `BreadcrumbComponent` | **Don't use for new work.** Renders an accessible page hierarchy trail. | `items`, `separator`, `variant`, `truncate_at` | — | `BreadcrumbComponentPreview` |
+| `PageHeaderComponent` | Renders a page title, optional description, and responsive action area. | `title`, `description` | `DropdownComponent` | `PageHeaderComponentPreview` |
 | `UiTabsComponent` | Renders Rails Blocks tabs without replacing Jumpstart's tabs. | `mode`, `label`, `variant`, `orientation`, `default_tab`, `url_sync` | — | `UiTabsComponentPreview` |
 | `PaginationComponent` | Renders Pagy navigation in full, compact, or minimal form. | `pagy`, `variant`, `size`, `frame_id` | — | `PaginationComponentPreview` |
 | `SidebarComponent` | Renders responsive primary navigation with collapsible groups. | `variant`, `collapsible`, `storage_key`, `position` | — | `SidebarComponentPreview` |
@@ -568,6 +569,36 @@ developer-authored SVG markup.
 
 ```erb
 <%= render BreadcrumbComponent.new(items: [{label: "Home", href: root_path}, {label: "Settings"}]) %>
+```
+
+### PageHeaderComponent
+
+**Purpose:** Renders a page title, optional description, and action area that
+keeps actions on the title row from small screens upward and moves them below
+the description on phones.
+
+**Arguments:** `title` is required. Use `description` for optional supporting
+text below the title.
+
+**Slots:** `with_primary_action` adds the always-visible primary action.
+`with_secondary_action` adds up to two secondary actions; they are shown
+directly from small screens upward and move into the overflow menu on phones.
+`with_menu` adds custom content to that overflow menu. The overflow menu is
+rendered only when a secondary action or menu slot is present.
+
+**Preview:** `PageHeaderComponentPreview`
+
+**Usage:**
+
+```erb
+<%= render PageHeaderComponent.new(title: "Students", description: "Manage your family’s learners.") do |header| %>
+  <% header.with_primary_action do %>
+    <%= render ButtonComponent.new(text: "Add student") %>
+  <% end %>
+  <% header.with_secondary_action do %>
+    <%= render ButtonComponent.new(text: "Import", variant: :secondary) %>
+  <% end %>
+<% end %>
 ```
 
 ### UiTabsComponent
