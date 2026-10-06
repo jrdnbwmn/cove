@@ -14,7 +14,33 @@
   <%= render "free_limit_banner", account: Current.account %>
 <% end %>
 
-<% if @students.empty? %>
+<% if @archived_count.positive? %>
+  <%# AIDEV-NOTE: Active/Archived lives in the list toolbar (ux-notes, Lists). It shows whenever archived students exist, even when no active ones do, so they stay reachable. %>
+  <div class="mb-4 flex flex-wrap items-center gap-3">
+    <%= render SegmentedControlComponent.new(label: t(".filter_label")) do |control| %>
+      <% control.with_option(text: t(".active"), href: students_path, selected: !@show_archived, count: @students.size) %>
+      <% control.with_option(text: t(".archived"), href: students_path(archived: 1), selected: @show_archived, count: @archived_count) %>
+    <% end %>
+  </div>
+<% end %>
+
+<% if @show_archived %>
+  <% can_restore = Current.account.can_add_student? %>
+  <% unless can_restore %>
+    <p class="mb-4 text-sm text-muted-foreground">
+      <% if Current.account.premium? %>
+        <%= t(".restore_blocked_premium_html", link: mail_to(Jumpstart.config.support_email, t(".restore_contact"), subject: t("students.limit_prompt.more_students_subject", product: Jumpstart.config.application_name), class: "underline text-foreground hover:text-primary")) %>
+      <% else %>
+        <%= t(".restore_blocked_free_html", link: link_to(t(".restore_upgrade"), pricing_path, class: "underline text-foreground hover:text-primary")) %>
+      <% end %>
+    </p>
+  <% end %>
+  <div class="grid auto-rows-fr gap-4 sm:grid-cols-2 lg:grid-cols-3">
+    <% @archived_students.each do |student| %>
+      <%= render "student_card", student: student, archived: true, can_restore: can_restore %>
+    <% end %>
+  </div>
+<% elsif @students.empty? %>
   <%= render EmptyStateComponent.new(title: t(".empty_title"), description: t(".empty_description")) do |c| %>
     <% c.with_icon do %>
       <%= icon "users", class: "w-full h-full" %>
@@ -29,35 +55,4 @@
       <%= render "student_card", student: student %>
     <% end %>
   </div>
-<% end %>
-
-<% if @archived_count.positive? %>
-  <p class="mt-6">
-    <% if @show_archived %>
-      <%= link_to t(".hide_archived"), students_path, class: "text-sm underline" %>
-    <% else %>
-      <%= link_to t(".show_archived", count: @archived_count), students_path(archived: 1), class: "text-sm underline" %>
-    <% end %>
-  </p>
-<% end %>
-
-<% if @show_archived %>
-  <section class="mt-6" aria-labelledby="archived-heading">
-    <h2 id="archived-heading" class="mb-4 font-sans text-lg font-semibold"><%= t(".archived_heading") %></h2>
-    <% can_restore = Current.account.can_add_student? %>
-    <% unless can_restore %>
-      <p class="mb-4 text-sm text-muted-foreground">
-        <% if Current.account.premium? %>
-          <%= t(".restore_blocked_premium_html", link: mail_to(Jumpstart.config.support_email, t(".restore_contact"), subject: t("students.limit_prompt.more_students_subject", product: Jumpstart.config.application_name), class: "underline text-foreground hover:text-primary")) %>
-        <% else %>
-          <%= t(".restore_blocked_free_html", link: link_to(t(".restore_upgrade"), pricing_path, class: "underline text-foreground hover:text-primary")) %>
-        <% end %>
-      </p>
-    <% end %>
-    <div class="grid auto-rows-fr gap-4 sm:grid-cols-2 lg:grid-cols-3">
-      <% @archived_students.each do |student| %>
-        <%= render "student_card", student: student, archived: true, can_restore: can_restore %>
-      <% end %>
-    </div>
-  </section>
 <% end %>

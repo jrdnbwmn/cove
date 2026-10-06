@@ -101,21 +101,45 @@ class StudentsSystemTest < ApplicationSystemTestCase
     assert_text "Saved."
   end
 
-  test "archived students are hidden until toggled and can be restored" do
+  test "archived students are hidden until the Archived view is chosen and can be restored" do
     open_slot
     visit students_path
 
-    assert_no_selector "h2", text: "Archived"
     assert_no_selector "p", text: "Iris"
 
-    click_link "Show archived (1)"
+    click_link "Archived"
 
-    assert_selector "h2", text: "Archived"
+    assert_selector "nav[aria-label='Filter students'] a[aria-current='true']", text: "Archived"
     assert_selector "p", text: "Iris"
+    assert_no_selector "p", text: "Maya"
     click_button "Restore"
 
     assert_text "Iris restored."
-    assert_no_selector "h2", text: "Archived"
+    assert_selector "p", text: "Iris"
+    assert_selector "p", text: "Maya"
+    assert_no_selector "nav[aria-label='Filter students']"
+  end
+
+  test "the Archived control only appears when a student is archived" do
+    students(:archived).destroy!
+    visit students_path
+
+    assert_selector "p", text: "Maya"
+    assert_no_selector "nav[aria-label='Filter students']"
+  end
+
+  test "a family whose students are all archived still sees the Archived control" do
+    students(:one).archive!
+    students(:two).archive!
+    visit students_path
+
+    assert_text "Add your first student"
+    assert_selector "nav[aria-label='Filter students']"
+
+    click_link "Archived"
+
+    assert_selector "p", text: "Maya"
+    assert_selector "p", text: "Theo"
     assert_selector "p", text: "Iris"
   end
 
@@ -128,7 +152,7 @@ class StudentsSystemTest < ApplicationSystemTestCase
     assert_text "Maya archived."
     assert_no_selector "dialog[open]"
     assert_no_selector "p", text: "Maya"
-    click_link "Show archived (2)"
+    click_link "Archived"
     assert_selector "p", text: "Maya"
   end
 
@@ -151,7 +175,7 @@ class StudentsSystemTest < ApplicationSystemTestCase
   test "an archived student can be deleted from the archived list" do
     visit students_path(archived: 1)
 
-    within("section[aria-labelledby='archived-heading']") { click_button "Delete" }
+    within("[data-student='#{students(:archived).id}']") { click_button "Delete" }
     within("dialog[open]") do
       assert_text "Delete Iris?"
       click_button "Delete Iris"

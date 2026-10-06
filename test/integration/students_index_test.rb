@@ -175,24 +175,24 @@ class StudentsIndexTest < ActionDispatch::IntegrationTest
 
     get students_path(archived: 1)
 
-    assert_select "section[aria-labelledby='archived-heading'] p.text-muted-foreground", text: /To restore a student, archive one first or upgrade to Premium\./
-    assert_select "section[aria-labelledby='archived-heading'] a[href='#{pricing_path}']", text: "upgrade to Premium"
-    assert_select "section[aria-labelledby='archived-heading'] form[action='#{student_archive_path(students(:two))}']", count: 0
-    assert_select "section[aria-labelledby='archived-heading'] button", text: /Delete/
+    assert_select "p.text-muted-foreground", text: /To restore a student, archive one first or upgrade to Premium\./
+    assert_select "a[href='#{pricing_path}']", text: "upgrade to Premium"
+    assert_select "form[action='#{student_archive_path(students(:two))}']", count: 0
+    assert_select "button", text: /Delete/
   end
 
   test "a Premium family at its limit is told to contact us before restoring" do
     account = accounts(:subscribed)
     account.update!(student_limit: 3)
     3.times { |i| Student.create!(account: account, name: "Student #{i}") }
-    Student.create!(account: account, name: "Old", archived_at: 1.day.ago)
+    old = Student.create!(account: account, name: "Old", archived_at: 1.day.ago)
     sign_in users(:subscribed)
 
     get students_path(archived: 1)
 
-    assert_select "section[aria-labelledby='archived-heading'] p.text-muted-foreground", text: /To restore a student, archive one first or contact us\./
-    assert_select "section[aria-labelledby='archived-heading'] a[href^='mailto:']", text: "contact us"
-    assert_select "section[aria-labelledby='archived-heading'] form[method='post'] input[name='_method'][value='delete']", count: 0
+    assert_select "p.text-muted-foreground", text: /To restore a student, archive one first or contact us\./
+    assert_select "a[href^='mailto:']", text: "contact us"
+    assert_select "form[action='#{student_archive_path(old)}']", count: 0
   end
 
   test "a family under its limit can restore archived students with no note" do
@@ -201,9 +201,55 @@ class StudentsIndexTest < ActionDispatch::IntegrationTest
 
     get students_path(archived: 1)
 
-    assert_select "section[aria-labelledby='archived-heading'] form[action='#{student_archive_path(students(:two))}']", count: 1
-    assert_select "section[aria-labelledby='archived-heading'] button", text: /Restore/
+    assert_select "form[action='#{student_archive_path(students(:two))}']", count: 1
+    assert_select "button", text: /Restore/
     assert_no_match "To restore a student", response.body
+  end
+
+  test "a family with archived students sees an Active/Archived control with counts" do
+    sign_in users(:one)
+
+    get students_path
+
+    assert_select "nav[aria-label='Filter students']" do
+      assert_select "a[href='#{students_path}'][aria-current='true']", text: /Active/
+      assert_select "a[href='#{students_path(archived: 1)}']:not([aria-current])", text: /Archived/
+    end
+    assert_select "nav[aria-label='Filter students'] a", text: /Active\s*2/
+    assert_select "nav[aria-label='Filter students'] a", text: /Archived\s*1/
+  end
+
+  test "a family with no archived students does not see the control" do
+    sign_in users(:subscribed)
+
+    get students_path
+
+    assert_select "nav[aria-label='Filter students']", count: 0
+  end
+
+  test "the Archived view shows only archived students in the same grid" do
+    sign_in users(:one)
+
+    get students_path(archived: 1)
+
+    assert_select "nav[aria-label='Filter students'] a[aria-current='true']", text: /Archived/
+    names = css_select(".grid p.font-medium").map { |node| node.text.strip }
+    assert_includes names, "Iris"
+    assert_not_includes names, "Maya"
+    assert_not_includes names, "Theo"
+    assert_select "h2", text: "Archived", count: 0
+  end
+
+  test "a family whose students are all archived still sees the control above the empty state" do
+    students(:one).archive!
+    students(:two).archive!
+    sign_in users(:one)
+
+    get students_path
+
+    assert_select "nav[aria-label='Filter students'] a[aria-current='true']", text: /Active\s*0/
+    assert_select "nav[aria-label='Filter students'] a[href='#{students_path(archived: 1)}']", text: /Archived\s*3/
+    assert_select "h2", text: "Add your first student"
   end
 
   test "each card has an edit trigger for that student" do

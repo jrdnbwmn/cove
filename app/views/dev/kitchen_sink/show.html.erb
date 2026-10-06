@@ -175,6 +175,11 @@
           <% tabs.with_tab(title: "Billing", href: "/settings/billing") %>
         <% end %>
 
+        <%= render SegmentedControlComponent.new(label: "Filter students") do |control| %>
+          <% control.with_option(text: "Active", href: "#", selected: true, count: 4) %>
+          <% control.with_option(text: "Archived", href: "#", count: 2) %>
+        <% end %>
+
         <% navigation_pagy = Pagy::Offset.new(count: 30, page: 2, limit: 10, request: Pagy::Request.new(request: request)) %>
         <%= render PaginationComponent.new(pagy: navigation_pagy, request_path: request.path) %>
 

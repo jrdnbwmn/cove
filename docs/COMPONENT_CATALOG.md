@@ -23,6 +23,7 @@
 | `NavbarComponent` | Renders responsive primary navigation with optional dropdown panels. | `variant`, `sticky`, `show_mobile_menu` | — | `NavbarComponentPreview` |
 | `BreadcrumbComponent` | **Don't use for new work.** Renders an accessible page hierarchy trail. | `items`, `separator`, `variant`, `truncate_at` | — | `BreadcrumbComponentPreview` |
 | `UiTabsComponent` | Renders Rails Blocks tabs without replacing Jumpstart's tabs. | `mode`, `variant`, `orientation`, `default_tab`, `url_sync` | — | `UiTabsComponentPreview` |
+| `SegmentedControlComponent` | Renders a link-based segmented control for filtering a list (e.g. Active/Archived). | `label`, `options` (`text`, `href`, `selected`, `count`) | — | `SegmentedControlComponentPreview` |
 | `PaginationComponent` | Renders Pagy navigation in full, compact, or minimal form. | `pagy`, `variant`, `size`, `frame_id` | — | `PaginationComponentPreview` |
 | `SidebarComponent` | Renders responsive primary navigation with collapsible groups. | `variant`, `collapsible`, `storage_key`, `position` | — | `SidebarComponentPreview` |
 | `CardComponent` | Renders a content container with optional image, header, body, and footer slots. | `variant`, `padding`, `shadow`, `divide`, `hoverable` | — | `CardComponentPreview` |
@@ -612,6 +613,37 @@ developer-authored SVG markup.
 <%= render UiTabsComponent.new(mode: :links) do |tabs| %>
   <% tabs.with_tab(title: "Profile", href: profile_path, active: current_page?(profile_path)) %>
   <% tabs.with_tab(title: "Password", href: password_path, active: current_page?(password_path)) %>
+<% end %>
+```
+
+### SegmentedControlComponent
+
+**Purpose:** Renders a segmented control for filtering a list, such as
+Active/Archived. Each option is a normal link to its own URL, so there is no
+JS or in-place filtering. For switching views of a page, use `UiTabsComponent`
+instead.
+
+**Arguments:**
+
+| Argument | Type | Default | Description |
+| --- | --- | --- | --- |
+| `label` | `String` | required | Accessible name for the `nav` group (e.g. "Filter students"). |
+
+**Slots:** `options` (many), each taking `text:`, `href:`, `selected:`
+(`Boolean`, default `false`; sets `aria-current="true"`), and an optional
+`count:` shown after the text (`0` is shown, `nil` is not).
+
+**States:** The selected option has a filled background. The control is 40px
+tall and stays on one line at 390px for two options.
+
+**Preview:** `SegmentedControlComponentPreview`
+
+**Usage:**
+
+```erb
+<%= render SegmentedControlComponent.new(label: "Filter students") do |control| %>
+  <% control.with_option(text: "Active", href: students_path, selected: !@show_archived, count: 4) %>
+  <% control.with_option(text: "Archived", href: students_path(archived: 1), selected: @show_archived, count: 2) %>
 <% end %>
 ```
 

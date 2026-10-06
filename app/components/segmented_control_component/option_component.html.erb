@@ -1,0 +1,6 @@
+<a href="<%= href %>" class="<%= link_classes %>"<% if selected? %> aria-current="true"<% end %>>
+  <span><%= text %></span>
+  <% unless count.nil? %>
+    <span class="<%= count_classes %>"><%= count %></span>
+  <% end %>
+</a>
