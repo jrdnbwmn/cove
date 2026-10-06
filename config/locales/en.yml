@@ -139,6 +139,8 @@ en:
       edit: "Edit"
       edit_account: "Edit Family"
       copy_link: "Copy link"
+      link_copied: "Link copied"
+      owner: "Owner"
       switch: "Switch"
       you: "you"
       delete_family: "Delete family"

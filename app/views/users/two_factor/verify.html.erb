@@ -1,5 +1,5 @@
 <%= turbo_frame_tag "modal-lazy-content" do %>
-  <h3 class="font-sans text-lg font-semibold"><%= t(".title") %></h3>
+  <h3 class="modal-heading"><%= t(".title") %></h3>
   <p class="mt-2 text-sm text-muted-foreground"><%= t(".description") %></p>
   <div class="mx-auto mt-4 w-40"><%= current_user.two_factor_otp_qr_code(viewbox: true).html_safe %></div>
   <p class="mt-4 text-sm text-muted-foreground"><%= t(".instructions_4") %> <code><%= current_user.otp_app_code %></code></p>

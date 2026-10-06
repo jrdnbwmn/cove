@@ -59,4 +59,24 @@ class TeamInvitationSystemTest < ApplicationSystemTestCase
     click_button "Invite a parent"
     assert_selector "dialog[open] input[name='account_invitation[email]']"
   end
+
+  test "a pending invitation's menu edits and resends it" do
+    account = accounts(:company)
+    invitation = account.account_invitations.create!(name: "Pending Parent", email: "pending@example.com", invited_by: users(:one))
+    login_as users(:one), scope: :user
+    visit account_path(account)
+
+    within("[data-family-row]", text: "Pending Parent") do
+      find("[aria-haspopup='menu']").click
+    end
+    click_button "Edit"
+    assert_selector "dialog[open] input[name='account_invitation[email]'][value='pending@example.com']"
+    within("dialog[open]") { click_button "Close" }
+
+    within("[data-family-row]", text: "Pending Parent") do
+      find("[aria-haspopup='menu']").click
+    end
+    click_button I18n.t("accounts.show.resend_invite")
+    assert_selector "[role='status']", text: "Invitation was sent to #{invitation.email}."
+  end
 end

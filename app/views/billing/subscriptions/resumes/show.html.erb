@@ -2,7 +2,7 @@
 
 <%= turbo_frame_tag "modal-lazy-content" do %>
 <div class="max-w-xl">
-  <h2 class="font-sans text-lg font-semibold"><%= t ".title" %></h2>
+  <h2 class="modal-heading"><%= t ".title" %></h2>
 
   <%= render CardComponent.new(divide: true, classes: "mt-8") do |card| %>
     <% card.with_header do %>

@@ -1,0 +1,19 @@
+<%# locals: (account:, account_user:, is_admin:) %>
+<% user = account_user.user %>
+<% display_name = user.name || user.email %>
+<div class="flex items-center justify-between gap-4 p-4" data-family-row>
+  <div class="flex min-w-0 items-center gap-3">
+    <%= render AvatarComponent.new(src: avatar_url_for(user), alt: display_name, size: :sm) %>
+    <div class="min-w-0">
+      <p class="font-medium"><%= display_name %> <%= render BadgeComponent.new(text: t("accounts.show.owner"), size: :sm) if account.owner?(user) %></p>
+      <p class="text-sm text-muted-foreground"><%= user.email %></p>
+    </div>
+  </div>
+  <% if is_admin && !account.owner?(user) %>
+    <%= render DropdownComponent.new(trigger_variant: :icon, placement: "bottom-end") do |dropdown| %>
+      <% dropdown.with_item_custom(unstyled: true) do %>
+        <%= button_to t("accounts.show.remove_parent", name: display_name), account_account_user_path(account, account_user), method: :delete, class: "block w-full px-3 py-2 text-left text-sm text-red-600", data: {turbo_confirm: t("accounts.show.remove_parent_confirm", name: display_name)} %>
+      <% end %>
+    <% end %>
+  <% end %>
+</div>

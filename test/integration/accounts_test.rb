@@ -85,4 +85,15 @@ class Jumpstart::AccountsTest < ActionDispatch::IntegrationTest
   ensure
     ActiveSupport::Notifications.unsubscribe(subscriber) if subscriber
   end
+
+  test "a parent can resend an invitation or copy its link from the pending row's menu" do
+    account = accounts(:one)
+    invitation = account.account_invitations.create!(name: "Pending Parent", email: "pending@example.com", invited_by: users(:noaccount))
+
+    sign_in users(:noaccount)
+    get account_path(account)
+
+    assert_select "form[action='#{resend_account_account_invitation_path(account, invitation)}'] button", text: I18n.t("accounts.show.resend_invite")
+    assert_select "button[data-controller='copy-link'][data-copy-link-url-value='#{account_invitation_url(invitation)}']", text: I18n.t("accounts.show.copy_link")
+  end
 end

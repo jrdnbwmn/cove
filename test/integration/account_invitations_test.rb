@@ -128,4 +128,14 @@ class Jumpstart::AccountInvitationsTest < ActionDispatch::IntegrationTest
       invitation.reload
     end
   end
+
+  test "a parent can resend an invitation" do
+    sign_in @inviter
+
+    post resend_account_account_invitation_path(@account, @account_invitation)
+
+    assert_redirected_to account_path(@account)
+    assert_equal I18n.t("accounts.account_invitations.sent", email: @account_invitation.email), flash[:notice]
+    assert_enqueued_emails 1
+  end
 end

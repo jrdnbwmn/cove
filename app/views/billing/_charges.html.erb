@@ -1,7 +1,7 @@
 <h2 class="section-heading"><%= t(".title") %></h2>
 
 <% if @charges.present? %>
-  <div class="divide-y divide-neutral-200 rounded-md border border-neutral-200 dark:divide-neutral-700 dark:border-neutral-700">
+  <div class="row-list">
     <% @charges.each do |charge| %>
       <div class="flex flex-col gap-2 p-4 sm:flex-row sm:items-center sm:justify-between" data-billing-charge>
         <div><p class="font-medium"><%= friendly_date(charge.created_at) %></p><p class="text-sm text-muted-foreground"><%= pay_amount_to_currency(charge) %></p></div>

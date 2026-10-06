@@ -133,3 +133,8 @@ dialog.modal {
     }
   }
 }
+
+/* AIDEV-NOTE: The heading inside a modal. Needs font-sans because bare h2/h1 tags default to the serif (see typography.css). */
+.modal-heading {
+  @apply font-sans text-lg font-semibold;
+}

@@ -67,11 +67,7 @@
       <% end %>
 
       <%# AIDEV-NOTE: No title: the confirmation's own "Delete <name>?" heading is the only one, so the dialog never shows two headings (audit M-11). %>
-      <%= render UiModalComponent.new(lazy_load: true, turbo_frame_src: delete_student_path(student, from: "list")) do |modal| %>
-        <% modal.with_trigger do %>
-          <%= form_with url: "#", method: :get, id: dom_id(student, :delete), class: "hidden", data: {action: "submit->ui-modal#open:prevent"} do %><% end %>
-        <% end %>
-      <% end %>
+      <%= render "application/lazy_modal", src: delete_student_path(student, from: "list"), form_id: dom_id(student, :delete) %>
     <% end %>
   <% end %>
 </div>

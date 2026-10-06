@@ -1,0 +1,11 @@
+<%# locals: (src:, title: nil, text: nil, button: {}, form_id: nil) %>
+<%# AIDEV-NOTE: A modal whose content loads from `src` when it opens. Pass `text` (and ButtonComponent options in `button`) for a button trigger. Pass `form_id` instead to open it from a "…" menu: the menu is portaled to <body>, outside this modal's Stimulus scope, so a menu item submits this hidden form (via its HTML form attribute) and the form's submit action opens the modal. %>
+<%= render UiModalComponent.new(title: title, lazy_load: true, turbo_frame_src: src) do |modal| %>
+  <% modal.with_trigger do %>
+    <% if form_id %>
+      <%= form_with url: "#", method: :get, id: form_id, class: "hidden", data: {action: "submit->ui-modal#open:prevent"} do %><% end %>
+    <% else %>
+      <%= render ButtonComponent.new(text: text, **button, data: {action: "click->ui-modal#open:prevent"}) %>
+    <% end %>
+  <% end %>
+<% end %>

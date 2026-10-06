@@ -113,7 +113,7 @@ class UiModalComponent < ViewComponent::Base
   end
 
   def title_classes
-    "mb-2 font-sans text-lg font-semibold text-neutral-900 dark:text-white"
+    "mb-2 modal-heading text-neutral-900 dark:text-white"
   end
 
   def footer_classes
