@@ -47,7 +47,7 @@ class AccountDeletionHelperTest < ActionView::TestCase
     assert_not cancels_immediately?(subscription)
     notice = cancellation_end_notice(subscription)
 
-    assert_includes notice, "October 15, 2026"
+    assert_includes notice, "15 Oct"
     assert_includes notice, 'href="/refunds"'
   end
 

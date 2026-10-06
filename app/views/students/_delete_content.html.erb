@@ -1,0 +1,16 @@
+<%# locals: (student:, close_on_cancel:) %>
+<h2 class="modal-heading"><%= t("students.delete.heading", name: student.name) %></h2>
+<p class="mt-2 text-muted-foreground"><%= t("students.delete.body", name: student.name) %></p>
+
+<div class="mt-6 flex flex-col gap-3 sm:flex-row sm:justify-end">
+  <%# AIDEV-NOTE: List and archived confirms close the modal on Cancel. Confirms reached from Edit or the read-only view swap their prior content back into this modal. %>
+  <% if close_on_cancel %>
+    <%# The delete form's hidden method field registers as a changed field. A confirmation has no entered work, so close it directly without the outer edit form's discard check. %>
+    <%= render ButtonComponent.new(text: t("students.delete.cancel"), variant: :secondary, data: {action: "click->ui-modal#performClose:prevent"}) %>
+  <% else %>
+    <%= render ButtonComponent.new(text: t("students.delete.cancel"), variant: :secondary, href: student.editable? ? edit_student_path(student) : student_path(student)) %>
+  <% end %>
+  <%= form_with url: student_path(student), method: :delete do %>
+    <%= render ButtonComponent.new(text: t("students.delete.confirm", name: student.name), variant: :destructive, type: "submit", full_width: true) %>
+  <% end %>
+</div>

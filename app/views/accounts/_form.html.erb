@@ -54,7 +54,7 @@
     <% end %>
   <% end %>
 
-  <div class="flex gap-3">
+  <div class="mt-6 flex flex-col-reverse gap-3 sm:ml-auto sm:flex-row sm:justify-end">
     <%= render ButtonComponent.new(
       text: form.object.persisted? ? t("helpers.submit.update", model: form.object.model_name.human) : t("helpers.submit.create", model: form.object.model_name.human),
       type: "submit"
@@ -62,7 +62,7 @@
     <%= render ButtonComponent.new(
       text: t("cancel"),
       variant: :secondary,
-      href: form.object.persisted? ? form.object : accounts_path
+      data: {action: "click->ui-modal#close:prevent"}
     ) %>
   </div>
 <% end %>

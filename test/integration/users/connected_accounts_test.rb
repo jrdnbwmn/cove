@@ -6,15 +6,15 @@ class Users::ConnectedAccountsTest < ActionDispatch::IntegrationTest
     sign_in @connected_account.owner
   end
 
-  test "connected accounts page" do
+  test "connected accounts page redirects to Security" do
     get user_connected_accounts_path
-    assert_response :success
+    assert_redirected_to edit_account_password_path
   end
 
   test "destroy connected account" do
     assert_difference "ConnectedAccount.count", -1 do
       delete user_connected_account_path(@connected_account)
     end
-    assert_redirected_to user_connected_accounts_path
+    assert_redirected_to edit_account_password_path
   end
 end

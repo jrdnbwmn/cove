@@ -102,12 +102,12 @@ class Users::SignupCompletionsControllerTest < ActionDispatch::IntegrationTest
     user = users(:oauth_signup_pending)
     sign_in user
 
-    get notifications_path
+    get students_path
     assert_redirected_to signup_completion_path
 
     patch signup_completion_path, params: {user: {first_name: "Updated", last_name: "Name", marketing_opt_in: "0"}}
 
-    assert_redirected_to notifications_path
+    assert_redirected_to students_path
   end
 
   test "redirects a duplicate submission to the home page without changing consent" do

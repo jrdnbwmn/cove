@@ -75,7 +75,7 @@ class PricingAndBillingSystemTest < ApplicationSystemTestCase
     visit billing_path
 
     local_switch_date = switch_date.in_time_zone(user.time_zone).to_date
-    assert_text I18n.t("billing.show.pending_plan_change_title", date: I18n.l(local_switch_date, format: :long))
+    assert_text I18n.t("billing.show.pending_plan_change_title", date: friendly_date(local_switch_date))
     assert_no_link I18n.t("billing.subscriptions.subscription.change_plan")
 
     # The fixture subscription isn't on Stripe, so releasing is a no-op; this checks the Turbo DELETE round trip.
@@ -124,7 +124,7 @@ class PricingAndBillingSystemTest < ApplicationSystemTestCase
     login_as users(:subscribed), scope: :user
     visit billing_path
     assert_text I18n.t("billing.show.premium")
-    assert_text "Renews October 15, 2026"
+    assert_text I18n.t("billing.show.renews_on", date: friendly_date(pay_subscriptions(:subscribed).current_period_end))
   end
 
   test "complimentary Family sees no paid billing sections" do
@@ -142,7 +142,7 @@ class PricingAndBillingSystemTest < ApplicationSystemTestCase
     visit billing_path
 
     assert_text "Premium until"
-    assert_text "October 20, 2026"
+    assert_text friendly_date(pay_subscriptions(:canceled_in_period).ends_at)
   end
 
   test "second parent sees the same paid billing state" do
@@ -161,7 +161,35 @@ class PricingAndBillingSystemTest < ApplicationSystemTestCase
     visit billing_path
 
     assert_text I18n.t("billing.show.premium")
-    assert_text "Renews October 15, 2026"
+    assert_text I18n.t("billing.show.renews_on", date: friendly_date(pay_subscriptions(:subscribed).current_period_end))
+  end
+
+  test "Premium family updates billing email and information" do
+    account = accounts(:subscribed)
+    account.update!(billing_email: nil, extra_billing_info: "Cove Family")
+
+    login_as users(:subscribed), scope: :user
+    visit billing_path
+
+    fill_in "Billing email", with: "billing@example.com"
+    click_button "Save"
+
+    assert_equal "billing@example.com", account.reload.billing_email
+    visit billing_path
+
+    page.document.synchronize do
+      connected = page.evaluate_script("(() => { const button = Array.from(document.querySelectorAll('button')).find((element) => element.textContent.trim() === 'Edit'); return !!button && !!window.Stimulus?.getControllerForElementAndIdentifier(button.closest(\"[data-controller~='ui-modal']\"), 'ui-modal') })()")
+      raise Capybara::ExpectationNotMet, "billing info modal is not connected" unless connected
+    end
+    click_button "Edit"
+
+    within "dialog[open]" do
+      assert_field "Extra billing info", with: "Cove Family"
+      fill_in "Extra billing info", with: "Cove Family\nVAT ID 123"
+      click_button "Save information"
+    end
+
+    assert_equal "Cove Family\nVAT ID 123", account.reload.extra_billing_info
   end
 
   test "refund policy appears on pricing, checkout, and cancellation" do
@@ -179,7 +207,7 @@ class PricingAndBillingSystemTest < ApplicationSystemTestCase
 
     login_as users(:subscribed), scope: :user
     visit billing_subscription_cancel_path(pay_subscriptions(:subscribed))
-    assert_text "Your plan will be canceled on October 15, 2026."
+    assert_text "Your plan will be canceled on 15 Oct."
     assert_link "Refund policy", href: refunds_path
 
     pay_subscriptions(:subscribed).update!(current_period_end: nil)
@@ -217,4 +245,8 @@ class PricingAndBillingSystemTest < ApplicationSystemTestCase
   def pricing_group(frequency)
     find("[data-pricing-target='plans'][data-frequency='#{frequency}']")
   end
+
+  private
+
+  def friendly_date(date) = ApplicationController.helpers.friendly_date(date)
 end

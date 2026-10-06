@@ -64,4 +64,20 @@ class UiTabsComponentTest < ViewComponent::TestCase
     # Natural-width items in a horizontal, overflow-scrollable row.
     assert_selector ".overflow-x-auto"
   end
+
+  test "labels links-mode navigation when given a label" do
+    render_inline(UiTabsComponent.new(mode: :links, label: "Filter students")) do |tabs|
+      tabs.with_tab(title: "Active", href: "/students", active: true)
+    end
+
+    assert_selector "nav[aria-label='Filter students']"
+  end
+
+  test "does not label links-mode navigation without a label" do
+    render_inline(UiTabsComponent.new(mode: :links)) do |tabs|
+      tabs.with_tab(title: "Active", href: "/students", active: true)
+    end
+
+    assert_no_selector "nav[aria-label]"
+  end
 end

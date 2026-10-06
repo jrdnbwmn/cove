@@ -1,0 +1,22 @@
+<%# locals: (account:, invitation:, is_admin:) %>
+<%# AIDEV-NOTE: Edit opens a modal through a hidden form because the "…" menu is portaled out of the modal's Stimulus scope (see application/_lazy_modal). Copy link uses its own controller and a toast, because the menu closes on click and there is no button left to anchor a tooltip to. %>
+<% menu_item_classes = "block w-full px-3 py-2 text-left text-sm" %>
+<div class="flex items-center justify-between gap-4 p-4" data-family-row>
+  <div class="min-w-0">
+    <p class="font-medium"><%= invitation.name %> <%= render BadgeComponent.new(text: t("accounts.show.awaiting_response"), size: :sm) %></p>
+    <p class="text-sm text-muted-foreground"><%= invitation.email %></p>
+  </div>
+  <% if is_admin %>
+    <%= render DropdownComponent.new(trigger_variant: :icon, placement: "bottom-end") do |dropdown| %>
+      <% dropdown.with_item_button(text: t("accounts.show.edit"), type: "submit", form: dom_id(invitation, :edit)) %>
+      <% dropdown.with_item_custom(unstyled: true) do %>
+        <%= button_to t("accounts.show.resend_invite"), resend_account_account_invitation_path(account, invitation), class: menu_item_classes %>
+      <% end %>
+      <% dropdown.with_item_button(text: t("accounts.show.copy_link"), data_controller: "copy-link", data_action: "click->copy-link#copy", data_copy_link_url_value: account_invitation_url(invitation), data_copy_link_message_value: t("accounts.show.link_copied")) %>
+      <% dropdown.with_item_custom(unstyled: true) do %>
+        <%= button_to t("accounts.show.remove_invitation"), account_account_invitation_path(account, invitation), method: :delete, class: "#{menu_item_classes} text-red-600", data: {turbo_confirm: t("accounts.show.remove_invitation_confirm", email: invitation.email)} %>
+      <% end %>
+    <% end %>
+    <%= render "application/lazy_modal", title: t("accounts.show.edit"), src: edit_account_account_invitation_path(account, invitation), form_id: dom_id(invitation, :edit) %>
+  <% end %>
+</div>

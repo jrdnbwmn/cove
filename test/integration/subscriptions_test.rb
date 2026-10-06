@@ -1,6 +1,14 @@
 require "test_helper"
 
 class Jumpstart::SubscriptionsTest < ActionDispatch::IntegrationTest
+  test "upcoming invoice page is no longer routed" do
+    sign_in users(:subscribed)
+
+    get "/billing/subscriptions/#{pay_subscriptions(:subscribed).to_param}/upcoming"
+
+    assert_response :not_found
+  end
+
   setup do
     @admin = users(:one)
     @plan = plans(:personal)

@@ -71,6 +71,16 @@ class CheckoutsTest < ActionDispatch::IntegrationTest
     assert_response :success
   end
 
+  test "checkout has a Back link and a plain left-aligned heading" do
+    capture_checkout_args(staging: false)
+
+    assert_response :success
+    assert_select "a[href=?]", pricing_path, text: "Back"
+    assert_select "h1.text-left.text-foreground", text: I18n.t("checkouts.show.title")
+    assert_select "h1.font-bold", count: 0
+    assert_select "h1.text-center", count: 0
+  end
+
   test "checkout errors show a friendly message instead of Stripe's" do
     Stripe::Checkout::Session.stub(:create, ->(*) { raise Pay::Error, "Stripe request id req_secret" }) do
       get checkout_path(plan: @plan)

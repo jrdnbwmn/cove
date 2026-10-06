@@ -41,34 +41,28 @@ class BillingPolicyCopyTest < ActionDispatch::IntegrationTest
 
     assert_response :success
     local_switch_date = switch_date.in_time_zone(user.time_zone).to_date
-    assert_includes response.body, I18n.t("billing.show.pending_plan_change_title", date: I18n.l(local_switch_date, format: :long))
+    assert_includes response.body, I18n.t("billing.show.pending_plan_change_title", date: ApplicationController.helpers.friendly_date(local_switch_date))
     assert_includes response.body, I18n.t("billing.show.pending_plan_change_description", price: "$12.00")
-    assert_not_includes response.body, I18n.t("billing.show.renews_on", date: I18n.l(subscription.current_period_end.to_date, format: :long))
+    assert_not_includes response.body, I18n.t("billing.show.renews_on", date: ApplicationController.helpers.friendly_date(subscription.current_period_end))
   end
 
-  test "a paid Family shows the immediate Premium cancellation consequence on both Family pages" do
+  test "a paid Family shows the immediate Premium cancellation consequence on Family" do
     account = accounts(:subscribed)
     sign_in users(:subscribed)
 
-    [account_path(account), edit_account_path(account)].each do |path|
-      get path
-
-      assert_response :success
-      assert_select "button[data-turbo-confirm-description*=?]", "Deleting this Family ends Premium immediately and no refund is issued."
-      assert_select "button[data-turbo-confirm-description*=?]", %(href="#{refunds_path}")
-    end
+    get account_path(account)
+    assert_response :success
+    assert_select "button[data-turbo-confirm-description*=?]", "Deleting this Family ends Premium immediately and no refund is issued."
+    assert_select "button[data-turbo-confirm-description*=?]", %(href="#{refunds_path}")
   end
 
-  test "a Free Family shows its generic deletion consequence on both Family pages" do
+  test "a Free Family shows its generic deletion consequence on Family" do
     account = accounts(:company)
     sign_in users(:one)
 
-    [account_path(account), edit_account_path(account)].each do |path|
-      get path
-
-      assert_response :success
-      assert_select "button[data-turbo-confirm-description=?]", "Deleting this Family permanently removes its data."
-    end
+    get account_path(account)
+    assert_response :success
+    assert_select "button[data-turbo-confirm-description=?]", "Deleting this Family permanently removes its data."
   end
 
   test "an owner deleting a paid Family login sees the Premium cancellation consequence" do

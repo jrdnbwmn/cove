@@ -9,7 +9,7 @@ class Billing::Subscriptions::PlanChangesController < ApplicationController
   before_action :ensure_different_plan, only: :show
   before_action :ensure_pending_change, only: :destroy
 
-  layout "sidebar"
+  layout "minimal", only: :show
 
   def show
   end

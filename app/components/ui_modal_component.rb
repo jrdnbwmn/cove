@@ -46,7 +46,7 @@ class UiModalComponent < ViewComponent::Base
   end
 
   def controller_data
-    data = {controller: "ui-modal"}
+    data = {controller: "ui-modal ui-modal-unsaved-changes"}
     data[:ui_modal_prevent_dismiss_value] = true if @prevent_dismiss
     data[:ui_modal_lazy_load_value] = true if @lazy_load
     data[:ui_modal_turbo_frame_src_value] = @turbo_frame_src if @turbo_frame_src.present?
@@ -58,7 +58,7 @@ class UiModalComponent < ViewComponent::Base
     base = if @size == :fullscreen
       "modal bg-transparent w-full z-50 small-scrollbar focus-visible:outline-neutral-600 dark:focus-visible:outline-neutral-200"
     else
-      "modal bg-transparent rounded-xl w-full lg:rounded-2xl z-50 border border-black/10 dark:border-white/10 bg-white dark:bg-neutral-800 small-scrollbar focus-visible:outline-neutral-600 dark:focus-visible:outline-neutral-200"
+      "modal bg-transparent h-dvh max-h-dvh w-full max-w-full m-0 rounded-none sm:h-fit sm:m-auto sm:rounded-xl lg:rounded-2xl z-50 border border-black/10 dark:border-white/10 bg-white dark:bg-neutral-800 small-scrollbar focus-visible:outline-neutral-600 dark:focus-visible:outline-neutral-200"
     end
     [base, size_classes, @classes].compact.reject(&:empty?).join(" ")
   end
@@ -66,29 +66,29 @@ class UiModalComponent < ViewComponent::Base
   def size_classes
     case @size
     when :sm
-      "max-w-sm"
+      "sm:max-w-sm"
     when :md
-      "max-w-[100vw-2rem] sm:max-w-md"
+      "sm:max-w-md"
     when :lg
-      "max-w-[100vw-2rem] sm:max-w-lg"
+      "sm:max-w-lg"
     when :xl
-      "max-w-[100vw-2rem] sm:max-w-xl"
+      "sm:max-w-xl"
     when :"2xl"
-      "max-w-[100vw-2rem] sm:max-w-2xl"
+      "sm:max-w-2xl"
     when :"3xl"
-      "max-w-[100vw-2rem] sm:max-w-3xl"
+      "sm:max-w-3xl"
     when :"4xl"
-      "max-w-[100vw-2rem] sm:max-w-4xl"
+      "sm:max-w-4xl"
     when :"5xl"
-      "max-w-[100vw-2rem] sm:max-w-5xl"
+      "sm:max-w-5xl"
     when :"6xl"
-      "max-w-[100vw-2rem] sm:max-w-6xl"
+      "sm:max-w-6xl"
     when :"7xl"
-      "max-w-[100vw-2rem] sm:max-w-7xl"
+      "sm:max-w-7xl"
     when :fullscreen
       "relative m-0 h-full w-full max-h-full max-w-full rounded-none lg:rounded-none"
     else
-      "max-w-[100vw-2rem] sm:max-w-md"
+      "sm:max-w-md"
     end
   end
 
@@ -96,10 +96,10 @@ class UiModalComponent < ViewComponent::Base
     base = if @size == :fullscreen
       "h-full w-full overflow-y-auto bg-white dark:bg-neutral-800 forced-colors:outline"
     else
-      "sm:max-w-7xl row-start-2 w-full bg-white dark:bg-neutral-800 forced-colors:outline"
+      "h-full max-h-full overflow-y-auto sm:h-auto sm:max-h-dvh sm:max-w-7xl row-start-2 w-full bg-white dark:bg-neutral-800 forced-colors:outline"
     end
     padding = "p-6"
-    rounded = (@size == :fullscreen) ? "" : "rounded-xl lg:rounded-2xl"
+    rounded = (@size == :fullscreen) ? "" : "rounded-none sm:rounded-xl lg:rounded-2xl"
     [base, padding, rounded].compact.reject(&:empty?).join(" ")
   end
 
@@ -113,7 +113,7 @@ class UiModalComponent < ViewComponent::Base
   end
 
   def title_classes
-    "mb-2 font-sans text-lg font-semibold text-neutral-900 dark:text-white"
+    "mb-2 modal-heading text-neutral-900 dark:text-white"
   end
 
   def footer_classes

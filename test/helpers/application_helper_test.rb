@@ -35,24 +35,24 @@ class ApplicationHelperTest < ActionView::TestCase
     assert_not students_nav_active?
   end
 
-  test "settings stays highlighted across profile, password, and two-factor pages" do
+  test "settings stays highlighted across profile, security, and two-factor pages" do
     request.path = edit_user_registration_path
     assert settings_nav_active?
     assert profile_tab_active?
-    assert_not password_tab_active?
+    assert_not security_tab_active?
 
     request.path = edit_account_password_path
     assert settings_nav_active?
-    assert password_tab_active?
+    assert security_tab_active?
     assert_not profile_tab_active?
 
     request.path = user_two_factor_path
     assert settings_nav_active?
-    assert password_tab_active?
+    assert security_tab_active?
 
     request.path = backup_codes_user_two_factor_path
     assert settings_nav_active?
-    assert password_tab_active?
+    assert security_tab_active?
   end
 
   test "settings stays highlighted across connected accounts and billing descendants" do
@@ -119,5 +119,43 @@ class ApplicationHelperTest < ActionView::TestCase
 
     assert_not settings_nav_active?
     assert_not dashboard_nav_active?
+  end
+
+  test "friendly_date uses relative dates and omits the current year" do
+    travel_to Time.zone.local(2025, 9, 9, 12) do
+      assert_equal "Today", friendly_date(Date.new(2025, 9, 9))
+      assert_equal "Tomorrow", friendly_date(Date.new(2025, 9, 10))
+      assert_equal "Yesterday", friendly_date(Date.new(2025, 9, 8))
+      assert_equal "12 Sep", friendly_date(Date.new(2025, 9, 12))
+      assert_equal "9 Sep 2024", friendly_date(Date.new(2024, 9, 9))
+    end
+  end
+
+  test "friendly_date accepts time values in the current time zone" do
+    travel_to Time.zone.local(2025, 9, 9, 12) do
+      assert_equal "Today", friendly_date(Time.zone.local(2025, 9, 9, 23, 59))
+    end
+  end
+
+  test "friendly_time always includes minutes" do
+    travel_to Time.zone.local(2025, 9, 9, 12) do
+      assert_equal "5:07pm", friendly_time(Time.zone.local(2025, 9, 9, 17, 7))
+      assert_equal "5:00pm", friendly_time(Time.zone.local(2025, 9, 9, 17))
+      assert_equal "12:30am", friendly_time(Time.zone.local(2025, 9, 9, 0, 30))
+    end
+  end
+
+  test "friendly_date_range formats dates within one month and year" do
+    travel_to Time.zone.local(2025, 9, 9, 12) do
+      assert_equal "9–12 Sep", friendly_date_range(Date.new(2025, 9, 9), Date.new(2025, 9, 12))
+      assert_equal "30 Sep–2 Oct", friendly_date_range(Date.new(2025, 9, 30), Date.new(2025, 10, 2))
+      assert_equal "28 Dec 2025–3 Jan 2026", friendly_date_range(Date.new(2025, 12, 28), Date.new(2026, 1, 3))
+    end
+  end
+
+  test "friendly_date_range returns the friendly date for one day" do
+    travel_to Time.zone.local(2025, 9, 9, 12) do
+      assert_equal "Today", friendly_date_range(Date.new(2025, 9, 9), Date.new(2025, 9, 9))
+    end
   end
 end

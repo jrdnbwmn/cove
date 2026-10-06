@@ -7,21 +7,12 @@
 <% if Current.account_admin? %>
   <% subscriptions = @subscriptions %>
   <%= render "plan_state", subscription: subscriptions.first %>
-  <h2 class="section-heading"><%= t(".subscriptions") %></h2>
+  <% if subscriptions.any? %><section class="mt-12"><%= render partial: "billing/subscriptions/subscription", collection: subscriptions %></section><% end %>
 
   <% if subscriptions.any? %>
-    <%= render partial: "billing/subscriptions/subscription", collection: subscriptions %>
-  <% else %>
-    <div class="mb-8 flex items-center gap-4">
-      <div class="flex-1 text-muted-foreground"><%= t ".not_subscribed" %></div>
-      <%= render ButtonComponent.new(text: t(".choose_plan"), href: pricing_path) %>
-    </div>
-  <% end %>
-
-  <% if subscriptions.any? %>
-    <%= render partial: "email" %>
-    <%= render partial: "info" %>
-    <%= render partial: "charges" %>
+    <div class="mt-12"><%= render partial: "email" %></div>
+    <div class="mt-12"><%= render partial: "info" %></div>
+    <div class="mt-12"><%= render partial: "charges" %></div>
   <% end %>
 <% else %>
   <p class="text-muted-foreground"><%= t(".contact_admin", account: current_account.name) %></p>

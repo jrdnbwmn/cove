@@ -28,6 +28,23 @@
 #       enabled: "ON"
 
 en:
+  date:
+    formats:
+      friendly: "%-d %b %Y"
+      friendly_short: "%-d %b"
+  time:
+    formats:
+      friendly: "%-l:%M%P"
+  friendly_dates:
+    today: "Today"
+    tomorrow: "Tomorrow"
+    yesterday: "Yesterday"
+  ui_modal:
+    discard_prompt:
+      title: "Discard your changes?"
+      keep_editing: "Keep editing"
+      discard: "Discard"
+
   family_invitation_acceptance:
     wrong_recipient: "This invitation was sent to someone else"
     archived: "This invitation is no longer valid"
@@ -89,15 +106,12 @@ en:
     show:
       title: "Join %{account}"
       invited_you_to_join_html: "<strong>%{inviter}</strong> invited you to join <strong>%{account}</strong>"
-      accept: "Accept Invitation"
+      accept: "Accept invitation"
       decline: "Decline"
+      decline_confirm: "Decline the invitation to join %{account}?"
 
   account_users:
-    updated: "Account member was successfully updated."
     destroyed: "Account member was successfully removed."
-    edit:
-      title: "Edit permissions for %{user}"
-      description: "Editing account permissions for %{user}."
 
   accounts:
     index:
@@ -108,14 +122,21 @@ en:
       user: "user"
     show:
       awaiting_response: Awaiting response
-      invite: "Invite A User"
+      invite: "Invite a parent"
+      parents: "Parents"
+      parent_limit: "A family can have up to two parents."
+      remove_invitation: "Remove invitation"
+      remove_invitation_confirm: "Remove the invitation for %{email}?"
+      remove_parent: "Remove %{name}"
+      remove_parent_confirm: "Remove %{name}? They will get a new family of their own. Your students will stay here."
+      delete_confirm: "Delete %{name}? This permanently removes the family and its data."
       resend_invite: "Resend Invite"
-      2fa: "2FA"
       edit: "Edit"
       edit_account: "Edit Family"
       copy_link: "Copy link"
+      link_copied: "Link copied"
+      owner: "Owner"
       switch: "Switch"
-      you: "you"
       delete_family: "Delete family"
     new:
       title: "New Family"
@@ -146,9 +167,7 @@ en:
         send: "Send invitation"
       edit:
         title: "Edit Invitation"
-        description: "Edit or cancel invitation."
         update: "Update invitation"
-        destroy: "Delete Invite"
     transfers:
       form:
         title: "Transfer ownership"
@@ -206,11 +225,10 @@ en:
       manage_accounts: "Manage accounts"
     account_navbar:
       profile: "Profile"
-      password: "Password"
-      connected_accounts: "Connected Accounts"
+      security: "Security"
       billing: "Billing"
+      family: "Family"
       accounts: "Accounts"
-      api_tokens: "API"
       referrals: "Referrals"
     flash:
       confirm_payment: "Confirm your latest payment"
@@ -238,6 +256,7 @@ en:
   dashboard:
     show:
       title: "Dashboard"
+      description: "Your family's week at a glance."
 
   oauth:
     sign_in_with: "Sign in with %{provider}"
@@ -389,6 +408,7 @@ en:
       empty: "No billing history."
 
     subscriptions:
+      back_to_billing: "Back to Billing"
       created: "Thanks for subscribing!"
       resumed: "Your subscription has been resumed."
 
@@ -444,8 +464,6 @@ en:
         confirm_payment: "Confirm payment"
         paused_at: "Your plan will be paused on %{date}."
         paused: "Your plan is paused."
-        view_usage: "View usage"
-        view_upcoming_invoice: "View upcoming invoice"
         past_due: "Past due"
         unpaid: "Unpaid"
         update_payment_method: "Update payment method"
@@ -511,23 +529,13 @@ en:
           resume: "If you change your mind, you can resume your subscription."
           pending_plan_change: "Your switch to monthly on %{date} will also be removed."
           button: "Cancel plan"
+          confirm: "Cancel Premium"
           back: "Back to Billing"
           processing: "Cancelling..."
 
         destroy:
           resumed: "Your subscription has been canceled."
           failure: "We couldn't cancel your plan. Please try again or contact support."
-
-      upcomings:
-        show:
-          title: "Upcoming Invoice"
-          description: "The current costs for your usage this billing period."
-          line_items:
-            description: "Description"
-            quantity: "Quantity"
-            unit_price: "Unit Price"
-            total: "Total"
-          back: "Back to Billing"
 
       forms:
         stripe:
@@ -582,11 +590,10 @@ en:
           title: "No password yet, or forgot it?"
           description: "If you signed up with Google, or don't remember your current password, we'll email you a link to set one. Afterward you can sign in with Google or your password."
           button: "Email me a link"
-        two_factor:
-          title: "Two-factor Authentication"
-          description: "When you login, you will be required to enter a one-time code along to one of your devices."
-          enable: "Enable two-factor authentication"
-          disable: "Disable two-factor authentication"
+        connected_accounts:
+          title: "Connected accounts"
+          empty: "Connect Google to sign in another way."
+          connect: "Connect Google"
 
   themes:
     system: "Sync with system"
@@ -624,6 +631,8 @@ en:
         none: "You don't have any connected accounts."
       connected_account:
         remove: "Remove"
+        disconnect: "Disconnect Google"
+        disconnect_confirm: "Disconnect Google? You will no longer be able to sign in with this Google account."
     omniauth_callbacks:
       account_exists: "You already have a Cove account with this email. Sign in with your password below and we'll take you to Connected Accounts to add Google. Forgot your password? Use “Forgot your password?” below."
       connected_to_another_account: "This account is already connected to another user."
@@ -672,6 +681,8 @@ en:
         completed_description: "Users that have completed their first purchase."
 
   layouts:
+    sidebar:
+      description: "Manage your profile, family, and billing."
     mailer:
       copyright_html: "Copyright &copy; %{year}, All rights reserved."
       mailing_address: "Our mailing address is:"
@@ -680,21 +691,31 @@ en:
       preferences: "Update subscription preferences"
 
   notifications:
-    loading: "Loading notifications..."
-    index:
-      title: "Notifications"
-      empty_placeholder: "Nothing to see here — yet."
-      mark_all_as_read: "Mark all as read"
     invite_accepted: "%{user} accepted your invitation."
     account_transferred: "%{previous_owner} made you owner of the %{account} account."
-    empty: "Nothing to see here — yet."
-    empty_description: "We'll let you know when you have new notifications."
-    see_more: "See more notifications"
 
   marketing_preferences:
     updated: "Your marketing preferences have been updated."
     invalid: "Choose whether you want to receive marketing updates."
     protected: "You can't restore this marketing subscription from Cove."
+
+  schedules:
+    index:
+      description: "Plan your family's time, block by block."
+
+  subjects:
+    index:
+      description: "What each student is learning."
+      empty_title: "Subjects will live here"
+      empty_description: "Use subjects to organize what each student is learning when you start building school plans."
+
+  support:
+    show:
+      description: "Help with Cove, whenever you need it."
+      empty_title: "How can we help?"
+      empty_description: "Include what you were trying to do and what happened so we can help."
+      email: "Email support"
+      email_subject: "Help with Cove"
 
   students:
     free_limit_banner:
@@ -710,32 +731,36 @@ en:
       error: "Choose %{limit} students to keep editable."
     index:
       title: "Students"
+      description: "Everyone you're teaching, in one place."
       add: "Add student"
       add_title: "Add student"
-      edit: "Edit"
       edit_title: "Edit %{name}"
+      edit: "Edit"
+      actions_label: "Actions for %{name}"
       read_only_badge: "Read-only"
       empty_title: "Add your first student"
       empty_description: "Each student gets a color so you can spot them across Cove."
-      show_archived: "Show archived (%{count})"
-      hide_archived: "Hide archived"
-      archived_heading: "Archived"
+      filter_label: "Filter students"
+      active: "Active"
+      archived: "Archived"
       restore: "Restore"
-      restore_blocked_free_html: "To restore a student, archive one first or %{link}."
+      restore_blocked_free_html: "Free accounts can have a maximum of two active students. To restore a student, archive one first or %{link}."
       restore_blocked_premium_html: "To restore a student, archive one first or %{link}."
       restore_upgrade: "upgrade to Premium"
       restore_contact: "contact us"
       delete: "Delete"
-      delete_title: "Delete %{name}"
-    limit_prompt:
-      limit_free:
+    limit_modal:
+      title_free:
         one: "Free includes %{limit} student."
         other: "Free includes %{limit} students."
-      upgrade: "Upgrade to Premium"
-      limit_premium_html:
-        one: "Premium includes %{limit} student. Need more? %{link}."
-        other: "Premium includes %{limit} students. Need more? %{link}."
-      more_students_contact: "Contact us"
+      title_premium:
+        one: "Premium includes %{limit} student."
+        other: "Premium includes %{limit} students."
+      body_free: "Upgrade to Premium to add more students."
+      body_premium: "If you need more, contact us and we'll help."
+      close: "Close"
+      see_plans: "See plans"
+      contact: "Contact us"
       more_students_subject: "More students on %{product}"
     form:
       name: "Name"

@@ -10,4 +10,14 @@ class HotwireNativeTest < ActionDispatch::IntegrationTest
     get "/account/password", headers: {HTTP_USER_AGENT: "Hotwire Native iOS"}
     assert_response :unauthorized
   end
+
+  test "native path configurations omit the retired Notifications tab" do
+    get hotwire_ios_path_configuration_path
+    assert_response :success
+    assert_not_includes response.parsed_body.fetch("settings").fetch("tabs").map { |tab| tab.fetch("title") }, "Notifications"
+
+    get hotwire_android_path_configuration_path
+    assert_response :success
+    assert_not_includes JSON.parse(response.parsed_body.fetch("settings").fetch("tabs")).map { |tab| tab.fetch("title") }, "Notifications"
+  end
 end

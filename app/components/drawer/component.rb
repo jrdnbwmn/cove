@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 module Drawer
+  # AIDEV-NOTE: Only for the phone navigation menu in the app shell. Use UiModalComponent for every other overlay.
   class Component < ViewComponent::Base
     SNAP_POINT_PRESETS = {
       auto: ["auto"],

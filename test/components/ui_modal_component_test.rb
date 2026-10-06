@@ -7,7 +7,8 @@ class UiModalComponentTest < ViewComponent::TestCase
       "Modal content"
     end
 
-    assert_selector "[data-controller='ui-modal']"
+    assert_selector "[data-controller~='ui-modal']"
+    assert_selector "[data-controller~='ui-modal-unsaved-changes']"
     assert_selector "dialog[data-ui-modal-target='dialog']"
     assert_selector "[data-ui-modal-prevent-dismiss-value='true']"
     assert_text "Confirm action"
@@ -26,7 +27,7 @@ class UiModalComponentTest < ViewComponent::TestCase
       "Modal content"
     end
 
-    assert_selector "[data-controller='ui-modal'] button[data-action='click->ui-modal#open:prevent']", text: "Add student", count: 1
+    assert_selector "[data-controller~='ui-modal'] button[data-action='click->ui-modal#open:prevent']", text: "Add student", count: 1
     assert_no_text "Default text"
     assert_selector "dialog[data-ui-modal-target='dialog']", visible: :all
   end
@@ -44,5 +45,22 @@ class UiModalComponentTest < ViewComponent::TestCase
     assert_text "Delete project?"
     assert_selector "button", text: "Cancel"
     assert_selector "button", text: "Delete project"
+  end
+
+  test "uses a full-height phone sheet and a sized desktop dialog" do
+    render_inline(UiModalComponent.new(size: :md, title: "Add student")) { "Modal content" }
+
+    # AIDEV-NOTE: sm:h-fit, not sm:h-auto. A <dialog> is fixed with inset 0, so height:auto stretches it
+    # to the window; fit-content (its browser default) sizes it to the content.
+    assert_selector "dialog.h-dvh.max-h-dvh.w-full.max-w-full.rounded-none.sm\\:h-fit.sm\\:max-w-md.sm\\:rounded-xl"
+    assert_no_selector "dialog.sm\\:h-auto"
+    assert_selector "dialog > div.h-full.overflow-y-auto"
+  end
+
+  test "keeps larger modal widths behind the small-screen breakpoint" do
+    render_inline(UiModalComponent.new(size: :lg, title: "Add student")) { "Modal content" }
+
+    assert_selector "dialog.sm\\:max-w-lg"
+    assert_no_selector "dialog[class*='max-w-[100vw-2rem]']"
   end
 end

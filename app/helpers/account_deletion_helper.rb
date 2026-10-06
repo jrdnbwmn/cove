@@ -1,4 +1,6 @@
 module AccountDeletionHelper
+  include ApplicationHelper
+
   def family_deletion_description(account)
     account.paid_premium? ? t("accounts.deletion.paid_description_html", link: refund_policy_link) : t("accounts.deletion.free_description")
   end
@@ -24,7 +26,7 @@ module AccountDeletionHelper
     if cancels_immediately?(subscription)
       t("billing.subscriptions.cancels.show.cancel_immediately")
     elsif subscription.current_period_end
-      t("billing.subscriptions.cancels.show.active_until_no_refund_html", date: l(subscription.current_period_end.to_date, format: :long), link: refund_policy_link)
+      t("billing.subscriptions.cancels.show.active_until_no_refund_html", date: friendly_date(subscription.current_period_end), link: refund_policy_link)
     else
       t("billing.subscriptions.cancels.show.active_until_no_refund_undated_html", link: refund_policy_link)
     end

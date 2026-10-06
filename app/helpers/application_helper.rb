@@ -7,6 +7,42 @@ module ApplicationHelper
     FLASH_VARIANTS.fetch(key.to_sym, :default)
   end
 
+  def friendly_date(date)
+    date = date.in_time_zone.to_date
+
+    case date
+    when Date.current
+      t("friendly_dates.today")
+    when Date.tomorrow
+      t("friendly_dates.tomorrow")
+    when Date.yesterday
+      t("friendly_dates.yesterday")
+    when Date.current.beginning_of_year..Date.current.end_of_year
+      l(date, format: :friendly_short)
+    else
+      l(date, format: :friendly)
+    end
+  end
+
+  def friendly_time(time)
+    l(time.in_time_zone, format: :friendly)
+  end
+
+  def friendly_date_range(start_date, end_date)
+    start_date = start_date.in_time_zone.to_date
+    end_date = end_date.in_time_zone.to_date
+
+    return friendly_date(start_date) if start_date == end_date
+
+    if start_date.year != end_date.year
+      "#{l(start_date, format: :friendly_short)} #{start_date.year}–#{l(end_date, format: :friendly_short)} #{end_date.year}"
+    elsif start_date.month == end_date.month
+      "#{start_date.day}–#{end_date.day} #{friendly_month(end_date)}#{friendly_year(end_date)}"
+    else
+      "#{l(start_date, format: :friendly_short)}–#{l(end_date, format: :friendly_short)}#{friendly_year(end_date)}"
+    end
+  end
+
   # AIDEV-NOTE: Sidebar/settings-tab highlighting. Matching is exact-path-or-descendant
   # (path + "/" as a real segment boundary), never a raw string prefix — e.g. the Family
   # tab must match "/accounts/:id" and its descendants without also matching the unrelated
@@ -33,7 +69,7 @@ module ApplicationHelper
   end
 
   def settings_nav_active?
-    profile_tab_active? || password_tab_active? || connected_accounts_tab_active? ||
+    profile_tab_active? || security_tab_active? || connected_accounts_tab_active? ||
       billing_tab_active? || family_tab_active? || api_tokens_tab_active? || referrals_tab_active?
   end
 
@@ -41,7 +77,7 @@ module ApplicationHelper
     current_page_or_descendant?(edit_user_registration_path)
   end
 
-  def password_tab_active?
+  def security_tab_active?
     current_page_or_descendant?(edit_account_password_path) || current_page_or_descendant?(user_two_factor_path)
   end
 
@@ -66,6 +102,14 @@ module ApplicationHelper
   end
 
   private
+
+  def friendly_month(date)
+    l(date, format: :friendly_short).delete_prefix("#{date.day} ")
+  end
+
+  def friendly_year(date)
+    " #{date.year}" unless date.year == Date.current.year
+  end
 
   def current_page_or_descendant?(path)
     request.path == path || request.path.start_with?("#{path}/")

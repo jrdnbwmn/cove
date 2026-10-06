@@ -2,9 +2,7 @@
 
 <% content_for :sidebar, render(partial: "account_navbar") %>
 
-<h1 class="h3"><%= t(".title") %></h1>
-
-<%= form_with(model: current_user, url: account_password_path, local: true, html: { method: :put }, class: "mt-4 max-w-md") do |f| %>
+<%= form_with(model: current_user, url: account_password_path, local: true, html: { method: :put }, class: "max-w-md") do |f| %>
   <%= render "error_messages", resource: current_user %>
 
   <%= render PasswordComponent.new(
@@ -55,19 +53,15 @@
   ) %>
 </div>
 
-<hr>
-
-<h2 class="h4"><%= t(".two_factor.title") %></h2>
-<p class="mt-2 mb-4 text-sm text-muted-foreground"><%= t(".two_factor.description") %></p>
-<% if current_user.otp_required_for_login? %>
-  <div>
-    <%= render ButtonComponent.new(
-      text: t(".two_factor.disable"),
-      variant: :destructive,
-      href: user_two_factor_path,
-      data: {turbo_method: :delete, turbo_confirm: t("are_you_sure")}
-    ) %>
-  </div>
-<% else %>
-  <%= render ButtonComponent.new(text: t(".two_factor.enable"), variant: :secondary, href: backup_codes_user_two_factor_path) %>
-<% end %>
+<div class="mt-12">
+  <h2 class="h4"><%= t(".connected_accounts.title") %></h2>
+  <% connected_accounts = current_user.connected_accounts.order(provider: :asc, created_at: :desc) %>
+  <% if connected_accounts.any? %>
+    <div class="mt-4 grid gap-4"><%= render partial: "users/connected_accounts/connected_account", collection: connected_accounts %></div>
+  <% else %>
+    <p class="mt-2 text-sm text-muted-foreground"><%= t(".connected_accounts.empty") %></p>
+    <%= form_with url: omniauth_authorize_path(:user, :google_oauth2), class: "mt-4", data: {turbo: false} do %>
+      <%= render ButtonComponent.new(text: t(".connected_accounts.connect"), variant: :secondary, type: "submit") %>
+    <% end %>
+  <% end %>
+</div>

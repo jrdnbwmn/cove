@@ -2,9 +2,7 @@
 
 <% content_for :sidebar, render(partial: "account_navbar") %>
 
-<h1 class="h3"><%= t(".title", resource: resource.model_name.human) %></h1>
-
-<%= form_with(model: resource, as: resource_name, url: registration_path(resource_name), method: :put, class: "mt-4 max-w-md", data: {controller: "bridge--form", action: "turbo:submit-start->bridge--form#submitStart turbo:submit-end->bridge--form#submitEnd"}) do |form| %>
+<%= form_with(model: resource, as: resource_name, url: registration_path(resource_name), method: :put, class: "max-w-md", data: {controller: "bridge--form", action: "turbo:submit-start->bridge--form#submitStart turbo:submit-end->bridge--form#submitEnd"}) do |form| %>
   <%= render "error_messages", resource: resource %>
 
   <%= render FormFieldComponent.new(
@@ -53,10 +51,6 @@
     classes: "mb-6"
   ) %>
 
-  <% if devise_mapping.confirmable? && resource.pending_reconfirmation? %>
-    <%= render AlertComponent.new(title: t(".currently_waiting_confirmation_for_email", email: resource.unconfirmed_email), variant: :warning, classes: "mb-4") %>
-  <% end %>
-
   <% if I18n.available_locales.length > 1 %>
     <%# AIDEV-NOTE: Suppress the component's default blank placeholder to preserve Devise's original option set. %>
     <%= render SelectComponent.new(
@@ -70,16 +64,10 @@
     ) %>
   <% end %>
 
-  <%= render ButtonComponent.new(
-    text: t(".update"),
-    type: "submit",
-    data: {"bridge--form-target": "submit", "bridge-title": t(".update"), disable_with: t(".saving")}
-  ) %>
+  <div class="mt-6 flex flex-col-reverse gap-3 sm:ml-auto sm:flex-row sm:justify-end"><%= render ButtonComponent.new(text: t(".update"), type: "submit", data: {"bridge--form-target": "submit", "bridge-title": t(".update"), disable_with: t(".saving")}) %></div>
 <% end %>
 
-<hr>
-
-<h2 class="h3"><%= t(".marketing_preferences") %></h2>
+<section class="mt-12"><h2 class="h3"><%= t(".marketing_preferences") %></h2>
 <% marketing_opt_out_protected = current_user.marketing_opt_out_protected? %>
 <%= form_with url: marketing_preference_path, scope: :marketing_preference, method: :patch, class: "mt-4 max-w-md" do %>
   <%= hidden_field_tag "marketing_preference[subscribed]", "0", id: nil %>
@@ -96,16 +84,11 @@
     <p class="mb-4 text-sm text-muted-foreground"><%= t(".marketing_opt_out_protected.#{current_user.marketing_opt_out_reason}") %></p>
   <% end %>
 
-  <%= render ButtonComponent.new(
-    text: t(".save_marketing_preferences"),
-    type: "submit",
-    disabled: marketing_opt_out_protected
-  ) %>
+  <div class="mt-6 flex flex-col-reverse gap-3 sm:ml-auto sm:flex-row sm:justify-end"><%= render ButtonComponent.new(text: t(".save_marketing_preferences"), type: "submit", disabled: marketing_opt_out_protected) %></div>
 <% end %>
+</section>
 
-<hr>
-
-<h2 class="h3"><%= t(".cancel_my_account") %></h2>
+<section class="mt-12"><h2 class="h3"><%= t(".cancel_my_account") %></h2>
 <% if current_user.must_transfer_family_before_deletion? %>
   <p class="mt-2 mb-4 text-sm text-muted-foreground">Transfer family ownership before deleting your login.</p>
   <%= link_to "Transfer ownership", edit_account_transfer_path(current_user.family), class: "btn btn-secondary" %>
@@ -126,3 +109,4 @@
       } %>
   </div>
 <% end %>
+</section>

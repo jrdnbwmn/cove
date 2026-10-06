@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
+# AIDEV-NOTE: Retired: pages are at most one level deep; record pages use a single back link.
 class BreadcrumbComponent < ViewComponent::Base
-  # AIDEV-NOTE: Rails Blocks generated Breadcrumb::Component; keep this app's catalog flat.
   SEPARATORS = %i[slash chevron].freeze
   VARIANTS = %i[default with_background with_icons].freeze
 

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
+# AIDEV-NOTE: Retired for new work: ux-notes forbids tables; use a structured list. Existing uses are being replaced.
 class TableComponent < ViewComponent::Base
-  # AIDEV-NOTE: Rails Blocks generated Table::Component; keep this app's catalog flat.
   DENSITIES = %i[default compact].freeze
   ROUNDED = %i[none sm md lg xl].freeze
 

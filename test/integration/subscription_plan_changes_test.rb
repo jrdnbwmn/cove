@@ -2,6 +2,16 @@ require "test_helper"
 require_relative "../support/stripe_schedule_helper"
 
 class SubscriptionPlanChangesTest < ActionDispatch::IntegrationTest
+  test "plan change confirmation uses the focused layout with a Billing back link" do
+    sign_in users(:subscribed)
+
+    get billing_subscription_plan_change_path(pay_subscriptions(:subscribed), plan: plans(:premium_yearly))
+
+    assert_response :success
+    assert_select "[data-controller='sidebar']", count: 0
+    assert_select "a[href='#{billing_path}']", text: "Back to Billing"
+  end
+
   include StripeScheduleHelper
 
   # Confirmation page

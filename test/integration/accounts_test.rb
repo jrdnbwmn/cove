@@ -77,9 +77,23 @@ class Jumpstart::AccountsTest < ActionDispatch::IntegrationTest
 
     assert_response :success
     assert_operator account_user_queries.count, :<=, 2
-    assert_select "a[href='#{edit_account_path(account)}']", text: I18n.t("accounts.show.edit_account")
-    assert_select "a[href='#{new_account_account_invitation_path(account)}']", text: I18n.t("accounts.show.invite")
+    assert_select "button[data-action='click->ui-modal#open:prevent']", text: I18n.t("accounts.show.edit_account")
+    assert_select "table", count: 0
+    assert_select "[data-family-row]", count: 2
+    assert_select "[data-family-row]", text: /Owner/
+    assert_select "button[data-action='click->ui-modal#open:prevent']", text: "Invite a parent"
   ensure
     ActiveSupport::Notifications.unsubscribe(subscriber) if subscriber
+  end
+
+  test "a parent can resend an invitation or copy its link from the pending row's menu" do
+    account = accounts(:one)
+    invitation = account.account_invitations.create!(name: "Pending Parent", email: "pending@example.com", invited_by: users(:noaccount))
+
+    sign_in users(:noaccount)
+    get account_path(account)
+
+    assert_select "form[action='#{resend_account_account_invitation_path(account, invitation)}'] button", text: I18n.t("accounts.show.resend_invite")
+    assert_select "button[data-controller='copy-link'][data-copy-link-url-value='#{account_invitation_url(invitation)}']", text: I18n.t("accounts.show.copy_link")
   end
 end

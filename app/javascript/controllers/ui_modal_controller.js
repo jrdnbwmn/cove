@@ -221,6 +221,13 @@ export default class extends Controller {
     // If not open, don't do anything
     if (!this.isOpen) return;
 
+    if (!this.requestClose()) return;
+
+    this.performClose();
+  }
+
+  performClose() {
+
     this.dialogElement.setAttribute("closing", "");
 
     Promise.allSettled(this.dialogElement.getAnimations().map((animation) => animation.finished)).then(() => {
@@ -436,6 +443,7 @@ export default class extends Controller {
 
     // Reset bouncing flag
     this.isBouncing = false;
+    this.dialogElement.dispatchEvent(new CustomEvent("ui-modal:closed", {bubbles: true}));
   }
 
   // Centralized method to handle scrollbar compensation cleanup
@@ -522,6 +530,12 @@ export default class extends Controller {
       this.bounce();
       return false;
     }
+
+    if (!this.requestClose()) event.preventDefault();
+  }
+
+  requestClose() {
+    return this.dialogElement.dispatchEvent(new CustomEvent("ui-modal:close-request", {bubbles: true, cancelable: true}));
   }
 
   // Add bounce animation to indicate modal won't close

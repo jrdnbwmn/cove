@@ -12,14 +12,8 @@
 
       <%= render partial: "billing/subscriptions/summary", locals: { subscription: subscription } %>
 
-      <% if subscription.metered? %>
-        <div><%= link_to t(".view_usage"), billing_subscription_upcoming_path(subscription), class: "text-sm font-medium text-primary" %></div>
-      <% elsif subscription.plan&.charge_per_unit? %>
-        <div><%= link_to t(".view_upcoming_invoice"), billing_subscription_upcoming_path(subscription), class: "text-sm font-medium text-primary" %></div>
-      <% end %>
-
       <% if subscription.on_grace_period? && subscription.pause_starts_at %>
-        <%= render AlertComponent.new(title: t(".paused_at", date: l(subscription.pause_starts_at.to_date, format: :long)), variant: :warning, classes: "mt-3") %>
+        <%= render AlertComponent.new(title: t(".paused_at", date: friendly_date(subscription.pause_starts_at)), variant: :warning, classes: "mt-3") %>
       <% elsif subscription.paused? %>
         <%= render AlertComponent.new(title: t(".paused"), variant: :info, show_icon: false, classes: "mt-3") %>
       <% end %>
@@ -27,7 +21,9 @@
 
     <div class="mt-2 flex flex-col gap-2 text-center">
       <% if subscription.on_grace_period? %>
-        <%= render ButtonComponent.new(text: t(".resume"), href: billing_subscription_resume_path(subscription)) if subscription.resumable? %>
+        <% if subscription.resumable? %>
+          <%= render "application/lazy_modal", title: t(".resume"), src: billing_subscription_resume_path(subscription), text: t(".resume") %>
+        <% end %>
       <% elsif subscription.active? %>
         <% if subscription.pending_plan_change? %>
           <%= render ButtonComponent.new(text: t(".keep_yearly"), variant: :secondary, href: billing_subscription_plan_change_path(subscription), data: {turbo_method: :delete}) %>
@@ -37,18 +33,18 @@
         <%# Only show pausing for Paddle customers because their subscription cancellations can be permanent %>
         <%= render ButtonComponent.new(text: t(".pause"), variant: :secondary, href: billing_subscription_pause_path(subscription)) if subscription.paddle_classic? %>
         <%= render ButtonComponent.new(text: t(".update_payment_method"), variant: :secondary, href: new_billing_subscription_payment_method_path(subscription)) %>
-        <%= render ButtonComponent.new(text: t(".cancel_plan"), variant: :secondary, href: billing_subscription_cancel_path(subscription)) %>
+        <%= render "application/lazy_modal", title: t(".cancel_plan"), src: billing_subscription_cancel_path(subscription), text: t(".cancel_plan"), button: {variant: :secondary} %>
       <% elsif subscription.paused? %>
-        <%= render ButtonComponent.new(text: t(".resume"), href: billing_subscription_resume_path(subscription)) %>
-        <%= render ButtonComponent.new(text: t(".cancel_plan"), variant: :secondary, href: billing_subscription_cancel_path(subscription)) %>
+        <%= render "application/lazy_modal", title: t(".resume"), src: billing_subscription_resume_path(subscription), text: t(".resume") %>
+        <%= render "application/lazy_modal", title: t(".cancel_plan"), src: billing_subscription_cancel_path(subscription), text: t(".cancel_plan"), button: {variant: :secondary} %>
       <% elsif subscription.incomplete? %>
         <%= render ButtonComponent.new(text: t(".confirm_payment"), href: pay.payment_path(subscription.latest_payment.id)) %>
       <% elsif subscription.past_due? %>
         <%= render ButtonComponent.new(text: t(".update_payment_method"), href: new_billing_subscription_payment_method_path(subscription)) %>
-        <%= render ButtonComponent.new(text: t(".cancel_plan"), variant: :secondary, href: billing_subscription_cancel_path(subscription)) %>
+        <%= render "application/lazy_modal", title: t(".cancel_plan"), src: billing_subscription_cancel_path(subscription), text: t(".cancel_plan"), button: {variant: :secondary} %>
       <% elsif subscription.unpaid? %>
         <%= render ButtonComponent.new(text: t(".update_payment_method"), href: new_billing_subscription_payment_method_path(subscription)) %>
-        <%= render ButtonComponent.new(text: t(".cancel_plan"), variant: :secondary, href: billing_subscription_cancel_path(subscription)) %>
+        <%= render "application/lazy_modal", title: t(".cancel_plan"), src: billing_subscription_cancel_path(subscription), text: t(".cancel_plan"), button: {variant: :secondary} %>
       <% end %>
     </div>
 <% end %>

@@ -17,18 +17,19 @@
 | `SkeletonComponent` | Renders a pulsing placeholder shape while content loads. | `variant`, `width`, `height`, `count` | — | `SkeletonComponentPreview` |
 | `UiToastComponent` | Provides the Rails Blocks toast container for new app UI. | `position`, `layout`, `auto_dismiss_duration`, `limit` | — | `UiToastComponentPreview` |
 | `TooltipComponent` | Wraps content with a Rails Blocks tooltip. | `text`, `placement`, `delay`, `trigger`, `kbd` | — | `TooltipComponentPreview` |
-| `UiModalComponent` | Renders a Rails Blocks dialog without replacing Jumpstart's modal. | `title`, `size`, `prevent_dismiss`, `trigger_text` | — | `UiModalComponentPreview` |
+| `UiModalComponent` | Renders a Rails Blocks dialog without replacing Jumpstart's modal. | `title`, `size`, `prevent_dismiss`, `trigger_text` | `ButtonComponent` | `UiModalComponentPreview` |
 | `DropdownComponent` | Renders an accessible, positioned menu with item slots. | `trigger_text`, `placement`, `hover`, `portal` | — | `DropdownComponentPreview` |
-| `Drawer::Component` | Renders a Rails Blocks bottom-sheet drawer with snap points, drag gestures, and a `<dialog>` element. | `snap_points`, `title`, `dismissible`, `trigger_text`, `open` | — | `DrawerComponentPreview` |
+| `Drawer::Component` | **Don't use for new work.** Renders a Rails Blocks bottom-sheet drawer with snap points, drag gestures, and a `<dialog>` element. | `snap_points`, `title`, `dismissible`, `trigger_text`, `open` | — | `DrawerComponentPreview` |
 | `NavbarComponent` | Renders responsive primary navigation with optional dropdown panels. | `variant`, `sticky`, `show_mobile_menu` | — | `NavbarComponentPreview` |
-| `BreadcrumbComponent` | Renders an accessible page hierarchy trail. | `items`, `separator`, `variant`, `truncate_at` | — | `BreadcrumbComponentPreview` |
-| `UiTabsComponent` | Renders Rails Blocks tabs without replacing Jumpstart's tabs. | `mode`, `variant`, `orientation`, `default_tab`, `url_sync` | — | `UiTabsComponentPreview` |
+| `BreadcrumbComponent` | **Don't use for new work.** Renders an accessible page hierarchy trail. | `items`, `separator`, `variant`, `truncate_at` | — | `BreadcrumbComponentPreview` |
+| `PageHeaderComponent` | Renders a page title, optional description, and responsive action area. | `title`, `description` | `DropdownComponent` | `PageHeaderComponentPreview` |
+| `UiTabsComponent` | Renders Rails Blocks tabs without replacing Jumpstart's tabs. | `mode`, `label`, `variant`, `orientation`, `default_tab`, `url_sync` | — | `UiTabsComponentPreview` |
 | `PaginationComponent` | Renders Pagy navigation in full, compact, or minimal form. | `pagy`, `variant`, `size`, `frame_id` | — | `PaginationComponentPreview` |
 | `SidebarComponent` | Renders responsive primary navigation with collapsible groups. | `variant`, `collapsible`, `storage_key`, `position` | — | `SidebarComponentPreview` |
 | `CardComponent` | Renders a content container with optional image, header, body, and footer slots. | `variant`, `padding`, `shadow`, `divide`, `hoverable` | — | `CardComponentPreview` |
 | `PlanCardComponent` | Renders a billing plan, price, features, and caller-supplied actions inside a card. | `plan`, `name`, `description`, `price_text`, `price_note`, `features` | `CardComponent` | `PlanCardComponentPreview` |
 | `AvatarComponent` | Renders a user or account image with accessible initials fallback and optional online status. | `alt`, `src`, `fallback`, `size`, `status` | — | `AvatarComponentPreview` |
-| `TableComponent` | Renders a responsive, accessible data table with row and column slots. | `striped`, `hoverable`, `density`, `sticky_header` | — | `TableComponentPreview` |
+| `TableComponent` | **Don't use for new work.** Renders a responsive, accessible data table with row and column slots. | `striped`, `hoverable`, `density`, `sticky_header` | — | `TableComponentPreview` |
 | `EmptyStateComponent` | Renders a centered "nothing here" placeholder with optional icon and actions. | `title`, `description`, `size`, `bordered`, `heading_level` | — | `EmptyStateComponentPreview` |
 
 ## Component Details
@@ -403,6 +404,8 @@ implementation.
 Use this component instead of `ModalComponent`, which belongs to Jumpstart and
 continues to serve its existing behavior.
 
+Only a confirmation may open on top of a modal; prefer an inline prompt (see the unsaved-changes prompt).
+
 **Arguments:** Use `size`, `title`, `show_close_button`, `prevent_dismiss`,
 `lazy_load`, `turbo_frame_src`, `auto_focus`, `classes`, `trigger_text`, and
 `trigger_classes` to configure the dialog and its trigger.
@@ -484,6 +487,8 @@ static, developer-authored markup to those options and slots.
 built on the native `<dialog>` element) with snap points, drag gestures, and
 scrollable content support.
 
+Only for the phone navigation menu in the app shell. Use UiModalComponent for every other overlay.
+
 **Arguments:** Use `snap_points`, `title`, `show_handle`, `dismissible`,
 `show_close_button`, `lazy_load`, `turbo_frame_src`, `close_threshold`,
 `scroll_lock_timeout`, `respect_reduced_motion`, `fade_from_index`, `classes`,
@@ -548,6 +553,8 @@ external dependency is added.
 
 **Purpose:** Renders an accessible hierarchy trail with a marked current page.
 
+Retired: pages are at most one level deep; record pages use a single back link.
+
 **Arguments:** Use `items`, `separator`, `variant`, `show_home_icon`,
 `truncate_at`, `current_max_width`, and `classes` to configure the trail.
 
@@ -564,12 +571,42 @@ developer-authored SVG markup.
 <%= render BreadcrumbComponent.new(items: [{label: "Home", href: root_path}, {label: "Settings"}]) %>
 ```
 
+### PageHeaderComponent
+
+**Purpose:** Renders a page title, optional description, and action area that
+keeps actions on the title row from small screens upward and moves them below
+the description on phones.
+
+**Arguments:** `title` is required. Use `description` for optional supporting
+text below the title.
+
+**Slots:** `with_primary_action` adds the always-visible primary action.
+`with_secondary_action` adds up to two secondary actions; they are shown
+directly from small screens upward and move into the overflow menu on phones.
+`with_menu` adds custom content to that overflow menu. The overflow menu is
+rendered only when a secondary action or menu slot is present.
+
+**Preview:** `PageHeaderComponentPreview`
+
+**Usage:**
+
+```erb
+<%= render PageHeaderComponent.new(title: "Students", description: "Manage your family’s learners.") do |header| %>
+  <% header.with_primary_action do %>
+    <%= render ButtonComponent.new(text: "Add student") %>
+  <% end %>
+  <% header.with_secondary_action do %>
+    <%= render ButtonComponent.new(text: "Import", variant: :secondary) %>
+  <% end %>
+<% end %>
+```
+
 ### UiTabsComponent
 
 **Purpose:** Renders Rails Blocks tabs for new product UI. Use this component
 instead of `TabsComponent`, which belongs to Jumpstart and remains unchanged.
 
-**Arguments:** Use `mode`, `variant`, `orientation`, `default_tab`, `url_sync`,
+**Arguments:** Use `mode`, `label` (accessible name for `:links` navigation), `variant`, `orientation`, `default_tab`, `url_sync`,
 `scroll_to_anchor`, `auto_switch`, `lazy_load`, `arrow_focus_only`, and class
 options to configure the tab group. `mode` is `:panels` (default, client-side
 tab/panel switching) or `:links`, where each tab is a real navigation anchor
@@ -777,6 +814,8 @@ variant is `:online` and includes non-color status text for assistive technology
 
 **Purpose:** Renders a responsive semantic table for account lists and other
 structured data.
+
+Retired for new work: ux-notes forbids tables; use a structured list. Existing uses are being replaced.
 
 **Arguments:** Use `striped`, `hoverable`, `bordered`, `density`,
 `sticky_header`, `rounded`, `full_width`, `responsive`, `max_height`,

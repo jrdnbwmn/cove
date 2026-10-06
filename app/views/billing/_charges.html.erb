@@ -1,33 +1,14 @@
 <h2 class="section-heading"><%= t(".title") %></h2>
 
 <% if @charges.present? %>
-  <%= render TableComponent.new(hoverable: true) do |table| %>
-    <% table.with_column(label: t(".date")) %>
-    <% table.with_column(label: t(".amount")) %>
-    <% table.with_column(label: t(".invoice"), align: :center) %>
-    <% table.with_column(label: t(".receipt"), align: :center) %>
-
+  <div class="row-list">
     <% @charges.each do |charge| %>
-      <% table.with_row do |row| %>
-        <% row.with_cell(primary: true) do %>
-          <%= charge.created_at.strftime("%B %e, %Y") %>
-        <% end %>
-        <% row.with_cell do %>
-          <%= pay_amount_to_currency(charge) %>
-        <% end %>
-        <% row.with_cell(align: :center) do %>
-          <%= link_to invoice_billing_charge_path(charge, format: :pdf), target: :_blank do %>
-            <%= icon "download", class: "inline-block size-5 text-muted-foreground" %>
-          <% end %>
-        <% end %>
-        <% row.with_cell(align: :center) do %>
-          <%= link_to billing_charge_path(charge, format: :pdf), target: :_blank do %>
-            <%= icon "download", class: "inline-block size-5 text-muted-foreground" %>
-          <% end %>
-        <% end %>
-      <% end %>
+      <div class="flex flex-col gap-2 p-4 sm:flex-row sm:items-center sm:justify-between" data-billing-charge>
+        <div><p class="font-medium"><%= friendly_date(charge.created_at) %></p><p class="text-sm text-muted-foreground"><%= pay_amount_to_currency(charge) %></p></div>
+        <div class="flex gap-4"><%= link_to t(".invoice"), invoice_billing_charge_path(charge, format: :pdf), target: :_blank, class: "text-sm font-medium text-primary" %><%= link_to t(".receipt"), billing_charge_path(charge, format: :pdf), target: :_blank, class: "text-sm font-medium text-primary" %></div>
+      </div>
     <% end %>
-  <% end %>
+  </div>
 
   <% if @pagy.pages > 1 %>
     <%= render PaginationComponent.new(pagy: @pagy, classes: "mt-6") %>

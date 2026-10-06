@@ -1,3 +1,4 @@
 <%= turbo_frame_tag "modal-lazy-content" do %>
+  <h2 class="mb-2 modal-heading text-neutral-900 dark:text-white"><%= t("students.index.edit_title", name: @student.name) %></h2>
   <%= render "form", student: @student %>
 <% end %>

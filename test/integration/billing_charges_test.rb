@@ -15,14 +15,14 @@ class BillingChargesTest < ActionDispatch::IntegrationTest
     get billing_path
 
     assert_response :success
-    assert_select "tbody tr", count: 12
+    assert_select "[data-billing-charge]", count: 12
     assert_select "a[href*='page=2']"
     assert_not_includes response.body, "$1.00"
 
     get billing_path(page: 2)
 
     assert_response :success
-    assert_select "tbody tr", count: 1
+    assert_select "[data-billing-charge]", count: 1
     assert_includes response.body, "$1.00"
   end
 

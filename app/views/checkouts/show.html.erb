@@ -1,7 +1,8 @@
 <% if Jumpstart.config.stripe? %>
   <div class="container mx-auto my-12 max-w-5xl px-4 sm:px-6">
     <div class="mx-auto max-w-3xl">
-      <h1 class="mb-6 text-center text-3xl font-bold text-foreground sm:mb-8 sm:text-4xl"><%= t(".title") %></h1>
+      <%= render ButtonComponent.new(text: "Back", variant: :ghost, href: pricing_path) %>
+      <h1 class="mb-6 text-left text-foreground sm:mb-8"><%= t(".title") %></h1>
       <%= render "checkouts/forms/stripe", client_secret: @checkout_session.client_secret %>
       <p class="mt-4 text-center text-sm text-muted-foreground"><%= t("checkouts.show.consent_html", app: Jumpstart.config.application_name, terms: link_to(t("checkouts.show.terms"), terms_path, target: "_blank", class: "underline text-foreground hover:text-primary")) %></p>
       <p class="mt-2 text-center text-sm text-muted-foreground"><%= t("pricing.show.no_refunds_html", link: link_to(t("pricing.show.refund_policy"), refunds_path, target: "_blank", class: "underline text-foreground hover:text-primary")) %></p>

@@ -217,10 +217,10 @@ class Jumpstart::PublicTest < ActionDispatch::IntegrationTest
     # the mobile drawer nav.
     assert_select "a[href='#{support_path}']", text: "Support", count: 3
     assert_select "a[href^='mailto:']", count: 0
-    assert_select "main > div.flex-1.overflow-y-auto.p-0.lg\\:p-3", count: 1
+    assert_select "main > div.flex-1.overflow-y-auto.p-0.md\\:p-3", count: 1
     assert_select "button[aria-label='Open menu'].right-6.bottom-6", count: 1
     assert_select "main > div > div.app-content.p-6", count: 1
-    assert_select "main .mb-8 > h1", text: I18n.t("dashboard.show.title"), count: 1
+    assert_select "main h1", text: I18n.t("dashboard.show.title"), count: 1
     assert_select "main .my-8", count: 0
     assert_select "button[aria-label='Account menu'] .sidebar-account-label", text: users(:one).name, count: 1
     assert_select "button[aria-label='Account menu'] .sidebar-account-label", text: users(:one).email, count: 0

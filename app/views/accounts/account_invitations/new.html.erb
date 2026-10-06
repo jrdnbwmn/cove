@@ -1,20 +1,6 @@
 <% Current.meta_tags.set(title: t(".title")) %>
 
-<% content_for :sidebar, render(partial: "account_navbar") %>
-
-<div class="flex items-center gap-4">
-  <%= account_avatar @account %>
-  <h1 class="h3 text-foreground">
-    <%= link_to @account.name, @account, class: "hover:text-primary" %>
-
-    <%= icon "chevron-right", class: "inline-block size-5 text-muted-foreground" %>
-
-    <%= t(".title") %>
-  </h1>
-</div>
-
-<p class="mt-2 mb-8 text-sm text-muted-foreground"><%= t(".description") %></p>
-
+<%= turbo_frame_tag "modal-lazy-content" do %>
 <%= form_with(model: @account_invitation, url: account_account_invitations_path(@account), class: "max-w-md") do |form| %>
   <%= render "error_messages", resource: form.object %>
 
@@ -44,8 +30,9 @@
 
   <%= render AlertComponent.new(title: "The other parent will be an admin.", description: "They can manage your family, billing, and receipts. Only you can delete the family or transfer ownership.", variant: :info) %>
 
-  <div class="flex gap-3">
+  <div class="mt-6 flex flex-col-reverse gap-3 sm:ml-auto sm:flex-row sm:justify-end">
     <%= render ButtonComponent.new(text: t(".send"), type: "submit") %>
-    <%= render ButtonComponent.new(text: t("cancel"), variant: :secondary, href: @account) %>
+    <%= render ButtonComponent.new(text: t("cancel"), variant: :secondary, data: {action: "click->ui-modal#close:prevent"}) %>
   </div>
+<% end %>
 <% end %>

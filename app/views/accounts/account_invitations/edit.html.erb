@@ -1,24 +1,6 @@
 <% Current.meta_tags.set(title: t(".title")) %>
 
-<% content_for :sidebar, render(partial: "account_navbar") %>
-
-<div class="mb-4 flex items-center justify-between">
-  <div class="flex items-center gap-4">
-    <%= account_avatar @account %>
-    <h1 class="h3 text-foreground">
-      <%= link_to @account.name, @account, class: "hover:text-primary" %>
-
-      <%= icon "chevron-right", class: "inline-block size-5 text-muted-foreground" %>
-
-      <%= t(".title") %>
-    </h1>
-  </div>
-
-  <%= button_to t(".destroy"), account_account_invitation_path(@account, @account_invitation), method: :delete, data: { turbo_confirm: t("are_you_sure") }, class: "inline-flex items-center justify-center rounded-[var(--radius)] border border-red-300/30 bg-red-600 px-3.5 py-2 text-sm font-medium text-white shadow-sm transition-all hover:bg-red-500" %>
-</div>
-
-<p class="mb-6 text-sm text-muted-foreground"><%= t(".description") %></p>
-
+<%= turbo_frame_tag "modal-lazy-content" do %>
 <%= form_with(model: [@account, @account_invitation], class: "max-w-md") do |form| %>
   <%= render "error_messages", resource: form.object %>
 
@@ -46,23 +28,9 @@
     <% end %>
   <% end %>
 
-  <h2 class="mb-4 text-lg font-semibold text-foreground"><%= t("accounts.roles") %></h2>
-  <div class="mb-6 space-y-3">
-    <% AccountUser::ROLES.each do |role| %>
-      <%# AIDEV-NOTE: CheckboxComponent does not generate Rails' companion unchecked value. %>
-      <%= hidden_field_tag "account_invitation[#{role}]", "0", id: nil %>
-      <%= render CheckboxComponent.new(
-        label: role.to_s.humanize,
-        name: "account_invitation[#{role}]",
-        id: role.to_s.parameterize,
-        value: "1",
-        checked: form.object.public_send(role)
-      ) %>
-    <% end %>
-  </div>
-
-  <div class="flex gap-3">
+  <div class="mt-6 flex flex-col-reverse gap-3 sm:ml-auto sm:flex-row sm:justify-end">
     <%= render ButtonComponent.new(text: t(".update"), type: "submit") %>
-    <%= render ButtonComponent.new(text: t("cancel"), variant: :secondary, href: @account) %>
+    <%= render ButtonComponent.new(text: t("cancel"), variant: :secondary, data: {action: "click->ui-modal#close:prevent"}) %>
   </div>
+<% end %>
 <% end %>

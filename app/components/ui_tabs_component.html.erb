@@ -1,5 +1,5 @@
 <% if links_mode? %>
-  <nav class="<%= wrapper_classes %>">
+  <nav class="<%= wrapper_classes %>" <%= tag.attributes(links_navigation_attributes) %>>
     <div class="<%= tab_list_wrapper_classes %>">
       <% tabs.each do |tab| %>
         <%= tab %>

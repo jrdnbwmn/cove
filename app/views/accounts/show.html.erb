@@ -1,99 +1,37 @@
 <% Current.meta_tags.set(title: @account.name) %>
 <% is_admin = account_admin?(@account, current_user) %>
-
 <% content_for :sidebar, render(partial: "account_navbar") %>
 
-<div class="sm:flex items-center justify-between mb-5">
-  <div class="flex items-center gap-4">
-    <%= account_avatar @account %>
-    <h1 class="h3"><%= @account.name %></h1>
+<%= render PageHeaderComponent.new(title: @account.name) do |header| %>
+  <% if is_admin %>
+    <% header.with_primary_action do %>
+      <%= render "application/lazy_modal", title: t(".edit_account"), src: edit_account_path(@account), text: t(".edit_account"), button: {variant: :secondary} %>
+    <% end %>
+  <% end %>
+<% end %>
+
+<section>
+  <div class="mb-4 flex flex-wrap items-center justify-between gap-3">
+    <h2 class="h3"><%= t(".parents") %></h2>
+    <% if is_admin %>
+      <%= render "application/lazy_modal", title: t(".invite"), src: new_account_account_invitation_path(@account), text: t(".invite"), button: {variant: :secondary} %>
+    <% end %>
   </div>
-
-  <div class="shrink-0 mt-3 sm:mt-0 sm:text-right">
-    <%= render ButtonComponent.new(text: t(".edit_account"), variant: :secondary, href: edit_account_path(@account)) if !@account.personal? && is_admin %>
-  </div>
-</div>
-
-<% if @account.personal? %>
-  <%= render AlertComponent.new(title: t(".personal_team_description"), variant: :info) %>
-<% else %>
-  <%= render TableComponent.new(hoverable: true) do |table| %>
-    <% table.with_column(label: AccountUser.human_attribute_name(:user)) %>
-    <% table.with_column(label: AccountUser.human_attribute_name(:email)) %>
-    <% table.with_column(label: AccountUser.human_attribute_name(:roles)) %>
-    <% table.with_column(label: "") %>
-    <% table.with_column(label: "", align: :right) %>
-
+  <% if @account.account_users_count >= 2 %><p class="mb-4 text-sm text-muted-foreground"><%= t(".parent_limit") %></p><% end %>
+  <div class="row-list">
     <% @account.account_users.includes(user: {avatar_attachment: :blob}).each do |account_user| %>
-      <% user = account_user.user %>
-      <% table.with_row do |row| %>
-        <% row.with_cell(primary: true) do %>
-          <div class="flex items-center gap-2">
-            <%= render AvatarComponent.new(src: avatar_url_for(user), alt: user.name || user.email, size: :xs, classes: "hidden lg:inline-flex") %>
-            <span>
-              <%= user.name || user.email %>
-              <% if @account.owner?(user) %>
-                <%= render BadgeComponent.new(text: "Owner", size: :sm) %>
-              <% else %>
-                <span class="text-sm text-muted-foreground">Admin · can manage billing</span>
-              <% end %>
-              <% if Current.user == user %>
-                (<%= t ".you" %>)
-              <% end %>
-            </span>
-          </div>
-        <% end %>
-        <% row.with_cell do %>
-          <%= user.email %>
-        <% end %>
-        <% row.with_cell do %>
-          <%= account_user_roles(@account, account_user).join(", ") %>
-        <% end %>
-        <% row.with_cell do %>
-          <% if user.otp_required_for_login? %>
-            <div class="flex gap-1 items-center">
-              <%= icon "shield-check", class: "size-5 inline-block" %>
-              <%= tag.span t(".2fa") %>
-            </div>
-          <% end %>
-        <% end %>
-        <% row.with_cell(align: :right) do %>
-          <%= render ButtonComponent.new(text: t(".edit"), variant: :secondary, size: :sm, href: edit_account_account_user_path(@account, account_user)) if is_admin %>
-        <% end %>
-      <% end %>
+      <%= render "accounts/parent_row", account: @account, account_user: account_user, is_admin: is_admin %>
     <% end %>
-
-    <%# Invitations %>
-    <% @account.account_invitations.each do |account_invitation| %>
-      <% table.with_row do |row| %>
-        <% row.with_cell(primary: true) do %>
-          <div class="flex items-center gap-2">
-            <%= render AvatarComponent.new(src: avatar_url_for(account_invitation), alt: account_invitation.name, size: :xs, classes: "hidden lg:inline-flex") %>
-            <%= account_invitation.name %>
-            <%= render BadgeComponent.new(text: t(".awaiting_response"), size: :sm) %>
-          </div>
-        <% end %>
-        <% row.with_cell do %>
-          <%= account_invitation.email %>
-        <% end %>
-        <% row.with_cell do %>
-          <%= account_user_roles(@account, account_invitation).join(", ") %>
-        <% end %>
-        <% row.with_cell do %>
-        <% end %>
-        <% row.with_cell(align: :right) do %>
-          <div class="flex gap-2 justify-end">
-            <%= button_to t(".resend_invite"), resend_account_account_invitation_path(@account, account_invitation), class: "inline-flex items-center justify-center gap-1.5 font-medium whitespace-nowrap transition-all duration-100 ease-in-out select-none focus-visible:outline-2 focus-visible:outline-offset-2 disabled:cursor-not-allowed disabled:opacity-50 px-3.5 py-2 text-sm rounded-[var(--radius)] border border-black/10 bg-white/90 text-neutral-800 shadow-xs hover:bg-muted focus-visible:outline-neutral-600 dark:border-white/10 dark:bg-neutral-700/50 dark:text-neutral-50 dark:hover:bg-neutral-700/75 dark:focus-visible:outline-neutral-200" if is_admin %>
-            <%= render ButtonComponent.new(text: t(".copy_link"), variant: :secondary, size: :sm, data: {controller: "clipboard", clipboard_text: account_invitation_url(account_invitation)}) if is_admin %>
-            <%= render ButtonComponent.new(text: t(".edit"), variant: :secondary, size: :sm, href: edit_account_account_invitation_path(@account, account_invitation)) if is_admin %>
-          </div>
-        <% end %>
-      <% end %>
+    <% @account.account_invitations.each do |invitation| %>
+      <%= render "accounts/invitation_row", account: @account, invitation: invitation, is_admin: is_admin %>
     <% end %>
-  <% end %>
+  </div>
+</section>
 
-  <%= render ButtonComponent.new(text: t(".invite"), variant: :secondary, href: new_account_account_invitation_path(@account), classes: "mt-2") if @account.account_users_count < 2 && is_admin %>
-  <% if @account.owner?(current_user) %>
-    <%= button_to t(".delete_family"), account_path(@account), method: :delete, class: "mt-2", data: {turbo_confirm: t("are_you_sure"), turbo_confirm_description: family_deletion_description(@account)} %>
-  <% end %>
+<% if @account.owner?(current_user) %>
+  <section class="mt-12">
+    <h2 class="h3"><%= t(".delete_family") %></h2>
+    <p class="mt-2 text-sm text-muted-foreground"><%= family_deletion_description(@account) %></p>
+    <%= button_to t(".delete_family"), account_path(@account), method: :delete, class: "mt-4", data: {turbo_confirm: t(".delete_confirm", name: @account.name), turbo_confirm_description: family_deletion_description(@account)} %>
+  </section>
 <% end %>

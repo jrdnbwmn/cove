@@ -20,6 +20,21 @@ class StudentsSystemTest < ApplicationSystemTestCase
     assert_selector "dialog[open]"
   end
 
+  test "closing the add modal after a validation error still asks before discarding" do
+    open_slot
+    visit students_path
+    open_add_modal
+
+    within("dialog[open]") do
+      fill_in "Name", with: "maya"
+      click_button "Add student"
+      assert_text "You already have a student named maya."
+
+      click_button "Cancel"
+      assert_text "Discard your changes?"
+    end
+  end
+
   test "a parent can see the add student title and close the modal" do
     open_slot
     visit students_path
@@ -33,26 +48,37 @@ class StudentsSystemTest < ApplicationSystemTestCase
     assert_no_selector "dialog[open]"
   end
 
-  test "cancel closes the add and edit modals without saving, and the cross stays available" do
+  test "closing an untouched modal closes right away" do
     open_slot
     visit students_path
     open_add_modal
 
     within("dialog[open]") do
       assert_selector "button", text: "Close"
+      click_button "Cancel"
+    end
+    assert_no_selector "dialog[open]"
+  end
+
+  test "closing the add modal after typing asks before discarding" do
+    open_slot
+    visit students_path
+    open_add_modal
+
+    within("dialog[open]") do
       fill_in "Name", with: "Nora"
       click_button "Cancel"
+
+      assert_text "Discard your changes?"
+      click_button "Keep editing"
+      assert_field "Name", with: "Nora"
+
+      click_button "Cancel"
+      click_button "Discard"
     end
+
     assert_no_selector "dialog[open]"
     assert_not Student.exists?(name: "Nora")
-
-    open_edit_modal("Maya")
-    within("dialog[open]") do
-      fill_in "Name", with: "Changed"
-      click_button "Cancel"
-    end
-    assert_no_selector "dialog[open]"
-    assert_equal "Maya", students(:one).reload.name
   end
 
   test "adding a student closes the modal, shows the student and a toast" do
@@ -90,21 +116,46 @@ class StudentsSystemTest < ApplicationSystemTestCase
     assert_text "Saved."
   end
 
-  test "archived students are hidden until toggled and can be restored" do
+  test "archived students are hidden until the Archived view is chosen and can be restored" do
     open_slot
     visit students_path
 
-    assert_no_selector "h2", text: "Archived"
     assert_no_selector "p", text: "Iris"
 
-    click_link "Show archived (1)"
+    click_link "Archived"
 
-    assert_selector "h2", text: "Archived"
+    assert_selector "nav[aria-label='Filter students'] a[aria-current='page']", text: "Archived"
     assert_selector "p", text: "Iris"
+    assert_no_selector "p", text: "Maya"
+    open_actions_menu("Iris")
     click_button "Restore"
 
     assert_text "Iris restored."
-    assert_no_selector "h2", text: "Archived"
+    assert_selector "p", text: "Iris"
+    assert_selector "p", text: "Maya"
+    assert_no_selector "nav[aria-label='Filter students']"
+  end
+
+  test "the Archived control only appears when a student is archived" do
+    students(:archived).destroy!
+    visit students_path
+
+    assert_selector "p", text: "Maya"
+    assert_no_selector "nav[aria-label='Filter students']"
+  end
+
+  test "a family whose students are all archived still sees the Archived control" do
+    students(:one).archive!
+    students(:two).archive!
+    visit students_path
+
+    assert_text "Add your first student"
+    assert_selector "nav[aria-label='Filter students']"
+
+    click_link "Archived"
+
+    assert_selector "p", text: "Maya"
+    assert_selector "p", text: "Theo"
     assert_selector "p", text: "Iris"
   end
 
@@ -117,7 +168,7 @@ class StudentsSystemTest < ApplicationSystemTestCase
     assert_text "Maya archived."
     assert_no_selector "dialog[open]"
     assert_no_selector "p", text: "Maya"
-    click_link "Show archived (2)"
+    click_link "Archived"
     assert_selector "p", text: "Maya"
   end
 
@@ -127,7 +178,11 @@ class StudentsSystemTest < ApplicationSystemTestCase
 
     within("dialog[open]") do
       click_link "Delete"
+    end
+    assert_selector "dialog[open]", count: 1
+    within("dialog[open]") do
       assert_text "Delete Maya?"
+      assert_no_selector "h2", text: "Edit Maya"
       click_button "Delete Maya"
     end
 
@@ -137,10 +192,55 @@ class StudentsSystemTest < ApplicationSystemTestCase
     assert_not Student.exists?(ActiveRecord::FixtureSet.identify(:one))
   end
 
+  test "cancelling Delete returns to the saved edit form without a discard prompt" do
+    visit students_path
+    open_edit_modal("Maya")
+
+    within("dialog[open]") do
+      fill_in "Grade level", with: "4th"
+      click_link "Delete"
+    end
+
+    assert_selector "dialog[open]", count: 1
+    within("dialog[open]") do
+      assert_text "Delete Maya?"
+      click_link "Cancel"
+    end
+
+    assert_selector "dialog[open]", count: 1
+    within("dialog[open]") do
+      assert_field "Grade level", with: students(:one).grade_level
+      click_button "Cancel"
+    end
+    assert_no_selector "dialog[open]"
+  end
+
+  test "cancelling Delete returns to a read-only student in the same dialog" do
+    logout(:user)
+    login_as users(:downgraded), scope: :user
+    visit students_path
+
+    within("[data-student='#{students(:read_only).id}']") { click_button "Casey" }
+    within("dialog[open]") { click_link "Delete" }
+
+    assert_selector "dialog[open]", count: 1
+    within("dialog[open]") do
+      assert_text "Delete Casey?"
+      click_link "Cancel"
+    end
+
+    assert_selector "dialog[open]", count: 1
+    within("dialog[open]") do
+      assert_selector "h2", text: "Casey"
+      assert_text "Casey can't be edited on Free. You can still archive or delete this student."
+    end
+  end
+
   test "an archived student can be deleted from the archived list" do
     visit students_path(archived: 1)
 
-    within("section[aria-labelledby='archived-heading']") { click_button "Delete" }
+    open_actions_menu("Iris")
+    click_button "Delete"
     within("dialog[open]") do
       assert_text "Delete Iris?"
       click_button "Delete Iris"
@@ -150,12 +250,98 @@ class StudentsSystemTest < ApplicationSystemTestCase
     assert_not Student.exists?(ActiveRecord::FixtureSet.identify(:archived))
   end
 
-  test "a family at its Free limit sees the upgrade prompt instead of Add student" do
+  test "clicking a student card opens their edit modal" do
     visit students_path
 
-    assert_text "Free includes 2 students."
-    assert_link "Upgrade to Premium"
-    assert_no_selector "button", text: "Add student"
+    find("[data-student='#{students(:one).id}']").click
+
+    assert_selector "dialog[open] input[name='student[name]'][value='Maya']"
+  end
+
+  test "the actions menu is reachable by keyboard" do
+    visit students_path
+
+    find("button", text: "Maya", exact_text: true).send_keys(:tab)
+    assert_equal "Actions for Maya", evaluate_script("document.activeElement.getAttribute('aria-label')")
+    page.send_keys(:enter)
+
+    assert_selector "[role='menuitem']", text: "Archive"
+    assert_selector "[role='menuitem']", text: "Delete"
+  end
+
+  test "archiving from the actions menu moves the student to Archived" do
+    visit students_path
+
+    open_actions_menu("Maya")
+    click_button "Archive"
+
+    assert_text "Maya archived."
+    assert_no_selector "p", text: "Maya"
+    click_link "Archived"
+    assert_selector "p", text: "Maya"
+  end
+
+  test "deleting from the actions menu asks for confirmation and Cancel just closes it" do
+    visit students_path
+
+    open_actions_menu("Maya")
+    click_button "Delete"
+
+    within("dialog[open]") do
+      assert_text "Delete Maya?"
+      assert_no_selector "input[name='student[name]']"
+      click_button "Cancel"
+    end
+    assert_no_selector "dialog[open]"
+    assert_selector "p", text: "Maya"
+
+    open_actions_menu("Maya")
+    click_button "Delete"
+    within("dialog[open]") { click_button "Delete Maya" }
+
+    assert_text "Maya deleted."
+    assert_not Student.exists?(ActiveRecord::FixtureSet.identify(:one))
+  end
+
+  test "at the Free limit, Add student explains the limit and links to plans" do
+    visit students_path
+
+    find("button", text: "Add student", match: :first).click
+
+    within("dialog[open]") do
+      assert_selector "h2", text: "Free includes 2 students."
+      assert_no_selector "input[name='student[name]']"
+      assert_link "See plans", href: pricing_path
+    end
+  end
+
+  test "the limit modal is sized to its content on desktop, not the full window height" do
+    visit students_path
+
+    find("button", text: "Add student", match: :first).click
+
+    assert_selector "dialog[open]"
+    dialog_height = evaluate_script("document.querySelector('dialog[open]').getBoundingClientRect().height")
+    window_height = evaluate_script("window.innerHeight")
+    assert_operator dialog_height, :<, window_height / 2
+  end
+
+  test "at the Premium cap, Add student explains the limit and offers Contact us" do
+    account = accounts(:subscribed)
+    account.update!(student_limit: 3)
+    3.times { |i| Student.create!(account: account, name: "Student #{i}") }
+    logout(:user)
+    login_as users(:subscribed), scope: :user
+    visit students_path
+
+    find("button", text: "Add student", match: :first).click
+
+    within("dialog[open]") do
+      assert_selector "h2", text: "Premium includes 3 students."
+      assert_no_selector "input[name='student[name]']"
+      assert_link "Contact us"
+      assert_no_link "See plans"
+    end
   end
 
   test "an archived student has no Restore button while the family is at its limit" do
@@ -212,7 +398,7 @@ class StudentsSystemTest < ApplicationSystemTestCase
     assert_no_selector "dialog[open]"
     assert_text "Saved. Blake and Casey stay editable."
 
-    within("[data-student='#{students(:kept).id}']") { click_button "View" }
+    within("[data-student='#{students(:kept).id}']") { click_button "Avery" }
     within("dialog[open]") do
       assert_text "Avery can't be edited on Free. You can still archive or delete this student."
     end
@@ -233,7 +419,12 @@ class StudentsSystemTest < ApplicationSystemTestCase
 
   def open_edit_modal(name)
     student = Student.find_by!(name: name)
-    within("[data-student='#{student.id}']") { click_button "Edit" }
+    within("[data-student='#{student.id}']") { click_button name }
     assert_selector "dialog[open] input[name='student[name]']"
+  end
+
+  def open_actions_menu(name)
+    find("button[aria-label='Actions for #{name}']").click
+    assert_selector "[role='menuitem']"
   end
 end

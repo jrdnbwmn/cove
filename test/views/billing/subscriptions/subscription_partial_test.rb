@@ -105,9 +105,7 @@ class Billing::Subscriptions::SubscriptionPartialTest < ActionView::TestCase
     doc = render_subscription(subscription)
 
     assert_includes doc.text, I18n.t("billing.subscriptions.subscription.paused")
-    link = doc.css("a").find { |a| a.text.strip == I18n.t("billing.subscriptions.subscription.resume") }
-    assert link, "expected a resume link"
-    assert_equal billing_subscription_resume_path(subscription), link[:href]
+    assert_resume_and_cancel_open_modals(doc, subscription)
   end
 
   test "grace period subscription keeps its resume action without a duplicate end-date warning" do
@@ -116,8 +114,41 @@ class Billing::Subscriptions::SubscriptionPartialTest < ActionView::TestCase
     doc = render_subscription(subscription)
 
     refute_includes doc.text, "Your plan will be canceled on"
-    link = doc.css("a").find { |a| a.text.strip == I18n.t("billing.subscriptions.subscription.resume") }
-    assert link, "expected a resume link"
-    assert_equal billing_subscription_resume_path(subscription), link[:href]
+    trigger = doc.css("button").find { |button| button.text.strip == I18n.t("billing.subscriptions.subscription.resume") }
+    assert trigger, "expected a resume modal trigger"
+    assert_equal "click->ui-modal#open:prevent", trigger["data-action"]
+  end
+
+  test "grace period subscription that cannot be resumed shows no resume action or stray template text" do
+    subscription = subscribe(status: "active", ends_at: 5.days.from_now)
+    subscription.define_singleton_method(:resumable?) { false }
+
+    doc = render_subscription(subscription)
+
+    refute doc.css("button").any? { |button| button.text.strip == I18n.t("billing.subscriptions.subscription.resume") }, "did not expect a resume trigger"
+    refute_includes doc.text, "resumable?"
+  end
+
+  test "past due subscription opens cancel in a modal" do
+    subscription = subscribe(status: "past_due")
+
+    doc = render_subscription(subscription)
+
+    assert_modal_trigger doc, I18n.t("billing.subscriptions.subscription.cancel_plan"), billing_subscription_cancel_path(subscription)
+  end
+
+  private
+
+  def assert_resume_and_cancel_open_modals(doc, subscription)
+    assert_modal_trigger doc, I18n.t("billing.subscriptions.subscription.resume"), billing_subscription_resume_path(subscription)
+    assert_modal_trigger doc, I18n.t("billing.subscriptions.subscription.cancel_plan"), billing_subscription_cancel_path(subscription)
+  end
+
+  # A lazy modal renders its trigger button and a dialog whose frame loads the path on open.
+  def assert_modal_trigger(doc, text, path)
+    trigger = doc.css("button").find { |button| button.text.strip == text }
+    assert trigger, "expected a #{text} modal trigger"
+    assert_equal "click->ui-modal#open:prevent", trigger["data-action"]
+    assert doc.at_css("[data-ui-modal-turbo-frame-src-value='#{path}']"), "expected the modal to load #{path}"
   end
 end

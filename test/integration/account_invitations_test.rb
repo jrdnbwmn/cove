@@ -24,6 +24,15 @@ class Jumpstart::AccountInvitationsTest < ActionDispatch::IntegrationTest
     assert_select "form[action='#{account_invitation_path(@account_invitation)}']", 2
   end
 
+  test "invitation page offers accept and decline actions that name the family" do
+    sign_in @invited
+    get account_invitation_path(@account_invitation)
+
+    assert_select "button .when-enabled", text: "Accept invitation"
+    assert_select "button .when-enabled", text: I18n.t("account_invitations.show.decline")
+    assert_select "form[action='#{account_invitation_path(@account_invitation)}'][data-turbo-confirm=?]", "Decline the invitation to join #{@account.name}?"
+  end
+
   test "can decline invitation" do
     sign_in @invited
     assert_difference "AccountInvitation.count", -1 do
@@ -118,5 +127,15 @@ class Jumpstart::AccountInvitationsTest < ActionDispatch::IntegrationTest
     assert_raises ActiveRecord::RecordNotFound do
       invitation.reload
     end
+  end
+
+  test "a parent can resend an invitation" do
+    sign_in @inviter
+
+    post resend_account_account_invitation_path(@account, @account_invitation)
+
+    assert_redirected_to account_path(@account)
+    assert_equal I18n.t("accounts.account_invitations.sent", email: @account_invitation.email), flash[:notice]
+    assert_enqueued_emails 1
   end
 end

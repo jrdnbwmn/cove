@@ -1,13 +1,9 @@
 <% pick_needed = account.student_pick_needed? %>
 <%# AIDEV-NOTE: Before a pick is saved this is a prominent card; afterwards it shrinks to a one-line reminder. Both open the same picker modal. %>
-<% picker = render UiModalComponent.new(title: t("students.kept.title"), lazy_load: true, turbo_frame_src: edit_students_kept_path) do |modal|
-     modal.with_trigger do
-       render ButtonComponent.new(text: t(pick_needed ? "students.free_limit_banner.choose" : "students.free_limit_banner.change"), variant: pick_needed ? :primary : :ghost, size: :sm, data: {action: "click->ui-modal#open:prevent"})
-     end
-   end %>
+<% picker = render "application/lazy_modal", title: t("students.kept.title"), src: edit_students_kept_path, text: t(pick_needed ? "students.free_limit_banner.choose" : "students.free_limit_banner.change"), button: {variant: pick_needed ? :primary : :ghost, size: :sm} %>
 <% upgrade_link = link_to t("students.free_limit_banner.upgrade"), pricing_path, class: "underline" %>
 <% if pick_needed %>
-  <%= render CardComponent.new(classes: "mb-6") do |card| %>
+  <%= render CardComponent.new(classes: "mb-4") do |card| %>
     <% card.with_body do %>
       <p class="font-medium"><%= t("students.free_limit_banner.heading", limit: Account::FREE_STUDENT_LIMIT) %></p>
       <p class="mt-1 text-sm text-muted-foreground"><%= t("students.free_limit_banner.description") %></p>
@@ -18,7 +14,7 @@
     <% end %>
   <% end %>
 <% else %>
-  <p class="mb-6 text-sm text-muted-foreground">
+  <p class="mb-4 text-sm text-muted-foreground">
     <%= t("students.free_limit_banner.picked", limit: Account::FREE_STUDENT_LIMIT) %>
     <%= picker %>
     <%= upgrade_link %>

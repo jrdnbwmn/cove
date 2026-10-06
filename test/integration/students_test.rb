@@ -268,6 +268,7 @@ class StudentsTest < ActionDispatch::IntegrationTest
 
     assert_select "form[action='#{student_archive_path(@maya)}'][method='post'] button", text: /\AArchive/
     assert_select "a[href='#{delete_student_path(@maya)}']", text: "Delete"
+    assert_select "[data-ui-modal-turbo-frame-src-value='#{delete_student_path(@maya)}']", count: 0
   end
 
   test "a parent sees a delete confirmation inside the modal frame" do
@@ -281,6 +282,17 @@ class StudentsTest < ActionDispatch::IntegrationTest
     assert_match "permanently removes Maya", response.body
     assert_select "form[action='#{student_path(@maya)}'] input[name='_method'][value='delete']"
     assert_select "a[href='#{edit_student_path(@maya)}']", text: "Cancel"
+  end
+
+  test "the delete confirmation opened from the student list cancels by closing the modal" do
+    sign_in users(:one)
+
+    get delete_student_path(@maya, from: "list")
+
+    assert_response :success
+    assert_select "a[href='#{edit_student_path(@maya)}']", count: 0
+    assert_select "button[data-action='click->ui-modal#performClose:prevent']", text: "Cancel"
+    assert_select "form[action='#{student_path(@maya)}'] input[name='_method'][value='delete']"
   end
 
   test "a parent can view a read-only student and return there from delete confirmation" do
@@ -322,7 +334,7 @@ class StudentsTest < ActionDispatch::IntegrationTest
 
     assert_response :success
     assert_select "a[href='#{edit_student_path(students(:archived))}']", count: 0
-    assert_select "button[data-action='click->ui-modal#close:prevent']", text: "Cancel"
+    assert_select "button[data-action='click->ui-modal#performClose:prevent']", text: "Cancel"
   end
 
   test "a parent can permanently delete a student" do

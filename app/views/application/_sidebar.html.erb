@@ -36,9 +36,9 @@
     </div>
   <% end %>
 
-  <div class="flex-1 overflow-y-auto p-0 lg:p-3">
+  <div class="flex-1 overflow-y-auto p-0 md:p-3">
     <div class="app-content min-h-full bg-white p-6 dark:bg-neutral-950 md:rounded-lg md:border-x md:border-b md:border-border md:py-8 md:px-12 md:shadow-xs">
-      <div class="mx-auto w-full max-w-6xl">
+      <div class="mx-auto w-full max-w-[88rem]">
         <%= content_for?(:content) ? yield(:content) : yield %>
       </div>
     </div>

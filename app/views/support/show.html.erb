@@ -1,11 +1,10 @@
-<div class="container mx-auto p-4">
-  <div class="mb-8">
-    <h1>Support</h1>
+<%= render PageHeaderComponent.new(title: "Support", description: t(".description")) %>
 
-    <%= render EmptyStateComponent.new(title: "Coming soon", description: "Support resources will be available here.") do |component| %>
-      <% component.with_icon do %>
-        <%= icon "life-buoy", class: "size-full" %>
-      <% end %>
-    <% end %>
-  </div>
-</div>
+<%= render EmptyStateComponent.new(title: t(".empty_title"), description: t(".empty_description")) do |component| %>
+  <% component.with_icon do %>
+    <%= icon "life-buoy", class: "size-full" %>
+  <% end %>
+  <% component.with_primary_action do %>
+    <%= render ButtonComponent.new(text: t(".email"), href: "mailto:#{Jumpstart.config.support_email}?subject=#{ERB::Util.url_encode(t(".email_subject"))}") %>
+  <% end %>
+<% end %>

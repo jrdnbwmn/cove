@@ -28,7 +28,7 @@
         ) %>
       <% end %>
       <% row.with_cell(classes: "hidden sm:table-cell") do %>
-        <%= api_token.created_at.strftime("%b %e, %Y") %>
+        <%= friendly_date(api_token.created_at) %>
       <% end %>
       <% row.with_cell(align: :right) do %>
         <%= render ButtonComponent.new(text: t(".view"), variant: :secondary, size: :sm, href: api_token_path(api_token)) %>

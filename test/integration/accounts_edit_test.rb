@@ -1,19 +1,16 @@
 require "test_helper"
 
 class Jumpstart::AccountsEditTest < ActionDispatch::IntegrationTest
-  test "the family owner sees the delete control" do
+  test "the family edit response has no delete control" do
     sign_in users(:one)
 
     get edit_account_path(accounts(:company))
 
     assert_response :success
-    assert_select "form[action=?][method=?]", account_path(accounts(:company)), "post" do
-      assert_select "input[name=?][value=?]", "_method", "delete"
-      assert_select "button", text: "Delete"
-    end
+    assert_select "form[action=?][method=?] input[name=?][value=?]", account_path(accounts(:company)), "post", "_method", "delete", count: 0
   end
 
-  test "a non-owner admin does not see the delete control" do
+  test "a non-owner admin also receives no delete control" do
     sign_in users(:two)
 
     get edit_account_path(accounts(:company))

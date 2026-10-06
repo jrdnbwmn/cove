@@ -40,6 +40,17 @@ class AppShellSystemTest < ApplicationSystemTestCase
     assert_no_selector "footer"
   end
 
+  test "Settings tabs scroll without widening the phone viewport" do
+    login_as users(:one), scope: :user
+    page.current_window.resize_to(390, 900)
+    visit edit_user_registration_path
+
+    assert_selector "nav a", text: "Security"
+    assert_equal evaluate_script("window.innerWidth"), evaluate_script("document.documentElement.scrollWidth")
+  ensure
+    page.current_window.resize_to(1400, 1400)
+  end
+
   test "admin sees a same-tab Admin sidebar link" do
     admin = users(:admin)
     admin.create_default_account
