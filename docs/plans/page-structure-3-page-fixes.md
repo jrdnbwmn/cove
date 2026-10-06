@@ -244,9 +244,7 @@ findings
 
 **In scope:**
 
-- First, ask the user the "Questions for Jordan" from the audit, and wait
-  for answers.
-- Then append Tasks 7+ to this plan, one per fix group, in the audit's
+- Append Tasks 7+ to this plan, one per fix group, in the audit's
   priority order and in this plan's task format (Skills, Reference, In
   scope, NOT in scope, Build order with Test/Implement/Verify, ≤4 files,
   checkpoints of ≤3 tasks with a review-changes-mini instruction on each
@@ -258,9 +256,13 @@ findings
 **NOT in scope:**
 
 - Executing the new tasks before approval.
-- Schedule, Dashboard structure, first run, and Settings structure. These
-  are deferred to their own features; skip findings that only those
-  redesigns would fix and list them as deferred.
+- Schedule, Dashboard, and first run. These are deferred to their own
+  ticket (Dashboard/Schedule findings M-1, M-2, M-15, M-16 are drafted in
+  `.context/ticket-dashboard-schedule.md`); list them as deferred.
+  Settings structure IS in scope (user decision, 6 Oct 2026): the tab
+  regroup, Security tab, and two-factor flow become tasks.
+- Asking the audit's Questions again: they were answered in Phase 2 (see
+  "Decisions" in the audit file).
 
 **Build order:**
 
