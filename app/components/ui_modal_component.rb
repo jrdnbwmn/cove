@@ -46,7 +46,7 @@ class UiModalComponent < ViewComponent::Base
   end
 
   def controller_data
-    data = {controller: "ui-modal"}
+    data = {controller: "ui-modal ui-modal-unsaved-changes"}
     data[:ui_modal_prevent_dismiss_value] = true if @prevent_dismiss
     data[:ui_modal_lazy_load_value] = true if @lazy_load
     data[:ui_modal_turbo_frame_src_value] = @turbo_frame_src if @turbo_frame_src.present?

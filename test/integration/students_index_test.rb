@@ -11,7 +11,7 @@ class StudentsIndexTest < ActionDispatch::IntegrationTest
 
     assert_response :success
     names = css_select(".grid p.font-medium")
-      .reject { |node| node.ancestors.any? { |ancestor| ancestor["data-ui-modal-target"] == "discardPrompt" } }
+      .reject { |node| node.ancestors.any? { |ancestor| ancestor["data-ui-modal-unsaved-changes-target"] == "discardPrompt" } }
       .map { |node| node.text.strip }
     assert_equal %w[Maya Theo], names
     assert_no_match "Iris", response.body

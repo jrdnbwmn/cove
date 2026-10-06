@@ -28,7 +28,7 @@ if (!window.__dialogCountResetBound) {
 }
 
 export default class extends Controller {
-  static targets = ["dialog", "template", "discardPrompt"];
+  static targets = ["dialog", "template"];
   static values = {
     open: { type: Boolean, default: false }, // Whether the modal is open
     lazyLoad: { type: Boolean, default: false }, // Whether to lazy load the modal content
@@ -46,7 +46,6 @@ export default class extends Controller {
 
     // Initialize state
     this.contentLoaded = false;
-    this.isDirty = false;
     this.isBouncing = false;
     this.isOpen = false; // Track if this specific modal is open
     this.isOpening = false; // Prevent duplicate opens while lazy content is loading
@@ -101,11 +100,6 @@ export default class extends Controller {
     // Additional keydown listener for better escape key handling
     this.boundHandleKeydown = this.handleKeydown.bind(this);
     this.dialogElement.addEventListener("keydown", this.boundHandleKeydown);
-    this.boundMarkDirty = this.markDirty.bind(this);
-    this.boundClearDirty = this.clearDirty.bind(this);
-    this.dialogElement.addEventListener("input", this.boundMarkDirty);
-    this.dialogElement.addEventListener("change", this.boundMarkDirty);
-    this.dialogElement.addEventListener("submit", this.boundClearDirty);
 
     // For div-based modals, add global escape key listener
     if (!this.isDialog) {
@@ -138,9 +132,6 @@ export default class extends Controller {
     }
 
     this.dialogElement.removeEventListener("keydown", this.boundHandleKeydown);
-    this.dialogElement.removeEventListener("input", this.boundMarkDirty);
-    this.dialogElement.removeEventListener("change", this.boundMarkDirty);
-    this.dialogElement.removeEventListener("submit", this.boundClearDirty);
 
     if (!this.isDialog && this.boundHandleGlobalKeydown) {
       document.removeEventListener("keydown", this.boundHandleGlobalKeydown);
@@ -230,20 +221,8 @@ export default class extends Controller {
     // If not open, don't do anything
     if (!this.isOpen) return;
 
-    if (this.isDirty) {
-      this.showDiscardPrompt();
-      return;
-    }
+    if (!this.requestClose()) return;
 
-    this.performClose();
-  }
-
-  keepEditing() {
-    this.hideDiscardPrompt();
-  }
-
-  discard() {
-    this.clearDirty();
     this.performClose();
   }
 
@@ -464,7 +443,7 @@ export default class extends Controller {
 
     // Reset bouncing flag
     this.isBouncing = false;
-    this.clearDirty();
+    this.dialogElement.dispatchEvent(new CustomEvent("ui-modal:closed", {bubbles: true}));
   }
 
   // Centralized method to handle scrollbar compensation cleanup
@@ -552,33 +531,11 @@ export default class extends Controller {
       return false;
     }
 
-    if (this.isDirty) {
-      event.preventDefault();
-      this.showDiscardPrompt();
-    }
+    if (!this.requestClose()) event.preventDefault();
   }
 
-  markDirty(event) {
-    if (event.target.closest("form")) this.isDirty = true;
-  }
-
-  clearDirty() {
-    this.isDirty = false;
-    this.hideDiscardPrompt();
-  }
-
-  showDiscardPrompt() {
-    if (!this.hasDiscardPromptTarget) return;
-
-    this.discardPromptTarget.classList.remove("hidden");
-    this.updateFocusableElements();
-  }
-
-  hideDiscardPrompt() {
-    if (!this.hasDiscardPromptTarget) return;
-
-    this.discardPromptTarget.classList.add("hidden");
-    this.updateFocusableElements();
+  requestClose() {
+    return this.dialogElement.dispatchEvent(new CustomEvent("ui-modal:close-request", {bubbles: true, cancelable: true}));
   }
 
   // Add bounce animation to indicate modal won't close

@@ -7,7 +7,8 @@ class UiModalComponentTest < ViewComponent::TestCase
       "Modal content"
     end
 
-    assert_selector "[data-controller='ui-modal']"
+    assert_selector "[data-controller~='ui-modal']"
+    assert_selector "[data-controller~='ui-modal-unsaved-changes']"
     assert_selector "dialog[data-ui-modal-target='dialog']"
     assert_selector "[data-ui-modal-prevent-dismiss-value='true']"
     assert_text "Confirm action"
@@ -26,7 +27,7 @@ class UiModalComponentTest < ViewComponent::TestCase
       "Modal content"
     end
 
-    assert_selector "[data-controller='ui-modal'] button[data-action='click->ui-modal#open:prevent']", text: "Add student", count: 1
+    assert_selector "[data-controller~='ui-modal'] button[data-action='click->ui-modal#open:prevent']", text: "Add student", count: 1
     assert_no_text "Default text"
     assert_selector "dialog[data-ui-modal-target='dialog']", visible: :all
   end
