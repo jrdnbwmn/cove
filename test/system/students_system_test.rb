@@ -20,6 +20,21 @@ class StudentsSystemTest < ApplicationSystemTestCase
     assert_selector "dialog[open]"
   end
 
+  test "closing the add modal after a validation error still asks before discarding" do
+    open_slot
+    visit students_path
+    open_add_modal
+
+    within("dialog[open]") do
+      fill_in "Name", with: "maya"
+      click_button "Add student"
+      assert_text "You already have a student named maya."
+
+      click_button "Cancel"
+      assert_text "Discard your changes?"
+    end
+  end
+
   test "a parent can see the add student title and close the modal" do
     open_slot
     visit students_path

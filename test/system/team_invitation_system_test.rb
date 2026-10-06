@@ -46,7 +46,7 @@ class TeamInvitationSystemTest < ApplicationSystemTestCase
     logout(:user)
     login_as invitee, scope: :user
     visit account_invitation_path(invitation)
-    find("button[type=submit]", text: I18n.t("account_invitations.show.accept")).click
+    click_button I18n.t("account_invitations.show.accept")
 
     assert_current_path account_path(account)
     assert account.users.reload.include?(invitee)

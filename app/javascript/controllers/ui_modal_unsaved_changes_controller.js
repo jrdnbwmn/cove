@@ -37,6 +37,19 @@ export default class extends Controller {
     if (event.target.closest("form")) this.isDirty = true;
   }
 
+  // AIDEV-NOTE: A frame render means the modal's content was swapped (e.g. Edit -> Delete confirmation), so
+  // earlier edits are gone and closing shouldn't ask. A failed response (422) re-renders the user's form
+  // with their typed values, so it stays dirty even though the submit event just cleared the flag.
+  frameRendered(event) {
+    const response = event.detail?.fetchResponse;
+
+    if (response && !response.succeeded) {
+      this.isDirty = true;
+    } else {
+      this.clearDirty();
+    }
+  }
+
   clearDirty() {
     this.isDirty = false;
     this.hideDiscardPrompt();
