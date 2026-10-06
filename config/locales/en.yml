@@ -106,8 +106,9 @@ en:
     show:
       title: "Join %{account}"
       invited_you_to_join_html: "<strong>%{inviter}</strong> invited you to join <strong>%{account}</strong>"
-      accept: "Accept Invitation"
+      accept: "Accept invitation"
       decline: "Decline"
+      decline_confirm: "Decline the invitation to join %{account}?"
 
   account_users:
     updated: "Account member was successfully updated."

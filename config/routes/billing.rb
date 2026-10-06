@@ -20,7 +20,6 @@ namespace :billing do
       resource :cancel
       resource :pause
       resource :resume
-      resource :upcoming
       resource :plan_change, only: [:show, :destroy]
     end
   end

@@ -35,9 +35,9 @@ they're executed.
 | 21   | B     | 8          | Billing dates and charges as rows (F-24, F-28) | Master | ✅   |
 | 22   | B     | 9          | Billing email and info forms (F-26, F-27) | Clone  | ✅   |
 | 23   | B     | 9          | One h1 per Settings page; Profile form layout (U-1, U-3, U-5, U-6, U-9, U-11) | Master | ✅   |
-| 24   | B     | 10         | Invitation accept page (F-19) | Clone  |      |
-| 25   | B     | 10         | Checkout heading and a way back (F-41, F-42) | Clone  |      |
-| 26   | B     | 10         | Optional cleanup of dead code (U-4, U-7, F-29, F-37, F-43) | Master |      |
+| 24   | B     | 10         | Invitation accept page (F-19) | Clone  | ✅   |
+| 25   | B     | 10         | Checkout heading and a way back (F-41, F-42) | Clone  | ✅   |
+| 26   | B     | 10         | Optional cleanup of dead code (U-4, U-7, F-29, F-37, F-43) | Master | ✅   |
 
 ## Prerequisites
 

@@ -51,10 +51,6 @@
     classes: "mb-6"
   ) %>
 
-  <% if devise_mapping.confirmable? && resource.pending_reconfirmation? %>
-    <%= render AlertComponent.new(title: t(".currently_waiting_confirmation_for_email", email: resource.unconfirmed_email), variant: :warning, classes: "mb-4") %>
-  <% end %>
-
   <% if I18n.available_locales.length > 1 %>
     <%# AIDEV-NOTE: Suppress the component's default blank placeholder to preserve Devise's original option set. %>
     <%= render SelectComponent.new(
