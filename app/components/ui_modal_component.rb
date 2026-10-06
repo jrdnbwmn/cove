@@ -58,7 +58,7 @@ class UiModalComponent < ViewComponent::Base
     base = if @size == :fullscreen
       "modal bg-transparent w-full z-50 small-scrollbar focus-visible:outline-neutral-600 dark:focus-visible:outline-neutral-200"
     else
-      "modal bg-transparent h-dvh max-h-dvh w-full max-w-full m-0 rounded-none sm:h-auto sm:m-auto sm:rounded-xl lg:rounded-2xl z-50 border border-black/10 dark:border-white/10 bg-white dark:bg-neutral-800 small-scrollbar focus-visible:outline-neutral-600 dark:focus-visible:outline-neutral-200"
+      "modal bg-transparent h-dvh max-h-dvh w-full max-w-full m-0 rounded-none sm:h-fit sm:m-auto sm:rounded-xl lg:rounded-2xl z-50 border border-black/10 dark:border-white/10 bg-white dark:bg-neutral-800 small-scrollbar focus-visible:outline-neutral-600 dark:focus-visible:outline-neutral-200"
     end
     [base, size_classes, @classes].compact.reject(&:empty?).join(" ")
   end

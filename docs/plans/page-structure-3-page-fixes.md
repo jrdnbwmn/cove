@@ -14,9 +14,9 @@ they're executed.
 | ---- | ----- | ---------- | ----------- | ------ | ---- |
 | 1    | A     | 1          | Create SegmentedControlComponent | Master | ✅   |
 | 2    | A     | 1          | Students: Active/Archived control in a list toolbar | Master | ✅   |
-| 3    | A     | 2          | Students: Add stays at the limit and explains it | Master |      |
-| 4    | A     | 2          | Students: card opens on click; actions in a "…" menu | Master |      |
-| 5    | A     | 2          | Students: final pass against the audit | Master |      |
+| 3    | A     | 2          | Students: Add stays at the limit and explains it | Master | ✅   |
+| 4    | A     | 2          | Students: card opens on click; actions in a "…" menu | Master | ✅   |
+| 5    | A     | 2          | Students: final pass against the audit | Master | ✅   |
 | 6    | B     | 3          | Turn audit fix groups into tasks; get approval | Master |      |
 
 ## Prerequisites

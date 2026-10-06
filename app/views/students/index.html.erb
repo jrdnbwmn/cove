@@ -1,10 +1,10 @@
 <%= render PageHeaderComponent.new(title: t(".title"), description: t(".description")) do |header| %>
-  <% if @students.any? && !Current.account.over_free_student_limit? %>
+  <% if @students.any? %>
     <% header.with_primary_action do %>
       <% if Current.account.can_add_student? %>
         <%= render "add_trigger" %>
       <% else %>
-        <%= render "limit_prompt", account: Current.account %>
+        <%= render "limit_modal", account: Current.account %>
       <% end %>
     <% end %>
   <% end %>
@@ -29,7 +29,7 @@
   <% unless can_restore %>
     <p class="mb-4 text-sm text-muted-foreground">
       <% if Current.account.premium? %>
-        <%= t(".restore_blocked_premium_html", link: mail_to(Jumpstart.config.support_email, t(".restore_contact"), subject: t("students.limit_prompt.more_students_subject", product: Jumpstart.config.application_name), class: "underline text-foreground hover:text-primary")) %>
+        <%= t(".restore_blocked_premium_html", link: mail_to(Jumpstart.config.support_email, t(".restore_contact"), subject: t("students.limit_modal.more_students_subject", product: Jumpstart.config.application_name), class: "underline text-foreground hover:text-primary")) %>
       <% else %>
         <%= t(".restore_blocked_free_html", link: link_to(t(".restore_upgrade"), pricing_path, class: "underline text-foreground hover:text-primary")) %>
       <% end %>

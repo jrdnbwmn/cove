@@ -26,6 +26,14 @@ class StudentsKeptTest < ActionDispatch::IntegrationTest
     assert_predicate students(:read_only_two).reload, :kept_on_free?
   end
 
+  test "the picker's buttons stack with Save on top on phones" do
+    sign_in users(:downgraded)
+
+    get edit_students_kept_path
+
+    assert_select "form div.flex-col-reverse.sm\\:flex-row button", count: 2
+  end
+
   test "malformed student ids show the picker error instead of failing" do
     sign_in users(:downgraded)
 

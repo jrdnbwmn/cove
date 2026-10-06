@@ -3,7 +3,8 @@
   <p class="mt-2 text-muted-foreground"><%= t(".body", name: @student.name) %></p>
 
   <div class="mt-6 flex flex-col gap-3 sm:flex-row sm:justify-end">
-    <% if @student.archived? %>
+    <%# AIDEV-NOTE: Opened from the list's "…" menu (from=list) or for an archived student, there is no earlier modal view to go back to, so Cancel closes. %>
+    <% if @student.archived? || params[:from] == "list" %>
       <%= render ButtonComponent.new(text: t(".cancel"), variant: :secondary, data: {action: "click->ui-modal#close:prevent"}) %>
     <% else %>
       <%= render ButtonComponent.new(text: t(".cancel"), variant: :secondary, href: @student.editable? ? edit_student_path(@student) : student_path(@student)) %>

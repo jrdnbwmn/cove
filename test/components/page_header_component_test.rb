@@ -20,6 +20,15 @@ class PageHeaderComponentTest < ViewComponent::TestCase
     assert_no_selector "p"
   end
 
+  test "puts the description directly under the title, before the actions, so phones read title, description, actions" do
+    render_inline(PageHeaderComponent.new(title: "Students", description: "The people learning with you.")) do |component|
+      component.with_primary_action { '<button type="button">Add student</button>'.html_safe }
+    end
+
+    assert_selector "h1 + p", text: "The people learning with you."
+    assert_selector "h1 + p ~ [data-page-header-actions] button", text: "Add student"
+  end
+
   test "renders the primary action" do
     render_inline(PageHeaderComponent.new(title: "Students")) do |component|
       component.with_primary_action { '<button type="button">Add student</button>'.html_safe }

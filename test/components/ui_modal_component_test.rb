@@ -50,7 +50,10 @@ class UiModalComponentTest < ViewComponent::TestCase
   test "uses a full-height phone sheet and a sized desktop dialog" do
     render_inline(UiModalComponent.new(size: :md, title: "Add student")) { "Modal content" }
 
-    assert_selector "dialog.h-dvh.max-h-dvh.w-full.max-w-full.rounded-none.sm\\:h-auto.sm\\:max-w-md.sm\\:rounded-xl"
+    # AIDEV-NOTE: sm:h-fit, not sm:h-auto. A <dialog> is fixed with inset 0, so height:auto stretches it
+    # to the window; fit-content (its browser default) sizes it to the content.
+    assert_selector "dialog.h-dvh.max-h-dvh.w-full.max-w-full.rounded-none.sm\\:h-fit.sm\\:max-w-md.sm\\:rounded-xl"
+    assert_no_selector "dialog.sm\\:h-auto"
     assert_selector "dialog > div.h-full.overflow-y-auto"
   end
 

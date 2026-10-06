@@ -1,39 +1,38 @@
-<div class="mb-6 sm:mb-8">
-  <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-    <h1><%= @title %></h1>
-
-    <% if actions? %>
-      <div class="flex flex-wrap items-center justify-end gap-2" data-page-header-actions>
-        <% secondary_action_contents = secondary_actions.map(&:to_s) %>
-        <% secondary_action_contents.each do |secondary_action_content| %>
-          <div class="hidden sm:flex"><%= secondary_action_content %></div>
-        <% end %>
-
-        <% if overflow_actions? %>
-          <% dropdown = DropdownComponent.new(trigger_variant: :icon, placement: "bottom-end") %>
-          <% dropdown.with_trigger do %>
-            <button
-              type="button"
-              class="<%= DropdownComponent::ICON_TRIGGER_CLASSES %>"
-              aria-label="More actions"
-              data-ui-dropdown-popover-target="button"
-              data-action="click->ui-dropdown-popover#toggle">
-              <%= icon "ellipsis", class: "size-4" %>
-            </button>
-          <% end %>
-          <% secondary_action_contents.each do |secondary_action_content| %>
-            <% dropdown.with_item_custom(unstyled: true) { secondary_action_content } %>
-          <% end %>
-          <% dropdown.with_item_custom(unstyled: true) { menu } if menu? %>
-          <%= render dropdown %>
-        <% end %>
-
-        <%= primary_action if primary_action? %>
-      </div>
-    <% end %>
-  </div>
+<%# AIDEV-NOTE: DOM and phone order is title, description, actions. From sm up, order-* moves the actions onto the title's line and leaves the description on its own line below. %>
+<div class="mb-6 flex flex-wrap items-center justify-between gap-x-4 sm:mb-8">
+  <h1 class="w-full sm:w-auto"><%= @title %></h1>
 
   <% if @description.present? %>
-    <p class="mt-2 font-sans text-muted-foreground"><%= @description %></p>
+    <p class="mt-2 w-full font-sans text-muted-foreground sm:order-3"><%= @description %></p>
+  <% end %>
+
+  <% if actions? %>
+    <div class="mt-4 flex flex-wrap items-center justify-end gap-2 sm:order-2 sm:mt-0" data-page-header-actions>
+      <% secondary_action_contents = secondary_actions.map(&:to_s) %>
+      <% secondary_action_contents.each do |secondary_action_content| %>
+        <div class="hidden sm:flex"><%= secondary_action_content %></div>
+      <% end %>
+
+      <% if overflow_actions? %>
+        <% dropdown = DropdownComponent.new(trigger_variant: :icon, placement: "bottom-end") %>
+        <% dropdown.with_trigger do %>
+          <button
+            type="button"
+            class="<%= DropdownComponent::ICON_TRIGGER_CLASSES %>"
+            aria-label="More actions"
+            data-ui-dropdown-popover-target="button"
+            data-action="click->ui-dropdown-popover#toggle">
+            <%= icon "ellipsis", class: "size-4" %>
+          </button>
+        <% end %>
+        <% secondary_action_contents.each do |secondary_action_content| %>
+          <% dropdown.with_item_custom(unstyled: true) { secondary_action_content } %>
+        <% end %>
+        <% dropdown.with_item_custom(unstyled: true) { menu } if menu? %>
+        <%= render dropdown %>
+      <% end %>
+
+      <%= primary_action if primary_action? %>
+    </div>
   <% end %>
 </div>
