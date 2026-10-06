@@ -124,7 +124,8 @@ Where things open:
 - Modal: every create/edit form and decision, short or long; long forms
   scroll inside. No drawers or slide-overs. Phones: full-height sheet.
 - Focused full page (no sidebar): multi-step flows (onboarding, checkout).
-- Only a confirmation may open on top of a modal.
+- Never open a modal on top of another modal, confirmations included. A
+  decision that comes up inside a modal happens in that same modal.
 - Closing a modal with unsaved changes asks before discarding.
 - After creating, go to the new record page; with none, stay on the list
   with a toast.
