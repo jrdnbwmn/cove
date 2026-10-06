@@ -111,11 +111,7 @@ en:
       decline_confirm: "Decline the invitation to join %{account}?"
 
   account_users:
-    updated: "Account member was successfully updated."
     destroyed: "Account member was successfully removed."
-    edit:
-      title: "Edit permissions for %{user}"
-      description: "Editing account permissions for %{user}."
 
   accounts:
     index:
@@ -135,14 +131,12 @@ en:
       remove_parent_confirm: "Remove %{name}? They will get a new family of their own. Your students will stay here."
       delete_confirm: "Delete %{name}? This permanently removes the family and its data."
       resend_invite: "Resend Invite"
-      2fa: "2FA"
       edit: "Edit"
       edit_account: "Edit Family"
       copy_link: "Copy link"
       link_copied: "Link copied"
       owner: "Owner"
       switch: "Switch"
-      you: "you"
       delete_family: "Delete family"
     new:
       title: "New Family"
@@ -173,9 +167,7 @@ en:
         send: "Send invitation"
       edit:
         title: "Edit Invitation"
-        description: "Edit or cancel invitation."
         update: "Update invitation"
-        destroy: "Delete Invite"
     transfers:
       form:
         title: "Transfer ownership"
@@ -233,13 +225,10 @@ en:
       manage_accounts: "Manage accounts"
     account_navbar:
       profile: "Profile"
-      password: "Password"
       security: "Security"
-      connected_accounts: "Connected Accounts"
       billing: "Billing"
       family: "Family"
       accounts: "Accounts"
-      api_tokens: "API"
       referrals: "Referrals"
     flash:
       confirm_payment: "Confirm your latest payment"
@@ -419,6 +408,7 @@ en:
       empty: "No billing history."
 
     subscriptions:
+      back_to_billing: "Back to Billing"
       created: "Thanks for subscribing!"
       resumed: "Your subscription has been resumed."
 
@@ -474,8 +464,6 @@ en:
         confirm_payment: "Confirm payment"
         paused_at: "Your plan will be paused on %{date}."
         paused: "Your plan is paused."
-        view_usage: "View usage"
-        view_upcoming_invoice: "View upcoming invoice"
         past_due: "Past due"
         unpaid: "Unpaid"
         update_payment_method: "Update payment method"
@@ -541,23 +529,13 @@ en:
           resume: "If you change your mind, you can resume your subscription."
           pending_plan_change: "Your switch to monthly on %{date} will also be removed."
           button: "Cancel plan"
+          confirm: "Cancel Premium"
           back: "Back to Billing"
           processing: "Cancelling..."
 
         destroy:
           resumed: "Your subscription has been canceled."
           failure: "We couldn't cancel your plan. Please try again or contact support."
-
-      upcomings:
-        show:
-          title: "Upcoming Invoice"
-          description: "The current costs for your usage this billing period."
-          line_items:
-            description: "Description"
-            quantity: "Quantity"
-            unit_price: "Unit Price"
-            total: "Total"
-          back: "Back to Billing"
 
       forms:
         stripe:
@@ -713,16 +691,8 @@ en:
       preferences: "Update subscription preferences"
 
   notifications:
-    loading: "Loading notifications..."
-    index:
-      title: "Notifications"
-      empty_placeholder: "Nothing to see here — yet."
-      mark_all_as_read: "Mark all as read"
     invite_accepted: "%{user} accepted your invitation."
     account_transferred: "%{previous_owner} made you owner of the %{account} account."
-    empty: "Nothing to see here — yet."
-    empty_description: "We'll let you know when you have new notifications."
-    see_more: "See more notifications"
 
   marketing_preferences:
     updated: "Your marketing preferences have been updated."

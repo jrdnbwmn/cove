@@ -41,9 +41,9 @@ class BillingPolicyCopyTest < ActionDispatch::IntegrationTest
 
     assert_response :success
     local_switch_date = switch_date.in_time_zone(user.time_zone).to_date
-    assert_includes response.body, I18n.t("billing.show.pending_plan_change_title", date: I18n.l(local_switch_date, format: :long))
+    assert_includes response.body, I18n.t("billing.show.pending_plan_change_title", date: ApplicationController.helpers.friendly_date(local_switch_date))
     assert_includes response.body, I18n.t("billing.show.pending_plan_change_description", price: "$12.00")
-    assert_not_includes response.body, I18n.t("billing.show.renews_on", date: I18n.l(subscription.current_period_end.to_date, format: :long))
+    assert_not_includes response.body, I18n.t("billing.show.renews_on", date: ApplicationController.helpers.friendly_date(subscription.current_period_end))
   end
 
   test "a paid Family shows the immediate Premium cancellation consequence on Family" do

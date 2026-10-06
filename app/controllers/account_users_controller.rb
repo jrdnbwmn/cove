@@ -2,12 +2,9 @@ class AccountUsersController < Accounts::BaseController
   before_action :authenticate_user!
   before_action :set_account
   before_action :set_account_user, only: :destroy
-  before_action :require_account_admin, except: [:index, :show]
+  before_action :require_account_admin
 
   layout "sidebar"
-
-  def index = redirect_to @account
-  def show = redirect_to @account
 
   def destroy
     unless @account.owner?(current_user) && !@account_user.account_owner?

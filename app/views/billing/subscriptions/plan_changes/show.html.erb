@@ -3,7 +3,7 @@
 <% Current.meta_tags.set(title: title) %>
 
 <div class="mx-auto mt-12 max-w-xl px-6">
-  <%= render ButtonComponent.new(text: "Back to Billing", variant: :ghost, href: billing_path) %>
+  <%= render ButtonComponent.new(text: t("billing.subscriptions.back_to_billing"), variant: :ghost, href: billing_path) %>
   <h1 class="h3 text-foreground"><%= title %></h1>
 
   <%= render CardComponent.new(divide: true, classes: "mt-8") do |card| %>
@@ -12,7 +12,7 @@
     <% end %>
     <% card.with_body do %>
       <% if monthly %>
-        <p class="text-muted-foreground"><%= t(".yearly_to_monthly", date: l(@subscription.current_period_end.to_date, format: :long), price: pay_amount_to_currency(@plan)) %></p>
+        <p class="text-muted-foreground"><%= t(".yearly_to_monthly", date: friendly_date(@subscription.current_period_end), price: pay_amount_to_currency(@plan)) %></p>
       <% else %>
         <p class="text-muted-foreground"><%= t(".monthly_to_yearly", price: pay_amount_to_currency(@plan)) %></p>
       <% end %>

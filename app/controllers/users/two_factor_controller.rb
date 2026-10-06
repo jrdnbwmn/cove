@@ -1,3 +1,7 @@
+# AIDEV-NOTE: Copy of lib/jumpstart/app/controllers/users/two_factor_controller.rb, which it replaces entirely
+# (Zeitwerk loads one file per constant), so upstream fixes won't reach it. Difference: a GET never changes data.
+# The lib version generated backup codes and the OTP secret in before_actions on every page view; here setup starts
+# with POST backup_codes (create_backup_codes), and the views render as steps of a modal.
 class Users::TwoFactorController < ApplicationController
   before_action :authenticate_user!
 
@@ -6,7 +10,11 @@ class Users::TwoFactorController < ApplicationController
   def backup_codes
   end
 
+  # AIDEV-NOTE: Once two-factor is on, the backup codes are secrets that are only shown during setup, so a
+  # signed-in session can't read them back without disabling it first.
   def create_backup_codes
+    return redirect_to(edit_account_password_path) if current_user.otp_required_for_login?
+
     current_user.generate_otp_backup_codes! unless current_user.otp_backup_codes?
     current_user.set_otp_secret!
     render :backup_codes

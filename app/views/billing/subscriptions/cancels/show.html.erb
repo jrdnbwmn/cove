@@ -15,7 +15,7 @@
         <div><%= t ".help_html", link: mail_to(Jumpstart.config.support_email, t(".contact_us"), subject: t(".subject", product: Jumpstart.config.application_name), class: "font-medium text-primary underline") %></div>
         <div><%= cancellation_end_notice(@subscription) %></div>
         <% if (pending_change = @subscription.pending_plan_change) %>
-          <div><%= t(".pending_plan_change", date: l(pending_change[:starts_at].to_date, format: :long)) %></div>
+          <div><%= t(".pending_plan_change", date: friendly_date(pending_change[:starts_at])) %></div>
         <% end %>
         <% unless cancels_immediately?(@subscription) %>
           <div><%= t(".resume") %></div>
@@ -26,7 +26,7 @@
     <% card.with_footer do %>
       <div class="flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
         <%= render ButtonComponent.new(text: t("cancel"), variant: :secondary, data: {action: "click->ui-modal#close:prevent"}) %>
-        <%= form_with url: billing_subscription_cancel_path(@subscription), method: :delete do %><%= render ButtonComponent.new(text: "Cancel Premium", variant: :destructive, type: "submit", data: {disable_with: t(".processing")}) %><% end %>
+        <%= form_with url: billing_subscription_cancel_path(@subscription), method: :delete do %><%= render ButtonComponent.new(text: t(".confirm"), variant: :destructive, type: "submit", data: {disable_with: t(".processing")}) %><% end %>
       </div>
     <% end %>
   <% end %>

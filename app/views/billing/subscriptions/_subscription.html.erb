@@ -13,7 +13,7 @@
       <%= render partial: "billing/subscriptions/summary", locals: { subscription: subscription } %>
 
       <% if subscription.on_grace_period? && subscription.pause_starts_at %>
-        <%= render AlertComponent.new(title: t(".paused_at", date: l(subscription.pause_starts_at.to_date, format: :long)), variant: :warning, classes: "mt-3") %>
+        <%= render AlertComponent.new(title: t(".paused_at", date: friendly_date(subscription.pause_starts_at)), variant: :warning, classes: "mt-3") %>
       <% elsif subscription.paused? %>
         <%= render AlertComponent.new(title: t(".paused"), variant: :info, show_icon: false, classes: "mt-3") %>
       <% end %>

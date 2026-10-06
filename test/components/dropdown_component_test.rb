@@ -18,4 +18,14 @@ class DropdownComponentTest < ViewComponent::TestCase
 
     assert_text "Workspace"
   end
+
+  test "menu item icons render trusted markup but escape plain strings" do
+    render_inline(DropdownComponent.new(trigger_text: "Actions")) do |dropdown|
+      dropdown.with_item_link(text: "Safe", icon: "<svg data-safe></svg>".html_safe)
+      dropdown.with_item_link(text: "Unsafe", icon: "<script data-unsafe></script>")
+    end
+
+    assert_selector "svg[data-safe]"
+    assert_no_selector "script[data-unsafe]", visible: :all
+  end
 end

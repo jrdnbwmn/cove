@@ -1,3 +1,6 @@
+# AIDEV-NOTE: Copy of lib/jumpstart/app/controllers/users/connected_accounts_controller.rb, which it replaces entirely
+# (Zeitwerk loads one file per constant), so upstream fixes won't reach it. Difference: connected accounts live on the
+# Security page, so index and destroy redirect there instead of rendering their own page.
 class Users::ConnectedAccountsController < ApplicationController
   before_action :authenticate_user!
   before_action :set_connected_account, only: [:destroy]

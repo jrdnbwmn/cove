@@ -46,4 +46,15 @@ class Users::TwoFactorTest < ActionDispatch::IntegrationTest
 
     assert_redirected_to edit_account_password_path
   end
+
+  test "backup codes are not shown again once two-factor is on" do
+    user = users(:one)
+    sign_in user
+    post backup_codes_user_two_factor_path
+    user.reload.enable_two_factor!
+
+    post backup_codes_user_two_factor_path
+
+    assert_redirected_to edit_account_password_path
+  end
 end
