@@ -75,7 +75,7 @@ judged; AI suggestions are routinely ignored or undone.
 ## Business model
 
 Two tiers on the family: **Free** (no subscription) and **Premium**. Flat
-price per family, not per student; current prices on `/pricing`. Limits and
+price per family, not per learner; current prices on `/pricing`. Limits and
 billing rules: `product-brief.md`.
 
 - **Free** covers limited use for small families.

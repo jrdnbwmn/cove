@@ -147,14 +147,14 @@ Routes are modularized in `config/routes/`:
   declaration so existing `dark:` utilities stay inactive; do not restore theme
   wiring or a system-preference fallback without an explicit product decision.
 - Product docs in `docs/product/`: `product-brief.md` — behavior rules;
-  read before changing families, students, billing, plan status,
-  notifications, AI behavior, or anything that stores student data.
+  read before changing families, learners, billing, plan status,
+  notifications, AI behavior, or anything that stores learner data.
   `ux-notes.md` — read before writing user-facing text, screen states, or page layout.
   `strategy-brief.md` — who Cove is for and its positioning.
 - Glossary (use these terms in UI copy and docs):
   - **Family** = `Account`. **Parent** = an `AccountUser` (all are admins);
     **Owner** = the one parent who can delete the family or transfer ownership.
-  - **Student** = a record owned by the family, not a login.
+  - **Learner** = a record owned by the family, not a login.
   - **Premium** = the paid plan (or Complimentary Premium) — never a design
     adjective; say "polished". **Complimentary** = superadmin-granted Premium.
   - **Plan** in code = billing plan (`Plan` model). In UI copy, the

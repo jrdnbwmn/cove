@@ -100,12 +100,12 @@ Principles:
 
 Depth and width:
 
-- Section pages (Students) may link to record pages (one student). Nothing
+- Section pages (Learners) may link to record pages (one learner). Nothing
   deeper; extra scope becomes tabs (Settings is the model).
-- Record pages: a "← Students" link to the section (which stays highlighted in
+- Record pages: a "← Learners" link to the section (which stays highlighted in
   the sidebar), header, summary, sections or tabs, then the destructive area.
   Add a switcher on the title only where people go record to record
-  (students). Editing details opens a modal.
+  (learners). Editing details opens a modal.
 - All page content shares one container width. Narrower content (forms,
   prose) left-aligns with the title, never centered.
 
@@ -156,7 +156,7 @@ Forms:
 
 Lists:
 
-- Cards when each item is its own thing (students, subjects, school plans,
+- Cards when each item is its own thing (learners, subjects, school plans,
   billing plan options). Rows when people scan or compare same-shaped records
   (charges, activity, parents). Bordered boxes with identical fields are rows.
 - No tables. Rows may align columns on desktop; they stack on phones.
@@ -168,7 +168,7 @@ Lists:
   hover-only.
 - Multi-select: "Select" in the toolbar shows checkboxes; a bar shows the
   count and actions. Bulk destructive actions confirm with the count
-  ("Archive 3 students").
+  ("Archive 3 learners").
 - Icons wherever they aid scanning. Icon-only buttons only when the meaning
   is obvious, always with an accessible label.
 - Status badges use restrained color; color never carries meaning alone.
@@ -199,6 +199,6 @@ color, consistent components, and handled edge cases — not low contrast,
 dense dashboards, tiny controls, hidden actions, heavy animation, or
 decoration without purpose.
 
-- Explain what sensitive information is collected and why (student data rule:
+- Explain what sensitive information is collected and why (learner data rule:
   `product-brief.md`). Sharing is opt-in. Privacy, export, deletion, and
   account controls are easy to find.

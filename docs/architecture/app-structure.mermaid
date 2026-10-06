@@ -12,10 +12,10 @@ graph TD
   AccountsControllers --> FamilyTransfersController[TransfersController]
   Controllers --> AccountControllers[account/]
   AccountControllers --> PasswordResetLinksController[PasswordResetLinksController]
-  Controllers --> StudentsController[StudentsController]
-  Controllers --> StudentControllers[students/]
-  StudentControllers --> StudentArchivesController[ArchivesController]
-  StudentControllers --> StudentKeptController[KeptController]
+  Controllers --> LearnersController[LearnersController]
+  Controllers --> LearnerControllers[learners/]
+  LearnerControllers --> LearnerArchivesController[ArchivesController]
+  LearnerControllers --> LearnerKeptController[KeptController]
   Controllers --> DevControllers[dev/]
   Controllers --> Concerns[concerns/]
   Concerns --> PremiumAccess[PremiumAccess]
@@ -28,7 +28,7 @@ graph TD
   App --> Models[app/models]
   Models --> User[User]
   Models --> Account[Account]
-  Models --> Student[Student]
+  Models --> Learner[Learner]
   Models --> Current[Current]
   Models --> UserConcerns[user/]
   UserConcerns --> AccountCreatedEmail[AccountCreatedEmail]
@@ -61,8 +61,8 @@ graph TD
   Views --> AccountInvitationViews[account_invitations/]
   Views --> AccountUserViews[account_users/]
   Views --> DashboardViews[dashboard/]
-  Views --> StudentViews[students/]
-  StudentViews --> StudentLimitPrompt[_limit_prompt.html.erb]
+  Views --> LearnerViews[learners/]
+  LearnerViews --> LearnerLimitPrompt[_limit_prompt.html.erb]
   Views --> PublicViews[public/]
   Views --> UserViews[users/]
   Views --> BillingViews[billing/subscriptions/]
@@ -125,7 +125,7 @@ graph TD
   PlanChangesController --> PlanChangeGuard
   PlanChangesController --> PaySubscriptionConcern
   PlanChangesController --> PlanChangeView
-  StudentsController --> Student
-  StudentArchivesController --> Student
-  StudentKeptController --> Student
-  Student --> Account
+  LearnersController --> Learner
+  LearnerArchivesController --> Learner
+  LearnerKeptController --> Learner
+  Learner --> Account
