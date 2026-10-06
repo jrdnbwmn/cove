@@ -24,14 +24,14 @@ class SettingsNavigationTest < ActionDispatch::IntegrationTest
     assert_select "nav .overflow-x-auto"
   end
 
-  test "Security groups password, two-factor, and connected accounts" do
+  test "Security groups password and connected accounts, with no two-factor option" do
     sign_in users(:one)
 
     get edit_account_password_path
 
     assert_response :success
     assert_select "h1", count: 1
-    assert_match "Two-factor authentication", response.body
+    refute_match(/two-factor/i, response.body)
     assert_match "Connected accounts", response.body
     assert_select "button[data-turbo-confirm*='Disconnect Google']", text: /Disconnect Google/
   end

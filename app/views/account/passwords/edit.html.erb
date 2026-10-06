@@ -54,29 +54,6 @@
 </div>
 
 <div class="mt-12">
-  <h2 class="h4"><%= t(".two_factor.title") %></h2>
-  <p class="mt-2 mb-4 text-sm text-muted-foreground"><%= t(".two_factor.description") %></p>
-<% if current_user.otp_required_for_login? %>
-  <div>
-    <%= render ButtonComponent.new(
-      text: t(".two_factor.disable"),
-      variant: :destructive,
-      href: user_two_factor_path,
-      data: {turbo_method: :delete, turbo_confirm: t("are_you_sure")}
-    ) %>
-  </div>
-<% else %>
-    <%= render UiModalComponent.new(title: t(".two_factor.title")) do |modal| %>
-      <% modal.with_trigger do %><%= render ButtonComponent.new(text: t(".two_factor.enable"), variant: :secondary, data: {action: "click->ui-modal#open:prevent"}) %><% end %>
-      <%= turbo_frame_tag "modal-lazy-content" do %>
-        <p class="text-muted-foreground">Set up an authenticator app to protect your account.</p>
-        <%= form_with url: backup_codes_user_two_factor_path, class: "mt-6 flex justify-end" do %><%= render ButtonComponent.new(text: "Next", type: "submit") %><% end %>
-      <% end %>
-    <% end %>
-<% end %>
-</div>
-
-<div class="mt-12">
   <h2 class="h4"><%= t(".connected_accounts.title") %></h2>
   <% connected_accounts = current_user.connected_accounts.order(provider: :asc, created_at: :desc) %>
   <% if connected_accounts.any? %>

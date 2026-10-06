@@ -120,4 +120,14 @@ class Billing::Subscriptions::SubscriptionPartialTest < ActionView::TestCase
     assert trigger, "expected a resume modal trigger"
     assert_equal "click->ui-modal#open:prevent", trigger["data-action"]
   end
+
+  test "grace period subscription that cannot be resumed shows no resume action or stray template text" do
+    subscription = subscribe(status: "active", ends_at: 5.days.from_now)
+    subscription.define_singleton_method(:resumable?) { false }
+
+    doc = render_subscription(subscription)
+
+    refute doc.css("button").any? { |button| button.text.strip == I18n.t("billing.subscriptions.subscription.resume") }, "did not expect a resume trigger"
+    refute_includes doc.text, "resumable?"
+  end
 end

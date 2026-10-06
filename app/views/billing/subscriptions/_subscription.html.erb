@@ -21,7 +21,9 @@
 
     <div class="mt-2 flex flex-col gap-2 text-center">
       <% if subscription.on_grace_period? %>
-        <%= render UiModalComponent.new(title: t(".resume"), lazy_load: true, turbo_frame_src: billing_subscription_resume_path(subscription)) do |modal| %><% modal.with_trigger do %><%= render ButtonComponent.new(text: t(".resume"), data: {action: "click->ui-modal#open:prevent"}) %><% end %><% end %> if subscription.resumable? %>
+        <% if subscription.resumable? %>
+          <%= render UiModalComponent.new(title: t(".resume"), lazy_load: true, turbo_frame_src: billing_subscription_resume_path(subscription)) do |modal| %><% modal.with_trigger do %><%= render ButtonComponent.new(text: t(".resume"), data: {action: "click->ui-modal#open:prevent"}) %><% end %><% end %>
+        <% end %>
       <% elsif subscription.active? %>
         <% if subscription.pending_plan_change? %>
           <%= render ButtonComponent.new(text: t(".keep_yearly"), variant: :secondary, href: billing_subscription_plan_change_path(subscription), data: {turbo_method: :delete}) %>

@@ -26,4 +26,24 @@ class Users::TwoFactorTest < ActionDispatch::IntegrationTest
     assert_predicate user.otp_backup_codes, :present?
     assert_select "turbo-frame#modal-lazy-content"
   end
+
+  test "the verify step shows the authenticator QR code and setup key" do
+    user = users(:one)
+    sign_in user
+    post backup_codes_user_two_factor_path
+
+    get verify_user_two_factor_path
+
+    assert_response :success
+    assert_select "turbo-frame#modal-lazy-content svg"
+    assert_match user.reload.otp_app_code, response.body
+  end
+
+  test "the verify step without a started setup sends the user back to Security" do
+    sign_in users(:one)
+
+    get verify_user_two_factor_path
+
+    assert_redirected_to edit_account_password_path
+  end
 end

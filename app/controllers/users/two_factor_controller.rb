@@ -12,7 +12,9 @@ class Users::TwoFactorController < ApplicationController
     render :backup_codes
   end
 
+  # AIDEV-NOTE: Two-factor has no UI entry point (Cove ships without it for now). The routes stay so it can be re-enabled; setup starts with POST backup_codes, which creates the secret, so verify has nothing to show until then.
   def verify
+    redirect_to edit_account_password_path unless current_user.otp_secret.present?
   end
 
   def create

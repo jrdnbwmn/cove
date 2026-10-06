@@ -614,11 +614,6 @@ en:
           title: "Connected accounts"
           empty: "Connect Google to sign in another way."
           connect: "Connect Google"
-        two_factor:
-          title: "Two-factor authentication"
-          description: "When you login, you will be required to enter a one-time code along to one of your devices."
-          enable: "Enable two-factor authentication"
-          disable: "Disable two-factor authentication"
 
   themes:
     system: "Sync with system"
