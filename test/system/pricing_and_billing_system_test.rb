@@ -164,6 +164,34 @@ class PricingAndBillingSystemTest < ApplicationSystemTestCase
     assert_text "Renews October 15, 2026"
   end
 
+  test "Premium family updates billing email and information" do
+    account = accounts(:subscribed)
+    account.update!(billing_email: nil, extra_billing_info: "Cove Family")
+
+    login_as users(:subscribed), scope: :user
+    visit billing_path
+
+    fill_in "Billing email", with: "billing@example.com"
+    click_button "Save"
+
+    assert_equal "billing@example.com", account.reload.billing_email
+    visit billing_path
+
+    page.document.synchronize do
+      connected = page.evaluate_script("(() => { const button = Array.from(document.querySelectorAll('button')).find((element) => element.textContent.trim() === 'Edit'); return !!button && !!window.Stimulus?.getControllerForElementAndIdentifier(button.closest(\"[data-controller~='ui-modal']\"), 'ui-modal') })()")
+      raise Capybara::ExpectationNotMet, "billing info modal is not connected" unless connected
+    end
+    click_button "Edit"
+
+    within "dialog[open]" do
+      assert_field "Extra billing info", with: "Cove Family"
+      fill_in "Extra billing info", with: "Cove Family\nVAT ID 123"
+      click_button "Save information"
+    end
+
+    assert_equal "Cove Family\nVAT ID 123", account.reload.extra_billing_info
+  end
+
   test "refund policy appears on pricing, checkout, and cancellation" do
     user = users(:one)
     user.family.set_payment_processor(:stripe, processor_id: "cus_test")

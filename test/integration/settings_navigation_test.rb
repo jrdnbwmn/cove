@@ -11,6 +11,7 @@ class SettingsNavigationTest < ActionDispatch::IntegrationTest
     assert_select "main > div > div.app-content.p-6", count: 1
     assert_select "main > div > div.app-content > div[class~='max-w-[88rem]'] > div.settings-content", count: 1
     assert_select "h1", text: "Settings", count: 1
+    assert_select "h1", count: 1
     assert_select "nav" do
       assert_select "a[href='#{edit_user_registration_path}'][aria-current='page']", text: I18n.t("application.account_navbar.profile")
       assert_select "a[href='#{edit_account_password_path}']", text: "Security"
@@ -29,6 +30,7 @@ class SettingsNavigationTest < ActionDispatch::IntegrationTest
     get edit_account_password_path
 
     assert_response :success
+    assert_select "h1", count: 1
     assert_match "Two-factor authentication", response.body
     assert_match "Connected accounts", response.body
     assert_select "button[data-turbo-confirm*='Disconnect Google']", text: /Disconnect Google/
