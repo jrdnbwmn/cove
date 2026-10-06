@@ -202,14 +202,25 @@ Routes are modularized in `config/routes/`:
   temporary Rails/Puma server plus curl against `/dev/kitchen_sink` or
   `/lookbook` instead.
 - Running `bin/rails db:migrate` (or `db:drop db:create db:migrate`) locally
-  regenerates `db/schema.rb`, `db/cable_schema.rb`, `db/cache_schema.rb`, and
-  `db/queue_schema.rb` with reordered columns and a bumped
-  `ActiveRecord::Schema[8.1]` annotation (committed files say `[8.0]`), even
-  when no migration content changed — a pre-existing drift between the
-  committed schema dumps and the locked Rails 8.1.3 dumper, not something
-  caused by app changes. After any local migration/seed verification, `git
-  diff` those four files and `git checkout --` them if the only changes are
-  reordering/version bump, so the noise doesn't get committed.
+  regenerates `db/cable_schema.rb`, `db/cache_schema.rb`, and
+  `db/queue_schema.rb` with reordered columns and a different header — a
+  pre-existing drift between the committed dumps and the locked Rails 8.1.3
+  dumper, not something caused by app changes. After any local
+  migration/seed verification, `git checkout --` those three files so the
+  noise doesn't get committed. `db/schema.rb` itself is now in sync and only
+  diffs for the real change (confirmed in COV-109), but still `git diff` it.
+- `bin/rails db:rollback` aborts here because the app is multi-database. Use
+  `bin/rails db:rollback:primary` to check a migration is reversible.
+- Renaming a model/term app-wide (COV-109, students → learners): a blanket
+  find-and-replace over `test/` also rewrites tests that intentionally assert
+  the *old* word is absent (e.g. `assert_no_match(/student/i, ...)` in
+  `terms_page_test.rb`) and the rename migration's own test — exclude those
+  and re-read them. A table-rename migration can't be verified in isolation:
+  fixtures with association labels (`account: one`) need the renamed model, so
+  do the migration, model, and fixtures in one step. Do copy changes first,
+  then the mechanical identifier rename. Compiled `app/assets/builds/` is
+  gitignored but stale after a CSS-token rename — run
+  `bin/rails tailwindcss:build`.
 - `User` does not include Devise `:confirmable` (see
   `lib/jumpstart/app/models/user/authenticatable.rb`), even though the
   `users` table has a `confirmed_at` column that seeds/fixtures set.
@@ -287,9 +298,10 @@ Routes are modularized in `config/routes/`:
 
 ### System tests
 - `bin/rails test:system TEST=path/to/test.rb -n /pattern/` is unreliable in
-  this checkout (incompatible syntax / deprecation warning on `-n`). Run a
-  specific test with the positional file argument and `-i` instead, e.g.
-  `bin/rails test:system test/system/foo_test.rb -i "test name"`.
+  this checkout (incompatible syntax / deprecation warning on `-n`).
+  `bin/rails test:system` ignores a positional file and runs every system
+  test. To run one system test file, use `bin/rails test test/system/foo_test.rb`
+  (add `-i "test name"` for a single test).
 - Don't run system tests concurrently with another Rails test process in this
   linked worktree — it causes unrelated browser/authentication failures. Keep
   Rails test runs sequential.
