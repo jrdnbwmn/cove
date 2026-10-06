@@ -27,7 +27,7 @@ then implement.
 | 2    | 1          | Student card hover border | Master | ✅ |
 | 3    | 1          | Active/Archived as underline tabs; delete SegmentedControlComponent | Master | ✅ |
 | 4    | 2          | Delete swaps the Edit modal's content (no stacked modal) | Master | ✅ |
-| 5    | 2          | Audit other modals for stacking; full test run | Master | |
+| 5    | 2          | Audit other modals for stacking; full test run | Master | ✅ |
 
 ## Task 1: ux-notes — filters may use tabs
 

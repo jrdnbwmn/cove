@@ -75,7 +75,7 @@ class PricingAndBillingSystemTest < ApplicationSystemTestCase
     visit billing_path
 
     local_switch_date = switch_date.in_time_zone(user.time_zone).to_date
-    assert_text I18n.t("billing.show.pending_plan_change_title", date: I18n.l(local_switch_date, format: :long))
+    assert_text I18n.t("billing.show.pending_plan_change_title", date: friendly_date(local_switch_date))
     assert_no_link I18n.t("billing.subscriptions.subscription.change_plan")
 
     # The fixture subscription isn't on Stripe, so releasing is a no-op; this checks the Turbo DELETE round trip.
@@ -124,7 +124,7 @@ class PricingAndBillingSystemTest < ApplicationSystemTestCase
     login_as users(:subscribed), scope: :user
     visit billing_path
     assert_text I18n.t("billing.show.premium")
-    assert_text "Renews October 15, 2026"
+    assert_text I18n.t("billing.show.renews_on", date: friendly_date(pay_subscriptions(:subscribed).current_period_end))
   end
 
   test "complimentary Family sees no paid billing sections" do
@@ -142,7 +142,7 @@ class PricingAndBillingSystemTest < ApplicationSystemTestCase
     visit billing_path
 
     assert_text "Premium until"
-    assert_text "October 20, 2026"
+    assert_text friendly_date(pay_subscriptions(:canceled_in_period).ends_at)
   end
 
   test "second parent sees the same paid billing state" do
@@ -161,7 +161,7 @@ class PricingAndBillingSystemTest < ApplicationSystemTestCase
     visit billing_path
 
     assert_text I18n.t("billing.show.premium")
-    assert_text "Renews October 15, 2026"
+    assert_text I18n.t("billing.show.renews_on", date: friendly_date(pay_subscriptions(:subscribed).current_period_end))
   end
 
   test "Premium family updates billing email and information" do
@@ -245,4 +245,8 @@ class PricingAndBillingSystemTest < ApplicationSystemTestCase
   def pricing_group(frequency)
     find("[data-pricing-target='plans'][data-frequency='#{frequency}']")
   end
+
+  private
+
+  def friendly_date(date) = ApplicationController.helpers.friendly_date(date)
 end
