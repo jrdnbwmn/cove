@@ -1,9 +1,0 @@
-<%# AIDEV-NOTE: Sits in the student grid as the last card. Same modal as _add_trigger; the empty state keeps the plain button. %>
-<%= render UiModalComponent.new(title: t("students.index.add_title"), lazy_load: true, turbo_frame_src: new_student_path) do |modal| %>
-  <% modal.with_trigger do %>
-    <button type="button" data-action="click->ui-modal#open:prevent" class="flex h-full min-h-28 w-full cursor-pointer flex-col items-center justify-center gap-2 rounded-xl border border-dashed border-neutral-300 bg-transparent p-6 text-sm font-medium text-muted-foreground transition-colors hover:border-primary hover:text-primary focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary">
-      <%= icon "plus", class: "size-5" %>
-      <%= t("students.index.add") %>
-    </button>
-  <% end %>
-<% end %>

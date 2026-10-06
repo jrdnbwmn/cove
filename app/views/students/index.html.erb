@@ -1,6 +1,15 @@
-<div class="mb-8">
-  <h1><%= t(".title") %></h1>
-  <p class="mt-1 font-sans text-muted-foreground"><%= t(".description") %></p>
+<div class="mb-8 flex flex-wrap items-center justify-between gap-4">
+  <div>
+    <h1><%= t(".title") %></h1>
+    <p class="mt-1 font-sans text-muted-foreground"><%= t(".description") %></p>
+  </div>
+  <% if @students.any? && !Current.account.over_free_student_limit? %>
+    <% if Current.account.can_add_student? %>
+      <%= render "add_trigger" %>
+    <% else %>
+      <%= render "limit_prompt", account: Current.account %>
+    <% end %>
+  <% end %>
 </div>
 
 <% if Current.account.over_free_student_limit? %>
@@ -20,13 +29,6 @@
   <div class="grid auto-rows-fr gap-4 sm:grid-cols-2 lg:grid-cols-3">
     <% @students.each do |student| %>
       <%= render "student_card", student: student %>
-    <% end %>
-    <% unless Current.account.over_free_student_limit? %>
-      <% if Current.account.can_add_student? %>
-        <%= render "add_card" %>
-      <% else %>
-        <%= render "limit_prompt", account: Current.account %>
-      <% end %>
     <% end %>
   </div>
 <% end %>
