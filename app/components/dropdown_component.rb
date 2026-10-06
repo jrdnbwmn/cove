@@ -177,6 +177,6 @@ class DropdownComponent < ViewComponent::Base
   end
 
   def render_kebab_icon
-    icon("ellipsis", class: "size-3.5 sm:size-4")
+    icon("ellipsis-vertical", class: "size-3.5 sm:size-4")
   end
 end

@@ -44,7 +44,7 @@
         <%= render DropdownComponent.new(placement: "bottom-end", width: "w-44") do |dropdown| %>
           <% dropdown.with_trigger do %>
             <button type="button" aria-label="<%= t("students.index.actions_label", name: student.name) %>" aria-haspopup="menu" data-ui-dropdown-popover-target="button" data-action="click->ui-dropdown-popover#toggle" class="flex size-10 items-center justify-center rounded-lg text-muted-foreground hover:bg-muted hover:text-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary">
-              <%= icon "ellipsis", class: "size-5" %>
+              <%= icon "ellipsis-vertical", class: "size-5" %>
             </button>
           <% end %>
           <% if archived && can_restore %>
