@@ -11,7 +11,7 @@ class StudentsKeptTest < ActionDispatch::IntegrationTest
     assert_not students(:one).reload.kept_on_free?
   end
 
-  test "a downgraded parent can open the picker and save two active students" do
+  test "a downgraded parent can open the picker and save two active learners" do
     sign_in users(:downgraded)
 
     get edit_students_kept_path
@@ -39,7 +39,7 @@ class StudentsKeptTest < ActionDispatch::IntegrationTest
 
     patch students_kept_path, params: {student_ids: {"0" => students(:kept).id}}
     assert_response :unprocessable_content
-    assert_match "Choose 2 students to keep editable.", response.body
+    assert_match "Choose 2 learners to keep editable.", response.body
 
     patch students_kept_path, params: {student_ids: "not-an-array"}
     assert_response :unprocessable_content
@@ -60,7 +60,7 @@ class StudentsKeptTest < ActionDispatch::IntegrationTest
 
     patch students_kept_path, params: {student_ids: [students(:kept).id]}
     assert_response :unprocessable_content
-    assert_match "Choose 2 students to keep editable.", response.body
+    assert_match "Choose 2 learners to keep editable.", response.body
 
     students(:read_only).archive!
     students(:read_only_two).archive!

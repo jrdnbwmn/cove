@@ -142,12 +142,12 @@
     <section class="py-10">
       <h2>Navigation</h2>
       <div class="mt-6 grid gap-8">
-        <%= render PageHeaderComponent.new(title: "Students", description: "The people learning with you.") do |header| %>
+        <%= render PageHeaderComponent.new(title: "Learners", description: "The people learning with you.") do |header| %>
           <% header.with_secondary_action do %>
             <%= render ButtonComponent.new(text: "Export", variant: :secondary) %>
           <% end %>
           <% header.with_primary_action do %>
-            <%= render ButtonComponent.new(text: "Add student") %>
+            <%= render ButtonComponent.new(text: "Add learner") %>
           <% end %>
         <% end %>
 

@@ -52,7 +52,7 @@ en:
     already_member: "You are already in this family"
     already_belongs: "You already belong to a family"
     other_members: "Your family has another parent. Contact support to join a new family."
-    has_students: "Your family has students in it. Contact support to join a new family."
+    has_students: "Your family has learners in it. Contact support to join a new family."
     billable_subscription: "Cancel your Premium subscription first, then accept this invitation."
     try_again: "Something changed while joining. Please try again."
 
@@ -128,7 +128,7 @@ en:
       remove_invitation: "Remove invitation"
       remove_invitation_confirm: "Remove the invitation for %{email}?"
       remove_parent: "Remove %{name}"
-      remove_parent_confirm: "Remove %{name}? They will get a new family of their own. Your students will stay here."
+      remove_parent_confirm: "Remove %{name}? They will get a new family of their own. Your learners will stay here."
       delete_confirm: "Delete %{name}? This permanently removes the family and its data."
       resend_invite: "Resend Invite"
       edit: "Edit"
@@ -294,15 +294,15 @@ en:
         name: "Free"
         description: "Everything you need to get started. Free forever."
         students:
-          one: "%{count} student"
-          other: "%{count} students"
+          one: "%{count} learner"
+          other: "%{count} learners"
         both_parents: "Both parents"
         get_started: "Get started free"
         current_plan: "Current plan"
       premium:
         description: "More room for your family."
         yearly_price_note: "billed %{amount} yearly"
-        students: "Unlimited students"
+        students: "Unlimited learners"
         both_parents: "Both parents"
         get_premium: "Get Premium"
         upgrade: "Upgrade"
@@ -310,9 +310,9 @@ en:
         current_plan: "Current plan"
       no_refunds_html: "Cancel anytime. You keep Premium until the end of the period you have paid for. No refunds are issued for unused time. %{link}"
       refund_policy: "See our refund policy."
-      more_students_html: "More than %{student_limit} students? %{link}."
+      more_students_html: "More than %{student_limit} learners? %{link}."
       more_students_contact: "Contact us"
-      more_students_subject: "More students on %{product}"
+      more_students_subject: "More learners on %{product}"
 
   plan_intervals:
     day:
@@ -347,13 +347,13 @@ en:
       value_points:
         plan:
           heading: "Plan the year"
-          body: "Lay out subjects and schedules for every student in one place."
+          body: "Lay out subjects and schedules for every learner in one place."
         records:
           heading: "Keep the records"
           body: "Attendance, grades, and progress captured as you go, ready when you need them."
         day:
           heading: "Run the day"
-          body: "See what's next for each student without rebuilding the plan every morning."
+          body: "See what's next for each learner without rebuilding the plan every morning."
     privacy:
       title: "Privacy Policy"
     refunds:
@@ -372,8 +372,8 @@ en:
       choose_plan: "Choose a plan"
       free_title: "You're on Free"
       free_description:
-        one: "Your Family can have %{count} student."
-        other: "Your Family can have %{count} students."
+        one: "Your Family can have %{count} learner."
+        other: "Your Family can have %{count} learners."
       upgrade: "Upgrade to Premium"
       premium: "Premium"
       complimentary_premium: "Complimentary Premium"
@@ -545,8 +545,8 @@ en:
     typography:
       show:
         pricing_sample:
-          one: "Free forever for %{count} student. Upgrade to Premium for unlimited students and both parents."
-          other: "Free forever for %{count} students. Upgrade to Premium for unlimited students and both parents."
+          one: "Free forever for %{count} learner. Upgrade to Premium for unlimited learners and both parents."
+          other: "Free forever for %{count} learners. Upgrade to Premium for unlimited learners and both parents."
 
   checkouts:
     already_subscribed: "You are already subscribed."
@@ -705,9 +705,9 @@ en:
 
   subjects:
     index:
-      description: "What each student is learning."
+      description: "What each learner is learning."
       empty_title: "Subjects will live here"
-      empty_description: "Use subjects to organize what each student is learning when you start building school plans."
+      empty_description: "Use subjects to organize what each learner is learning when you start building school plans."
 
   support:
     show:
@@ -719,55 +719,55 @@ en:
 
   students:
     free_limit_banner:
-      heading: "Premium ended. Choose which %{limit} students stay editable."
+      heading: "Premium ended. Choose which %{limit} learners stay editable."
       description: "Nothing's been deleted. You can change this anytime."
-      choose: "Choose students"
-      picked: "%{limit} students are editable on Free."
+      choose: "Choose learners"
+      picked: "%{limit} learners are editable on Free."
       change: "Change"
       upgrade: "Upgrade instead"
     kept:
-      title: "Choose students to keep editable"
+      title: "Choose learners to keep editable"
       intro: "Choose %{limit}. The rest stay saved and read-only until you upgrade or archive some."
-      error: "Choose %{limit} students to keep editable."
+      error: "Choose %{limit} learners to keep editable."
     index:
-      title: "Students"
+      title: "Learners"
       description: "Everyone you're teaching, in one place."
-      add: "Add student"
-      add_title: "Add student"
+      add: "Add learner"
+      add_title: "Add learner"
       edit_title: "Edit %{name}"
       edit: "Edit"
       actions_label: "Actions for %{name}"
       read_only_badge: "Read-only"
-      empty_title: "Add your first student"
-      empty_description: "Each student gets a color so you can spot them across Cove."
-      filter_label: "Filter students"
+      empty_title: "Add your first learner"
+      empty_description: "Each learner gets a color so you can spot them across Cove."
+      filter_label: "Filter learners"
       active: "Active"
       archived: "Archived"
       restore: "Restore"
-      restore_blocked_free_html: "Free accounts can have a maximum of two active students. To restore a student, archive one first or %{link}."
-      restore_blocked_premium_html: "To restore a student, archive one first or %{link}."
+      restore_blocked_free_html: "Free accounts can have a maximum of two active learners. To restore a learner, archive one first or %{link}."
+      restore_blocked_premium_html: "To restore a learner, archive one first or %{link}."
       restore_upgrade: "upgrade to Premium"
       restore_contact: "contact us"
       delete: "Delete"
     limit_modal:
       title_free:
-        one: "Free includes %{limit} student."
-        other: "Free includes %{limit} students."
+        one: "Free includes %{limit} learner."
+        other: "Free includes %{limit} learners."
       title_premium:
-        one: "Premium includes %{limit} student."
-        other: "Premium includes %{limit} students."
-      body_free: "Upgrade to Premium to add more students."
+        one: "Premium includes %{limit} learner."
+        other: "Premium includes %{limit} learners."
+      body_free: "Upgrade to Premium to add more learners."
       body_premium: "If you need more, contact us and we'll help."
       close: "Close"
       see_plans: "See plans"
       contact: "Contact us"
-      more_students_subject: "More students on %{product}"
+      more_students_subject: "More learners on %{product}"
     form:
       name: "Name"
       grade_level: "Grade level"
       grade_level_placeholder: "e.g. 3rd, Pre-K"
       color: "Color"
-      add: "Add student"
+      add: "Add learner"
       save: "Save"
       cancel: "Cancel"
       archive: "Archive"
@@ -789,7 +789,7 @@ en:
     notices:
       created: "%{name} added."
       kept: "Saved. %{names} stay editable."
-      read_only: "%{name} can't be edited on Free. You can still archive or delete this student."
+      read_only: "%{name} can't be edited on Free. You can still archive or delete this learner."
       updated: "Saved."
       archived: "%{name} archived."
       restored: "%{name} restored."
@@ -828,15 +828,15 @@ en:
           attributes:
             base:
               student_limit_free:
-                one: "Free includes %{count} student. Upgrade to Premium to add more."
-                other: "Free includes %{count} students. Upgrade to Premium to add more."
+                one: "Free includes %{count} learner. Upgrade to Premium to add more."
+                other: "Free includes %{count} learners. Upgrade to Premium to add more."
               student_limit_premium:
-                one: "Premium includes %{count} student. Contact us to add more."
-                other: "Premium includes %{count} students. Contact us to add more."
+                one: "Premium includes %{count} learner. Contact us to add more."
+                other: "Premium includes %{count} learners. Contact us to add more."
             name:
               blank: "Enter a name to continue."
-              taken_active: "You already have a student named %{name}."
-              taken_archived: "You already have an archived student named %{name}. Restore them from archived students, or use a different name."
+              taken_active: "You already have a learner named %{name}."
+              taken_archived: "You already have an archived learner named %{name}. Restore them from archived learners, or use a different name."
         plan:
           attributes:
             base:

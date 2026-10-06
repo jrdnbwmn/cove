@@ -33,7 +33,7 @@ class AppShellSystemTest < ApplicationSystemTestCase
     assert_link "Home", href: user_root_path
     assert_link "Schedules", href: schedules_path
     assert_link "Subjects", href: subjects_path
-    assert_link "Students", href: students_path
+    assert_link "Learners", href: students_path
     assert_selector "a[href='#{user_root_path}'][aria-current='page']", count: 1
     assert_no_selector "nav[aria-label='Primary']"
     assert_no_selector "button[aria-label='Notifications']"

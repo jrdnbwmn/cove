@@ -98,7 +98,7 @@ class FamilyInvitationAcceptanceTest < ActiveSupport::TestCase
     result = FamilyInvitationAcceptance.new(invitation: invitation, user: user).call
 
     assert_not_predicate result, :success?
-    assert_equal "Your family has students in it. Contact support to join a new family.", result.error
+    assert_equal "Your family has learners in it. Contact support to join a new family.", result.error
     assert_equal accounts(:one), user.reload.family
   end
 

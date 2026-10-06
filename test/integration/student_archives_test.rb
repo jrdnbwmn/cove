@@ -87,7 +87,7 @@ class StudentArchivesTest < ActionDispatch::IntegrationTest
 
     assert_redirected_to students_path
     assert_response :see_other
-    assert_equal "Free includes 2 students. Upgrade to Premium to add more.", flash[:alert]
+    assert_equal "Free includes 2 learners. Upgrade to Premium to add more.", flash[:alert]
     assert @archived.reload.archived?
   end
 

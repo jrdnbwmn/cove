@@ -20,7 +20,7 @@ class StudentsTest < ActionDispatch::IntegrationTest
     end
 
     assert_response :unprocessable_content
-    assert_match "Free includes 2 students. Upgrade to Premium to add more.", response.body
+    assert_match "Free includes 2 learners. Upgrade to Premium to add more.", response.body
     assert_select "input[name='student[name]'][value='Nora']"
     assert_select "input[name='student[grade_level]'][value='5th']"
   end
@@ -129,7 +129,7 @@ class StudentsTest < ActionDispatch::IntegrationTest
     end
 
     assert_response :unprocessable_content
-    assert_match "You already have a student named MAYA.", response.body
+    assert_match "You already have a learner named MAYA.", response.body
     assert_select "input[name='student[grade_level]'][value='7th']"
   end
 
@@ -139,7 +139,7 @@ class StudentsTest < ActionDispatch::IntegrationTest
     post students_path, params: {student: {name: "Iris"}}
 
     assert_response :unprocessable_content
-    assert_match "archived student named Iris", response.body
+    assert_match "archived learner named Iris", response.body
   end
 
   test "a duplicate created by the other parent at the same moment is shown as a duplicate" do
@@ -153,7 +153,7 @@ class StudentsTest < ActionDispatch::IntegrationTest
     end
 
     assert_response :unprocessable_content
-    assert_match "You already have a student named maya.", response.body
+    assert_match "You already have a learner named maya.", response.body
     assert_select "input[name='student[grade_level]'][value='7th']"
   end
 
@@ -196,7 +196,7 @@ class StudentsTest < ActionDispatch::IntegrationTest
 
     assert_response :unprocessable_content
     assert_select "turbo-frame#modal-lazy-content"
-    assert_match "You already have a student named Theo.", response.body
+    assert_match "You already have a learner named Theo.", response.body
     assert_select "input[name='student[grade_level]'][value='9th']"
     assert_equal "Maya", @maya.reload.name
   end
@@ -209,7 +209,7 @@ class StudentsTest < ActionDispatch::IntegrationTest
     end
 
     assert_response :unprocessable_content
-    assert_match "You already have a student named theo.", response.body
+    assert_match "You already have a learner named theo.", response.body
     assert_equal "Maya", @maya.reload.name
   end
 
@@ -230,7 +230,7 @@ class StudentsTest < ActionDispatch::IntegrationTest
 
     get edit_student_path(student)
     assert_redirected_to students_path
-    assert_equal "Casey can't be edited on Free. You can still archive or delete this student.", flash[:alert]
+    assert_equal "Casey can't be edited on Free. You can still archive or delete this learner.", flash[:alert]
 
     patch student_path(student), params: {student: {name: "Changed"}}
     assert_redirected_to students_path

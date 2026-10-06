@@ -92,12 +92,12 @@ class StudentBehaviorTest < ActiveSupport::TestCase
     assert build_student(grade_level: nil).valid?
   end
 
-  test "a family cannot have two active students with the same name ignoring case and spaces" do
+  test "a family cannot have two active learners with the same name ignoring case and spaces" do
     Student.create!(account: @family, name: "Maya")
 
     duplicate = build_student(name: "  mAYa ")
     assert_not duplicate.valid?
-    assert_equal ["You already have a student named mAYa."], duplicate.errors[:name]
+    assert_equal ["You already have a learner named mAYa."], duplicate.errors[:name]
   end
 
   test "the duplicate message differs when the existing student is archived" do
@@ -106,7 +106,7 @@ class StudentBehaviorTest < ActiveSupport::TestCase
     duplicate = build_student(name: "Maya")
     assert_not duplicate.valid?
     assert_equal [
-      "You already have an archived student named Maya. Restore them from archived students, or use a different name."
+      "You already have an archived learner named Maya. Restore them from archived learners, or use a different name."
     ], duplicate.errors[:name]
   end
 
@@ -237,7 +237,7 @@ class StudentEditabilityTest < ActiveSupport::TestCase
     assert_not_predicate @read_only, :editable?
   end
 
-  test "reaching two active students makes both selected and unselected students editable" do
+  test "reaching two active learners makes both selected and unselected students editable" do
     students(:read_only).archive!
     students(:read_only_two).archive!
     students(:read_only_three).archive!
@@ -268,7 +268,7 @@ class StudentLimitTest < ActiveSupport::TestCase
 
     third = Student.new(account: @free, name: "Iris")
     assert_not third.save
-    assert_equal ["Free includes 2 students. Upgrade to Premium to add more."], third.errors[:base]
+    assert_equal ["Free includes 2 learners. Upgrade to Premium to add more."], third.errors[:base]
   end
 
   test "a Premium family is refused past its limit with Premium copy" do
@@ -279,7 +279,7 @@ class StudentLimitTest < ActiveSupport::TestCase
 
     student = Student.new(account: family, name: "Extra")
     assert_not student.save
-    assert_equal ["Premium includes 3 students. Contact us to add more."], student.errors[:base]
+    assert_equal ["Premium includes 3 learners. Contact us to add more."], student.errors[:base]
   end
 
   test "a complimentary Premium family sees the Premium copy" do
@@ -289,7 +289,7 @@ class StudentLimitTest < ActiveSupport::TestCase
 
     student = Student.new(account: family, name: "Extra")
     assert_not student.save
-    assert_equal ["Premium includes 10 students. Contact us to add more."], student.errors[:base]
+    assert_equal ["Premium includes 10 learners. Contact us to add more."], student.errors[:base]
   end
 
   test "a student cannot be restored while the family is at its limit" do

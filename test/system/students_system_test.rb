@@ -12,9 +12,9 @@ class StudentsSystemTest < ApplicationSystemTestCase
 
     within("dialog[open]") do
       fill_in "Name", with: "maya"
-      click_button "Add student"
+      click_button "Add learner"
 
-      assert_text "You already have a student named maya."
+      assert_text "You already have a learner named maya."
       assert_field "Name", with: "maya"
     end
     assert_selector "dialog[open]"
@@ -27,8 +27,8 @@ class StudentsSystemTest < ApplicationSystemTestCase
 
     within("dialog[open]") do
       fill_in "Name", with: "maya"
-      click_button "Add student"
-      assert_text "You already have a student named maya."
+      click_button "Add learner"
+      assert_text "You already have a learner named maya."
 
       click_button "Cancel"
       assert_text "Discard your changes?"
@@ -41,7 +41,7 @@ class StudentsSystemTest < ApplicationSystemTestCase
     open_add_modal
 
     within("dialog[open]") do
-      assert_selector "h2", text: "Add student"
+      assert_selector "h2", text: "Add learner"
       click_button "Close"
     end
 
@@ -89,7 +89,7 @@ class StudentsSystemTest < ApplicationSystemTestCase
     within("dialog[open]") do
       fill_in "Name", with: "Nora"
       fill_in "Grade level", with: "5th"
-      click_button "Add student"
+      click_button "Add learner"
     end
 
     assert_no_selector "dialog[open]"
@@ -105,7 +105,7 @@ class StudentsSystemTest < ApplicationSystemTestCase
     within("dialog[open]") do
       fill_in "Name", with: "Theo"
       click_button "Save"
-      assert_text "You already have a student named Theo."
+      assert_text "You already have a learner named Theo."
 
       fill_in "Name", with: "Maya R"
       click_button "Save"
@@ -124,7 +124,7 @@ class StudentsSystemTest < ApplicationSystemTestCase
 
     click_link "Archived"
 
-    assert_selector "nav[aria-label='Filter students'] a[aria-current='page']", text: "Archived"
+    assert_selector "nav[aria-label='Filter learners'] a[aria-current='page']", text: "Archived"
     assert_selector "p", text: "Iris"
     assert_no_selector "p", text: "Maya"
     open_actions_menu("Iris")
@@ -133,7 +133,7 @@ class StudentsSystemTest < ApplicationSystemTestCase
     assert_text "Iris restored."
     assert_selector "p", text: "Iris"
     assert_selector "p", text: "Maya"
-    assert_no_selector "nav[aria-label='Filter students']"
+    assert_no_selector "nav[aria-label='Filter learners']"
   end
 
   test "the Archived control only appears when a student is archived" do
@@ -141,7 +141,7 @@ class StudentsSystemTest < ApplicationSystemTestCase
     visit students_path
 
     assert_selector "p", text: "Maya"
-    assert_no_selector "nav[aria-label='Filter students']"
+    assert_no_selector "nav[aria-label='Filter learners']"
   end
 
   test "a family whose students are all archived still sees the Archived control" do
@@ -149,8 +149,8 @@ class StudentsSystemTest < ApplicationSystemTestCase
     students(:two).archive!
     visit students_path
 
-    assert_text "Add your first student"
-    assert_selector "nav[aria-label='Filter students']"
+    assert_text "Add your first learner"
+    assert_selector "nav[aria-label='Filter learners']"
 
     click_link "Archived"
 
@@ -232,7 +232,7 @@ class StudentsSystemTest < ApplicationSystemTestCase
     assert_selector "dialog[open]", count: 1
     within("dialog[open]") do
       assert_selector "h2", text: "Casey"
-      assert_text "Casey can't be edited on Free. You can still archive or delete this student."
+      assert_text "Casey can't be edited on Free. You can still archive or delete this learner."
     end
   end
 
@@ -303,13 +303,13 @@ class StudentsSystemTest < ApplicationSystemTestCase
     assert_not Student.exists?(ActiveRecord::FixtureSet.identify(:one))
   end
 
-  test "at the Free limit, Add student explains the limit and links to plans" do
+  test "at the Free limit, Add learner explains the limit and links to plans" do
     visit students_path
 
-    find("button", text: "Add student", match: :first).click
+    find("button", text: "Add learner", match: :first).click
 
     within("dialog[open]") do
-      assert_selector "h2", text: "Free includes 2 students."
+      assert_selector "h2", text: "Free includes 2 learners."
       assert_no_selector "input[name='student[name]']"
       assert_link "See plans", href: pricing_path
     end
@@ -318,7 +318,7 @@ class StudentsSystemTest < ApplicationSystemTestCase
   test "the limit modal is sized to its content on desktop, not the full window height" do
     visit students_path
 
-    find("button", text: "Add student", match: :first).click
+    find("button", text: "Add learner", match: :first).click
 
     assert_selector "dialog[open]"
     dialog_height = evaluate_script("document.querySelector('dialog[open]').getBoundingClientRect().height")
@@ -326,7 +326,7 @@ class StudentsSystemTest < ApplicationSystemTestCase
     assert_operator dialog_height, :<, window_height / 2
   end
 
-  test "at the Premium cap, Add student explains the limit and offers Contact us" do
+  test "at the Premium cap, Add learner explains the limit and offers Contact us" do
     account = accounts(:subscribed)
     account.update!(student_limit: 3)
     3.times { |i| Student.create!(account: account, name: "Student #{i}") }
@@ -334,10 +334,10 @@ class StudentsSystemTest < ApplicationSystemTestCase
     login_as users(:subscribed), scope: :user
     visit students_path
 
-    find("button", text: "Add student", match: :first).click
+    find("button", text: "Add learner", match: :first).click
 
     within("dialog[open]") do
-      assert_selector "h2", text: "Premium includes 3 students."
+      assert_selector "h2", text: "Premium includes 3 learners."
       assert_no_selector "input[name='student[name]']"
       assert_link "Contact us"
       assert_no_link "See plans"
@@ -348,7 +348,7 @@ class StudentsSystemTest < ApplicationSystemTestCase
     visit students_path(archived: 1)
 
     assert_selector "p", text: "Iris"
-    assert_text "To restore a student, archive one first"
+    assert_text "To restore a learner, archive one first"
     assert_no_button "Restore"
   end
 
@@ -361,9 +361,9 @@ class StudentsSystemTest < ApplicationSystemTestCase
 
     within("dialog[open]") do
       fill_in "Name", with: "Nora"
-      click_button "Add student"
+      click_button "Add learner"
 
-      assert_text "Free includes 2 students. Upgrade to Premium to add more."
+      assert_text "Free includes 2 learners. Upgrade to Premium to add more."
       assert_field "Name", with: "Nora"
     end
     assert_selector "dialog[open]"
@@ -400,7 +400,7 @@ class StudentsSystemTest < ApplicationSystemTestCase
 
     within("[data-student='#{students(:kept).id}']") { click_button "Avery" }
     within("dialog[open]") do
-      assert_text "Avery can't be edited on Free. You can still archive or delete this student."
+      assert_text "Avery can't be edited on Free. You can still archive or delete this learner."
     end
   end
 
@@ -413,7 +413,7 @@ class StudentsSystemTest < ApplicationSystemTestCase
   end
 
   def open_add_modal
-    find("button", text: "Add student", match: :first).click
+    find("button", text: "Add learner", match: :first).click
     assert_selector "dialog[open] input[name='student[name]']"
   end
 

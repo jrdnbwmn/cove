@@ -20,15 +20,15 @@ class StudentFormsTest < ActionDispatch::IntegrationTest
     post students_path, params: {student: {name: "Nora", grade_level: "5th"}}
 
     assert_response :unprocessable_content
-    assert_select "form#student-form h3", text: /Free includes 2 students\. Upgrade to Premium to add more\./
+    assert_select "form#student-form h3", text: /Free includes 2 learners\. Upgrade to Premium to add more\./
     assert_select "input#student_name[value='Nora']"
     assert_select "input#student_grade_level[value='5th']"
   end
 
-  test "the add form offers the next color pre-selected and an Add student button" do
+  test "the add form offers the next color pre-selected and an Add learner button" do
     get new_student_path
 
-    assert_select "button[type=submit][form='student-form']", text: /Add student/
+    assert_select "button[type=submit][form='student-form']", text: /Add learner/
     assert_select "input[type=radio][name='student[color]'][checked]", 1
     assert_select "input[type=radio][name='student[color]'][value='#{Student.next_color_for(@family)}'][checked]"
   end
@@ -37,11 +37,11 @@ class StudentFormsTest < ActionDispatch::IntegrationTest
     get new_student_path
 
     assert_select "form#student-form button[type=submit]", count: 0
-    assert_select "button[type=submit][form='student-form']", text: /Add student/
+    assert_select "button[type=submit][form='student-form']", text: /Add learner/
     assert_select "button[data-action='click->ui-modal#close:prevent']", text: /Cancel/
     assert_select "form[action$='/archive']", count: 0
     assert_select "a[href*='/delete']", count: 0
-    assert_actions_in_order ["Cancel", "Add student"]
+    assert_actions_in_order ["Cancel", "Add learner"]
   end
 
   test "the edit form puts Delete on the left and Cancel, Archive, Save on the right" do

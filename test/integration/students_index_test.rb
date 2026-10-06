@@ -1,7 +1,7 @@
 require "test_helper"
 
 class StudentsIndexTest < ActionDispatch::IntegrationTest
-  test "a parent sees active students as cards in creation order without archived ones" do
+  test "a parent sees active learners as cards in creation order without archived ones" do
     # Fixtures share one timestamp; set explicit ones so creation order is unambiguous.
     students(:one).update_columns(created_at: 2.days.ago)
     students(:two).update_columns(created_at: 1.day.ago)
@@ -69,26 +69,26 @@ class StudentsIndexTest < ActionDispatch::IntegrationTest
     get students_path
 
     assert_select "[data-ui-modal-turbo-frame-src-value='#{new_student_path}']", count: 1
-    assert_select "h2", text: "Add student"
-    assert_select "button[data-action='click->ui-modal#open:prevent']", text: /Add student/
+    assert_select "h2", text: "Add learner"
+    assert_select "button[data-action='click->ui-modal#open:prevent']", text: /Add learner/
   end
 
-  test "a Free family at its limit still sees Add student, which opens a modal explaining the limit" do
+  test "a Free family at its limit still sees Add learner, which opens a modal explaining the limit" do
     sign_in users(:one)
 
     get students_path
 
     assert_response :success
-    assert_select "button[data-action='click->ui-modal#open:prevent']", text: /Add student/
+    assert_select "button[data-action='click->ui-modal#open:prevent']", text: /Add learner/
     assert_select "[data-ui-modal-turbo-frame-src-value='#{new_student_path}']", count: 0
-    assert_select "dialog h2", text: "Free includes 2 students."
-    assert_select "dialog", text: /Upgrade to Premium to add more students\./
+    assert_select "dialog h2", text: "Free includes 2 learners."
+    assert_select "dialog", text: /Upgrade to Premium to add more learners\./
     assert_select "dialog a[href='#{pricing_path}']", text: "See plans"
     assert_select "dialog button", text: "Close"
     assert_select "dialog a[href^='mailto:']", count: 0
   end
 
-  test "a Premium family at its limit still sees Add student, with a Contact us action" do
+  test "a Premium family at its limit still sees Add learner, with a Contact us action" do
     account = accounts(:subscribed)
     account.update!(student_limit: 3)
     3.times { |i| Student.create!(account: account, name: "Student #{i}") }
@@ -96,8 +96,8 @@ class StudentsIndexTest < ActionDispatch::IntegrationTest
 
     get students_path
 
-    assert_select "button[data-action='click->ui-modal#open:prevent']", text: /Add student/
-    assert_select "dialog h2", text: "Premium includes 3 students."
+    assert_select "button[data-action='click->ui-modal#open:prevent']", text: /Add learner/
+    assert_select "dialog h2", text: "Premium includes 3 learners."
     assert_select "dialog a[href^='mailto:']", text: "Contact us"
     assert_select "dialog a[href='#{pricing_path}']", count: 0
     assert_select "[data-ui-modal-turbo-frame-src-value='#{new_student_path}']", count: 0
@@ -110,7 +110,7 @@ class StudentsIndexTest < ActionDispatch::IntegrationTest
 
     get students_path
 
-    assert_select "dialog h2", text: "Premium includes 10 students."
+    assert_select "dialog h2", text: "Premium includes 10 learners."
     assert_select "dialog a[href^='mailto:']", text: "Contact us"
     assert_select "[data-ui-modal-turbo-frame-src-value='#{new_student_path}']", count: 0
   end
@@ -139,19 +139,19 @@ class StudentsIndexTest < ActionDispatch::IntegrationTest
     assert_no_match "Free includes", response.body
   end
 
-  test "a downgraded family sees the pick banner and an Add student that explains the limit" do
+  test "a downgraded family sees the pick banner and an Add learner that explains the limit" do
     students(:kept).update!(kept_on_free: false)
     students(:kept_two).update!(kept_on_free: false)
     sign_in users(:downgraded)
 
     get students_path
 
-    assert_select "p", text: "Premium ended. Choose which 2 students stay editable."
+    assert_select "p", text: "Premium ended. Choose which 2 learners stay editable."
     assert_select "[data-ui-modal-turbo-frame-src-value='#{edit_students_kept_path}']", count: 1
     assert_select "a[href='#{pricing_path}']", text: "Upgrade instead"
     assert_select "[data-ui-modal-turbo-frame-src-value='#{new_student_path}']", count: 0
-    assert_select "button[data-action='click->ui-modal#open:prevent']", text: /Add student/
-    assert_select "dialog h2", text: "Free includes 2 students."
+    assert_select "button[data-action='click->ui-modal#open:prevent']", text: /Add learner/
+    assert_select "dialog h2", text: "Free includes 2 learners."
   end
 
   test "a downgraded family with a saved pick sees the quiet change note" do
@@ -159,7 +159,7 @@ class StudentsIndexTest < ActionDispatch::IntegrationTest
 
     get students_path
 
-    assert_select "p", text: "2 students are editable on Free."
+    assert_select "p", text: "2 learners are editable on Free."
     assert_select "button", text: "Change"
   end
 
@@ -208,7 +208,7 @@ class StudentsIndexTest < ActionDispatch::IntegrationTest
 
     get students_path(archived: 1)
 
-    assert_select "p.text-muted-foreground", text: /Free accounts can have a maximum of two active students\. To restore a student, archive one first or upgrade to Premium\./
+    assert_select "p.text-muted-foreground", text: /Free accounts can have a maximum of two active learners\. To restore a learner, archive one first or upgrade to Premium\./
     assert_select "a[href='#{pricing_path}']", text: "upgrade to Premium"
     assert_select "form[action='#{student_archive_path(students(:two))}']", count: 0
     assert_select "button", text: /Delete/
@@ -223,7 +223,7 @@ class StudentsIndexTest < ActionDispatch::IntegrationTest
 
     get students_path(archived: 1)
 
-    assert_select "p.text-muted-foreground", text: /To restore a student, archive one first or contact us\./
+    assert_select "p.text-muted-foreground", text: /To restore a learner, archive one first or contact us\./
     assert_select "a[href^='mailto:']", text: "contact us"
     assert_select "form[action='#{student_archive_path(old)}']", count: 0
   end
@@ -236,7 +236,7 @@ class StudentsIndexTest < ActionDispatch::IntegrationTest
 
     assert_select "form[action='#{student_archive_path(students(:two))}']", count: 1
     assert_select "button", text: /Restore/
-    assert_no_match "To restore a student", response.body
+    assert_no_match "To restore a learner", response.body
   end
 
   test "a family with archived students sees an Active/Archived control with counts" do
@@ -244,12 +244,12 @@ class StudentsIndexTest < ActionDispatch::IntegrationTest
 
     get students_path
 
-    assert_select "nav[aria-label='Filter students']" do
+    assert_select "nav[aria-label='Filter learners']" do
       assert_select "a[href='#{students_path}'][aria-current='page']", text: /Active/
       assert_select "a[href='#{students_path(archived: 1)}']:not([aria-current])", text: /Archived/
     end
-    assert_select "nav[aria-label='Filter students'] a", text: /Active\s*2/
-    assert_select "nav[aria-label='Filter students'] a", text: /Archived\s*1/
+    assert_select "nav[aria-label='Filter learners'] a", text: /Active\s*2/
+    assert_select "nav[aria-label='Filter learners'] a", text: /Archived\s*1/
   end
 
   test "a family with no archived students does not see the control" do
@@ -257,7 +257,7 @@ class StudentsIndexTest < ActionDispatch::IntegrationTest
 
     get students_path
 
-    assert_select "nav[aria-label='Filter students']", count: 0
+    assert_select "nav[aria-label='Filter learners']", count: 0
   end
 
   test "the Archived view shows only archived students in the same grid" do
@@ -265,7 +265,7 @@ class StudentsIndexTest < ActionDispatch::IntegrationTest
 
     get students_path(archived: 1)
 
-    assert_select "nav[aria-label='Filter students'] a[aria-current='page']", text: /Archived/
+    assert_select "nav[aria-label='Filter learners'] a[aria-current='page']", text: /Archived/
     names = css_select(".grid p.font-medium").map { |node| node.text.strip }
     assert_includes names, "Iris"
     assert_not_includes names, "Maya"
@@ -280,9 +280,9 @@ class StudentsIndexTest < ActionDispatch::IntegrationTest
 
     get students_path
 
-    assert_select "nav[aria-label='Filter students'] a[aria-current='page']", text: /Active\s*0/
-    assert_select "nav[aria-label='Filter students'] a[href='#{students_path(archived: 1)}']", text: /Archived\s*3/
-    assert_select "h2", text: "Add your first student"
+    assert_select "nav[aria-label='Filter learners'] a[aria-current='page']", text: /Active\s*0/
+    assert_select "nav[aria-label='Filter learners'] a[href='#{students_path(archived: 1)}']", text: /Archived\s*3/
+    assert_select "h2", text: "Add your first learner"
   end
 
   test "an editable student's name opens their edit modal and the card has no footer buttons" do
@@ -379,14 +379,14 @@ class StudentsIndexTest < ActionDispatch::IntegrationTest
     end
   end
 
-  test "a family with no active students sees an empty state with an add trigger" do
+  test "a family with no active learners sees an empty state with an add trigger" do
     sign_in users(:noaccount)
 
     get students_path
 
     assert_response :success
-    assert_select "h2", text: "Add your first student"
-    assert_select "p", text: "Each student gets a color so you can spot them across Cove."
+    assert_select "h2", text: "Add your first learner"
+    assert_select "p", text: "Each learner gets a color so you can spot them across Cove."
     assert_select ".grid p.font-medium", count: 0
     assert_select "[data-ui-modal-turbo-frame-src-value='#{new_student_path}']", count: 1
   end
@@ -398,7 +398,7 @@ class StudentsIndexTest < ActionDispatch::IntegrationTest
 
     get students_path
 
-    assert_select "h2", text: "Add your first student"
+    assert_select "h2", text: "Add your first learner"
   end
 
   test "every student color has a token and views never hardcode hex colors" do

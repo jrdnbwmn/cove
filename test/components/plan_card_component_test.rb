@@ -32,12 +32,12 @@ class PlanCardComponentTest < ViewComponent::TestCase
       name: "Free",
       description: "For families getting started.",
       price_text: "Free",
-      features: ["1 student"]
+      features: ["1 learner"]
     )) { "Current plan" }
 
     assert_text "Free"
     assert_text "For families getting started."
-    assert_text "1 student"
+    assert_text "1 learner"
     assert_text "Current plan"
   end
 
@@ -54,9 +54,9 @@ class PlanCardComponentTest < ViewComponent::TestCase
   end
 
   test "renders supplied features instead of a plan's features" do
-    render_inline(PlanCardComponent.new(plan: plans(:personal), features: ["Up to 5 students"]))
+    render_inline(PlanCardComponent.new(plan: plans(:personal), features: ["Up to 5 learners"]))
 
-    assert_text "Up to 5 students"
+    assert_text "Up to 5 learners"
     assert_no_text "Unlimited access"
   end
 
@@ -71,7 +71,7 @@ class PlanCardComponentTest < ViewComponent::TestCase
     render_preview(:free_plan)
 
     assert_text "Free"
-    assert_text "1 student"
+    assert_text "1 learner"
   end
 
   test "renders the yearly-equivalent plan preview" do

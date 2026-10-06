@@ -33,7 +33,7 @@ class ComingSoonPagesTest < ActionDispatch::IntegrationTest
     assert_response :success
     assert_select "h1", text: "Subjects"
     assert_select "h2", text: "Subjects will live here"
-    assert_select "p", text: "Use subjects to organize what each student is learning when you start building school plans."
+    assert_select "p", text: "Use subjects to organize what each learner is learning when you start building school plans."
     assert_select "svg path[d='M12 7v14']"
   end
 
@@ -49,7 +49,7 @@ class ComingSoonPagesTest < ActionDispatch::IntegrationTest
     get students_path
 
     assert_response :success
-    assert_select "h1", text: "Students"
+    assert_select "h1", text: "Learners"
     assert_select "h2", text: "Coming soon", count: 0
   end
 

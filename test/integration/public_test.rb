@@ -149,20 +149,20 @@ class Jumpstart::PublicTest < ActionDispatch::IntegrationTest
   test "the Free pricing card says 2 students" do
     get pricing_path
 
-    assert_includes response.body, ">2 students<"
+    assert_includes response.body, ">2 learners<"
   end
 
   test "the Premium pricing card shows unlimited students" do
     get pricing_path
 
-    assert_includes response.body, ">Unlimited students<"
+    assert_includes response.body, ">Unlimited learners<"
     assert_not_includes response.body, "Up to"
   end
 
   test "a signed-out visitor is invited to contact support for more than 10 students" do
     get pricing_path
 
-    assert_includes response.body, "More than 10 students?"
+    assert_includes response.body, "More than 10 learners?"
     assert_select "a[href^=?]", "mailto:#{Jumpstart.config.support_email}", text: "Contact us"
   end
 
@@ -172,7 +172,7 @@ class Jumpstart::PublicTest < ActionDispatch::IntegrationTest
 
     get pricing_path
 
-    assert_includes response.body, "More than 14 students?"
+    assert_includes response.body, "More than 14 learners?"
   end
 
   test "pricing page navbar is borderless and shows the logo" do
