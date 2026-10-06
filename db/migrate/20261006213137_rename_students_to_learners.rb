@@ -1,4 +1,4 @@
-class RenameStudentsToLearners < ActiveRecord::Migration[8.0]
+class RenameStudentsToLearners < ActiveRecord::Migration[8.1]
   def change
     rename_table :students, :learners
     rename_column :accounts, :student_limit, :learner_limit
