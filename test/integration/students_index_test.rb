@@ -33,7 +33,7 @@ class StudentsIndexTest < ActionDispatch::IntegrationTest
     assert_select ".grid span.student-color[style]", count: 0
   end
 
-  test "a parent can open the add student modal from the header" do
+  test "a parent can open the add student modal from the add card" do
     students(:two).archive!
     sign_in users(:one)
 
@@ -44,7 +44,28 @@ class StudentsIndexTest < ActionDispatch::IntegrationTest
     assert_select "button[data-action='click->ui-modal#open:prevent']", text: /Add student/
   end
 
-  test "a Free family at its limit sees an upgrade prompt instead of the Add trigger" do
+  test "the add student card sits in the grid after the student cards" do
+    students(:two).archive!
+    sign_in users(:one)
+
+    get students_path
+
+    assert_select "h1 ~ button", count: 0
+    assert_select "div.grid > div:last-child button[data-action='click->ui-modal#open:prevent']", text: /Add student/
+  end
+
+  test "a Free family at its limit sees a disabled add card with an upgrade link inside it" do
+    sign_in users(:one)
+
+    get students_path
+
+    assert_select "div.grid [aria-disabled='true']" do
+      assert_select "p", text: "Free includes 2 students."
+      assert_select "a[href='#{pricing_path}']", text: /Upgrade to Premium/
+    end
+  end
+
+  test "a Free family at its limit sees an upgrade prompt in place of the add card" do
     sign_in users(:one)
 
     get students_path

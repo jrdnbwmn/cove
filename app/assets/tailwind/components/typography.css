@@ -10,7 +10,7 @@
 h1, .h1 {
   font-family: var(--font-serif);
   font-feature-settings: var(--font-serif--font-feature-settings);
-  font-size: 2rem;
+  font-size: 1.75rem;
   font-weight: 400;
   letter-spacing: -0.025em;
   line-height: 1.25;

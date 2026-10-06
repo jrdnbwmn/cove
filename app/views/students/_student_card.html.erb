@@ -1,6 +1,7 @@
 <%# locals: (student:, archived: false, can_restore: true) %>
-<div data-student="<%= student.id %>">
-  <%= render CardComponent.new do |card| %>
+<div data-student="<%= student.id %>" class="h-full">
+  <%# AIDEV-NOTE: The grid uses auto-rows-fr and every card fills its cell (h-full), so all cards share one height; justify-between pins the footer to the bottom. %>
+  <%= render CardComponent.new(classes: "flex h-full flex-col justify-between") do |card| %>
     <% card.with_body do %>
       <%# AIDEV-NOTE: Archived cards mute only the identity block; action controls stay at full contrast. %>
       <div class="flex items-start gap-3 <%= "opacity-60" if archived %>">

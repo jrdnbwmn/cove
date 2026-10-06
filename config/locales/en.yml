@@ -238,6 +238,7 @@ en:
   dashboard:
     show:
       title: "Dashboard"
+      description: "Your family's week at a glance."
 
   oauth:
     sign_in_with: "Sign in with %{provider}"
@@ -672,6 +673,8 @@ en:
         completed_description: "Users that have completed their first purchase."
 
   layouts:
+    sidebar:
+      description: "Manage your profile, family, and billing."
     mailer:
       copyright_html: "Copyright &copy; %{year}, All rights reserved."
       mailing_address: "Our mailing address is:"
@@ -696,6 +699,18 @@ en:
     invalid: "Choose whether you want to receive marketing updates."
     protected: "You can't restore this marketing subscription from Cove."
 
+  schedules:
+    index:
+      description: "Plan your family's time, block by block."
+
+  subjects:
+    index:
+      description: "What each student is learning."
+
+  support:
+    show:
+      description: "Help with Cove, whenever you need it."
+
   students:
     free_limit_banner:
       heading: "Premium ended. Choose which %{limit} students stay editable."
@@ -710,6 +725,7 @@ en:
       error: "Choose %{limit} students to keep editable."
     index:
       title: "Students"
+      description: "Everyone you're teaching, in one place."
       add: "Add student"
       add_title: "Add student"
       edit: "Edit"
