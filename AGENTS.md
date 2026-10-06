@@ -149,7 +149,7 @@ Routes are modularized in `config/routes/`:
 - Product docs in `docs/product/`: `product-brief.md` — behavior rules;
   read before changing families, students, billing, plan status,
   notifications, AI behavior, or anything that stores student data.
-  `ux-notes.md` — read before writing user-facing text or screen states.
+  `ux-notes.md` — read before writing user-facing text, screen states, or page layout.
   `strategy-brief.md` — who Cove is for and its positioning.
 - Glossary (use these terms in UI copy and docs):
   - **Family** = `Account`. **Parent** = an `AccountUser` (all are admins);

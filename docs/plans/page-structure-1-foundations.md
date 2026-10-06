@@ -12,15 +12,15 @@ docs that steer new work away from retired components.
 
 | Task | Phase | Checkpoint | Description | Assign | Done |
 | ---- | ----- | ---------- | ----------- | ------ | ---- |
-| 1    | 1     | 1          | Create PageHeaderComponent | Master |      |
-| 2    | 1     | 1          | Use PageHeader on Dashboard, Subjects, Schedules, Support | Clone |      |
-| 3    | 1     | 1          | Use PageHeader on Students and the Settings layout | Clone |      |
-| 4    | 2     | 2          | Date/time format helpers | Master |      |
-| 5    | 2     | 2          | Use the helpers where signed-in pages show dates | Clone |      |
-| 6    | 3     | 3          | Modals open as full-height sheets on phones | Master |      |
-| 7    | 3     | 3          | Ask before discarding unsaved changes in a modal | Master |      |
-| 8    | 4     | 4          | Mark retired components in code and catalog | Clone |      |
-| 9    | 4     | 4          | Point AGENTS.md and style-ui at the page rules | Master |      |
+| 1    | 1     | 1          | Create PageHeaderComponent | Master | ✅ |
+| 2    | 1     | 1          | Use PageHeader on Dashboard, Subjects, Schedules, Support | Clone | ✅ |
+| 3    | 1     | 1          | Use PageHeader on Students and the Settings layout | Clone | ✅ |
+| 4    | 2     | 2          | Date/time format helpers | Master | ✅ |
+| 5    | 2     | 2          | Use the helpers where signed-in pages show dates | Clone | ✅ |
+| 6    | 3     | 3          | Modals open as full-height sheets on phones | Master | ✅ |
+| 7    | 3     | 3          | Ask before discarding unsaved changes in a modal | Master | ✅ |
+| 8    | 4     | 4          | Mark retired components in code and catalog | Clone | ✅ |
+| 9    | 4     | 4          | Point AGENTS.md and style-ui at the page rules | Master | ✅ |
 
 ## Prerequisites
 

@@ -1,9 +1,6 @@
 <% content_for :content do %>
   <div class="settings-content">
-    <div class="mb-6">
-      <h1 class="h1">Settings</h1>
-      <p class="mt-1 font-sans text-muted-foreground"><%= t("layouts.sidebar.description") %></p>
-    </div>
+    <%= render PageHeaderComponent.new(title: "Settings", description: t("layouts.sidebar.description")) %>
     <%= yield :sidebar %>
     <div class="mt-6">
       <%= yield %>

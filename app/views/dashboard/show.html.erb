@@ -1,12 +1,9 @@
 <% Current.meta_tags.set(title: t(".title")) %>
 
-<div class="mb-8">
-  <h1><%= t(".title") %></h1>
-  <p class="mt-1 font-sans text-muted-foreground"><%= t(".description") %></p>
+<%= render PageHeaderComponent.new(title: t(".title"), description: t(".description")) %>
 
-  <%= render EmptyStateComponent.new(title: "Coming soon", description: "Your family's week will show up here.") do |c| %>
-    <% c.with_icon do %>
-      <%= icon "layout-dashboard", class: "w-full h-full" %>
-    <% end %>
+<%= render EmptyStateComponent.new(title: "Coming soon", description: "Your family's week will show up here.") do |c| %>
+  <% c.with_icon do %>
+    <%= icon "layout-dashboard", class: "w-full h-full" %>
   <% end %>
-</div>
+<% end %>

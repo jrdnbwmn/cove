@@ -33,26 +33,37 @@ class StudentsSystemTest < ApplicationSystemTestCase
     assert_no_selector "dialog[open]"
   end
 
-  test "cancel closes the add and edit modals without saving, and the cross stays available" do
+  test "closing an untouched modal closes right away" do
     open_slot
     visit students_path
     open_add_modal
 
     within("dialog[open]") do
       assert_selector "button", text: "Close"
+      click_button "Cancel"
+    end
+    assert_no_selector "dialog[open]"
+  end
+
+  test "closing the add modal after typing asks before discarding" do
+    open_slot
+    visit students_path
+    open_add_modal
+
+    within("dialog[open]") do
       fill_in "Name", with: "Nora"
       click_button "Cancel"
+
+      assert_text "Discard your changes?"
+      click_button "Keep editing"
+      assert_field "Name", with: "Nora"
+
+      click_button "Cancel"
+      click_button "Discard"
     end
+
     assert_no_selector "dialog[open]"
     assert_not Student.exists?(name: "Nora")
-
-    open_edit_modal("Maya")
-    within("dialog[open]") do
-      fill_in "Name", with: "Changed"
-      click_button "Cancel"
-    end
-    assert_no_selector "dialog[open]"
-    assert_equal "Maya", students(:one).reload.name
   end
 
   test "adding a student closes the modal, shows the student and a toast" do

@@ -1,10 +1,7 @@
-<div class="mb-8">
-  <h1>Support</h1>
-  <p class="mt-1 font-sans text-muted-foreground"><%= t(".description") %></p>
+<%= render PageHeaderComponent.new(title: "Support", description: t(".description")) %>
 
-  <%= render EmptyStateComponent.new(title: "Coming soon", description: "Support resources will be available here.") do |component| %>
-    <% component.with_icon do %>
-      <%= icon "life-buoy", class: "size-full" %>
-    <% end %>
+<%= render EmptyStateComponent.new(title: "Coming soon", description: "Support resources will be available here.") do |component| %>
+  <% component.with_icon do %>
+    <%= icon "life-buoy", class: "size-full" %>
   <% end %>
-</div>
+<% end %>

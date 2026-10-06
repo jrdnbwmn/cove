@@ -37,7 +37,7 @@
 
 <div class="mb-4">
   <div class="mb-2 text-muted-foreground text-xs uppercase font-bold"><%= ApiToken.human_attribute_name(:created_at) %></div>
-  <%= @api_token.created_at.strftime("%b %e, %Y") %>
+  <%= friendly_date(@api_token.created_at) %>
 </div>
 
 <div class="mb-4">

@@ -1,16 +1,14 @@
-<div class="mb-8 flex flex-wrap items-center justify-between gap-4">
-  <div>
-    <h1><%= t(".title") %></h1>
-    <p class="mt-1 font-sans text-muted-foreground"><%= t(".description") %></p>
-  </div>
+<%= render PageHeaderComponent.new(title: t(".title"), description: t(".description")) do |header| %>
   <% if @students.any? && !Current.account.over_free_student_limit? %>
-    <% if Current.account.can_add_student? %>
-      <%= render "add_trigger" %>
-    <% else %>
-      <%= render "limit_prompt", account: Current.account %>
+    <% header.with_primary_action do %>
+      <% if Current.account.can_add_student? %>
+        <%= render "add_trigger" %>
+      <% else %>
+        <%= render "limit_prompt", account: Current.account %>
+      <% end %>
     <% end %>
   <% end %>
-</div>
+<% end %>
 
 <% if Current.account.over_free_student_limit? %>
   <%= render "free_limit_banner", account: Current.account %>

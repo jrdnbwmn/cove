@@ -10,7 +10,9 @@ class StudentsIndexTest < ActionDispatch::IntegrationTest
     get students_path
 
     assert_response :success
-    names = css_select(".grid p.font-medium").map { |node| node.text.strip }
+    names = css_select(".grid p.font-medium")
+      .reject { |node| node.ancestors.any? { |ancestor| ancestor["data-ui-modal-target"] == "discardPrompt" } }
+      .map { |node| node.text.strip }
     assert_equal %w[Maya Theo], names
     assert_no_match "Iris", response.body
   end

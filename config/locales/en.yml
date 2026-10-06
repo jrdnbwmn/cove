@@ -28,6 +28,23 @@
 #       enabled: "ON"
 
 en:
+  date:
+    formats:
+      friendly: "%-d %b %Y"
+      friendly_short: "%-d %b"
+  time:
+    formats:
+      friendly: "%-l:%M%P"
+  friendly_dates:
+    today: "Today"
+    tomorrow: "Tomorrow"
+    yesterday: "Yesterday"
+  ui_modal:
+    discard_prompt:
+      title: "Discard your changes?"
+      keep_editing: "Keep editing"
+      discard: "Discard"
+
   family_invitation_acceptance:
     wrong_recipient: "This invitation was sent to someone else"
     archived: "This invitation is no longer valid"
