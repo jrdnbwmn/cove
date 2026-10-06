@@ -1,0 +1,17 @@
+<%= turbo_frame_tag "modal-lazy-content" do %>
+  <%= form_with url: learners_kept_path, method: :patch, class: "flex flex-col gap-y-5", data: {controller: "pick-limit", pick_limit_limit_value: Account::FREE_LEARNER_LIMIT} do %>
+    <% Current.account.errors[:base].each do |message| %>
+      <%= render AlertComponent.new(title: message, variant: :error) %>
+    <% end %>
+    <p class="text-sm text-muted-foreground"><%= t("learners.kept.intro", limit: Account::FREE_LEARNER_LIMIT) %></p>
+    <div class="grid gap-3">
+      <% @learners.each do |learner| %>
+        <%= render CheckboxComponent.new(label: learner.name, name: "learner_ids[]", value: learner.id, checked: @selected_ids ? @selected_ids.include?(learner.id.to_s) : learner.kept_on_free?, description: learner.grade_level, data: {pick_limit_target: "checkbox", action: "change->pick-limit#change"}) %>
+      <% end %>
+    </div>
+    <div class="flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
+      <%= render ButtonComponent.new(text: t("learners.form.cancel"), variant: :outline, data: {action: "click->ui-modal#close:prevent"}) %>
+      <%= render ButtonComponent.new(text: t("learners.form.save"), type: "submit", data: {pick_limit_target: "submit"}) %>
+    </div>
+  <% end %>
+<% end %>

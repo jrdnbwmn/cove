@@ -1,0 +1,73 @@
+<%# locals: (learner:, archived: false, can_restore: true) %>
+<%# AIDEV-NOTE: Stretched-link card (ux-notes, Lists). The learner's name is the real <button> that opens the modal; its ::after covers the whole card so a click anywhere opens it and darkens the border on hover. The "…" menu sits above it (z-10), so it does not trigger that hover. Archived cards have no click target. %>
+<%# AIDEV-NOTE: The "…" menu is portaled to <body> while open, which takes its items out of any Stimulus controller's scope. So the items use no Stimulus actions: Edit/Archive/Restore are submit buttons tied to hidden forms by the HTML form attribute, and Edit and Delete each submit a hidden form inside the delete modal's own scope, whose submit->ui-modal#open action opens it. %>
+<% name_classes = "cursor-pointer text-left after:absolute after:inset-0 after:rounded-xl focus-visible:outline-none focus-visible:after:outline-2 focus-visible:after:outline-offset-2 focus-visible:after:outline-primary" %>
+<% identity = capture do %>
+  <%# AIDEV-NOTE: Archived cards mute only the identity block; the "…" menu stays at full contrast. pr-10 keeps long names clear of the menu button. %>
+  <div class="flex items-start gap-3 pr-10 <%= "opacity-60" if archived %>">
+    <%= render "learners/color_dot", learner: learner %>
+    <div class="min-w-0">
+      <div class="flex flex-wrap items-center gap-2">
+        <p class="font-medium break-words">
+          <% if archived %>
+            <%= learner.name %>
+          <% else %>
+            <button type="button" class="<%= name_classes %>" data-learner-card-link data-action="click->ui-modal#open:prevent"><%= learner.name %></button>
+          <% end %>
+        </p>
+        <% if !archived && !learner.editable? %>
+          <%= render BadgeComponent.new(text: t("learners.index.read_only_badge"), variant: :neutral, size: :sm) %>
+        <% end %>
+      </div>
+      <% if learner.grade_level.present? %>
+        <p class="text-sm text-muted-foreground break-words"><%= learner.grade_level %></p>
+      <% end %>
+    </div>
+  </div>
+<% end %>
+<div data-learner="<%= learner.id %>" class="h-full">
+  <%= render CardComponent.new(classes: "relative h-full transition-colors has-[[data-learner-card-link]:hover]:border-neutral-300") do |card| %>
+    <% card.with_body do %>
+      <% if archived %>
+        <%= identity %>
+      <% elsif learner.editable? %>
+        <%= render UiModalComponent.new(lazy_load: true, turbo_frame_src: edit_learner_path(learner)) do |modal| %>
+          <% modal.with_trigger do %>
+            <%= identity %>
+            <%= form_with url: "#", method: :get, id: dom_id(learner, :edit), class: "hidden", data: {action: "submit->ui-modal#open:prevent"} do %><% end %>
+          <% end %>
+        <% end %>
+      <% else %>
+        <%= render UiModalComponent.new(lazy_load: true, turbo_frame_src: learner_path(learner)) do |modal| %>
+          <% modal.with_trigger do %><%= identity %><% end %>
+        <% end %>
+      <% end %>
+
+      <div class="absolute right-2 top-2 z-10">
+        <%= render DropdownComponent.new(placement: "bottom-end", width: "w-44") do |dropdown| %>
+          <% dropdown.with_trigger do %>
+            <button type="button" aria-label="<%= t("learners.index.actions_label", name: learner.name) %>" aria-haspopup="menu" data-ui-dropdown-popover-target="button" data-action="click->ui-dropdown-popover#toggle" class="flex size-10 items-center justify-center rounded-lg text-muted-foreground hover:bg-muted hover:text-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary">
+              <%= icon "ellipsis-vertical", class: "size-5" %>
+            </button>
+          <% end %>
+          <% if archived && can_restore %>
+            <% dropdown.with_item_button(text: t("learners.index.restore"), icon: icon("archive-restore", class: "size-4"), type: "submit", form: dom_id(learner, :restore)) %>
+          <% elsif !archived && learner.editable? %>
+            <% dropdown.with_item_button(text: t("learners.index.edit"), icon: icon("pencil", class: "size-4"), type: "submit", form: dom_id(learner, :edit)) %>
+            <% dropdown.with_item_button(text: t("learners.form.archive"), icon: icon("archive", class: "size-4"), type: "submit", form: dom_id(learner, :archive)) %>
+          <% end %>
+          <% dropdown.with_item_button(text: t("learners.index.delete"), icon: icon("trash-2", class: "size-4"), destructive: true, type: "submit", form: dom_id(learner, :delete)) %>
+        <% end %>
+      </div>
+
+      <% if archived && can_restore %>
+        <%= form_with url: learner_archive_path(learner), method: :delete, id: dom_id(learner, :restore), class: "hidden" do %><% end %>
+      <% elsif !archived && learner.editable? %>
+        <%= form_with url: learner_archive_path(learner), method: :post, id: dom_id(learner, :archive), class: "hidden" do %><% end %>
+      <% end %>
+
+      <%# AIDEV-NOTE: No title: the confirmation's own "Delete <name>?" heading is the only one, so the dialog never shows two headings (audit M-11). %>
+      <%= render "application/lazy_modal", src: delete_learner_path(learner, from: "list"), form_id: dom_id(learner, :delete) %>
+    <% end %>
+  <% end %>
+</div>

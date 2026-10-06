@@ -1,0 +1,14 @@
+<%= turbo_frame_tag "modal-lazy-content" do %>
+  <h2 class="mb-2 modal-heading text-neutral-900 dark:text-white"><%= @learner.name %></h2>
+  <div class="flex flex-col gap-y-5">
+    <div class="flex items-start gap-3">
+      <%= render "learners/color_dot", learner: @learner %>
+      <div>
+        <p class="font-medium"><%= @learner.name %></p>
+        <% if @learner.grade_level.present? %><p class="text-sm text-muted-foreground"><%= @learner.grade_level %></p><% end %>
+      </div>
+    </div>
+    <p class="text-muted-foreground"><%= t("learners.notices.read_only", name: @learner.name) %></p>
+    <%= render layout: "learners/actions", locals: {learner: @learner} do %><% end %>
+  </div>
+<% end %>

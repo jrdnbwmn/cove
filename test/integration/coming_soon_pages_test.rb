@@ -37,16 +37,16 @@ class ComingSoonPagesTest < ActionDispatch::IntegrationTest
     assert_select "svg path[d='M12 7v14']"
   end
 
-  test "redirects guests to sign in for students" do
-    get students_path
+  test "redirects guests to sign in for learners" do
+    get learners_path
 
     assert_redirected_to new_user_session_path
   end
 
-  test "shows the students page instead of a coming-soon placeholder for signed-in users" do
+  test "shows the learners page instead of a coming-soon placeholder for signed-in users" do
     sign_in users(:one)
 
-    get students_path
+    get learners_path
 
     assert_response :success
     assert_select "h1", text: "Learners"

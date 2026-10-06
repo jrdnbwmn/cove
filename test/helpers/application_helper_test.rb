@@ -17,22 +17,22 @@ class ApplicationHelperTest < ActionView::TestCase
     request.path = "/schedules"
     assert schedules_nav_active?
     assert_not subjects_nav_active?
-    assert_not students_nav_active?
+    assert_not learners_nav_active?
     assert_not dashboard_nav_active?
 
     request.path = "/subjects"
     assert subjects_nav_active?
     assert_not schedules_nav_active?
-    assert_not students_nav_active?
+    assert_not learners_nav_active?
 
-    request.path = "/students"
-    assert students_nav_active?
+    request.path = "/learners"
+    assert learners_nav_active?
     assert_not schedules_nav_active?
     assert_not subjects_nav_active?
 
     request.path = support_path
     assert support_nav_active?
-    assert_not students_nav_active?
+    assert_not learners_nav_active?
   end
 
   test "settings stays highlighted across profile, security, and two-factor pages" do
@@ -111,7 +111,7 @@ class ApplicationHelperTest < ActionView::TestCase
     assert_not dashboard_nav_active?
     assert_not schedules_nav_active?
     assert_not subjects_nav_active?
-    assert_not students_nav_active?
+    assert_not learners_nav_active?
   end
 
   test "pricing has no active sidebar item" do

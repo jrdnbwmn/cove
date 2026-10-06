@@ -165,77 +165,77 @@ class AccountTest < ActiveSupport::TestCase
     assert accounts(:subscribed).payment_processor.subscribed?
   end
 
-  test "a Free family can add students until it has 2 active" do
+  test "a Free family can add learners until it has 2 active" do
     account = accounts(:one)
 
-    assert account.can_add_student?
+    assert account.can_add_learner?
 
-    Student.create!(account: account, name: "Maya")
-    assert account.can_add_student?
+    Learner.create!(account: account, name: "Maya")
+    assert account.can_add_learner?
 
-    Student.create!(account: account, name: "Theo")
-    assert_not account.can_add_student?
+    Learner.create!(account: account, name: "Theo")
+    assert_not account.can_add_learner?
   end
 
-  test "a paid Premium family can add students until it reaches its limit" do
+  test "a paid Premium family can add learners until it reaches its limit" do
     account = accounts(:subscribed)
-    account.update!(student_limit: 3)
-    2.times { |i| Student.create!(account: account, name: "Student #{i}") }
+    account.update!(learner_limit: 3)
+    2.times { |i| Learner.create!(account: account, name: "Learner #{i}") }
 
-    assert account.can_add_student?
+    assert account.can_add_learner?
 
-    Student.create!(account: account, name: "Student 3")
-    assert_not account.can_add_student?
+    Learner.create!(account: account, name: "Learner 3")
+    assert_not account.can_add_learner?
   end
 
-  test "a complimentary Premium family gets the Premium student limit" do
+  test "a complimentary Premium family gets the Premium learner limit" do
     account = accounts(:complimentary)
-    9.times { |i| Student.create!(account: account, name: "Student #{i}") }
+    9.times { |i| Learner.create!(account: account, name: "Learner #{i}") }
 
-    assert account.can_add_student?
+    assert account.can_add_learner?
 
-    Student.create!(account: account, name: "Student 9")
-    assert_not account.can_add_student?
+    Learner.create!(account: account, name: "Learner 9")
+    assert_not account.can_add_learner?
   end
 
-  test "a raised student limit lets a Premium family add more students immediately" do
+  test "a raised learner limit lets a Premium family add more learners immediately" do
     account = accounts(:subscribed)
-    10.times { |i| Student.create!(account: account, name: "Student #{i}") }
-    assert_not account.can_add_student?
+    10.times { |i| Learner.create!(account: account, name: "Learner #{i}") }
+    assert_not account.can_add_learner?
 
-    account.update!(student_limit: 12)
+    account.update!(learner_limit: 12)
 
-    assert account.can_add_student?
+    assert account.can_add_learner?
   end
 
-  test "archived students do not use up a student slot" do
+  test "archived learners do not use up a learner slot" do
     account = accounts(:company)
-    assert_equal 2, account.students.active.count
-    assert_equal 1, account.students.archived.count
-    assert_not account.can_add_student?
+    assert_equal 2, account.learners.active.count
+    assert_equal 1, account.learners.archived.count
+    assert_not account.can_add_learner?
 
-    students(:two).archive!
+    learners(:two).archive!
 
-    assert account.can_add_student?
+    assert account.can_add_learner?
   end
 
-  test "student capacity stays current when students were already loaded" do
+  test "learner capacity stays current when learners were already loaded" do
     account = accounts(:one)
-    account.students.load
-    assert account.can_add_student?
+    account.learners.load
+    assert account.can_add_learner?
 
-    Student.create!(account: account, name: "Maya")
-    Student.create!(account: account, name: "Theo")
+    Learner.create!(account: account, name: "Maya")
+    Learner.create!(account: account, name: "Theo")
 
-    assert_not account.can_add_student?
+    assert_not account.can_add_learner?
   end
 
-  test "a new Free family can have 2 students" do
+  test "a new Free family can have 2 learners" do
     account = Account.new(owner: users(:admin), name: "New Family")
 
     assert_not account.premium?
     assert account.free?
-    assert_equal 2, account.students_allowed
+    assert_equal 2, account.learners_allowed
   end
 
   test "a complimentary family is Premium without billing records" do
@@ -243,7 +243,7 @@ class AccountTest < ActiveSupport::TestCase
 
     assert account.premium?
     assert_not account.free?
-    assert_equal 10, account.students_allowed
+    assert_equal 10, account.learners_allowed
     assert_equal "complimentary", account.plan_status
     assert_empty account.pay_customers
     assert_empty account.pay_subscriptions
@@ -258,7 +258,7 @@ class AccountTest < ActiveSupport::TestCase
     assert_equal note, account.complimentary_premium_note
     assert account.free?
     assert_equal "free", account.plan_status
-    assert_equal 2, account.students_allowed
+    assert_equal 2, account.learners_allowed
   end
 
   test "a family cannot receive complimentary Premium without a note" do
@@ -312,7 +312,7 @@ class AccountTest < ActiveSupport::TestCase
 
     assert account.premium?
     assert_not account.free?
-    assert_equal 10, account.students_allowed
+    assert_equal 10, account.learners_allowed
   end
 
   test "a family with an active yearly subscription is premium and allowed its limit" do
@@ -321,55 +321,55 @@ class AccountTest < ActiveSupport::TestCase
     subscription.update!(processor_plan: plans(:premium_yearly).fake_processor_id)
 
     assert account.premium?
-    assert_equal 10, account.students_allowed
+    assert_equal 10, account.learners_allowed
   end
 
-  test "a raised student limit is retained while a family is free" do
+  test "a raised learner limit is retained while a family is free" do
     account = accounts(:subscribed)
-    account.update!(student_limit: 14)
+    account.update!(learner_limit: 14)
 
-    assert_equal 14, account.students_allowed
+    assert_equal 14, account.learners_allowed
 
     account.pay_subscriptions.first.update!(status: "unpaid")
 
     assert account.reload.free?
-    assert_equal 2, account.students_allowed
-    assert_equal 14, account.student_limit
+    assert_equal 2, account.learners_allowed
+    assert_equal 14, account.learner_limit
   end
 
   test "a canceled family stays premium through its paid period" do
     account = accounts(:canceled_in_period)
 
     assert account.premium?
-    assert_equal 10, account.students_allowed
+    assert_equal 10, account.learners_allowed
   end
 
   test "a family is free when its canceled subscription has ended" do
     account = accounts(:canceled_ended)
 
     assert account.free?
-    assert_equal 2, account.students_allowed
+    assert_equal 2, account.learners_allowed
   end
 
   test "a past due family remains premium while payment is retried" do
     account = accounts(:past_due)
 
     assert account.premium?
-    assert_equal 10, account.students_allowed
+    assert_equal 10, account.learners_allowed
   end
 
   test "an unpaid family is free" do
     account = accounts(:unpaid)
 
     assert account.free?
-    assert_equal 2, account.students_allowed
+    assert_equal 2, account.learners_allowed
   end
 
   test "a paused family is free" do
     account = accounts(:paused)
 
     assert account.free?
-    assert_equal 2, account.students_allowed
+    assert_equal 2, account.learners_allowed
   end
 
   test "a family on a hidden old price remains premium" do
@@ -379,28 +379,28 @@ class AccountTest < ActiveSupport::TestCase
     assert plans(:hidden).hidden?
     assert_equal plans(:hidden).stripe_id, subscription.processor_plan
     assert account.premium?
-    assert_equal 10, account.students_allowed
+    assert_equal 10, account.learners_allowed
   end
 
   test "a family can use a superadmin-raised Premium limit" do
     account = accounts(:complimentary)
 
-    account.update!(student_limit: 14)
+    account.update!(learner_limit: 14)
 
-    assert_equal 14, account.students_allowed
+    assert_equal 14, account.learners_allowed
   end
 
-  test "a family's student limit can't be below the Free limit or a decimal" do
+  test "a family's learner limit can't be below the Free limit or a decimal" do
     account = accounts(:one)
 
-    [nil, "", 0, 1, -1, 1.5].each do |student_limit|
-      account.student_limit = student_limit
+    [nil, "", 0, 1, -1, 1.5].each do |learner_limit|
+      account.learner_limit = learner_limit
 
-      assert_not account.valid?, "expected #{student_limit.inspect} to be invalid"
-      assert_not_empty account.errors[:student_limit]
+      assert_not account.valid?, "expected #{learner_limit.inspect} to be invalid"
+      assert_not_empty account.errors[:learner_limit]
     end
 
-    account.student_limit = 2
+    account.learner_limit = 2
 
     assert account.valid?
   end
@@ -466,52 +466,52 @@ class AccountTest < ActiveSupport::TestCase
     assert_not account.joinable_by?(users(:noaccount))
   end
 
-  test "a family with active students is not joinable and reports has_students" do
+  test "a family with active learners is not joinable and reports has_learners" do
     account = accounts(:one)
-    Student.create!(account: account, name: "Maya")
+    Learner.create!(account: account, name: "Maya")
 
     assert_not account.joinable_by?(users(:noaccount))
-    assert_equal :has_students, account.unjoinable_reason(users(:noaccount))
+    assert_equal :has_learners, account.unjoinable_reason(users(:noaccount))
   end
 
-  test "a family with only archived students is not joinable" do
+  test "a family with only archived learners is not joinable" do
     account = accounts(:one)
-    Student.create!(account: account, name: "Maya", archived_at: Time.current)
+    Learner.create!(account: account, name: "Maya", archived_at: Time.current)
 
-    assert_equal :has_students, account.unjoinable_reason(users(:noaccount))
+    assert_equal :has_learners, account.unjoinable_reason(users(:noaccount))
   end
 
-  test "another parent takes precedence over students when explaining why a family is not joinable" do
+  test "another parent takes precedence over learners when explaining why a family is not joinable" do
     account = accounts(:company)
 
-    assert account.students.any?
+    assert account.learners.any?
     assert_equal :other_members, account.unjoinable_reason(users(:one))
   end
 
-  test "students block joining before a billable subscription does" do
+  test "learners block joining before a billable subscription does" do
     account = accounts(:one)
-    Student.create!(account: account, name: "Maya")
+    Learner.create!(account: account, name: "Maya")
     customer = account.set_payment_processor(:fake_processor, allow_fake: true)
     customer.subscribe(name: "active", plan: "per_seat")
 
-    assert_equal :has_students, account.unjoinable_reason(users(:noaccount))
+    assert_equal :has_learners, account.unjoinable_reason(users(:noaccount))
   end
 
-  test "student emptiness is read from the association without a respond_to guard" do
+  test "learner emptiness is read from the association without a respond_to guard" do
     account = accounts(:company)
-    account.define_singleton_method(:respond_to?) { |name, *args| (name == :students) ? false : super(name, *args) }
+    account.define_singleton_method(:respond_to?) { |name, *args| (name == :learners) ? false : super(name, *args) }
 
-    assert_not account.send(:students_empty?)
+    assert_not account.send(:learners_empty?)
   end
 
-  test "destroying a family destroys its students" do
+  test "destroying a family destroys its learners" do
     account = accounts(:company)
-    student_ids = account.students.pluck(:id)
-    assert_not_empty student_ids
+    learner_ids = account.learners.pluck(:id)
+    assert_not_empty learner_ids
 
     account.destroy!
 
-    assert_empty Student.where(id: student_ids)
+    assert_empty Learner.where(id: learner_ids)
   end
 
   test "a family whose Premium is canceled but still paid through the period is joinable" do
@@ -588,68 +588,68 @@ class AccountTest < ActiveSupport::TestCase
   end
 end
 
-class AccountStudentDowngradeTest < ActiveSupport::TestCase
+class AccountLearnerDowngradeTest < ActiveSupport::TestCase
   setup do
     @family = accounts(:downgraded)
   end
 
-  test "a Free family over two active students needs a student pick" do
-    assert @family.over_free_student_limit?
-    assert_not @family.student_pick_needed?
+  test "a Free family over two active learners needs a learner pick" do
+    assert @family.over_free_learner_limit?
+    assert_not @family.learner_pick_needed?
 
-    @family.keep_students_on_free([students(:kept).id, students(:kept_two).id])
+    @family.keep_learners_on_free([learners(:kept).id, learners(:kept_two).id])
 
-    assert_not @family.student_pick_needed?
+    assert_not @family.learner_pick_needed?
   end
 
   test "the over limit result is memoized until the family reloads" do
     @family.paid_premium?
-    assert_queries_count(1) { 3.times { @family.over_free_student_limit? } }
+    assert_queries_count(1) { 3.times { @family.over_free_learner_limit? } }
 
-    students(:read_only_three).archive!
-    students(:read_only_two).archive!
-    students(:read_only).archive!
+    learners(:read_only_three).archive!
+    learners(:read_only_two).archive!
+    learners(:read_only).archive!
 
-    assert @family.over_free_student_limit?
-    assert_not @family.reload.over_free_student_limit?
+    assert @family.over_free_learner_limit?
+    assert_not @family.reload.over_free_learner_limit?
   end
 
-  test "a family can replace which students stay editable on Free" do
-    assert @family.keep_students_on_free([students(:read_only).id, students(:read_only_two).id])
+  test "a family can replace which learners stay editable on Free" do
+    assert @family.keep_learners_on_free([learners(:read_only).id, learners(:read_only_two).id])
 
-    assert_predicate students(:read_only).reload, :kept_on_free?
-    assert_predicate students(:read_only_two).reload, :kept_on_free?
-    assert_not students(:kept).reload.kept_on_free?
-    assert_not students(:kept_two).reload.kept_on_free?
+    assert_predicate learners(:read_only).reload, :kept_on_free?
+    assert_predicate learners(:read_only_two).reload, :kept_on_free?
+    assert_not learners(:kept).reload.kept_on_free?
+    assert_not learners(:kept_two).reload.kept_on_free?
   end
 
-  test "a family cannot save an incomplete, duplicate, archived, or other family student pick" do
-    archived = @family.students.create!(name: "Archived", archived_at: Time.current)
+  test "a family cannot save an incomplete, duplicate, archived, or other family learner pick" do
+    archived = @family.learners.create!(name: "Archived", archived_at: Time.current)
     attempts = [
-      [students(:kept).id],
-      [students(:kept).id, students(:kept).id],
-      [students(:kept).id, archived.id],
-      [students(:kept).id, students(:one).id]
+      [learners(:kept).id],
+      [learners(:kept).id, learners(:kept).id],
+      [learners(:kept).id, archived.id],
+      [learners(:kept).id, learners(:one).id]
     ]
 
     attempts.each do |ids|
-      assert_not @family.keep_students_on_free(ids), ids.inspect
+      assert_not @family.keep_learners_on_free(ids), ids.inspect
       assert_not_empty @family.errors[:base]
-      assert students(:kept).reload.kept_on_free?
-      assert students(:kept_two).reload.kept_on_free?
+      assert learners(:kept).reload.kept_on_free?
+      assert learners(:kept_two).reload.kept_on_free?
     end
   end
 
   test "Premium and past due families do not need a pick and retain it for a later downgrade" do
     @family.update!(complimentary_premium: true, complimentary_premium_note: "Temporary Premium")
 
-    assert_not @family.over_free_student_limit?
-    assert_not @family.student_pick_needed?
-    assert students(:kept).kept_on_free?
+    assert_not @family.over_free_learner_limit?
+    assert_not @family.learner_pick_needed?
+    assert learners(:kept).kept_on_free?
 
     @family.update!(complimentary_premium: false)
-    assert @family.reload.over_free_student_limit?
-    assert students(:kept).reload.kept_on_free?
-    assert_not accounts(:past_due).over_free_student_limit?
+    assert @family.reload.over_free_learner_limit?
+    assert learners(:kept).reload.kept_on_free?
+    assert_not accounts(:past_due).over_free_learner_limit?
   end
 end

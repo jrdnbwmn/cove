@@ -3,7 +3,7 @@
   name: t("pricing.show.free.name"),
   description: t("pricing.show.free.description"),
   price_text: "$0",
-  features: [t("pricing.show.free.students", count: Account::FREE_STUDENT_LIMIT), t("pricing.show.free.both_parents")]
+  features: [t("pricing.show.free.learners", count: Account::FREE_LEARNER_LIMIT), t("pricing.show.free.both_parents")]
 ) do %>
   <% if !user_signed_in? %>
     <%= render ButtonComponent.new(text: t("pricing.show.free.get_started"), href: new_user_registration_path, variant: :secondary, size: :lg, full_width: true) %>

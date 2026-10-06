@@ -1,13 +1,13 @@
 require "application_system_test_case"
 
-class StudentsSystemTest < ApplicationSystemTestCase
+class LearnersSystemTest < ApplicationSystemTestCase
   setup do
     login_as users(:one), scope: :user
   end
 
   test "a duplicate name shows its error inside the open modal" do
     open_slot
-    visit students_path
+    visit learners_path
     open_add_modal
 
     within("dialog[open]") do
@@ -22,7 +22,7 @@ class StudentsSystemTest < ApplicationSystemTestCase
 
   test "closing the add modal after a validation error still asks before discarding" do
     open_slot
-    visit students_path
+    visit learners_path
     open_add_modal
 
     within("dialog[open]") do
@@ -35,9 +35,9 @@ class StudentsSystemTest < ApplicationSystemTestCase
     end
   end
 
-  test "a parent can see the add student title and close the modal" do
+  test "a parent can see the add learner title and close the modal" do
     open_slot
-    visit students_path
+    visit learners_path
     open_add_modal
 
     within("dialog[open]") do
@@ -50,7 +50,7 @@ class StudentsSystemTest < ApplicationSystemTestCase
 
   test "closing an untouched modal closes right away" do
     open_slot
-    visit students_path
+    visit learners_path
     open_add_modal
 
     within("dialog[open]") do
@@ -62,7 +62,7 @@ class StudentsSystemTest < ApplicationSystemTestCase
 
   test "closing the add modal after typing asks before discarding" do
     open_slot
-    visit students_path
+    visit learners_path
     open_add_modal
 
     within("dialog[open]") do
@@ -78,12 +78,12 @@ class StudentsSystemTest < ApplicationSystemTestCase
     end
 
     assert_no_selector "dialog[open]"
-    assert_not Student.exists?(name: "Nora")
+    assert_not Learner.exists?(name: "Nora")
   end
 
-  test "adding a student closes the modal, shows the student and a toast" do
+  test "adding a learner closes the modal, shows the learner and a toast" do
     open_slot
-    visit students_path
+    visit learners_path
     open_add_modal
 
     within("dialog[open]") do
@@ -95,11 +95,11 @@ class StudentsSystemTest < ApplicationSystemTestCase
     assert_no_selector "dialog[open]"
     assert_selector "p", text: "Nora"
     assert_text "Nora added."
-    assert_current_path students_path
+    assert_current_path learners_path
   end
 
-  test "editing a student keeps validation in the modal and saves with a toast" do
-    visit students_path
+  test "editing a learner keeps validation in the modal and saves with a toast" do
+    visit learners_path
     open_edit_modal("Maya")
 
     within("dialog[open]") do
@@ -116,9 +116,9 @@ class StudentsSystemTest < ApplicationSystemTestCase
     assert_text "Saved."
   end
 
-  test "archived students are hidden until the Archived view is chosen and can be restored" do
+  test "archived learners are hidden until the Archived view is chosen and can be restored" do
     open_slot
-    visit students_path
+    visit learners_path
 
     assert_no_selector "p", text: "Iris"
 
@@ -136,18 +136,18 @@ class StudentsSystemTest < ApplicationSystemTestCase
     assert_no_selector "nav[aria-label='Filter learners']"
   end
 
-  test "the Archived control only appears when a student is archived" do
-    students(:archived).destroy!
-    visit students_path
+  test "the Archived control only appears when a learner is archived" do
+    learners(:archived).destroy!
+    visit learners_path
 
     assert_selector "p", text: "Maya"
     assert_no_selector "nav[aria-label='Filter learners']"
   end
 
-  test "a family whose students are all archived still sees the Archived control" do
-    students(:one).archive!
-    students(:two).archive!
-    visit students_path
+  test "a family whose learners are all archived still sees the Archived control" do
+    learners(:one).archive!
+    learners(:two).archive!
+    visit learners_path
 
     assert_text "Add your first learner"
     assert_selector "nav[aria-label='Filter learners']"
@@ -159,8 +159,8 @@ class StudentsSystemTest < ApplicationSystemTestCase
     assert_selector "p", text: "Iris"
   end
 
-  test "archiving from the edit modal moves the student to the archived list" do
-    visit students_path
+  test "archiving from the edit modal moves the learner to the archived list" do
+    visit learners_path
     open_edit_modal("Maya")
 
     within("dialog[open]") { click_button "Archive" }
@@ -172,8 +172,8 @@ class StudentsSystemTest < ApplicationSystemTestCase
     assert_selector "p", text: "Maya"
   end
 
-  test "deleting a student asks for confirmation and removes them" do
-    visit students_path
+  test "deleting a learner asks for confirmation and removes them" do
+    visit learners_path
     open_edit_modal("Maya")
 
     within("dialog[open]") do
@@ -189,11 +189,11 @@ class StudentsSystemTest < ApplicationSystemTestCase
     assert_text "Maya deleted."
     assert_no_selector "dialog[open]"
     assert_no_selector "p", text: "Maya"
-    assert_not Student.exists?(ActiveRecord::FixtureSet.identify(:one))
+    assert_not Learner.exists?(ActiveRecord::FixtureSet.identify(:one))
   end
 
   test "cancelling Delete returns to the saved edit form without a discard prompt" do
-    visit students_path
+    visit learners_path
     open_edit_modal("Maya")
 
     within("dialog[open]") do
@@ -209,18 +209,18 @@ class StudentsSystemTest < ApplicationSystemTestCase
 
     assert_selector "dialog[open]", count: 1
     within("dialog[open]") do
-      assert_field "Grade level", with: students(:one).grade_level
+      assert_field "Grade level", with: learners(:one).grade_level
       click_button "Cancel"
     end
     assert_no_selector "dialog[open]"
   end
 
-  test "cancelling Delete returns to a read-only student in the same dialog" do
+  test "cancelling Delete returns to a read-only learner in the same dialog" do
     logout(:user)
     login_as users(:downgraded), scope: :user
-    visit students_path
+    visit learners_path
 
-    within("[data-student='#{students(:read_only).id}']") { click_button "Casey" }
+    within("[data-learner='#{learners(:read_only).id}']") { click_button "Casey" }
     within("dialog[open]") { click_link "Delete" }
 
     assert_selector "dialog[open]", count: 1
@@ -236,8 +236,8 @@ class StudentsSystemTest < ApplicationSystemTestCase
     end
   end
 
-  test "an archived student can be deleted from the archived list" do
-    visit students_path(archived: 1)
+  test "an archived learner can be deleted from the archived list" do
+    visit learners_path(archived: 1)
 
     open_actions_menu("Iris")
     click_button "Delete"
@@ -247,19 +247,19 @@ class StudentsSystemTest < ApplicationSystemTestCase
     end
 
     assert_text "Iris deleted."
-    assert_not Student.exists?(ActiveRecord::FixtureSet.identify(:archived))
+    assert_not Learner.exists?(ActiveRecord::FixtureSet.identify(:archived))
   end
 
-  test "clicking a student card opens their edit modal" do
-    visit students_path
+  test "clicking a learner card opens their edit modal" do
+    visit learners_path
 
-    find("[data-student='#{students(:one).id}']").click
+    find("[data-learner='#{learners(:one).id}']").click
 
-    assert_selector "dialog[open] input[name='student[name]'][value='Maya']"
+    assert_selector "dialog[open] input[name='learner[name]'][value='Maya']"
   end
 
   test "the actions menu is reachable by keyboard" do
-    visit students_path
+    visit learners_path
 
     find("button", text: "Maya", exact_text: true).send_keys(:tab)
     assert_equal "Actions for Maya", evaluate_script("document.activeElement.getAttribute('aria-label')")
@@ -269,8 +269,8 @@ class StudentsSystemTest < ApplicationSystemTestCase
     assert_selector "[role='menuitem']", text: "Delete"
   end
 
-  test "archiving from the actions menu moves the student to Archived" do
-    visit students_path
+  test "archiving from the actions menu moves the learner to Archived" do
+    visit learners_path
 
     open_actions_menu("Maya")
     click_button "Archive"
@@ -282,14 +282,14 @@ class StudentsSystemTest < ApplicationSystemTestCase
   end
 
   test "deleting from the actions menu asks for confirmation and Cancel just closes it" do
-    visit students_path
+    visit learners_path
 
     open_actions_menu("Maya")
     click_button "Delete"
 
     within("dialog[open]") do
       assert_text "Delete Maya?"
-      assert_no_selector "input[name='student[name]']"
+      assert_no_selector "input[name='learner[name]']"
       click_button "Cancel"
     end
     assert_no_selector "dialog[open]"
@@ -300,23 +300,23 @@ class StudentsSystemTest < ApplicationSystemTestCase
     within("dialog[open]") { click_button "Delete Maya" }
 
     assert_text "Maya deleted."
-    assert_not Student.exists?(ActiveRecord::FixtureSet.identify(:one))
+    assert_not Learner.exists?(ActiveRecord::FixtureSet.identify(:one))
   end
 
   test "at the Free limit, Add learner explains the limit and links to plans" do
-    visit students_path
+    visit learners_path
 
     find("button", text: "Add learner", match: :first).click
 
     within("dialog[open]") do
       assert_selector "h2", text: "Free includes 2 learners."
-      assert_no_selector "input[name='student[name]']"
+      assert_no_selector "input[name='learner[name]']"
       assert_link "See plans", href: pricing_path
     end
   end
 
   test "the limit modal is sized to its content on desktop, not the full window height" do
-    visit students_path
+    visit learners_path
 
     find("button", text: "Add learner", match: :first).click
 
@@ -328,24 +328,24 @@ class StudentsSystemTest < ApplicationSystemTestCase
 
   test "at the Premium cap, Add learner explains the limit and offers Contact us" do
     account = accounts(:subscribed)
-    account.update!(student_limit: 3)
-    3.times { |i| Student.create!(account: account, name: "Student #{i}") }
+    account.update!(learner_limit: 3)
+    3.times { |i| Learner.create!(account: account, name: "Learner #{i}") }
     logout(:user)
     login_as users(:subscribed), scope: :user
-    visit students_path
+    visit learners_path
 
     find("button", text: "Add learner", match: :first).click
 
     within("dialog[open]") do
       assert_selector "h2", text: "Premium includes 3 learners."
-      assert_no_selector "input[name='student[name]']"
+      assert_no_selector "input[name='learner[name]']"
       assert_link "Contact us"
       assert_no_link "See plans"
     end
   end
 
-  test "an archived student has no Restore button while the family is at its limit" do
-    visit students_path(archived: 1)
+  test "an archived learner has no Restore button while the family is at its limit" do
+    visit learners_path(archived: 1)
 
     assert_selector "p", text: "Iris"
     assert_text "To restore a learner, archive one first"
@@ -354,10 +354,10 @@ class StudentsSystemTest < ApplicationSystemTestCase
 
   test "a stale Add modal keeps the typed name and shows the limit error inside the modal" do
     open_slot
-    visit students_path
+    visit learners_path
     open_add_modal
 
-    Student.create!(account: accounts(:company), name: "Sam", color: "sky")
+    Learner.create!(account: accounts(:company), name: "Sam", color: "sky")
 
     within("dialog[open]") do
       fill_in "Name", with: "Nora"
@@ -367,13 +367,13 @@ class StudentsSystemTest < ApplicationSystemTestCase
       assert_field "Name", with: "Nora"
     end
     assert_selector "dialog[open]"
-    assert_not Student.exists?(name: "Nora")
+    assert_not Learner.exists?(name: "Nora")
   end
 
-  test "a parent chooses which two students remain editable on Free" do
+  test "a parent chooses which two learners remain editable on Free" do
     logout(:user)
     login_as users(:downgraded), scope: :user
-    visit students_path
+    visit learners_path
 
     click_button "Change"
 
@@ -398,7 +398,7 @@ class StudentsSystemTest < ApplicationSystemTestCase
     assert_no_selector "dialog[open]"
     assert_text "Saved. Blake and Casey stay editable."
 
-    within("[data-student='#{students(:kept).id}']") { click_button "Avery" }
+    within("[data-learner='#{learners(:kept).id}']") { click_button "Avery" }
     within("dialog[open]") do
       assert_text "Avery can't be edited on Free. You can still archive or delete this learner."
     end
@@ -406,21 +406,21 @@ class StudentsSystemTest < ApplicationSystemTestCase
 
   private
 
-  # AIDEV-NOTE: the Free fixture family starts at its 2 active student limit;
-  # remove one active student so tests that add or restore have an open slot.
+  # AIDEV-NOTE: the Free fixture family starts at its 2 active learner limit;
+  # remove one active learner so tests that add or restore have an open slot.
   def open_slot
-    students(:two).destroy!
+    learners(:two).destroy!
   end
 
   def open_add_modal
     find("button", text: "Add learner", match: :first).click
-    assert_selector "dialog[open] input[name='student[name]']"
+    assert_selector "dialog[open] input[name='learner[name]']"
   end
 
   def open_edit_modal(name)
-    student = Student.find_by!(name: name)
-    within("[data-student='#{student.id}']") { click_button name }
-    assert_selector "dialog[open] input[name='student[name]']"
+    learner = Learner.find_by!(name: name)
+    within("[data-learner='#{learner.id}']") { click_button name }
+    assert_selector "dialog[open] input[name='learner[name]']"
   end
 
   def open_actions_menu(name)

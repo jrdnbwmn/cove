@@ -3,7 +3,7 @@
   <%= render CardComponent.new(classes: "mb-8") do |card| %>
     <% card.with_body do %>
       <h2 class="font-serif text-lg font-normal text-foreground"><%= t("billing.show.free_title") %></h2>
-      <p class="mt-2 text-muted-foreground"><%= t("billing.show.free_description", count: Account::FREE_STUDENT_LIMIT) %></p>
+      <p class="mt-2 text-muted-foreground"><%= t("billing.show.free_description", count: Account::FREE_LEARNER_LIMIT) %></p>
       <%= render ButtonComponent.new(text: t("billing.show.upgrade"), href: pricing_path, classes: "mt-4") %>
     <% end %>
   <% end %>

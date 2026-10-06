@@ -6,9 +6,9 @@ module PlanPricingHelper
     "$#{formatted_amount}/mo"
   end
 
-  def premium_student_limit
-    return current_account.student_limit if current_account&.premium?
+  def premium_learner_limit
+    return current_account.learner_limit if current_account&.premium?
 
-    Account.default_student_limit
+    Account.default_learner_limit
   end
 end

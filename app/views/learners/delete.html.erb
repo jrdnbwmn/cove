@@ -1,0 +1,3 @@
+<%= turbo_frame_tag "modal-lazy-content" do %>
+  <%= render "learners/delete_content", learner: @learner, close_on_cancel: @learner.archived? || params[:from] == "list" %>
+<% end %>

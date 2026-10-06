@@ -57,7 +57,7 @@ if Rails.env.local?
   end
 
   [["Maya", "3rd"], ["Theo", "Pre-K"]].each do |name, grade_level|
-    family.students.find_or_create_by!(name: name) { |student| student.grade_level = grade_level }
+    family.learners.find_or_create_by!(name: name) { |learner| learner.grade_level = grade_level }
   end
 
   features = ["Placeholder feature"]

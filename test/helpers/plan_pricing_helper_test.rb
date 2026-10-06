@@ -20,21 +20,21 @@ class PlanPricingHelperTest < ActionView::TestCase
     assert_equal "$7.50/mo", monthly_equivalent(Plan.new(amount: 9000, interval: "year"))
   end
 
-  test "uses the signed-in Premium Family student limit" do
+  test "uses the signed-in Premium Family learner limit" do
     Current.account = accounts(:complimentary)
 
-    assert_equal 10, premium_student_limit
+    assert_equal 10, premium_learner_limit
   end
 
-  test "does not advertise a Free Family stored student limit" do
+  test "does not advertise a Free Family stored learner limit" do
     account = accounts(:one)
-    account.update!(student_limit: 10)
+    account.update!(learner_limit: 10)
     Current.account = account
 
-    assert_equal Account.default_student_limit, premium_student_limit
+    assert_equal Account.default_learner_limit, premium_learner_limit
   end
 
   test "uses the Account default when signed out" do
-    assert_equal Account.default_student_limit, premium_student_limit
+    assert_equal Account.default_learner_limit, premium_learner_limit
   end
 end

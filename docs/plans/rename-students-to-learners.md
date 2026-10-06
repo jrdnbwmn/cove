@@ -10,9 +10,9 @@
 | 1    | 1     | 1          | Swap student → learner in locale copy (`en.yml` values) | Master | ✅   |
 | 2    | 1     | 1          | Swap copy on Terms + Privacy, bump "Last updated" | Clone  | ✅   |
 | 3    | 1     | 1          | Swap hardcoded copy: public pages, sidebar, dev pages, previews | Clone  | ✅   |
-| 4    | 2     | 2          | Migration: rename table, column, indexes | Master |      |
-| 5    | 2     | 2          | Rename app code: model, controllers, routes, views, CSS, locale keys | Master |      |
-| 6    | 2     | 2          | Rename tests and fixtures; full suite green | Master |      |
+| 4    | 2     | 2          | Migration: rename table, column, indexes | Master | ✅   |
+| 5    | 2     | 2          | Rename app code: model, controllers, routes, views, CSS, locale keys | Master | ✅   |
+| 6    | 2     | 2          | Rename tests and fixtures; full suite green | Master | ✅   |
 | 7    | 3     | 3          | Update living docs: product docs + AGENTS.md | Clone  |      |
 | 8    | 3     | 3          | Update architecture diagrams + component catalog | Clone  |      |
 | 9    | 3     | 3          | Final sweep: grep, full + system tests, rollback, browser check | Master |      |

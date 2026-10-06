@@ -52,7 +52,7 @@ en:
     already_member: "You are already in this family"
     already_belongs: "You already belong to a family"
     other_members: "Your family has another parent. Contact support to join a new family."
-    has_students: "Your family has learners in it. Contact support to join a new family."
+    has_learners: "Your family has learners in it. Contact support to join a new family."
     billable_subscription: "Cancel your Premium subscription first, then accept this invitation."
     try_again: "Something changed while joining. Please try again."
 
@@ -293,7 +293,7 @@ en:
       free:
         name: "Free"
         description: "Everything you need to get started. Free forever."
-        students:
+        learners:
           one: "%{count} learner"
           other: "%{count} learners"
         both_parents: "Both parents"
@@ -302,7 +302,7 @@ en:
       premium:
         description: "More room for your family."
         yearly_price_note: "billed %{amount} yearly"
-        students: "Unlimited learners"
+        learners: "Unlimited learners"
         both_parents: "Both parents"
         get_premium: "Get Premium"
         upgrade: "Upgrade"
@@ -310,9 +310,9 @@ en:
         current_plan: "Current plan"
       no_refunds_html: "Cancel anytime. You keep Premium until the end of the period you have paid for. No refunds are issued for unused time. %{link}"
       refund_policy: "See our refund policy."
-      more_students_html: "More than %{student_limit} learners? %{link}."
-      more_students_contact: "Contact us"
-      more_students_subject: "More learners on %{product}"
+      more_learners_html: "More than %{learner_limit} learners? %{link}."
+      more_learners_contact: "Contact us"
+      more_learners_subject: "More learners on %{product}"
 
   plan_intervals:
     day:
@@ -717,7 +717,7 @@ en:
       email: "Email support"
       email_subject: "Help with Cove"
 
-  students:
+  learners:
     free_limit_banner:
       heading: "Premium ended. Choose which %{limit} learners stay editable."
       description: "Nothing's been deleted. You can change this anytime."
@@ -761,7 +761,7 @@ en:
       close: "Close"
       see_plans: "See plans"
       contact: "Contact us"
-      more_students_subject: "More learners on %{product}"
+      more_learners_subject: "More learners on %{product}"
     form:
       name: "Name"
       grade_level: "Grade level"
@@ -824,13 +824,13 @@ en:
               other_family: "already belongs to a family"
             admin:
               cannot_be_removed: "role cannot be removed for the account owner"
-        student:
+        learner:
           attributes:
             base:
-              student_limit_free:
+              learner_limit_free:
                 one: "Free includes %{count} learner. Upgrade to Premium to add more."
                 other: "Free includes %{count} learners. Upgrade to Premium to add more."
-              student_limit_premium:
+              learner_limit_premium:
                 one: "Premium includes %{count} learner. Contact us to add more."
                 other: "Premium includes %{count} learners. Contact us to add more."
             name:

@@ -2,7 +2,7 @@
   {label: "Home", href: user_root_path, icon: "house", active: dashboard_nav_active?},
   {label: "Schedules", href: schedules_path, icon: "calendar", active: schedules_nav_active?},
   {label: "Subjects", href: subjects_path, icon: "book-open", active: subjects_nav_active?},
-  {label: "Learners", href: students_path, icon: "users", active: students_nav_active?}
+  {label: "Learners", href: learners_path, icon: "users", active: learners_nav_active?}
 ] %>
 <% nav_items << {label: "Admin", href: madmin_root_path, icon: "shield", active: false} if current_user.admin? %>
 

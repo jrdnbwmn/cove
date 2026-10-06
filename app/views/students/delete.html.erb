@@ -1,3 +1,0 @@
-<%= turbo_frame_tag "modal-lazy-content" do %>
-  <%= render "students/delete_content", student: @student, close_on_cancel: @student.archived? || params[:from] == "list" %>
-<% end %>
