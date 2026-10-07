@@ -8,6 +8,19 @@ module CourseListReturn
 
   private
 
+  # AIDEV-NOTE: Scoped through the current family so another family's class is a 404.
+  def set_nested_course
+    @course = Current.account.courses.find(params[:course_id])
+  end
+
+  def redirect_to_course_list(succeeded, notice:)
+    if succeeded
+      redirect_to course_list_return_path, status: :see_other, notice: notice
+    else
+      redirect_to course_list_return_path, status: :see_other, alert: @course.errors.full_messages.to_sentence
+    end
+  end
+
   def course_list_return_path
     uri = URI.parse(request.referer.to_s)
     return courses_path unless uri.path == courses_path && [nil, request.host].include?(uri.host)

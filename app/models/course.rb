@@ -161,7 +161,7 @@ class Course < ApplicationRecord
     return if subject.blank?
 
     matching_subject = SUBJECT_SUGGESTIONS.find { |suggestion| suggestion.casecmp?(subject) }
-    matching_subject ||= account&.courses&.where("lower(subject) = ?", subject.downcase)&.pick(:subject)
+    matching_subject ||= account&.courses&.with_subject(subject)&.pick(:subject)
     self.subject = matching_subject if matching_subject
   end
 

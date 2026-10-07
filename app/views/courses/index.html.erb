@@ -51,7 +51,7 @@
 
   <div class="mb-4">
     <%= render UiTabsComponent.new(mode: :links, variant: :underline, label: t(".status_label"), tab_list_classes: "w-full border-b border-neutral-200") do |tabs| %>
-      <% %w[active completed archived].each do |status| %>
+      <% Course::STATUSES.each do |status| %>
         <% tabs.with_tab(title: t(".#{status}"), href: course_list_path(status: status), active: @status == status, meta: @status_counts[status].to_s) %>
       <% end %>
     <% end %>
