@@ -428,4 +428,14 @@ class LearnersSystemTest < ApplicationSystemTestCase
     find("button[aria-label='Actions for #{name}']").click
     assert_selector "[role='menuitem']"
   end
+
+  test "a learner card's color dot lines up with the middle of the name" do
+    visit learners_path
+
+    card = "[data-learner='#{learners(:one).id}']"
+    dot_center = page.evaluate_script("(() => { const b = document.querySelector(\"#{card} .learner-color\").getBoundingClientRect(); return b.top + b.height / 2; })()")
+    name_center = page.evaluate_script("(() => { const b = document.querySelector(\"#{card} [data-learner-card-link]\").getBoundingClientRect(); return b.top + b.height / 2; })()")
+
+    assert_in_delta name_center, dot_center, 1
+  end
 end

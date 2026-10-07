@@ -4,7 +4,7 @@
 <% identity = capture do %>
   <%# AIDEV-NOTE: Archived cards mute only the identity block; the "…" menu stays at full contrast. pr-10 keeps long names clear of the menu button. %>
   <div class="flex items-start gap-3 pr-10 <%= "opacity-60" if archived %>">
-    <%= render "learners/color_dot", learner: learner %>
+    <%= render "learners/color_dot", learner: learner, classes: "mt-1.5" %>
     <div class="min-w-0">
       <div class="flex flex-wrap items-center gap-2">
         <p class="font-medium break-words">
