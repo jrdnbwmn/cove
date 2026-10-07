@@ -97,7 +97,7 @@ class SwitchComponent < ViewComponent::Base
     elsif @error.present?
       "text-red-700 dark:text-red-400"
     else
-      "text-neutral-700 dark:text-neutral-300"
+      "text-foreground"
     end
 
     [base, size_class, color_class, @label_classes].compact.reject(&:empty?).join(" ")

@@ -75,6 +75,7 @@ export default class extends Controller {
       openOnFocus: !this.#shouldSearchBeforeOpen(),
       closeAfterSelect: !this.element.multiple,
       create: this.allowNewValue,
+      dropdownParent: this.element.closest("dialog") || undefined,
       render: this.#getRenderConfig(),
       onChange: this.#handleChange.bind(this),
       onDropdownOpen: () => this.#updatePosition(),
@@ -1680,13 +1681,15 @@ export default class extends Controller {
         // For custom container IDs, keep default "bottom-start"
       }
 
+      const inModal = Boolean(this.element.closest("dialog"));
       const { x, y } = await computePosition(reference, floating, {
         placement,
+        strategy: inModal ? "fixed" : "absolute",
         middleware: [offset(6), flip(), shift({ padding: 8 })],
       });
 
       Object.assign(floating.style, {
-        position: "absolute",
+        position: inModal ? "fixed" : "absolute",
         left: `${x}px`,
         top: `${y}px`,
         width: `${Math.max(reference.offsetWidth, 160)}px`,

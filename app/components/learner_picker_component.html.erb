@@ -1,13 +1,15 @@
 <fieldset aria-describedby="<%= described_by %>" class="space-y-3">
-  <legend class="text-sm font-medium text-foreground"><%= @label %></legend>
+  <legend class="text-sm font-medium text-foreground mb-1"><%= @label %></legend>
 
-  <% if @help.present? %>
-    <p id="<%= help_id %>" class="text-sm text-muted-foreground"><%= @help %></p>
-  <% end %>
+  <div class="mb-4">
+    <% if @help.present? %>
+        <p id="<%= help_id %>" class="text-sm text-muted-foreground"><%= @help %></p>
+    <% end %>
 
-  <% if @error.present? %>
-    <p id="<%= error_id %>" class="text-sm text-red-600"><%= @error %></p>
-  <% end %>
+    <% if @error.present? %>
+        <p id="<%= error_id %>" class="text-sm text-red-600"><%= @error %></p>
+    <% end %>
+  </div>
 
   <% if @learners.any? %>
     <input type="hidden" name="<%= @name %>" value="">

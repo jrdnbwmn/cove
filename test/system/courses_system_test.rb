@@ -11,8 +11,11 @@ class CoursesSystemTest < ApplicationSystemTestCase
 
     within("dialog[open]") do
       fill_in "Name", with: "Algebra 1"
-      find(".ts-control").click
-      find(".ts-dropdown [role='option']", text: "Math").click
+    end
+    find(".ts-control").click
+    assert_selector "dialog[open] > .ts-dropdown"
+    find(".ts-dropdown [role='option']", text: "Math").click
+    within("dialog[open]") do
       check "Maya"
       check "Theo"
       click_button "Add class"

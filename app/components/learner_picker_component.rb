@@ -36,11 +36,14 @@ class LearnerPickerComponent < ViewComponent::Base
   end
 
   def label_html_for(learner)
-    parts = [
-      helpers.render("learners/color_dot", learner: learner),
-      helpers.content_tag(:span, learner.name)
-    ]
-    parts << helpers.render(BadgeComponent.new(text: I18n.t(selected?(learner) ? "learners.index.read_only_badge" : "learner_picker.read_only_on_free"), size: :sm)) if read_only?(learner)
-    helpers.safe_join(parts, " ")
+    identity = helpers.content_tag(:span, class: "inline-flex items-center gap-2") do
+      helpers.safe_join([
+        helpers.render("learners/color_dot", learner: learner),
+        helpers.content_tag(:span, learner.name)
+      ])
+    end
+    badge = helpers.render(BadgeComponent.new(text: I18n.t(selected?(learner) ? "learners.index.read_only_badge" : "learner_picker.read_only_on_free"), size: :sm)) if read_only?(learner)
+
+    helpers.safe_join([identity, badge].compact, " ")
   end
 end

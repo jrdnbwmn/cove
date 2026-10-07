@@ -16,6 +16,7 @@ class LearnerPickerComponentTest < ViewComponent::TestCase
     assert_selector "input[type='checkbox'][name='course[learner_ids][]'][value='#{learners(:one).id}'][checked]"
     assert_selector "input[type='checkbox'][value='#{learners(:two).id}']:not([checked])"
     assert_selector "[data-learner-color='sage']"
+    assert_selector "span.inline-flex.items-center.gap-2", text: "Maya"
     assert_selector "fieldset[aria-describedby]"
   end
 

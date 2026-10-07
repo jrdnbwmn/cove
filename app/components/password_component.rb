@@ -59,7 +59,7 @@ class PasswordComponent < ViewComponent::Base
   end
 
   def wrapper_classes
-    base = "w-full"
+    base = "flex w-full flex-col gap-y-1"
     [base, @classes].compact.reject(&:empty?).join(" ")
   end
 
@@ -77,18 +77,18 @@ class PasswordComponent < ViewComponent::Base
   end
 
   def label_classes
-    base = "label mb-1.5 text-sm"
+    base = "label text-sm text-foreground"
     color_class = @error.present? ? "text-red-700 dark:text-red-400" : ""
 
     [base, color_class, @label_classes].compact.reject(&:empty?).join(" ")
   end
 
   def error_classes
-    "text-xs text-red-600 dark:text-red-400 mt-1"
+    "text-sm text-red-600 dark:text-red-400 mt-1"
   end
 
   def hint_classes
-    "text-xs text-neutral-500 dark:text-neutral-400 mt-1"
+    "text-sm text-neutral-500 dark:text-neutral-400 mt-1"
   end
 
   def controller_data_attributes

@@ -70,7 +70,7 @@ class RadioComponent < ViewComponent::Base
     elsif @error.present?
       "text-red-700 dark:text-red-400 cursor-pointer"
     else
-      "text-neutral-700 dark:text-neutral-300 cursor-pointer"
+      "text-foreground cursor-pointer"
     end
 
     [base, size_class, color_class, @label_classes].compact.reject(&:empty?).join(" ")

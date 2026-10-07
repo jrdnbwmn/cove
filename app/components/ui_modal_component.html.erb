@@ -23,7 +23,7 @@
       <% end %>
 
       <%# AIDEV-NOTE: Lazy loading replaces only this region, preserving the dialog title and Close control. %>
-      <div data-ui-modal-content>
+      <div data-ui-modal-unsaved-changes-target="content" data-ui-modal-content>
         <%= content %>
       </div>
 
@@ -33,9 +33,9 @@
         </div>
       <% end %>
 
-      <div class="hidden sticky bottom-0 mt-4 border-t border-neutral-200 bg-white pt-4 dark:border-neutral-700 dark:bg-neutral-800" data-ui-modal-unsaved-changes-target="discardPrompt">
-        <p class="font-sans text-sm font-medium"><%= t("ui_modal.discard_prompt.title") %></p>
-        <div class="mt-3 flex justify-end gap-2">
+      <div class="hidden" data-ui-modal-unsaved-changes-target="discardPrompt">
+        <p role="heading" aria-level="2" class="font-sans text-xl font-medium"><%= t("ui_modal.discard_prompt.title") %></p>
+        <div class="mt-6 flex justify-end gap-2">
           <%= render ButtonComponent.new(text: t("ui_modal.discard_prompt.keep_editing"), variant: :secondary, data: {action: "click->ui-modal-unsaved-changes#keepEditing"}) %>
           <%= render ButtonComponent.new(text: t("ui_modal.discard_prompt.discard"), data: {action: "click->ui-modal-unsaved-changes#discard"}) %>
         </div>

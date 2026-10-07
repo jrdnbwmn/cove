@@ -79,29 +79,21 @@ class CheckboxComponent < ViewComponent::Base
     elsif @error.present?
       "text-red-700 dark:text-red-400 cursor-pointer"
     else
-      "text-neutral-700 dark:text-neutral-300 cursor-pointer"
+      "text-foreground cursor-pointer"
     end
 
     [base, size_class, color_class, @label_classes].compact.reject(&:empty?).join(" ")
   end
 
   def description_classes
-    size_class = case @size
-    when :sm then "text-[11px]"
-    when :lg then "text-sm"
-    else "text-xs"
-    end
+    size_class = "text-sm"
     color_class = @disabled ? "text-neutral-400 dark:text-neutral-500" : "text-neutral-500 dark:text-neutral-400"
 
     [size_class, color_class, "leading-normal"].join(" ")
   end
 
   def error_classes
-    size_class = case @size
-    when :sm then "text-[11px]"
-    when :lg then "text-sm"
-    else "text-xs"
-    end
+    size_class = "text-sm"
 
     [size_class, "text-red-600 dark:text-red-400 leading-normal"].join(" ")
   end
