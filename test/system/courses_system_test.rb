@@ -216,6 +216,29 @@ class CoursesSystemTest < ApplicationSystemTestCase
     end
   end
 
+  test "the cross, an outside click, and Escape on the discard prompt keep editing" do
+    visit courses_path
+    find("button", text: "Add class", match: :first).click
+
+    [-> { find("dialog[open] button", text: "Close").click },
+      -> { page.driver.browser.action.move_to_location(5, 5).click.perform },
+      -> { find("dialog[open]").send_keys(:escape) }].each do |dismiss|
+      within("dialog[open]") do
+        fill_in "Name", with: "Algebra 1"
+        click_button "Cancel"
+        assert_text "Discard your changes?"
+      end
+
+      dismiss.call
+
+      within("dialog[open]") do
+        assert_no_text "Discard your changes?"
+        assert_field "Name", with: "Algebra 1"
+      end
+    end
+    assert_selector "dialog[open]"
+  end
+
   test "discarding changes closes the modal without the form flashing back" do
     visit courses_path
     find("[data-course='#{courses(:one).id}']").click

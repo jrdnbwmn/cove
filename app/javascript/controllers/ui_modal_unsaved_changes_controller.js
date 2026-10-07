@@ -57,11 +57,17 @@ export default class extends Controller {
     this.hideDiscardPrompt();
   }
 
+  // AIDEV-NOTE: A close request (cross, outside click, Escape) while the prompt is already showing dismisses the
+  // question like "Keep editing", so nothing is lost and the cross never looks dead.
   requestClose(event) {
     if (!this.isDirty) return;
 
     event.preventDefault();
-    this.showDiscardPrompt();
+    if (this.discardPromptTarget.classList.contains("hidden")) {
+      this.showDiscardPrompt();
+    } else {
+      this.keepEditing();
+    }
   }
 
   showDiscardPrompt() {
