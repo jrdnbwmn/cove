@@ -1,0 +1,23 @@
+one:
+  account: company
+  name: "Algebra 1"
+  subject: "Math"
+
+two:
+  account: company
+  name: "Piano"
+  subject: "Arts"
+
+no_subject:
+  account: company
+  name: "Nature study"
+
+shared:
+  account: company
+  name: "Science Lab"
+  subject: "Science"
+
+downgraded_course:
+  account: downgraded
+  name: "Community History"
+  subject: "Social Studies"

@@ -225,6 +225,27 @@ class LearnerBehaviorTest < ActiveSupport::TestCase
   end
 end
 
+class LearnerEnrollmentTest < ActiveSupport::TestCase
+  test "deleting a learner removes their class enrollments" do
+    learner = learners(:one)
+    enrollment = Enrollment.create!(course: courses(:one), learner: learner)
+
+    assert_difference "Enrollment.count", -learner.enrollments.count do
+      learner.destroy!
+    end
+
+    assert_not Enrollment.exists?(enrollment.id)
+  end
+
+  test "a learner can list their classes" do
+    learner = learners(:one)
+    course = courses(:one)
+    Enrollment.create!(course: course, learner: learner)
+
+    assert_includes learner.courses, course
+  end
+end
+
 class LearnerEditabilityTest < ActiveSupport::TestCase
   setup do
     @family = accounts(:downgraded)

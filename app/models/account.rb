@@ -7,6 +7,7 @@ class Account < ApplicationRecord
   ENDED_SUBSCRIPTION_STATUSES = %w[canceled incomplete_expired].freeze
 
   has_many :learners, dependent: :destroy
+  has_many :courses, dependent: :destroy
 
   scope :active, -> { where(archived_at: nil) }
   scope :archived, -> { where.not(archived_at: nil) }

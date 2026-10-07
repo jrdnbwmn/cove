@@ -837,6 +837,20 @@ en:
               blank: "Enter a name to continue."
               taken_active: "You already have a learner named %{name}."
               taken_archived: "You already have an archived learner named %{name}. Restore them from archived learners, or use a different name."
+        course:
+          attributes:
+            name:
+              blank: "Enter a name for this class."
+              too_long: "Use 75 characters or fewer."
+            subject:
+              too_long: "Use 50 characters or fewer."
+        enrollment:
+          attributes:
+            learner:
+              wrong_account: "must belong to the same family as the class"
+              taken: "%{name} is already in this class."
+              archived: "must be active to be added to a class"
+              read_only: "%{name} is read-only on Free, so they can't be added to a class."
         plan:
           attributes:
             base:

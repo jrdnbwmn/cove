@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_10_06_213137) do
+ActiveRecord::Schema[8.1].define(version: 2026_10_07_055608) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -137,6 +137,24 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_06_213137) do
     t.datetime "updated_at", precision: nil, null: false
     t.index ["owner_id", "owner_type"], name: "index_connected_accounts_on_owner_id_and_owner_type"
     t.index ["provider", "uid"], name: "index_connected_accounts_on_provider_and_uid"
+  end
+
+  create_table "courses", force: :cascade do |t|
+    t.bigint "account_id", null: false
+    t.datetime "created_at", null: false
+    t.string "name", null: false
+    t.string "subject"
+    t.datetime "updated_at", null: false
+    t.index ["account_id"], name: "index_courses_on_account_id"
+  end
+
+  create_table "enrollments", force: :cascade do |t|
+    t.bigint "course_id", null: false
+    t.datetime "created_at", null: false
+    t.bigint "learner_id", null: false
+    t.datetime "updated_at", null: false
+    t.index ["course_id", "learner_id"], name: "index_enrollments_on_course_id_and_learner_id", unique: true
+    t.index ["learner_id"], name: "index_enrollments_on_learner_id"
   end
 
   create_table "inbound_webhooks", force: :cascade do |t|
@@ -399,6 +417,9 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_06_213137) do
   add_foreign_key "accounts", "users", column: "owner_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "api_tokens", "users"
+  add_foreign_key "courses", "accounts"
+  add_foreign_key "enrollments", "courses"
+  add_foreign_key "enrollments", "learners"
   add_foreign_key "learners", "accounts"
   add_foreign_key "pay_charges", "pay_customers", column: "customer_id"
   add_foreign_key "pay_payment_methods", "pay_customers", column: "customer_id"

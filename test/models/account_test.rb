@@ -161,6 +161,17 @@ class AccountTest < ActiveSupport::TestCase
     end
   end
 
+  test "deleting a family deletes its classes" do
+    account = Account.create!(owner: users(:marketing_subscribed), name: "Class Family")
+    course = Course.create!(account: account, name: "Algebra 1")
+
+    assert_difference "Course.count", -1 do
+      account.destroy!
+    end
+
+    assert_not Course.exists?(course.id)
+  end
+
   test "account can be subscribed" do
     assert accounts(:subscribed).payment_processor.subscribed?
   end
