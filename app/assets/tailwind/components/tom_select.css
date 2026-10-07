@@ -638,3 +638,16 @@ select[data-select-disable-typing-value="true"] + .ts-wrapper.single .ts-control
 select[data-select-disable-typing-value="true"] + .ts-wrapper.single.input-active .ts-control {
   @apply cursor-default;
 }
+
+/* AIDEV-NOTE: A single select whose typing is disabled has a read-only input that still claims min-width: 7rem.
+   Next to a selected item that is wide enough (e.g. "All subjects"), it wrapped to a second line and grew the field.
+   Typeable single selects keep the full-width input. */
+.ts-wrapper.single .ts-control:has(> input[readonly]) {
+  flex-wrap: nowrap;
+}
+
+.ts-wrapper.single .ts-control > input[readonly] {
+  flex: 0 0 0;
+  min-width: 0;
+  width: 0;
+}

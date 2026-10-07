@@ -1,7 +1,7 @@
 import { Controller } from "@hotwired/stimulus";
 
 export default class extends Controller {
-  static targets = ["dialog", "wrapper", "content", "discardPrompt"];
+  static targets = ["dialog", "wrapper", "content", "discardPrompt", "heading"];
 
   connect() {
     this.isDirty = false;
@@ -34,9 +34,12 @@ export default class extends Controller {
     this.hideDiscardPrompt();
   }
 
+  // AIDEV-NOTE: Don't hide the prompt here. The modal animates closed after this, and restoring the form first
+  // made it flash back into view. ui-modal:closed (clearDirty) puts the content back once the dialog is gone.
   discard() {
     const form = this.pendingForm;
-    this.clearDirty();
+    this.isDirty = false;
+    this.pendingForm = null;
 
     // A guarded form (e.g. a status change) was waiting on this answer: send it instead of closing.
     if (form) {
@@ -90,6 +93,8 @@ export default class extends Controller {
 
   showDiscardPrompt() {
     this.contentTarget.classList.add("hidden");
+    // The modal's title (e.g. "Add class") would otherwise sit above the prompt.
+    if (this.hasHeadingTarget) this.headingTarget.classList.add("hidden");
     this.wrapperTarget.classList.replace("h-full", "h-auto");
     this.discardPromptTarget.classList.remove("hidden");
     this.notifyVisibilityChanged();
@@ -97,6 +102,7 @@ export default class extends Controller {
 
   hideDiscardPrompt() {
     this.contentTarget.classList.remove("hidden");
+    if (this.hasHeadingTarget) this.headingTarget.classList.remove("hidden");
     this.wrapperTarget.classList.replace("h-auto", "h-full");
     this.discardPromptTarget.classList.add("hidden");
     this.notifyVisibilityChanged();

@@ -29,7 +29,8 @@
         selected: @learner_filter&.id,
         placeholder: t(".all_learners"),
         clearable: false,
-        submit_on_change: true
+        submit_on_change: true,
+        data: {select_allow_empty_option_value: true}
       ) %>
     </div>
     <div class="w-full sm:w-56">
@@ -42,7 +43,8 @@
         selected: @subject_options.find { |subject| subject.casecmp?(@subject_filter.to_s) } || @subject_filter,
         placeholder: t(".all_subjects"),
         clearable: false,
-        submit_on_change: true
+        submit_on_change: true,
+        data: {select_allow_empty_option_value: true}
       ) %>
     </div>
   <% end %>

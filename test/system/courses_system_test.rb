@@ -201,4 +201,78 @@ class CoursesSystemTest < ApplicationSystemTestCase
 
     assert_text "Algebra 1 archived."
   end
+
+  test "a parent can return a filter to all learners or all subjects from the select itself" do
+    visit courses_path
+    assert_selector ".course-name", text: "Piano"
+
+    find("#course_filter_learner + .ts-wrapper .ts-control").click
+    find(".ts-dropdown [role='option']", text: "Maya").click
+    assert_no_selector ".course-name", text: "Piano"
+    assert_includes current_url, "learner=#{learners(:one).id}"
+
+    find("#course_filter_learner + .ts-wrapper .ts-control").click
+    find(".ts-dropdown [role='option']", text: "All learners").click
+    assert_selector ".course-name", text: "Piano"
+
+    find("#course_filter_subject + .ts-wrapper .ts-control").click
+    find(".ts-dropdown [role='option']", text: "Math").click
+    assert_no_selector ".course-name", text: "Piano"
+
+    find("#course_filter_subject + .ts-wrapper .ts-control").click
+    find(".ts-dropdown [role='option']", text: "All subjects").click
+    assert_selector ".course-name", text: "Piano"
+  end
+
+  test "the discard prompt on the add class modal shows no Add class heading" do
+    visit courses_path
+    find("button", text: "Add class", match: :first).click
+
+    within("dialog[open]") do
+      assert_selector "h2", text: "Add class"
+      fill_in "Name", with: "Algebra 1"
+      click_button "Cancel"
+
+      assert_text "Discard your changes?"
+      assert_no_selector "h2", text: "Add class"
+      click_button "Keep editing"
+      assert_selector "h2", text: "Add class"
+      assert_field "Name", with: "Algebra 1"
+    end
+  end
+
+  test "discarding changes closes the modal without the form flashing back" do
+    visit courses_path
+    find("[data-course='#{courses(:one).id}']").click
+
+    within("dialog[open]") do
+      fill_in "Name", with: "Algebra 2"
+      page.execute_script(<<~JS)
+        const dialog = document.querySelector("dialog[open]");
+        const content = dialog.querySelector("[data-ui-modal-content]");
+        window.formFlashed = false;
+        new MutationObserver(() => {
+          if (dialog.open && !content.classList.contains("hidden")) window.formFlashed = true;
+        }).observe(content, {attributes: true, attributeFilter: ["class"]});
+      JS
+      click_button "Cancel"
+      assert_text "Discard your changes?"
+      click_button "Discard"
+    end
+
+    assert_no_selector "dialog[open]"
+    assert_equal false, page.evaluate_script("window.formFlashed")
+    assert_equal "Algebra 1", courses(:one).reload.name
+  end
+
+  test "a filter select keeps its height when All subjects is selected and open" do
+    visit courses_path
+    control = "#course_filter_subject + .ts-wrapper .ts-control"
+    height = "document.querySelector('#{control}').getBoundingClientRect().height"
+    closed_height = page.evaluate_script(height)
+
+    find(control).click
+    assert_selector ".ts-dropdown [role='option']", text: "All subjects"
+    assert_equal closed_height, page.evaluate_script(height)
+  end
 end
