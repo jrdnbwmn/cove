@@ -123,6 +123,21 @@ class CoursesSystemTest < ApplicationSystemTestCase
     assert_no_selector ".course-name", text: "Nature study"
   end
 
+  test "cancelling a delete opened from a class menu just closes the modal" do
+    visit courses_path
+
+    open_actions_menu("Nature study")
+    click_button "Delete"
+
+    within("dialog[open]") do
+      assert_text "Delete Nature study?"
+      click_button "Cancel"
+    end
+
+    assert_no_selector "dialog[open]"
+    assert_selector ".course-name", text: "Nature study"
+  end
+
   test "a completed class can be edited from its menu" do
     visit courses_path(status: "completed")
 

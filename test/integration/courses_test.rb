@@ -109,6 +109,23 @@ class CoursesTest < ActionDispatch::IntegrationTest
     assert_equal "Class deleted.", flash[:notice]
   end
 
+  test "Cancel on a delete confirmation from the edit modal goes back to the edit form" do
+    sign_in users(:one)
+
+    get delete_course_path(@course)
+
+    assert_select "a[href='#{edit_course_path(@course)}']", text: /Cancel/
+  end
+
+  test "Cancel on a delete confirmation opened from the class list just closes the modal" do
+    sign_in users(:one)
+
+    get delete_course_path(@course, from: "list")
+
+    assert_select "a[href='#{edit_course_path(@course)}']", count: 0
+    assert_select "button[data-action='click->ui-modal#performClose:prevent']", text: /Cancel/
+  end
+
   test "guests are sent to sign in when changing a class status" do
     post course_completion_path(@course)
     assert_redirected_to new_user_session_path

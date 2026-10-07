@@ -375,7 +375,7 @@ class CoursesIndexTest < ActionDispatch::IntegrationTest
     assert_hidden_form "complete_course_#{course.id}", action: course_completion_path(course), method: "post"
     assert_hidden_form "archive_course_#{course.id}", action: course_archive_path(course), method: "post"
     assert_hidden_form "delete_course_#{course.id}", method: "get"
-    assert_select "[data-ui-modal-turbo-frame-src-value='#{delete_course_path(course)}']"
+    assert_select "[data-ui-modal-turbo-frame-src-value='#{delete_course_path(course, from: "list")}']"
   end
 
   test "a completed class menu offers edit, reopen, and delete" do

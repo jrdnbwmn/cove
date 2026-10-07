@@ -58,7 +58,7 @@
       <% end %>
 
       <%# AIDEV-NOTE: No title: the confirmation's own "Delete <name>?" heading is the only one. %>
-      <%= render "application/lazy_modal", src: delete_course_path(course), form_id: dom_id(course, :delete) %>
+      <%= render "application/lazy_modal", src: delete_course_path(course, from: "list"), form_id: dom_id(course, :delete) %>
 
       <% if visible_learners.any? %>
         <div class="course-learners mt-auto flex flex-wrap gap-x-3 gap-y-2 pt-4">
