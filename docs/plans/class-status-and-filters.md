@@ -7,9 +7,9 @@
 
 | Task | Phase | Checkpoint | Description | Assign | Done |
 | ---- | ----- | ---------- | ----------- | ------ | ---- |
-| 1 | 1 | 1 | Add class status persistence and model behavior | Master | |
-| 2 | 1 | 1 | Add status routes and scoped transition controllers | Master | |
-| 3 | 1 | 1 | Preserve list state through existing class mutations | Master | |
+| 1 | 1 | 1 | Add class status persistence and model behavior | Master | ✅ |
+| 2 | 1 | 1 | Add status routes and scoped transition controllers | Master | ✅ |
+| 3 | 1 | 1 | Preserve list state through existing class mutations | Master | ✅ |
 | 4 | 2 | 2 | Build filtered status-aware list query | Master | |
 | 5 | 2 | 2 | Render the filter toolbar, tabs, and empty states | subagent | |
 | 6 | 2 | 2 | Add class-card status dates and action menus | subagent | |

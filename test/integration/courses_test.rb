@@ -108,4 +108,139 @@ class CoursesTest < ActionDispatch::IntegrationTest
     assert_redirected_to courses_path
     assert_equal "Class deleted.", flash[:notice]
   end
+
+  test "guests are sent to sign in when changing a class status" do
+    post course_completion_path(@course)
+    assert_redirected_to new_user_session_path
+
+    delete course_archive_path(@course)
+    assert_redirected_to new_user_session_path
+  end
+
+  test "a parent can mark a class complete and reopen it" do
+    sign_in users(:one)
+
+    post course_completion_path(@course)
+    assert_redirected_to courses_path
+    assert_equal "Algebra 1 is complete. Nice work.", flash[:notice]
+    assert @course.reload.completed?
+
+    delete course_completion_path(@course)
+    assert_redirected_to courses_path
+    assert_equal "Algebra 1 is active again.", flash[:notice]
+    assert @course.reload.active?
+  end
+
+  test "a parent can archive a class and restore it" do
+    sign_in users(:one)
+
+    post course_archive_path(@course)
+    assert_redirected_to courses_path
+    assert_equal "Algebra 1 archived.", flash[:notice]
+    assert @course.reload.archived?
+
+    delete course_archive_path(@course)
+    assert_redirected_to courses_path
+    assert_equal "Algebra 1 restored.", flash[:notice]
+    assert @course.reload.active?
+  end
+
+  test "a status change returns to the tab and filters the parent was on" do
+    sign_in users(:one)
+    referer = "http://www.example.com/classes?status=completed&learner=7&subject=Math"
+
+    delete course_completion_path(courses(:completed)), headers: {"Referer" => referer}
+
+    assert_redirected_to courses_path(status: "completed", learner: "7", subject: "Math")
+  end
+
+  test "a status change ignores a referrer that is not the class list" do
+    sign_in users(:one)
+
+    post course_completion_path(@course), headers: {"Referer" => "http://evil.example/classes?status=archived"}
+    assert_redirected_to courses_path
+
+    post course_archive_path(courses(:two)), headers: {"Referer" => "http://www.example.com/learners?status=archived"}
+    assert_redirected_to courses_path
+  end
+
+  test "a stale or duplicate status request changes nothing and shows an alert" do
+    sign_in users(:one)
+    completed_at = courses(:completed).completed_at
+
+    post course_completion_path(courses(:completed))
+    assert_redirected_to courses_path
+    assert_equal "Spanish 1 is already completed.", flash[:alert]
+    assert_nil flash[:notice]
+
+    post course_archive_path(courses(:completed))
+    assert_equal "Only an active class can be completed or archived.", flash[:alert]
+
+    post course_archive_path(courses(:archived))
+    assert_equal "Woodworking is already archived.", flash[:alert]
+
+    delete course_completion_path(@course)
+    assert_equal "Only a completed class can be reopened.", flash[:alert]
+
+    delete course_archive_path(courses(:completed))
+    assert_equal "Only an archived class can be restored.", flash[:alert]
+
+    assert_equal completed_at, courses(:completed).reload.completed_at
+    assert courses(:archived).reload.archived?
+    assert @course.reload.active?
+  end
+
+  test "another family's class cannot be completed, archived, reopened, or restored" do
+    sign_in users(:one)
+    @other_family_course.archive!
+
+    [
+      [:post, course_completion_path(@other_family_course)],
+      [:delete, course_completion_path(@other_family_course)],
+      [:delete, course_archive_path(@other_family_course)],
+      [:post, course_archive_path(@other_family_course)]
+    ].each do |verb, path|
+      sign_in users(:one)
+      public_send(verb, path)
+      assert_response :not_found
+    end
+
+    assert @other_family_course.reload.archived?
+  end
+
+  test "adding, editing, or deleting a class returns to the tab and filters the parent was on" do
+    sign_in users(:one)
+    referer = {"Referer" => "http://www.example.com/classes?status=completed&learner=7&subject=Math"}
+    list_path = courses_path(status: "completed", learner: "7", subject: "Math")
+
+    post courses_path, params: {course: {name: "Geometry", learner_ids: []}}, headers: referer
+    assert_redirected_to list_path
+
+    patch course_path(@course), params: {course: {name: "Algebra 2", learner_ids: []}}, headers: referer
+    assert_redirected_to list_path
+
+    delete course_path(@course), headers: referer
+    assert_redirected_to list_path
+  end
+
+  test "a class list return falls back to the class list for a missing, foreign, or malformed referrer" do
+    sign_in users(:one)
+
+    post courses_path, params: {course: {name: "Geometry", learner_ids: []}}
+    assert_redirected_to courses_path
+
+    ["http://evil.example/classes?status=archived", "http://www.example.com/learners?status=archived", "http://[bad"].each do |referer|
+      patch course_path(@course), params: {course: {name: "Algebra 1", learner_ids: []}}, headers: {"Referer" => referer}
+      assert_redirected_to courses_path
+    end
+  end
+
+  test "a class list return keeps only the list's own parameters" do
+    sign_in users(:one)
+
+    patch course_path(@course), params: {course: {name: "Algebra 1", learner_ids: []}},
+      headers: {"Referer" => "http://www.example.com/classes?status=archived&page=3&subject[]=a"}
+
+    assert_redirected_to courses_path(status: "archived")
+  end
 end

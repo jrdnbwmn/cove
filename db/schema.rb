@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_10_07_055608) do
+ActiveRecord::Schema[8.1].define(version: 2026_10_07_120000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -141,11 +141,14 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_07_055608) do
 
   create_table "courses", force: :cascade do |t|
     t.bigint "account_id", null: false
+    t.datetime "archived_at"
+    t.datetime "completed_at"
     t.datetime "created_at", null: false
     t.string "name", null: false
     t.string "subject"
     t.datetime "updated_at", null: false
     t.index ["account_id"], name: "index_courses_on_account_id"
+    t.check_constraint "completed_at IS NULL OR archived_at IS NULL", name: "courses_not_completed_and_archived"
   end
 
   create_table "enrollments", force: :cascade do |t|

@@ -24,6 +24,23 @@ class CourseTest < ActiveSupport::TestCase
   end
 end
 
+class CourseStatusConstraintTest < ActiveSupport::TestCase
+  class CourseRow < ApplicationRecord
+    self.table_name = "courses"
+  end
+
+  test "database rejects a class that is both completed and archived" do
+    assert_raises(ActiveRecord::StatementInvalid) do
+      CourseRow.create!(account_id: accounts(:company).id, name: "Both", completed_at: Time.current, archived_at: Time.current)
+    end
+  end
+
+  test "database allows a class that is only completed or only archived" do
+    assert CourseRow.create!(account_id: accounts(:company).id, name: "Done", completed_at: Time.current)
+    assert CourseRow.create!(account_id: accounts(:company).id, name: "Old", archived_at: Time.current)
+  end
+end
+
 class CourseBehaviorTest < ActiveSupport::TestCase
   setup do
     @family = accounts(:subscribed)
@@ -167,5 +184,135 @@ class CourseBehaviorTest < ActiveSupport::TestCase
 
     assert course.save
     assert_equal [learners(:kept)], course.reload.learners.to_a
+  end
+
+  test "a new class is active" do
+    course = Course.create!(account: @family, name: "Algebra 1")
+
+    assert course.active?
+    assert_not course.completed?
+    assert_not course.archived?
+    assert_includes Course.active, course
+  end
+
+  test "a parent can complete a class right away and reopen it" do
+    course = Course.create!(account: @family, name: "Algebra 1")
+
+    assert course.complete!
+    assert course.reload.completed?
+    assert_includes Course.completed, course
+    assert_not_includes Course.active, course
+
+    assert course.reopen!
+    assert course.reload.active?
+    assert_nil course.completed_at
+  end
+
+  test "a parent can archive a class and restore it" do
+    course = Course.create!(account: @family, name: "Algebra 1")
+
+    assert course.archive!
+    assert course.reload.archived?
+    assert_includes Course.archived, course
+    assert_not_includes Course.active, course
+
+    assert course.restore!
+    assert course.reload.active?
+    assert_nil course.archived_at
+  end
+
+  test "only an active class can be completed or archived" do
+    completed = courses(:completed)
+    archived = courses(:archived)
+
+    assert_no_changes -> { [completed.reload.completed_at, completed.archived_at] } do
+      assert_not completed.complete!
+      assert_equal ["#{completed.name} is already completed."], completed.errors[:base]
+      assert_not completed.archive!
+      assert_equal ["Only an active class can be completed or archived."], completed.errors[:base]
+    end
+
+    assert_no_changes -> { [archived.reload.completed_at, archived.archived_at] } do
+      assert_not archived.archive!
+      assert_equal ["#{archived.name} is already archived."], archived.errors[:base]
+      assert_not archived.complete!
+      assert_equal ["Only an active class can be completed or archived."], archived.errors[:base]
+    end
+  end
+
+  test "only a completed class can be reopened and only an archived class restored" do
+    active = courses(:one)
+    completed = courses(:completed)
+    archived = courses(:archived)
+
+    assert_not active.reopen!
+    assert_not archived.reopen!
+    assert_equal ["Only a completed class can be reopened."], archived.errors[:base]
+    assert_not active.restore!
+    assert_not completed.restore!
+    assert_equal ["Only an archived class can be restored."], completed.errors[:base]
+    assert completed.reload.completed?
+    assert archived.reload.archived?
+  end
+
+  test "a stale copy of a class cannot change a status another parent already changed" do
+    stale = Course.find(courses(:one).id)
+    Course.find(stale.id).complete!
+
+    assert_not stale.archive!
+    assert courses(:one).reload.completed?
+    assert_not courses(:one).archived?
+  end
+
+  test "a class cannot be both completed and archived" do
+    course = courses(:one)
+    course.completed_at = Time.current
+    course.archived_at = Time.current
+
+    assert_not course.valid?
+    assert_equal ["A class can't be both completed and archived."], course.errors[:base]
+  end
+
+  test "editing a completed or archived class keeps its status and date" do
+    completed = courses(:completed)
+    archived = courses(:archived)
+
+    assert_no_changes -> { [completed.reload.completed_at, archived.reload.archived_at] } do
+      completed.update!(name: "Renamed")
+      archived.update!(subject: "Math")
+    end
+  end
+
+  test "classes can be filtered by learner" do
+    assert_equal [courses(:shared)], Course.taken_by(learners(:one)).to_a
+    assert_equal [courses(:completed), courses(:shared)].sort_by(&:id), Course.taken_by(learners(:two)).sort_by(&:id)
+  end
+
+  test "classes can be filtered by subject ignoring case" do
+    assert_equal [courses(:one), courses(:completed)].sort_by(&:id), accounts(:company).courses.with_subject("math").sort_by(&:id)
+    assert_empty accounts(:company).courses.with_subject("Latin")
+  end
+
+  test "subject filter options include every status once per spelling group, most common spelling first" do
+    Course.create!(account: @family, name: "A", subject: "Co-op")
+    Course.create!(account: @family, name: "B", subject: "Co-op").archive!
+    Course.create!(account: @family, name: "C", subject: "Zoology").complete!
+    Course.create!(account: @family, name: "D")
+    Course.create!(account: @other_family, name: "Other", subject: "Elsewhere")
+
+    assert_equal ["Co-op", "Zoology"], Course.subject_filter_options_for(@family)
+  end
+
+  test "subject filter options keep the most common spelling and the oldest on a tie" do
+    Course.insert_all([
+      {account_id: @family.id, name: "A", subject: "latin", created_at: 3.days.ago, updated_at: 3.days.ago},
+      {account_id: @family.id, name: "B", subject: "Latin", created_at: 2.days.ago, updated_at: 2.days.ago},
+      {account_id: @family.id, name: "C", subject: "Latin", created_at: 1.day.ago, updated_at: 1.day.ago},
+      {account_id: @family.id, name: "D", subject: "Logic", created_at: 3.days.ago, updated_at: 3.days.ago},
+      {account_id: @family.id, name: "E", subject: "LOGIC", created_at: 2.days.ago, updated_at: 2.days.ago},
+      {account_id: @family.id, name: "F", subject: "logic", created_at: 1.day.ago, updated_at: 1.day.ago}
+    ])
+
+    assert_equal ["Latin", "Logic"], Course.subject_filter_options_for(@family)
   end
 end

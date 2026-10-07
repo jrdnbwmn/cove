@@ -17,6 +17,17 @@ shared:
   name: "Science Lab"
   subject: "Science"
 
+completed:
+  account: company
+  name: "Spanish 1"
+  subject: "math"
+  completed_at: <%= 2.days.ago %>
+
+archived:
+  account: company
+  name: "Woodworking"
+  archived_at: <%= 2.days.ago %>
+
 downgraded_course:
   account: downgraded
   name: "Community History"

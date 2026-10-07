@@ -728,6 +728,10 @@ en:
       created: "Class added."
       updated: "Saved."
       deleted: "Class deleted."
+      completed: "%{name} is complete. Nice work."
+      reopened: "%{name} is active again."
+      archived: "%{name} archived."
+      restored: "%{name} restored."
     delete:
       heading: "Delete %{name}?"
       body: "This can't be undone."
@@ -867,6 +871,13 @@ en:
               taken_archived: "You already have an archived learner named %{name}. Restore them from archived learners, or use a different name."
         course:
           attributes:
+            base:
+              completed_and_archived: "A class can't be both completed and archived."
+              already_completed: "%{name} is already completed."
+              already_archived: "%{name} is already archived."
+              not_active: "Only an active class can be completed or archived."
+              not_completed: "Only a completed class can be reopened."
+              not_archived: "Only an archived class can be restored."
             name:
               blank: "Enter a name for this class."
               too_long: "Use 75 characters or fewer."

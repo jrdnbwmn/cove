@@ -1,9 +1,11 @@
 class CoursesController < ApplicationController
+  include CourseListReturn
+
   before_action :authenticate_user!
   before_action :set_course, only: %i[edit update delete destroy]
 
   def index
-    @courses = Current.account.courses.ordered.includes(:enrollments)
+    @courses = Current.account.courses.active.ordered.includes(:enrollments)
     # AIDEV-NOTE: Cards resolve enrollment IDs through the active-learner hash
     # so archived learners stay hidden without an N+1 query. Loading through
     # Current.account shares its memoized Free-limit check, so learner.editable?
@@ -20,7 +22,7 @@ class CoursesController < ApplicationController
     assign_course_attributes(@course)
 
     if @course.save
-      redirect_to courses_path, status: :see_other, notice: t("courses.notices.created")
+      redirect_to course_list_return_path, status: :see_other, notice: t("courses.notices.created")
     else
       render :new, status: :unprocessable_content
     end
@@ -35,7 +37,7 @@ class CoursesController < ApplicationController
     assign_course_attributes(@course)
 
     if @course.save
-      redirect_to courses_path, status: :see_other, notice: t("courses.notices.updated")
+      redirect_to course_list_return_path, status: :see_other, notice: t("courses.notices.updated")
     else
       render :edit, status: :unprocessable_content
     end
@@ -48,7 +50,7 @@ class CoursesController < ApplicationController
 
   def destroy
     @course.destroy!
-    redirect_to courses_path, status: :see_other, notice: t("courses.notices.deleted")
+    redirect_to course_list_return_path, status: :see_other, notice: t("courses.notices.deleted")
   end
 
   private

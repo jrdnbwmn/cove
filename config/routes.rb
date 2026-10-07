@@ -20,6 +20,8 @@ Rails.application.routes.draw do
   resources :schedules, only: :index
   resources :courses, path: "classes", except: :show do
     get :delete, on: :member
+    resource :completion, only: %i[create destroy], module: :courses
+    resource :archive, only: %i[create destroy], module: :courses
   end
   # AIDEV-NOTE: Must stay above `resources :learners`, or /learners/kept/edit matches learners#edit with id "kept".
   scope :learners, as: :learners, module: :learners do

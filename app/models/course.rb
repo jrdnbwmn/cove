@@ -23,13 +23,75 @@ class Course < ApplicationRecord
   # icon/side keys as raw HTML. Subjects are user-typed options, so one starting with "{" would be stored XSS.
   validates :subject, format: {without: /\A\{/}, allow_nil: true
   validate :enrollments_are_valid
+  validate :not_completed_and_archived
 
   # AIDEV-NOTE: Raw SQL because Rails has no scope for case-insensitive ordering with NULLs last.
   scope :ordered, -> { order(Arel.sql("subject IS NULL ASC, lower(subject) ASC, lower(name) ASC")) }
 
+  scope :active, -> { where(completed_at: nil, archived_at: nil) }
+  scope :completed, -> { where.not(completed_at: nil) }
+  scope :archived, -> { where.not(archived_at: nil) }
+  scope :taken_by, ->(learner) { joins(:enrollments).where(enrollments: {learner_id: learner.id}) }
+  scope :with_subject, ->(subject) { where("lower(subject) = ?", subject.downcase) }
+
+  # AIDEV-NOTE: Separate from subject_options_for, which mixes in suggestions for the form. The filter only
+  # offers subjects the family actually uses, across every status, one spelling per case-insensitive group.
+  def self.subject_filter_options_for(account)
+    account.courses.where.not(subject: nil).order(:created_at, :id).pluck(:subject)
+      .group_by(&:downcase)
+      .map { |_, spellings| spellings.tally.max_by { |_, count| count }.first }
+      .sort_by(&:downcase)
+  end
+
   def self.subject_options_for(account)
     custom_subjects = account.courses.where.not(subject: nil).distinct.pluck(:subject)
     (SUBJECT_SUGGESTIONS + custom_subjects).uniq { |subject| subject.downcase }
+  end
+
+  def active?
+    completed_at.nil? && archived_at.nil?
+  end
+
+  def completed?
+    completed_at.present?
+  end
+
+  def archived?
+    archived_at.present?
+  end
+
+  # AIDEV-NOTE: Each transition locks and reloads the row first, so a stale copy (another parent's change, a
+  # double click) is judged against the database. A refused transition adds an error and returns false.
+  def complete!
+    with_lock do
+      if active?
+        update!(completed_at: Time.current)
+      else
+        reject_status_change(completed? ? :already_completed : :not_active)
+      end
+    end
+  end
+
+  def archive!
+    with_lock do
+      if active?
+        update!(archived_at: Time.current)
+      else
+        reject_status_change(archived? ? :already_archived : :not_active)
+      end
+    end
+  end
+
+  def reopen!
+    with_lock do
+      completed? ? update!(completed_at: nil) : reject_status_change(:not_completed)
+    end
+  end
+
+  def restore!
+    with_lock do
+      archived? ? update!(archived_at: nil) : reject_status_change(:not_archived)
+    end
   end
 
   # AIDEV-NOTE: We cannot use learner_ids= because the picker only includes
@@ -50,6 +112,16 @@ class Course < ApplicationRecord
   end
 
   private
+
+  def reject_status_change(error)
+    errors.clear
+    errors.add(:base, error, name: name)
+    false
+  end
+
+  def not_completed_and_archived
+    errors.add(:base, :completed_and_archived) if completed_at.present? && archived_at.present?
+  end
 
   def match_subject_spelling
     return if subject.blank?

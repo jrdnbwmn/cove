@@ -17,3 +17,7 @@ downgraded_read_only:
 downgraded_kept:
   course: downgraded_course
   learner: kept
+
+completed_two:
+  course: completed
+  learner: two
