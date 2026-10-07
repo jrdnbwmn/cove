@@ -1,6 +1,9 @@
 <%# AIDEV-NOTE: The name button's stretched hit area makes the complete card
-    open the edit modal, matching learner cards while leaving room for a future
-    card menu. %>
+    open the edit modal, matching learner cards. The "…" menu sits above it
+    (z-10). It is portaled to <body> while open, outside any Stimulus scope, so
+    its items use no Stimulus actions: each is a submit button tied by the HTML
+    form attribute to a hidden form. Edit and Delete forms live inside a modal's
+    scope, whose submit->ui-modal#open action opens it. %>
 <% visible_learners = course.enrollments.filter_map { |enrollment| @learners_by_id[enrollment.learner_id] } %>
 
 <div data-course="<%= course.id %>" class="h-full">
@@ -8,16 +11,52 @@
     <% card.with_body do %>
       <%= render UiModalComponent.new(lazy_load: true, turbo_frame_src: edit_course_path(course)) do |modal| %>
         <% modal.with_trigger do %>
-          <div class="min-w-0">
+          <div class="min-w-0 pr-10">
             <p class="course-name font-medium break-words">
               <button type="button" class="<%= card_link_classes %>" data-course-card-link data-action="click->ui-modal#open:prevent"><%= course.name %></button>
             </p>
             <% if course.subject.present? %>
               <p class="course-subject mt-1 text-sm text-muted-foreground break-words"><%= course.subject %></p>
             <% end %>
+            <% if course.completed? || course.archived? %>
+              <p class="course-status-date mt-1 text-sm text-muted-foreground"><%= course.completed? ? t("courses.index.completed_on", date: friendly_date(course.completed_at)) : t("courses.index.archived_on", date: friendly_date(course.archived_at)) %></p>
+            <% end %>
           </div>
+          <%= form_with url: "#", method: :get, id: dom_id(course, :edit), class: "hidden", data: {action: "submit->ui-modal#open:prevent"} do %><% end %>
         <% end %>
       <% end %>
+
+      <div class="absolute right-2 top-2 z-10">
+        <%= render DropdownComponent.new(placement: "bottom-end", width: "w-44") do |dropdown| %>
+          <% dropdown.with_trigger do %>
+            <button type="button" aria-label="<%= t("courses.index.actions_label", name: course.name) %>" aria-haspopup="menu" data-ui-dropdown-popover-target="button" data-action="click->ui-dropdown-popover#toggle" class="flex size-10 items-center justify-center rounded-lg text-muted-foreground hover:bg-muted hover:text-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary">
+              <%= icon "ellipsis-vertical", class: "size-5" %>
+            </button>
+          <% end %>
+          <% dropdown.with_item_button(text: t("courses.index.edit"), icon: icon("pencil", class: "size-4"), type: "submit", form: dom_id(course, :edit)) %>
+          <% if course.active? %>
+            <% dropdown.with_item_button(text: t("courses.index.complete"), icon: icon("check", class: "size-4"), type: "submit", form: dom_id(course, :complete)) %>
+            <% dropdown.with_item_button(text: t("courses.index.archive"), icon: icon("archive", class: "size-4"), type: "submit", form: dom_id(course, :archive)) %>
+          <% elsif course.completed? %>
+            <% dropdown.with_item_button(text: t("courses.index.reopen"), icon: icon("rotate-ccw", class: "size-4"), type: "submit", form: dom_id(course, :reopen)) %>
+          <% else %>
+            <% dropdown.with_item_button(text: t("courses.index.restore"), icon: icon("archive-restore", class: "size-4"), type: "submit", form: dom_id(course, :restore)) %>
+          <% end %>
+          <% dropdown.with_item_button(text: t("courses.index.delete"), icon: icon("trash-2", class: "size-4"), destructive: true, type: "submit", form: dom_id(course, :delete)) %>
+        <% end %>
+      </div>
+
+      <% if course.active? %>
+        <%= form_with url: course_completion_path(course), method: :post, id: dom_id(course, :complete), class: "hidden" do %><% end %>
+        <%= form_with url: course_archive_path(course), method: :post, id: dom_id(course, :archive), class: "hidden" do %><% end %>
+      <% elsif course.completed? %>
+        <%= form_with url: course_completion_path(course), method: :delete, id: dom_id(course, :reopen), class: "hidden" do %><% end %>
+      <% else %>
+        <%= form_with url: course_archive_path(course), method: :delete, id: dom_id(course, :restore), class: "hidden" do %><% end %>
+      <% end %>
+
+      <%# AIDEV-NOTE: No title: the confirmation's own "Delete <name>?" heading is the only one. %>
+      <%= render "application/lazy_modal", src: delete_course_path(course), form_id: dom_id(course, :delete) %>
 
       <% if visible_learners.any? %>
         <div class="mt-4 flex flex-wrap gap-x-3 gap-y-2">
