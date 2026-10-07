@@ -1,2 +1,4 @@
+<%# locals: (learner:, classes: nil) %>
 <%# Decorative: the learner's name beside it identifies them, so color is never the only signal. %>
-<span class="learner-color inline-block size-3 shrink-0 rounded-full" data-learner-color="<%= learner.color %>" aria-hidden="true"></span>
+<%# AIDEV-NOTE: Where the dot sits top-aligned beside a text-base name (card, detail modal), pass classes: "mt-1.5" so it centers on the name's first line: (24px line - 12px dot) / 2. %>
+<span class="<%= class_names("learner-color inline-block size-3 shrink-0 rounded-full", classes) %>" data-learner-color="<%= learner.color %>" aria-hidden="true"></span>

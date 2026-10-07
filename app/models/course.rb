@@ -3,6 +3,7 @@ class Course < ApplicationRecord
   # `class` is reserved in Ruby.
   NAME_MAX_LENGTH = 75
   SUBJECT_MAX_LENGTH = 50
+  STATUSES = %w[active completed archived].freeze
   SUBJECT_SUGGESTIONS = ["Math", "Language Arts", "Science", "Social Studies", "World Languages", "Arts", "Health", "Electives"].freeze
 
   belongs_to :account
@@ -23,13 +24,104 @@ class Course < ApplicationRecord
   # icon/side keys as raw HTML. Subjects are user-typed options, so one starting with "{" would be stored XSS.
   validates :subject, format: {without: /\A\{/}, allow_nil: true
   validate :enrollments_are_valid
+  validate :not_completed_and_archived
+  validate :status_change_allowed
 
   # AIDEV-NOTE: Raw SQL because Rails has no scope for case-insensitive ordering with NULLs last.
   scope :ordered, -> { order(Arel.sql("subject IS NULL ASC, lower(subject) ASC, lower(name) ASC")) }
 
+  scope :active, -> { where(completed_at: nil, archived_at: nil) }
+  scope :completed, -> { where.not(completed_at: nil) }
+  scope :archived, -> { where.not(archived_at: nil) }
+  scope :taken_by, ->(learner) { joins(:enrollments).where(enrollments: {learner_id: learner.id}) }
+  scope :with_subject, ->(subject) { where("lower(subject) = ?", subject.downcase) }
+
+  # AIDEV-NOTE: Separate from subject_options_for, which mixes in suggestions for the form. The filter only
+  # offers subjects the family actually uses, across every status, one spelling per case-insensitive group.
+  def self.subject_filter_options_for(account)
+    account.courses.where.not(subject: nil).order(:created_at, :id).pluck(:subject)
+      .group_by(&:downcase)
+      .map { |_, spellings| spellings.tally.max_by { |_, count| count }.first }
+      .sort_by(&:downcase)
+  end
+
   def self.subject_options_for(account)
     custom_subjects = account.courses.where.not(subject: nil).distinct.pluck(:subject)
     (SUBJECT_SUGGESTIONS + custom_subjects).uniq { |subject| subject.downcase }
+  end
+
+  def active?
+    completed_at.nil? && archived_at.nil?
+  end
+
+  def completed?
+    completed_at.present?
+  end
+
+  def archived?
+    archived_at.present?
+  end
+
+  def status
+    if completed?
+      "completed"
+    elsif archived?
+      "archived"
+    else
+      "active"
+    end
+  end
+
+  # AIDEV-NOTE: The edit form's status select saves with the rest of the form, so this applies the same rules as
+  # the transition methods below without saving: only an active class can be completed or archived, and either
+  # can return to active. An unknown value is ignored; a refused move fails validation on save.
+  def assign_status(target)
+    target = target.to_s
+    return if STATUSES.exclude?(target) || target == status
+
+    if target == "active"
+      self.completed_at = nil
+      self.archived_at = nil
+    elsif active?
+      self.completed_at = Time.current if target == "completed"
+      self.archived_at = Time.current if target == "archived"
+    else
+      @status_change_refused = true
+    end
+  end
+
+  # AIDEV-NOTE: Each transition locks and reloads the row first, so a stale copy (another parent's change, a
+  # double click) is judged against the database. A refused transition adds an error and returns false.
+  def complete!
+    with_lock do
+      if active?
+        update!(completed_at: Time.current)
+      else
+        reject_status_change(completed? ? :already_completed : :not_active)
+      end
+    end
+  end
+
+  def archive!
+    with_lock do
+      if active?
+        update!(archived_at: Time.current)
+      else
+        reject_status_change(archived? ? :already_archived : :not_active)
+      end
+    end
+  end
+
+  def reopen!
+    with_lock do
+      completed? ? update!(completed_at: nil) : reject_status_change(:not_completed)
+    end
+  end
+
+  def restore!
+    with_lock do
+      archived? ? update!(archived_at: nil) : reject_status_change(:not_archived)
+    end
   end
 
   # AIDEV-NOTE: We cannot use learner_ids= because the picker only includes
@@ -51,11 +143,25 @@ class Course < ApplicationRecord
 
   private
 
+  def reject_status_change(error)
+    errors.clear
+    errors.add(:base, error, name: name)
+    false
+  end
+
+  def status_change_allowed
+    errors.add(:base, :not_active) if @status_change_refused
+  end
+
+  def not_completed_and_archived
+    errors.add(:base, :completed_and_archived) if completed_at.present? && archived_at.present?
+  end
+
   def match_subject_spelling
     return if subject.blank?
 
     matching_subject = SUBJECT_SUGGESTIONS.find { |suggestion| suggestion.casecmp?(subject) }
-    matching_subject ||= account&.courses&.where("lower(subject) = ?", subject.downcase)&.pick(:subject)
+    matching_subject ||= account&.courses&.with_subject(subject)&.pick(:subject)
     self.subject = matching_subject if matching_subject
   end
 

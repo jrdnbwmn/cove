@@ -50,7 +50,64 @@ class CourseFormsTest < ActionDispatch::IntegrationTest
     assert_actions_in_order ["Cancel", "Save"]
   end
 
+  test "the add form has no status field" do
+    get new_course_path
+
+    assert_select "select[name='course[status]']", count: 0
+  end
+
+  test "the edit form for an active class offers Active, Completed, and Archived" do
+    get edit_course_path(courses(:one))
+
+    assert_select "label", text: "Status"
+    assert_select "select[name='course[status]'] option", count: 3
+    assert_select "select[name='course[status]'] option[value='active'][selected]", text: "Active"
+    assert_select "select[name='course[status]'] option[value='completed']", text: "Completed"
+    assert_select "select[name='course[status]'] option[value='archived']", text: "Archived"
+    assert_select "form#course-form select[name='course[status]']"
+  end
+
+  test "the edit form for a completed class offers Completed and Active with its date" do
+    course = courses(:completed)
+    get edit_course_path(course)
+
+    assert_select "select[name='course[status]'] option", count: 2
+    assert_select "select[name='course[status]'] option[value='completed'][selected]", text: "Completed"
+    assert_select "select[name='course[status]'] option[value='active']", text: "Active"
+    assert_select "p", text: "Completed #{helper_date(course.completed_at)}"
+  end
+
+  test "the edit form for an archived class offers Archived and Active with its date" do
+    course = courses(:archived)
+    get edit_course_path(course)
+
+    assert_select "select[name='course[status]'] option", count: 2
+    assert_select "select[name='course[status]'] option[value='archived'][selected]", text: "Archived"
+    assert_select "select[name='course[status]'] option[value='active']", text: "Active"
+    assert_select "p", text: "Archived #{helper_date(course.archived_at)}"
+  end
+
+  test "the edit form has no separate status buttons and the footer is unchanged" do
+    get edit_course_path(courses(:completed))
+
+    assert_select "form form", count: 0
+    assert_select "button", text: /Complete class|Archive class|Reopen class|Restore class/, count: 0
+    assert_actions_in_order ["Cancel", "Save"]
+    assert_select "[data-course-actions] a", text: "Delete class"
+  end
+
+  test "an edit that fails validation still shows the saved status" do
+    patch course_path(courses(:completed)), params: {course: {name: " ", status: "completed", learner_ids: [""]}}
+
+    assert_response :unprocessable_content
+    assert_select "select[name='course[status]'] option[value='completed'][selected]"
+  end
+
   private
+
+  def helper_date(time)
+    ApplicationController.helpers.friendly_date(time)
+  end
 
   def assert_actions_in_order(labels)
     selector = "[data-course-actions] > div > button"

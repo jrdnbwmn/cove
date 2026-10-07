@@ -1,26 +1,67 @@
 <%# AIDEV-NOTE: The name button's stretched hit area makes the complete card
-    open the edit modal, matching learner cards while leaving room for a future
-    card menu. %>
+    open the edit modal, matching learner cards. The "…" menu sits above it
+    (z-10). It is portaled to <body> while open, outside any Stimulus scope, so
+    its items use no Stimulus actions: each is a submit button tied by the HTML
+    form attribute to a hidden form. Edit and Delete forms live inside a modal's
+    scope, whose submit->ui-modal#open action opens it. %>
+<%# AIDEV-NOTE: Status actions are defined once and drive both the menu items and their hidden forms below.
+    Each is [key, icon name, form method, form url]. %>
+<% status_actions =
+     if course.active?
+       [[:complete, "check", :post, course_completion_path(course)], [:archive, "archive", :post, course_archive_path(course)]]
+     elsif course.completed?
+       [[:reopen, "rotate-ccw", :delete, course_completion_path(course)]]
+     else
+       [[:restore, "archive-restore", :delete, course_archive_path(course)]]
+     end %>
 <% visible_learners = course.enrollments.filter_map { |enrollment| @learners_by_id[enrollment.learner_id] } %>
 
 <div data-course="<%= course.id %>" class="h-full">
-  <%= render CardComponent.new(classes: "relative h-full transition-colors has-[[data-course-card-link]:hover]:border-neutral-300") do |card| %>
+  <%# AIDEV-NOTE: The card and its body are flex columns so the learners block can sit at the bottom (mt-auto) while
+      the title and subject stay at the top, however many lines a neighbouring card's title wraps to. %>
+  <%= render CardComponent.new(classes: "relative flex h-full flex-col transition-colors has-[[data-course-card-link]:hover]:border-neutral-300 [&>div]:flex [&>div]:flex-1 [&>div]:flex-col") do |card| %>
     <% card.with_body do %>
       <%= render UiModalComponent.new(lazy_load: true, turbo_frame_src: edit_course_path(course)) do |modal| %>
         <% modal.with_trigger do %>
-          <div class="min-w-0">
+          <div class="min-w-0 pr-10">
             <p class="course-name font-medium break-words">
               <button type="button" class="<%= card_link_classes %>" data-course-card-link data-action="click->ui-modal#open:prevent"><%= course.name %></button>
             </p>
             <% if course.subject.present? %>
               <p class="course-subject mt-1 text-sm text-muted-foreground break-words"><%= course.subject %></p>
             <% end %>
+            <% if (status_date = course_status_date(course)) %>
+              <p class="course-status-date mt-1 text-sm text-muted-foreground"><%= status_date %></p>
+            <% end %>
           </div>
+          <%= form_with url: "#", method: :get, id: dom_id(course, :edit), class: "hidden", data: {action: "submit->ui-modal#open:prevent"} do %><% end %>
         <% end %>
       <% end %>
 
+      <div class="absolute right-2 top-2 z-10">
+        <%= render DropdownComponent.new(placement: "bottom-end", width: "w-44") do |dropdown| %>
+          <% dropdown.with_trigger do %>
+            <button type="button" aria-label="<%= t("courses.index.actions_label", name: course.name) %>" aria-haspopup="menu" data-ui-dropdown-popover-target="button" data-action="click->ui-dropdown-popover#toggle" class="flex size-10 items-center justify-center rounded-lg text-muted-foreground hover:bg-muted hover:text-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary">
+              <%= icon "ellipsis-vertical", class: "size-5" %>
+            </button>
+          <% end %>
+          <% dropdown.with_item_button(text: t("courses.index.edit"), icon: icon("pencil", class: "size-4"), type: "submit", form: dom_id(course, :edit)) %>
+          <% status_actions.each do |key, icon_name, _method, _url| %>
+            <% dropdown.with_item_button(text: t("courses.index.#{key}"), icon: icon(icon_name, class: "size-4"), type: "submit", form: dom_id(course, key)) %>
+          <% end %>
+          <% dropdown.with_item_button(text: t("courses.index.delete"), icon: icon("trash-2", class: "size-4"), destructive: true, type: "submit", form: dom_id(course, :delete)) %>
+        <% end %>
+      </div>
+
+      <% status_actions.each do |key, _icon_name, method, url| %>
+        <%= form_with url: url, method: method, id: dom_id(course, key), class: "hidden" do %><% end %>
+      <% end %>
+
+      <%# AIDEV-NOTE: No title: the confirmation's own "Delete <name>?" heading is the only one. %>
+      <%= render "application/lazy_modal", src: delete_course_path(course, from: "list"), form_id: dom_id(course, :delete) %>
+
       <% if visible_learners.any? %>
-        <div class="mt-4 flex flex-wrap gap-x-3 gap-y-2">
+        <div class="course-learners mt-auto flex flex-wrap gap-x-3 gap-y-2 pt-4">
           <% visible_learners.each do |learner| %>
             <div class="flex items-center gap-2 text-sm">
               <%= render "learners/name_with_dot", learner: learner %>
@@ -31,7 +72,7 @@
           <% end %>
         </div>
       <% else %>
-        <p class="mt-4 text-sm text-muted-foreground"><%= t("courses.index.no_learners") %></p>
+        <p class="course-learners mt-auto pt-4 text-sm text-muted-foreground"><%= t("courses.index.no_learners") %></p>
       <% end %>
     <% end %>
   <% end %>

@@ -3,7 +3,12 @@
   <p class="mt-2 text-muted-foreground"><%= t("courses.delete.body") %></p>
 
   <div class="mt-6 flex flex-col gap-3 sm:flex-row sm:justify-end">
-    <%= render ButtonComponent.new(text: t("courses.form.cancel"), variant: :secondary, href: edit_course_path(@course)) %>
+    <%# AIDEV-NOTE: Reached from a card's menu (from=list) there is no edit form behind this, so Cancel closes the modal. From the edit modal it swaps the edit form back in. The delete form's hidden method field would count as an unsaved change, so close directly. %>
+    <% if params[:from] == "list" %>
+      <%= render ButtonComponent.new(text: t("courses.form.cancel"), variant: :secondary, data: {action: "click->ui-modal#performClose:prevent"}) %>
+    <% else %>
+      <%= render ButtonComponent.new(text: t("courses.form.cancel"), variant: :secondary, href: edit_course_path(@course)) %>
+    <% end %>
     <%= form_with url: course_path(@course), method: :delete do %>
       <%= render ButtonComponent.new(text: t("courses.form.delete"), variant: :destructive, type: "submit", full_width: true) %>
     <% end %>

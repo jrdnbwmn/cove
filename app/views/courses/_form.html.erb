@@ -30,6 +30,23 @@
     help: t("courses.form.learners_help"),
     error: course.errors[:learners].first
   ) %>
+
+  <% if course.persisted? %>
+    <%# AIDEV-NOTE: Only moves the rules allow are offered: an active class can be completed or archived; a
+        completed or archived class can only return to active. Saves with the form (assign_status). %>
+    <% status_options = course.active? ? Course::STATUSES : [course.status, "active"] %>
+    <%= render SelectComponent.new(
+      label: t("courses.form.status"),
+      name: "course[status]",
+      id: "course_status",
+      options: status_options.map { |status| [t("courses.form.statuses.#{status}"), status] },
+      selected: course.status,
+      placeholder: nil,
+      clearable: false,
+      description: course_status_date(course),
+      error: course.errors[:base].first
+    ) %>
+  <% end %>
 <% end %>
 
 <%= render layout: "courses/actions", locals: {course: course} do %>

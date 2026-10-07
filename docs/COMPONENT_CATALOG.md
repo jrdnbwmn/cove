@@ -459,7 +459,10 @@ modal.
 content, and keyboard/backdrop close behavior. It uses `ui-modal`, leaving
 Jumpstart's `modal` controller intact. The close control remains outside the
 scrolling content wrapper. Lazy loading replaces only the modal content region,
-preserving the title and close control.
+preserving the title and close control. The default `<h2>` title is marked
+`data-ui-modal-unsaved-changes-target="heading"` so the unsaved-changes
+discard prompt can hide it while the prompt shows; a custom `header` slot is not
+marked.
 
 **Preview:** `UiModalComponentPreview`
 

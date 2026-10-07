@@ -1,12 +1,12 @@
 <%= render PageHeaderComponent.new(title: t(".title"), description: t(".description")) do |header| %>
-  <% if @courses.any? %>
+  <% if @family_has_courses %>
     <% header.with_primary_action do %>
       <%= render "add_trigger" %>
     <% end %>
   <% end %>
 <% end %>
 
-<% if @courses.empty? %>
+<% unless @family_has_courses %>
   <%= render EmptyStateComponent.new(title: t(".empty_title"), description: t(".empty_description")) do |empty_state| %>
     <% empty_state.with_icon do %>
       <%= icon "book-open", class: "w-full h-full" %>
@@ -16,9 +16,64 @@
     <% end %>
   <% end %>
 <% else %>
-  <div class="grid auto-rows-fr gap-4 sm:grid-cols-2 lg:grid-cols-3">
-    <% @courses.each do |course| %>
-      <%= render "course_card", course: course %>
+  <%# AIDEV-NOTE: Hidden status keeps the tab when a filter changes. Labels are sr-only to keep the toolbar compact; the "All ..." default option names each filter visually. %>
+  <%= form_with url: courses_path, method: :get, class: "mb-4 flex flex-col gap-3 sm:flex-row" do %>
+    <%= hidden_field_tag :status, @status, id: nil %>
+    <div class="w-full sm:w-56">
+      <%= render SelectComponent.new(
+        name: "learner",
+        id: "course_filter_learner",
+        label: t(".filter_learner"),
+        classes: "[&>label]:sr-only",
+        options: @filter_learners.map { |learner| [learner.name, learner.id] },
+        selected: @learner_filter&.id,
+        placeholder: t(".all_learners"),
+        clearable: false,
+        submit_on_change: true,
+        data: {select_allow_empty_option_value: true}
+      ) %>
+    </div>
+    <div class="w-full sm:w-56">
+      <%= render SelectComponent.new(
+        name: "subject",
+        id: "course_filter_subject",
+        label: t(".filter_subject"),
+        classes: "[&>label]:sr-only",
+        options: @subject_options,
+        selected: @subject_options.find { |subject| subject.casecmp?(@subject_filter.to_s) } || @subject_filter,
+        placeholder: t(".all_subjects"),
+        clearable: false,
+        submit_on_change: true,
+        data: {select_allow_empty_option_value: true}
+      ) %>
+    </div>
+  <% end %>
+
+  <div class="mb-4">
+    <%= render UiTabsComponent.new(mode: :links, variant: :underline, label: t(".status_label"), tab_list_classes: "w-full border-b border-neutral-200") do |tabs| %>
+      <% Course::STATUSES.each do |status| %>
+        <% tabs.with_tab(title: t(".#{status}"), href: course_list_path(status: status), active: @status == status, meta: @status_counts[status].to_s) %>
+      <% end %>
     <% end %>
   </div>
+
+  <% if @courses.any? %>
+    <div class="grid auto-rows-fr gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      <% @courses.each do |course| %>
+        <%= render "course_card", course: course %>
+      <% end %>
+    </div>
+  <% elsif @learner_filter || @subject_filter %>
+    <div class="flex flex-col items-start gap-3 py-6">
+      <p class="text-muted-foreground"><%= t(".no_match") %></p>
+      <%= render ButtonComponent.new(text: t(".clear_filters"), variant: :outline, href: courses_path({status: (@status unless @status == "active")}.compact)) %>
+    </div>
+  <% elsif @status == "active" %>
+    <div class="flex flex-col items-start gap-3 py-6">
+      <p class="text-muted-foreground"><%= t(".none_active") %></p>
+      <%= render "add_trigger" %>
+    </div>
+  <% else %>
+    <p class="py-6 text-muted-foreground"><%= t(".none_#{@status}") %></p>
+  <% end %>
 <% end %>

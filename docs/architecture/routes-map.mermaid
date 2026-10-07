@@ -37,6 +37,8 @@ graph LR
 
   subgraph Classes
     Courses[/classes] --> CoursesController[CoursesController#index, #new, #create, #edit, #update, #delete, #destroy]
+    CourseCompletion[POST/DELETE /classes/:course_id/completion] --> CourseCompletionsController[Courses::CompletionsController#create, #destroy]
+    CourseArchive[POST/DELETE /classes/:course_id/archive] --> CourseArchivesController[Courses::ArchivesController#create, #destroy]
   end
 
   %% Account collection, creation, and switching routes are intentionally absent.

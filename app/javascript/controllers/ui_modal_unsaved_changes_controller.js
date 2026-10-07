@@ -1,7 +1,7 @@
 import { Controller } from "@hotwired/stimulus";
 
 export default class extends Controller {
-  static targets = ["dialog", "wrapper", "content", "discardPrompt"];
+  static targets = ["dialog", "wrapper", "content", "discardPrompt", "heading"];
 
   connect() {
     this.isDirty = false;
@@ -28,8 +28,10 @@ export default class extends Controller {
     this.hideDiscardPrompt();
   }
 
+  // AIDEV-NOTE: Don't hide the prompt here. The modal animates closed after this, and restoring the form first
+  // made it flash back into view. ui-modal:closed (clearDirty) puts the content back once the dialog is gone.
   discard() {
-    this.clearDirty();
+    this.isDirty = false;
     this.element.dispatchEvent(new CustomEvent("ui-modal-unsaved-changes:discard", {bubbles: true}));
   }
 
@@ -55,15 +57,23 @@ export default class extends Controller {
     this.hideDiscardPrompt();
   }
 
+  // AIDEV-NOTE: A close request (cross, outside click, Escape) while the prompt is already showing dismisses the
+  // question like "Keep editing", so nothing is lost and the cross never looks dead.
   requestClose(event) {
     if (!this.isDirty) return;
 
     event.preventDefault();
-    this.showDiscardPrompt();
+    if (this.discardPromptTarget.classList.contains("hidden")) {
+      this.showDiscardPrompt();
+    } else {
+      this.keepEditing();
+    }
   }
 
   showDiscardPrompt() {
     this.contentTarget.classList.add("hidden");
+    // The modal's title (e.g. "Add class") would otherwise sit above the prompt.
+    if (this.hasHeadingTarget) this.headingTarget.classList.add("hidden");
     this.wrapperTarget.classList.replace("h-full", "h-auto");
     this.discardPromptTarget.classList.remove("hidden");
     this.notifyVisibilityChanged();
@@ -71,6 +81,7 @@ export default class extends Controller {
 
   hideDiscardPrompt() {
     this.contentTarget.classList.remove("hidden");
+    if (this.hasHeadingTarget) this.headingTarget.classList.remove("hidden");
     this.wrapperTarget.classList.replace("h-auto", "h-full");
     this.discardPromptTarget.classList.add("hidden");
     this.notifyVisibilityChanged();

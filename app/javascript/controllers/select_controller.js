@@ -10,6 +10,7 @@ export default class extends Controller {
     submitOnChange: { type: Boolean, default: false }, // Submit form on change
     dropdownInput: { type: Boolean, default: true }, // Enable dropdown input plugin
     dropdownInputPlaceholder: { type: String, default: "Search..." }, // Custom placeholder for dropdown input (if "", it will use the default placeholder)
+    allowEmptyOption: { type: Boolean, default: false }, // List the blank option (e.g. "All learners") so it can be chosen again
     clearButton: { type: Boolean, default: true }, // Show clear button when typing or option selected (onle for single select, this is never shown for multiple select)
     openOnMouseDown: { type: Boolean, default: true }, // Open dropdown on mousedown for a more immediate interaction
     lockScroll: { type: Boolean, default: false }, // Lock page scrolling while dropdown is open
@@ -80,6 +81,7 @@ export default class extends Controller {
       openOnFocus: !this.#shouldSearchBeforeOpen(),
       closeAfterSelect: !this.element.multiple,
       create: this.allowNewValue,
+      allowEmptyOption: this.allowEmptyOptionValue,
       dropdownParent: this.dialog || undefined,
       render: this.#getRenderConfig(),
       onChange: this.#handleChange.bind(this),

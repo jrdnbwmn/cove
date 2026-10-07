@@ -68,7 +68,25 @@ Each section is marked **Built** or **Decided, not built**.
   appear again when restored.
 - Read-only learners stay visible and marked "Read-only" in their existing
   classes. They can't be added to a class, but can be removed from one.
-- Deleting a class deletes its enrollments.
+- Deleting a class deletes its enrollments. Delete works in every status and
+  always asks for confirmation.
+- A class is **Active**, **Completed**, or **Archived**, never more than one.
+  New classes are Active. Status is stored as `completed_at` / `archived_at`
+  timestamps, and the database refuses a class that is both.
+- Only an Active class can be completed or archived. A Completed class can be
+  reopened and an Archived class restored; both return to Active. A request
+  that doesn't fit the class's current status (a stale tab, a double click)
+  changes nothing and shows an alert.
+- Any class can be completed right away, with no activity. Completing or
+  archiving doesn't lock editing: a Completed or Archived class stays editable,
+  and saving never changes its status or date.
+- Status changes are reversible, so they don't ask for confirmation. The word
+  "Done" is reserved for schedule blocks; classes are "completed".
+- `/classes` shows one status tab at a time (Active by default) with counts,
+  and can be filtered by learner (active learners, including read-only ones)
+  and by subject (case-insensitive; "Math" and "math" are one subject). Tab,
+  learner, and subject filters combine, and they live only in the URL. Counts
+  follow the learner and subject filters. Unknown filter values are ignored.
 
 ## Learner data (Decided — applies to every feature)
 

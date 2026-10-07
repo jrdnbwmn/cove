@@ -20,7 +20,7 @@
       <% if header? %>
         <%= header %>
       <% elsif title.present? %>
-        <h2 class="<%= title_classes %>"><%= title %></h2>
+        <h2 class="<%= title_classes %>" data-ui-modal-unsaved-changes-target="heading"><%= title %></h2>
       <% end %>
 
       <%# AIDEV-NOTE: Lazy loading replaces only this region, preserving the dialog title and Close control. %>
