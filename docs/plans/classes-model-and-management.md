@@ -18,10 +18,10 @@
 | 9 | 4 — Delete and navigation | 5 | Delete class with in-modal confirmation | Master | ✅ |
 | 10 | 4 — Delete and navigation | 5 | Sidebar shows Classes | Master | ✅ |
 | 11 | 4 — Delete and navigation | 5 | Remove the Subjects page | Master | ✅ |
-| 12 | 5 — Copy, flow, docs | 6 | Marketing copy says "classes" | Clone | |
-| 13 | 5 — Copy, flow, docs | 6 | System test for the full modal flow | Master | |
-| 14 | 5 — Copy, flow, docs | 6 | AGENTS.md glossary + product-brief updates | Clone | |
-| 15 | 5 — Copy, flow, docs | 7 | Demo classes in local seeds | Clone | |
+| 12 | 5 — Copy, flow, docs | 6 | Marketing copy says "classes" | Clone | ✅ |
+| 13 | 5 — Copy, flow, docs | 6 | System test for the full modal flow | Master | ✅ |
+| 14 | 5 — Copy, flow, docs | 6 | AGENTS.md glossary + product-brief updates | Clone | ✅ |
+| 15 | 5 — Copy, flow, docs | 7 | Demo classes in local seeds | Clone | ✅ |
 
 ## Prerequisites
 

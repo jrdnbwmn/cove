@@ -12,7 +12,8 @@ class SeedsTest < ActiveSupport::TestCase
         -> { User.count },
         -> { Account.count },
         -> { AccountUser.count },
-        -> { Plan.count }
+        -> { Plan.count },
+        -> { Course.count }
       ] do
         Rails.stub(:env, environment_inquirer) { load SEEDS_FILE }
       end
@@ -55,6 +56,28 @@ class SeedsTest < ActiveSupport::TestCase
     assert_equal 2, family.account_users_count
     assert_equal 2, family.parents.count
     assert_equal 1, User.find_by!(email: "subscribed@cove.test").family.payment_processor.subscription.quantity
+  end
+
+  test "development seeds three demo classes without duplicate enrollments" do
+    environment_inquirer = ActiveSupport::EnvironmentInquirer.new("development")
+
+    Rails.stub(:env, environment_inquirer) { load SEEDS_FILE }
+    Rails.stub(:env, environment_inquirer) { load SEEDS_FILE }
+
+    family = Account.find_by!(name: "Cove Family")
+    assert_equal 3, family.courses.count
+
+    algebra = family.courses.find_by!(name: "Algebra 1")
+    piano = family.courses.find_by!(name: "Piano")
+    nature_study = family.courses.find_by!(name: "Nature study")
+
+    assert_equal "Math", algebra.subject
+    assert_equal ["Maya", "Theo"], algebra.learners.ordered.pluck(:name)
+    assert_equal "Arts", piano.subject
+    assert_equal ["Maya"], piano.learners.pluck(:name)
+    assert_nil nature_study.subject
+    assert_empty nature_study.learners
+    assert_equal 3, [algebra, piano, nature_study].sum { |course| course.enrollments.count }
   end
 
   test "development seeds one complimentary Premium tester family without billing records" do
