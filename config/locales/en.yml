@@ -872,6 +872,7 @@ en:
               too_long: "Use 75 characters or fewer."
             subject:
               too_long: "Use 50 characters or fewer."
+              invalid: "Start the subject with a letter or number."
             learners:
               duplicate: "One of these learners was just added to this class. Try saving again."
         enrollment:

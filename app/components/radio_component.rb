@@ -77,24 +77,13 @@ class RadioComponent < ViewComponent::Base
   end
 
   def description_classes
-    size_class = case @size
-    when :sm then "text-[11px]"
-    when :lg then "text-sm"
-    else "text-xs"
-    end
     color_class = @disabled ? "text-neutral-400 dark:text-neutral-500" : "text-neutral-500 dark:text-neutral-400"
 
-    [size_class, color_class, "leading-normal"].join(" ")
+    ["text-sm", color_class, "leading-normal"].join(" ")
   end
 
   def error_classes
-    size_class = case @size
-    when :sm then "text-[11px]"
-    when :lg then "text-sm"
-    else "text-xs"
-    end
-
-    [size_class, "text-red-600 dark:text-red-400 leading-normal"].join(" ")
+    ["text-sm", "text-red-600 dark:text-red-400 leading-normal"].join(" ")
   end
 
   def text_content_classes

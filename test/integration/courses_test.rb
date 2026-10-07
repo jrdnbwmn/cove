@@ -69,7 +69,7 @@ class CoursesTest < ActionDispatch::IntegrationTest
     patch course_path(@course), params: {course: {name: @course.name, subject: @course.subject, learner_ids: [""]}}
 
     assert_redirected_to courses_path
-    assert_empty @course.reload.visible_learners
+    assert_empty @course.reload.learners.active
   end
 
   test "an enrollment uniqueness race returns an inline error" do

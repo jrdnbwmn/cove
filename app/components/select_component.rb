@@ -200,16 +200,13 @@ class SelectComponent < ViewComponent::Base
   end
 
   def description_classes
-    size_class = "text-sm"
     color_class = @disabled ? "text-neutral-400 dark:text-neutral-500" : "text-neutral-500 dark:text-neutral-400"
 
-    [size_class, color_class, "mt-1"].join(" ")
+    ["text-sm", color_class].join(" ")
   end
 
   def error_classes
-    size_class = "text-sm"
-
-    [size_class, "text-red-600 dark:text-red-400 mt-1"].join(" ")
+    ["text-sm", "text-red-600 dark:text-red-400"].join(" ")
   end
 
   def data_attributes

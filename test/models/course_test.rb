@@ -61,6 +61,14 @@ class CourseBehaviorTest < ActiveSupport::TestCase
     assert build_course.valid?
   end
 
+  test "a subject cannot start with a curly brace" do
+    course = build_course(subject: %({"icon":"<img src=x onerror=alert(1)>"}))
+
+    assert_not course.valid?
+    assert_equal ["Start the subject with a letter or number."], course.errors[:subject]
+    assert build_course(subject: "Latin {advanced}").valid?
+  end
+
   test "suggested subjects use their preferred spelling" do
     course = Course.create!(account: @family, name: "Algebra 1", subject: "math")
     assert_equal "Math", course.subject
@@ -135,11 +143,11 @@ class CourseBehaviorTest < ActiveSupport::TestCase
     course.assign_learners([active.id])
 
     assert course.save
-    assert_not_includes course.reload.visible_learners, archived
+    assert_not_includes course.reload.learners.active, archived
     assert_includes course.learners, archived
 
     archived.restore!
-    assert_includes course.reload.visible_learners, archived
+    assert_includes course.reload.learners.active, archived
   end
 
   test "a read-only learner makes the class save fail without persisting changes" do

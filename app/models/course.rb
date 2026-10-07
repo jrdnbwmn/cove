@@ -19,8 +19,12 @@ class Course < ApplicationRecord
 
   validates :name, presence: true, length: {maximum: NAME_MAX_LENGTH}
   validates :subject, length: {maximum: SUBJECT_MAX_LENGTH}
+  # AIDEV-NOTE: The select controller parses option text that starts with "{" as JSON and renders its
+  # icon/side keys as raw HTML. Subjects are user-typed options, so one starting with "{" would be stored XSS.
+  validates :subject, format: {without: /\A\{/}, allow_nil: true
   validate :enrollments_are_valid
 
+  # AIDEV-NOTE: Raw SQL because Rails has no scope for case-insensitive ordering with NULLs last.
   scope :ordered, -> { order(Arel.sql("subject IS NULL ASC, lower(subject) ASC, lower(name) ASC")) }
 
   def self.subject_options_for(account)
@@ -43,10 +47,6 @@ class Course < ApplicationRecord
     existing_enrollments.each do |enrollment|
       enrollment.mark_for_destruction if !enrollment.learner.archived? && !selected_ids.include?(enrollment.learner_id)
     end
-  end
-
-  def visible_learners
-    learners.active.ordered
   end
 
   private

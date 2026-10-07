@@ -70,6 +70,7 @@ class LearnersSystemTest < ApplicationSystemTestCase
       click_button "Cancel"
 
       assert_text "Discard your changes?"
+      assert_no_field "Name"
       click_button "Keep editing"
       assert_field "Name", with: "Nora"
 

@@ -22,9 +22,8 @@
       <% if visible_learners.any? %>
         <div class="mt-4 flex flex-wrap gap-x-3 gap-y-2">
           <% visible_learners.each do |learner| %>
-            <div class="flex items-center gap-2">
-              <%= render "learners/color_dot", learner: learner %>
-              <span class="text-sm"><%= learner.name %></span>
+            <div class="flex items-center gap-2 text-sm">
+              <%= render "learners/name_with_dot", learner: learner %>
               <% if !learner.editable? %>
                 <%= render BadgeComponent.new(text: t("learners.index.read_only_badge"), variant: :neutral, size: :sm) %>
               <% end %>

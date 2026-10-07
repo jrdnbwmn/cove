@@ -8,14 +8,15 @@
   <% end %>
 
   <dialog class="<%= dialog_classes %>" data-ui-modal-target="dialog" data-ui-modal-unsaved-changes-target="dialog" data-action="mousedown->ui-modal#backdropClose turbo:frame-render->ui-modal-unsaved-changes#frameRendered">
-    <div class="<%= content_wrapper_classes %>">
-      <% if show_close_button %>
-        <button type="button" data-action="ui-modal#close:prevent" class="<%= close_button_classes %>">
-          <%= render_close_icon %>
-          <span class="sr-only">Close</span>
-        </button>
-      <% end %>
+    <%# AIDEV-NOTE: The close button sits outside the scrolling wrapper so it stays put while a tall modal scrolls. %>
+    <% if show_close_button %>
+      <button type="button" data-action="ui-modal#close:prevent" class="<%= close_button_classes %>">
+        <%= render_close_icon %>
+        <span class="sr-only">Close</span>
+      </button>
+    <% end %>
 
+    <div class="<%= content_wrapper_classes %>" data-ui-modal-unsaved-changes-target="wrapper">
       <% if header? %>
         <%= header %>
       <% elsif title.present? %>

@@ -84,11 +84,11 @@ class PasswordComponent < ViewComponent::Base
   end
 
   def error_classes
-    "text-sm text-red-600 dark:text-red-400 mt-1"
+    "text-sm text-red-600 dark:text-red-400"
   end
 
   def hint_classes
-    "text-sm text-neutral-500 dark:text-neutral-400 mt-1"
+    "text-sm text-neutral-500 dark:text-neutral-400"
   end
 
   def controller_data_attributes
