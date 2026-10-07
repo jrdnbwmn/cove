@@ -1,7 +1,6 @@
 <%# AIDEV-NOTE: The name button's stretched hit area makes the complete card
     open the edit modal, matching learner cards while leaving room for a future
     card menu. %>
-<% name_classes = "cursor-pointer text-left after:absolute after:inset-0 after:rounded-xl focus-visible:outline-none focus-visible:after:outline-2 focus-visible:after:outline-offset-2 focus-visible:after:outline-primary" %>
 <% visible_learners = course.enrollments.filter_map { |enrollment| @learners_by_id[enrollment.learner_id] } %>
 
 <div data-course="<%= course.id %>" class="h-full">
@@ -11,7 +10,7 @@
         <% modal.with_trigger do %>
           <div class="min-w-0">
             <p class="course-name font-medium break-words">
-              <button type="button" class="<%= name_classes %>" data-course-card-link data-action="click->ui-modal#open:prevent"><%= course.name %></button>
+              <button type="button" class="<%= card_link_classes %>" data-course-card-link data-action="click->ui-modal#open:prevent"><%= course.name %></button>
             </p>
             <% if course.subject.present? %>
               <p class="course-subject mt-1 text-sm text-muted-foreground break-words"><%= course.subject %></p>
@@ -27,7 +26,7 @@
               <%= render "learners/color_dot", learner: learner %>
               <span class="text-sm"><%= learner.name %></span>
               <% if !learner.editable? %>
-                <%= render BadgeComponent.new(text: t("courses.index.read_only_badge"), variant: :neutral, size: :sm) %>
+                <%= render BadgeComponent.new(text: t("learners.index.read_only_badge"), variant: :neutral, size: :sm) %>
               <% end %>
             </div>
           <% end %>

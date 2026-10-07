@@ -25,7 +25,7 @@ class CoursesController < ApplicationController
       render :new, status: :unprocessable_content
     end
   rescue ActiveRecord::RecordNotUnique
-    render :new, status: :unprocessable_content
+    render_duplicate_enrollment(:new)
   end
 
   def edit
@@ -40,7 +40,7 @@ class CoursesController < ApplicationController
       render :edit, status: :unprocessable_content
     end
   rescue ActiveRecord::RecordNotUnique
-    render :edit, status: :unprocessable_content
+    render_duplicate_enrollment(:edit)
   end
 
   def delete
@@ -61,6 +61,11 @@ class CoursesController < ApplicationController
     attributes = course_params
     course.assign_attributes(attributes.except(:learner_ids))
     course.assign_learners(attributes[:learner_ids])
+  end
+
+  def render_duplicate_enrollment(template)
+    @course.errors.add(:learners, :duplicate)
+    render template, status: :unprocessable_content
   end
 
   def course_params

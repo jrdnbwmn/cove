@@ -11,7 +11,8 @@ class CoursesSystemTest < ApplicationSystemTestCase
 
     within("dialog[open]") do
       fill_in "Name", with: "Algebra 1"
-      find("select[name='course[subject]']", visible: :all).find("option", text: "Math").select_option
+      find(".ts-control").click
+      find(".ts-dropdown [role='option']", text: "Math").click
       check "Maya"
       check "Theo"
       click_button "Add class"
@@ -22,6 +23,7 @@ class CoursesSystemTest < ApplicationSystemTestCase
     assert_selector ".course-name", text: "Algebra 1"
 
     course = Course.order(:id).last
+    assert_equal "Math", course.subject
     find("[data-course='#{course.id}']").click
     within("dialog[open]") do
       fill_in "Name", with: "Geometry"

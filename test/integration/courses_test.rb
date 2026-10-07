@@ -88,6 +88,7 @@ class CoursesTest < ActionDispatch::IntegrationTest
     end
 
     assert_response :unprocessable_content
+    assert_select "p", text: "One of these learners was just added to this class. Try saving again."
   end
 
   test "a parent can confirm and delete a class" do

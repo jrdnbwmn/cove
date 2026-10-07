@@ -11,7 +11,8 @@ class CourseFormsTest < ActionDispatch::IntegrationTest
     get new_course_path
 
     assert_select "turbo-frame#modal-lazy-content"
-    assert_select "h2", text: "Add class"
+    # The modal title comes from the Add class trigger, so the frame has no heading of its own.
+    assert_select "turbo-frame#modal-lazy-content h2", count: 0
     assert_select "label[for='course_name']", text: /Name/
     assert_select "input#course_name[name='course[name]'][required][maxlength='75'][autofocus]"
     assert_select "p", text: "Something you want to track or grade, like Algebra 1 or Piano."

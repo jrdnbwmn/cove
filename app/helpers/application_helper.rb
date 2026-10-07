@@ -7,6 +7,14 @@ module ApplicationHelper
     FLASH_VARIANTS.fetch(key.to_sym, :default)
   end
 
+  # AIDEV-NOTE: Classes for the stretched-link button on list cards (learners, classes): its
+  # ::after covers the whole relatively positioned card, so a click anywhere opens the modal.
+  CARD_LINK_CLASSES = "cursor-pointer text-left after:absolute after:inset-0 after:rounded-xl focus-visible:outline-none focus-visible:after:outline-2 focus-visible:after:outline-offset-2 focus-visible:after:outline-primary".freeze
+
+  def card_link_classes
+    CARD_LINK_CLASSES
+  end
+
   def friendly_date(date)
     date = date.in_time_zone.to_date
 

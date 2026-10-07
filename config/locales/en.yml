@@ -713,7 +713,6 @@ en:
       empty_title: "No classes yet"
       empty_description: "Add a class for anything you want to track or grade, like Algebra 1, Piano, or Nature study."
       no_learners: "No learners"
-      read_only_badge: "Read-only"
     form:
       name: "Name"
       name_hint: "Something you want to track or grade, like Algebra 1 or Piano."
@@ -732,6 +731,11 @@ en:
     delete:
       heading: "Delete %{name}?"
       body: "This can't be undone."
+
+  learner_picker:
+    empty: "No learners yet."
+    add_learner: "Add a learner"
+    read_only_on_free: "Read-only on Free"
 
   support:
     show:
@@ -868,6 +872,8 @@ en:
               too_long: "Use 75 characters or fewer."
             subject:
               too_long: "Use 50 characters or fewer."
+            learners:
+              duplicate: "One of these learners was just added to this class. Try saving again."
         enrollment:
           attributes:
             learner:

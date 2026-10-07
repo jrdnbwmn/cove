@@ -6,7 +6,10 @@ class Course < ApplicationRecord
   SUBJECT_SUGGESTIONS = ["Math", "Language Arts", "Science", "Social Studies", "World Languages", "Arts", "Health", "Electives"].freeze
 
   belongs_to :account
-  has_many :enrollments, dependent: :destroy, autosave: true
+  # AIDEV-NOTE: validate: false because enrollments_are_valid reports enrollment
+  # errors on :learners; Rails' own association validation would add a second,
+  # duplicate error under "enrollments.learner".
+  has_many :enrollments, dependent: :destroy, autosave: true, validate: false
   has_many :learners, through: :enrollments
 
   normalizes :name, with: ->(name) { name.strip }
@@ -21,7 +24,7 @@ class Course < ApplicationRecord
   scope :ordered, -> { order(Arel.sql("subject IS NULL ASC, lower(subject) ASC, lower(name) ASC")) }
 
   def self.subject_options_for(account)
-    custom_subjects = account.courses.where.not(subject: nil).pluck(:subject)
+    custom_subjects = account.courses.where.not(subject: nil).distinct.pluck(:subject)
     (SUBJECT_SUGGESTIONS + custom_subjects).uniq { |subject| subject.downcase }
   end
 

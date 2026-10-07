@@ -27,7 +27,7 @@
     read_only_ids: read_only_ids,
     label: t("courses.form.learners"),
     help: t("courses.form.learners_help"),
-    error: course.errors[:learners].first || course.errors["enrollments.learner"].first
+    error: course.errors[:learners].first
   ) %>
 <% end %>
 

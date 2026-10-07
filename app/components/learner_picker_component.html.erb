@@ -24,6 +24,6 @@
       <% end %>
     </div>
   <% else %>
-    <p class="text-sm text-muted-foreground">No learners yet. <%= link_to "Add a learner", learners_path, class: "text-primary underline" %></p>
+    <p class="text-sm text-muted-foreground"><%= t("learner_picker.empty") %> <%= link_to t("learner_picker.add_learner"), learners_path, class: "text-primary underline" %></p>
   <% end %>
 </fieldset>
