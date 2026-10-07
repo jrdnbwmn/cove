@@ -7,7 +7,9 @@
 <% visible_learners = course.enrollments.filter_map { |enrollment| @learners_by_id[enrollment.learner_id] } %>
 
 <div data-course="<%= course.id %>" class="h-full">
-  <%= render CardComponent.new(classes: "relative h-full transition-colors has-[[data-course-card-link]:hover]:border-neutral-300") do |card| %>
+  <%# AIDEV-NOTE: The card and its body are flex columns so the learners block can sit at the bottom (mt-auto) while
+      the title and subject stay at the top, however many lines a neighbouring card's title wraps to. %>
+  <%= render CardComponent.new(classes: "relative flex h-full flex-col transition-colors has-[[data-course-card-link]:hover]:border-neutral-300 [&>div]:flex [&>div]:flex-1 [&>div]:flex-col") do |card| %>
     <% card.with_body do %>
       <%= render UiModalComponent.new(lazy_load: true, turbo_frame_src: edit_course_path(course)) do |modal| %>
         <% modal.with_trigger do %>
@@ -59,7 +61,7 @@
       <%= render "application/lazy_modal", src: delete_course_path(course), form_id: dom_id(course, :delete) %>
 
       <% if visible_learners.any? %>
-        <div class="mt-4 flex flex-wrap gap-x-3 gap-y-2">
+        <div class="course-learners mt-auto flex flex-wrap gap-x-3 gap-y-2 pt-4">
           <% visible_learners.each do |learner| %>
             <div class="flex items-center gap-2 text-sm">
               <%= render "learners/name_with_dot", learner: learner %>
@@ -70,7 +72,7 @@
           <% end %>
         </div>
       <% else %>
-        <p class="mt-4 text-sm text-muted-foreground"><%= t("courses.index.no_learners") %></p>
+        <p class="course-learners mt-auto pt-4 text-sm text-muted-foreground"><%= t("courses.index.no_learners") %></p>
       <% end %>
     <% end %>
   <% end %>

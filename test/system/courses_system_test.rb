@@ -251,6 +251,21 @@ class CoursesSystemTest < ApplicationSystemTestCase
     assert_equal closed_height, page.evaluate_script(height)
   end
 
+  test "learner names sit at the bottom of every card in a row even when another title wraps" do
+    long = Course.create!(account: accounts(:company), name: "LA 4th grade - The Good and the Beautiful, Part Two of Three", subject: "Language Arts")
+    Enrollment.create!(course: long, learner: learners(:one))
+    Enrollment.create!(course: courses(:two), learner: learners(:two))
+    visit courses_path
+
+    bottom = ->(course) { page.evaluate_script("document.querySelector(\"[data-course='#{course.id}'] .course-learners\").getBoundingClientRect().bottom") }
+    card_bottom = ->(course) { page.evaluate_script("document.querySelector(\"[data-course='#{course.id}'] .course-learners\").closest('[data-course]').getBoundingClientRect().bottom") }
+
+    [long, courses(:two)].each do |course|
+      assert_in_delta card_bottom.call(course) - 24, bottom.call(course), 2, "#{course.name} learners should sit at the card's bottom padding"
+    end
+    assert_in_delta bottom.call(long), bottom.call(courses(:two)), 2
+  end
+
   private
 
   def open_actions_menu(name)
