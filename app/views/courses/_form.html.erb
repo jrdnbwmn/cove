@@ -43,7 +43,7 @@
       selected: course.status,
       placeholder: nil,
       clearable: false,
-      description: (t("courses.index.#{course.status}_on", date: friendly_date(course.completed_at || course.archived_at)) unless course.active?),
+      description: course_status_date(course),
       error: course.errors[:base].first
     ) %>
   <% end %>

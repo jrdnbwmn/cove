@@ -15,6 +15,13 @@ module ApplicationHelper
     CARD_LINK_CLASSES
   end
 
+  # "Completed on …" / "Archived on …" for a class, or nil while it is active.
+  def course_status_date(course)
+    return if course.active?
+
+    t("courses.index.#{course.status}_on", date: friendly_date(course.completed_at || course.archived_at))
+  end
+
   def friendly_date(date)
     date = date.in_time_zone.to_date
 

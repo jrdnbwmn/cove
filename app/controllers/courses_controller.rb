@@ -22,7 +22,7 @@ class CoursesController < ApplicationController
     filtered = filtered_courses
     # AIDEV-NOTE: Tab counts follow the learner and subject filters and use COUNT queries, not loaded records.
     @status_counts = Course::STATUSES.index_with { |status| filtered.public_send(status).count }
-    @courses = filtered.public_send(@status).ordered.includes(:enrollments)
+    @courses = filtered.public_send(@status).ordered.includes(:enrollments).load
   end
 
   def new
