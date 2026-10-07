@@ -8,7 +8,11 @@ export default class extends Controller {
     this.boundMarkDirty = this.markDirty.bind(this);
     this.boundClearDirty = this.clearDirty.bind(this);
     this.boundRequestClose = this.requestClose.bind(this);
+    this.boundGuardSubmit = this.guardSubmit.bind(this);
+    this.pendingForm = null;
 
+    // Capture phase so it runs before the bubbling submit listener below clears the dirty flag.
+    this.dialogTarget.addEventListener("submit", this.boundGuardSubmit, true);
     this.dialogTarget.addEventListener("input", this.boundMarkDirty);
     this.dialogTarget.addEventListener("change", this.boundMarkDirty);
     this.dialogTarget.addEventListener("submit", this.boundClearDirty);
@@ -17,6 +21,7 @@ export default class extends Controller {
   }
 
   disconnect() {
+    this.dialogTarget.removeEventListener("submit", this.boundGuardSubmit, true);
     this.dialogTarget.removeEventListener("input", this.boundMarkDirty);
     this.dialogTarget.removeEventListener("change", this.boundMarkDirty);
     this.dialogTarget.removeEventListener("submit", this.boundClearDirty);
@@ -25,12 +30,32 @@ export default class extends Controller {
   }
 
   keepEditing() {
+    this.pendingForm = null;
     this.hideDiscardPrompt();
   }
 
   discard() {
+    const form = this.pendingForm;
     this.clearDirty();
+
+    // A guarded form (e.g. a status change) was waiting on this answer: send it instead of closing.
+    if (form) {
+      form.requestSubmit();
+      return;
+    }
+
     this.element.dispatchEvent(new CustomEvent("ui-modal-unsaved-changes:discard", {bubbles: true}));
+  }
+
+  // AIDEV-NOTE: A form marked data-discard-guard leaves the modal without saving the edit form's changes, so
+  // with unsaved edits it waits for the same "Discard your changes?" answer that closing the modal asks.
+  guardSubmit(event) {
+    if (!this.isDirty || !event.target.matches?.("form[data-discard-guard]")) return;
+
+    event.preventDefault();
+    event.stopPropagation();
+    this.pendingForm = event.target;
+    this.showDiscardPrompt();
   }
 
   markDirty(event) {
@@ -52,6 +77,7 @@ export default class extends Controller {
 
   clearDirty() {
     this.isDirty = false;
+    this.pendingForm = null;
     this.hideDiscardPrompt();
   }
 

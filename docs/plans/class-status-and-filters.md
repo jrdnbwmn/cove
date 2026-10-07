@@ -13,8 +13,8 @@
 | 4 | 2 | 2 | Build filtered status-aware list query | Master | ✅ |
 | 5 | 2 | 2 | Render the filter toolbar, tabs, and empty states | subagent | ✅ |
 | 6 | 2 | 2 | Add class-card status dates and action menus | subagent | ✅ |
-| 7 | 3 | 3 | Add editable modal status controls and unsaved-change guard | Master | |
-| 8 | 3 | 3 | Update product behavior documentation | Master | |
+| 7 | 3 | 3 | Add editable modal status controls and unsaved-change guard | Master | ✅ |
+| 8 | 3 | 3 | Update product behavior documentation | Master | ✅ |
 | 9 | 4 | 4 | Run final feature and quality verification | Master | |
 
 ## Prerequisites

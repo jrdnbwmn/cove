@@ -138,4 +138,67 @@ class CoursesSystemTest < ApplicationSystemTestCase
     find("button[aria-label='Actions for #{name}']").click
     assert_selector "[role='menuitem']"
   end
+
+  test "completing a class from the edit modal returns to the Active list with a toast" do
+    visit courses_path
+    find("[data-course='#{courses(:one).id}']").click
+
+    within("dialog[open]") do
+      assert_text "Status"
+      click_button "Complete class"
+    end
+
+    assert_no_selector "dialog[open]"
+    assert_text "Algebra 1 is complete. Nice work."
+    assert_no_selector ".course-name", text: "Algebra 1"
+    assert courses(:one).reload.completed?
+  end
+
+  test "reopening a completed class from the edit modal keeps the Completed tab" do
+    visit courses_path(status: "completed")
+    find("[data-course='#{courses(:completed).id}']").click
+
+    within("dialog[open]") { click_button "Reopen class" }
+
+    assert_no_selector "dialog[open]"
+    assert_text "Spanish 1 is active again."
+    assert_current_path courses_path(status: "completed")
+    assert courses(:completed).reload.active?
+  end
+
+  test "changing status with unsaved edits asks to discard them first" do
+    visit courses_path
+    find("[data-course='#{courses(:one).id}']").click
+
+    within("dialog[open]") do
+      fill_in "Name", with: "Algebra 2"
+      click_button "Archive class"
+
+      assert_text "Discard your changes?"
+      assert courses(:one).reload.active?
+      click_button "Keep editing"
+      assert_field "Name", with: "Algebra 2"
+      assert courses(:one).reload.active?
+
+      click_button "Archive class"
+      click_button "Discard"
+    end
+
+    assert_no_selector "dialog[open]"
+    assert_text "Algebra 1 archived."
+    assert_equal "Algebra 1", courses(:one).reload.name
+    assert courses(:one).archived?
+  end
+
+  test "changing status without edits does not ask to discard" do
+    visit courses_path
+    find("[data-course='#{courses(:one).id}']").click
+
+    within("dialog[open]") do
+      click_button "Archive class"
+      assert_no_text "Discard your changes?"
+    end
+
+    assert_text "Algebra 1 archived."
+  end
 end
