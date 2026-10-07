@@ -36,7 +36,7 @@ class CourseStatusConstraintTest < ActiveSupport::TestCase
   end
 
   test "database allows a class that is only completed or only archived" do
-    assert CourseRow.create!(account_id: accounts(:company).id, name: "Done", completed_at: Time.current)
+    assert CourseRow.create!(account_id: accounts(:company).id, name: "Finished", completed_at: Time.current)
     assert CourseRow.create!(account_id: accounts(:company).id, name: "Old", archived_at: Time.current)
   end
 end
