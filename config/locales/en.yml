@@ -347,7 +347,7 @@ en:
       value_points:
         plan:
           heading: "Plan the year"
-          body: "Lay out subjects and schedules for every learner in one place."
+          body: "Lay out classes and schedules for every learner in one place."
         records:
           heading: "Keep the records"
           body: "Attendance, grades, and progress captured as you go, ready when you need them."
@@ -703,11 +703,32 @@ en:
     index:
       description: "Plan your family's time, block by block."
 
-  subjects:
+  courses:
     index:
-      description: "What each learner is learning."
-      empty_title: "Subjects will live here"
-      empty_description: "Use subjects to organize what each learner is learning when you start building school plans."
+      title: "Classes"
+      description: "Classes are what you want to track or grade."
+      add: "Add class"
+      add_title: "Add class"
+      edit_title: "Edit class"
+      empty_title: "No classes yet"
+      empty_description: "Add a class for anything you want to track or grade, like Algebra 1, Piano, or Nature study."
+      no_learners: "No learners"
+      read_only_badge: "Read-only"
+    form:
+      name: "Name"
+      name_hint: "Something you want to track or grade, like Algebra 1 or Piano."
+      subject: "Subject"
+      subject_placeholder: "Choose or type a subject"
+      learners: "Learners"
+      learners_help: "Choose who takes this class. You can leave it empty."
+      add: "Add class"
+      save: "Save"
+      cancel: "Cancel"
+      delete: "Delete class"
+    notices:
+      created: "Class added."
+      updated: "Saved."
+      deleted: "Class deleted."
 
   support:
     show:
