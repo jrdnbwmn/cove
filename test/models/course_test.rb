@@ -94,4 +94,70 @@ class CourseBehaviorTest < ActiveSupport::TestCase
 
     assert_equal [art, algebra, science, no_subject], @family.courses.ordered.to_a
   end
+
+  test "a class can have several learners or none" do
+    maya = Learner.create!(account: @family, name: "Maya")
+    theo = Learner.create!(account: @family, name: "Theo")
+    course = Course.new(account: @family, name: "Algebra 1")
+    course.assign_learners([maya.id, theo.id])
+
+    assert course.save
+    assert_equal [maya, theo], course.learners.order(:id).to_a
+
+    course.assign_learners([])
+    assert course.save
+    assert_empty course.reload.learners
+  end
+
+  test "checking learners adds them to a class" do
+    maya = Learner.create!(account: @family, name: "Maya")
+    course = Course.create!(account: @family, name: "Algebra 1")
+
+    course.assign_learners([maya.id])
+    assert course.save
+    assert_equal [maya], course.reload.learners.to_a
+  end
+
+  test "other-family and archived learners submitted to a class are ignored" do
+    course = Course.new(account: accounts(:company), name: "Algebra 1")
+    course.assign_learners([learners(:kept).id, learners(:archived).id])
+
+    assert course.save
+    assert_empty course.reload.learners
+  end
+
+  test "an archived learner enrollment survives saving and reappears after restore" do
+    active = Learner.create!(account: @family, name: "Maya")
+    archived = Learner.create!(account: @family, name: "Iris")
+    course = Course.create!(account: @family, name: "Algebra 1")
+    Enrollment.create!(course: course, learner: archived)
+    archived.archive!
+    course.assign_learners([active.id])
+
+    assert course.save
+    assert_not_includes course.reload.visible_learners, archived
+    assert_includes course.learners, archived
+
+    archived.restore!
+    assert_includes course.reload.visible_learners, archived
+  end
+
+  test "a read-only learner makes the class save fail without persisting changes" do
+    family = accounts(:downgraded)
+    course = Course.new(account: family, name: "Algebra 1")
+    course.assign_learners([learners(:read_only).id])
+
+    assert_no_difference ["Course.count", "Enrollment.count"] do
+      assert_not course.save
+    end
+    assert_equal ["Casey is read-only on Free, so they can't be added to a class."], course.errors[:learners]
+  end
+
+  test "a read-only learner already enrolled can be unchecked" do
+    course = courses(:downgraded_course)
+    course.assign_learners([learners(:kept).id])
+
+    assert course.save
+    assert_equal [learners(:kept)], course.reload.learners.to_a
+  end
 end
