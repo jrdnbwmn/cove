@@ -26,7 +26,7 @@
             <div class="flex items-center gap-2">
               <%= render "learners/color_dot", learner: learner %>
               <span class="text-sm"><%= learner.name %></span>
-              <% if @read_only_ids.include?(learner.id) %>
+              <% if !learner.editable? %>
                 <%= render BadgeComponent.new(text: t("courses.index.read_only_badge"), variant: :neutral, size: :sm) %>
               <% end %>
             </div>

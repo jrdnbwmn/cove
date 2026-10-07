@@ -3,7 +3,9 @@ class Enrollment < ApplicationRecord
   belongs_to :learner
 
   validate :learner_belongs_to_course_family
-  validate :learner_is_not_already_enrolled
+  # AIDEV-NOTE: On create only — Course validates every kept enrollment on each
+  # save, and the unique index already guards existing pairs.
+  validate :learner_is_not_already_enrolled, on: :create
   validate :learner_is_active_and_editable, on: :create
 
   private

@@ -31,7 +31,7 @@ class Course < ApplicationRecord
     selected_learners = account.learners.active.where(id: Array(ids).reject(&:blank?)).to_a
     selected_ids = selected_learners.map(&:id)
     existing_enrollments = enrollments.to_a
-    existing_enrollments.each(&:learner)
+    ActiveRecord::Associations::Preloader.new(records: existing_enrollments, associations: :learner).call
 
     selected_learners.each do |learner|
       enrollments.build(learner: learner) unless existing_enrollments.any? { |enrollment| enrollment.learner_id == learner.id }

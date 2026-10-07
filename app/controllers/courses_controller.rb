@@ -4,11 +4,11 @@ class CoursesController < ApplicationController
 
   def index
     @courses = Current.account.courses.ordered.includes(:enrollments)
-    @learners_by_id = Current.account.learners.active.ordered.index_by(&:id)
     # AIDEV-NOTE: Cards resolve enrollment IDs through the active-learner hash
-    # so archived learners stay hidden without an N+1 query. Reusing
-    # Current.account also shares its memoized Free-limit check per request.
-    @read_only_ids = @learners_by_id.values.filter { |learner| !learner.editable? }.map(&:id)
+    # so archived learners stay hidden without an N+1 query. Loading through
+    # Current.account shares its memoized Free-limit check, so learner.editable?
+    # in the cards costs no extra queries.
+    @learners_by_id = Current.account.learners.active.index_by(&:id)
   end
 
   def new
