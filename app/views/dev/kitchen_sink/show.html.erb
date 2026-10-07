@@ -57,6 +57,28 @@
         <%= render PasswordComponent.new(name: "user[password]", hint: "Use at least 8 characters.") %>
       </div>
 
+      <% learner_picker_learners = [
+        Learner.new(id: 1, name: "Maya", color: "sage"),
+        Learner.new(id: 2, name: "Theo", color: "sea"),
+        Learner.new(id: 3, name: "Iris", color: "sky")
+      ] %>
+      <div class="mt-8 grid gap-8 md:grid-cols-2">
+        <%= render LearnerPickerComponent.new(
+          name: "course[learner_ids][]",
+          learners: learner_picker_learners,
+          selected_ids: [learner_picker_learners.first.id],
+          label: "Learners",
+          help: "Choose who takes this class. You can leave it empty."
+        ) %>
+        <%= render LearnerPickerComponent.new(
+          name: "course[learner_ids][]",
+          learners: learner_picker_learners,
+          selected_ids: [learner_picker_learners.first.id],
+          read_only_ids: learner_picker_learners.first(2).map(&:id),
+          label: "Learners"
+        ) %>
+      </div>
+
       <div class="mt-8 grid gap-8 md:grid-cols-3">
         <%= render CheckboxComponent.new(label: "Small", name: "preferences[product_updates_sm]", checked: true, size: :sm) %>
         <%= render CheckboxComponent.new(label: "Medium", name: "preferences[product_updates_md]", checked: true, size: :md) %>

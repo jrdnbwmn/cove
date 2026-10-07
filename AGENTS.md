@@ -155,12 +155,16 @@ Routes are modularized in `config/routes/`:
   - **Family** = `Account`. **Parent** = an `AccountUser` (all are admins);
     **Owner** = the one parent who can delete the family or transfer ownership.
   - **Learner** = a record owned by the family, not a login.
+  - **Class** = `Course` (the UI says class; `class` is reserved in Ruby).
+    **Subject** = a field on a class. **Enrollment** = the internal learner–class
+    link; never use it in UI copy.
   - **Premium** = the paid plan (or Complimentary Premium) — never a design
     adjective; say "polished". **Complimentary** = superadmin-granted Premium.
   - **Plan** in code = billing plan (`Plan` model). In UI copy, the
     learning plan is a **school plan**.
   - **Schedule** = the time-based view (never "calendar"); its items are
-    **schedule blocks**.
+    **schedule blocks**. Schedule blocks are **done**; classes are
+    **completed**.
 - Adding or removing a parent must not change subscription quantity.
 - Normal sessions never switch families; derive the current family from the
   user membership rather than an account cookie.

@@ -35,6 +35,10 @@ graph LR
     LearnerKept[GET/PATCH /learners/kept/edit, /learners/kept] --> LearnerKeptController[Learners::KeptController#edit, #update]
   end
 
+  subgraph Classes
+    Courses[/classes] --> CoursesController[CoursesController#index, #new, #create, #edit, #update, #delete, #destroy]
+  end
+
   %% Account collection, creation, and switching routes are intentionally absent.
 
   subgraph API v1 JSON

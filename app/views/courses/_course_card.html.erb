@@ -1,0 +1,38 @@
+<%# AIDEV-NOTE: The name button's stretched hit area makes the complete card
+    open the edit modal, matching learner cards while leaving room for a future
+    card menu. %>
+<% visible_learners = course.enrollments.filter_map { |enrollment| @learners_by_id[enrollment.learner_id] } %>
+
+<div data-course="<%= course.id %>" class="h-full">
+  <%= render CardComponent.new(classes: "relative h-full transition-colors has-[[data-course-card-link]:hover]:border-neutral-300") do |card| %>
+    <% card.with_body do %>
+      <%= render UiModalComponent.new(lazy_load: true, turbo_frame_src: edit_course_path(course)) do |modal| %>
+        <% modal.with_trigger do %>
+          <div class="min-w-0">
+            <p class="course-name font-medium break-words">
+              <button type="button" class="<%= card_link_classes %>" data-course-card-link data-action="click->ui-modal#open:prevent"><%= course.name %></button>
+            </p>
+            <% if course.subject.present? %>
+              <p class="course-subject mt-1 text-sm text-muted-foreground break-words"><%= course.subject %></p>
+            <% end %>
+          </div>
+        <% end %>
+      <% end %>
+
+      <% if visible_learners.any? %>
+        <div class="mt-4 flex flex-wrap gap-x-3 gap-y-2">
+          <% visible_learners.each do |learner| %>
+            <div class="flex items-center gap-2 text-sm">
+              <%= render "learners/name_with_dot", learner: learner %>
+              <% if !learner.editable? %>
+                <%= render BadgeComponent.new(text: t("learners.index.read_only_badge"), variant: :neutral, size: :sm) %>
+              <% end %>
+            </div>
+          <% end %>
+        </div>
+      <% else %>
+        <p class="mt-4 text-sm text-muted-foreground"><%= t("courses.index.no_learners") %></p>
+      <% end %>
+    <% end %>
+  <% end %>
+</div>

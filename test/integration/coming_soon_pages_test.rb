@@ -19,22 +19,12 @@ class ComingSoonPagesTest < ActionDispatch::IntegrationTest
     assert_select "svg path[d='M3 10h18']"
   end
 
-  test "redirects guests to sign in for subjects" do
-    get subjects_path
-
-    assert_redirected_to new_user_session_path
-  end
-
-  test "shows an explanatory empty state for signed-in users on subjects" do
+  test "subjects no longer has a route" do
     sign_in users(:one)
 
-    get subjects_path
+    get "/subjects"
 
-    assert_response :success
-    assert_select "h1", text: "Subjects"
-    assert_select "h2", text: "Subjects will live here"
-    assert_select "p", text: "Use subjects to organize what each learner is learning when you start building school plans."
-    assert_select "svg path[d='M12 7v14']"
+    assert_response :not_found
   end
 
   test "redirects guests to sign in for learners" do

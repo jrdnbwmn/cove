@@ -1,0 +1,19 @@
+shared_one:
+  course: shared
+  learner: one
+
+shared_two:
+  course: shared
+  learner: two
+
+one_archived:
+  course: one
+  learner: archived
+
+downgraded_read_only:
+  course: downgraded_course
+  learner: read_only
+
+downgraded_kept:
+  course: downgraded_course
+  learner: kept

@@ -16,6 +16,7 @@ graph TD
   Controllers --> LearnerControllers[learners/]
   LearnerControllers --> LearnerArchivesController[ArchivesController]
   LearnerControllers --> LearnerKeptController[KeptController]
+  Controllers --> CoursesController[CoursesController]
   Controllers --> DevControllers[dev/]
   Controllers --> Concerns[concerns/]
   Concerns --> PremiumAccess[PremiumAccess]
@@ -29,6 +30,8 @@ graph TD
   Models --> User[User]
   Models --> Account[Account]
   Models --> Learner[Learner]
+  Models --> Course[Course]
+  Models --> Enrollment[Enrollment]
   Models --> Current[Current]
   Models --> UserConcerns[user/]
   UserConcerns --> AccountCreatedEmail[AccountCreatedEmail]
@@ -63,6 +66,15 @@ graph TD
   Views --> DashboardViews[dashboard/]
   Views --> LearnerViews[learners/]
   LearnerViews --> LearnerLimitModal[_limit_modal.html.erb]
+  Views --> CourseViews[courses/]
+  CourseViews --> CourseIndex[index.html.erb]
+  CourseViews --> CourseForm[_form.html.erb]
+  CourseViews --> CourseCard[_course_card.html.erb]
+  CourseViews --> CourseActions[_actions.html.erb]
+  CourseViews --> CourseAddTrigger[_add_trigger.html.erb]
+  CourseViews --> CourseNew[new.html.erb]
+  CourseViews --> CourseEdit[edit.html.erb]
+  CourseViews --> CourseDelete[delete.html.erb]
   Views --> PublicViews[public/]
   Views --> UserViews[users/]
   Views --> BillingViews[billing/subscriptions/]
@@ -129,3 +141,8 @@ graph TD
   LearnerArchivesController --> Learner
   LearnerKeptController --> Learner
   Learner --> Account
+  CoursesController --> Course
+  CoursesController --> CourseViews
+  Course --> Account
+  Course --> Enrollment
+  Enrollment --> Learner

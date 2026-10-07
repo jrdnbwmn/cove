@@ -60,6 +60,17 @@ if Rails.env.local?
     family.learners.find_or_create_by!(name: name) { |learner| learner.grade_level = grade_level }
   end
 
+  maya = family.learners.find_by!(name: "Maya")
+  theo = family.learners.find_by!(name: "Theo")
+
+  algebra = family.courses.find_or_create_by!(name: "Algebra 1") { |course| course.subject = "Math" }
+  piano = family.courses.find_or_create_by!(name: "Piano") { |course| course.subject = "Arts" }
+  family.courses.find_or_create_by!(name: "Nature study")
+
+  [[algebra, maya], [algebra, theo], [piano, maya]].each do |course, learner|
+    course.enrollments.find_or_create_by!(learner: learner)
+  end
+
   features = ["Placeholder feature"]
 
   seed_premium_plan = ->(fake_processor_id:, interval:, amount:) do

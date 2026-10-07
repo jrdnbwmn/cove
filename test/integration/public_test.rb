@@ -68,6 +68,8 @@ class Jumpstart::PublicTest < ActionDispatch::IntegrationTest
     assert_select "h3", text: I18n.t("public.index.value_points.plan.heading")
     assert_select "h3", text: I18n.t("public.index.value_points.records.heading")
     assert_select "h3", text: I18n.t("public.index.value_points.day.heading")
+    assert_includes response.body, "Lay out classes and schedules for every learner in one place."
+    assert_not_includes response.body, "Lay out subjects and schedules for every learner in one place."
     assert_select "[data-controller='pricing'] button[data-frequency='monthly']"
     assert_select "[data-controller='pricing']", text: /#{I18n.t("pricing.show.free.name")}/
     assert_select "h2", text: I18n.t("public.index.pricing_heading")

@@ -96,7 +96,7 @@ class UiModalComponent < ViewComponent::Base
     base = if @size == :fullscreen
       "h-full w-full overflow-y-auto bg-white dark:bg-neutral-800 forced-colors:outline"
     else
-      "h-full max-h-full overflow-y-auto sm:h-auto sm:max-h-dvh sm:max-w-7xl row-start-2 w-full bg-white dark:bg-neutral-800 forced-colors:outline"
+      "h-full max-h-full overflow-y-auto sm:max-h-dvh sm:max-w-7xl row-start-2 w-full bg-white dark:bg-neutral-800 forced-colors:outline"
     end
     padding = "p-6"
     rounded = (@size == :fullscreen) ? "" : "rounded-none sm:rounded-xl lg:rounded-2xl"

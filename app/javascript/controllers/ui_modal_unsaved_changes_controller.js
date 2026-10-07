@@ -1,7 +1,7 @@
 import { Controller } from "@hotwired/stimulus";
 
 export default class extends Controller {
-  static targets = ["dialog", "discardPrompt"];
+  static targets = ["dialog", "wrapper", "content", "discardPrompt"];
 
   connect() {
     this.isDirty = false;
@@ -63,11 +63,15 @@ export default class extends Controller {
   }
 
   showDiscardPrompt() {
+    this.contentTarget.classList.add("hidden");
+    this.wrapperTarget.classList.replace("h-full", "h-auto");
     this.discardPromptTarget.classList.remove("hidden");
     this.notifyVisibilityChanged();
   }
 
   hideDiscardPrompt() {
+    this.contentTarget.classList.remove("hidden");
+    this.wrapperTarget.classList.replace("h-auto", "h-full");
     this.discardPromptTarget.classList.add("hidden");
     this.notifyVisibilityChanged();
   }

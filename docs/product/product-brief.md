@@ -54,8 +54,21 @@ Each section is marked **Built** or **Decided, not built**.
     editable learner read-only.
   - Re-subscribing makes every learner editable again.
   - Read-only learners still appear on schedule blocks they're already
-    assigned to, but future features must not allow new subjects, schedule
+    assigned to, but future features must not allow new classes, schedule
     blocks, or other records to be assigned to them.
+
+## Classes (Built — `/classes`)
+
+- Classes are what a family wants to track or grade. Casual or one-off things
+  are schedule blocks, not classes.
+- Classes have no Free limit.
+- Grades always belong to a class. Evaluations are a separate, later record.
+- Deleting a learner removes their enrollments.
+- Archiving a learner keeps their enrollments but hides them from classes; they
+  appear again when restored.
+- Read-only learners stay visible and marked "Read-only" in their existing
+  classes. They can't be added to a class, but can be removed from one.
+- Deleting a class deletes its enrollments.
 
 ## Learner data (Decided — applies to every feature)
 

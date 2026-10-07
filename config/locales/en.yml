@@ -347,7 +347,7 @@ en:
       value_points:
         plan:
           heading: "Plan the year"
-          body: "Lay out subjects and schedules for every learner in one place."
+          body: "Lay out classes and schedules for every learner in one place."
         records:
           heading: "Keep the records"
           body: "Attendance, grades, and progress captured as you go, ready when you need them."
@@ -703,11 +703,39 @@ en:
     index:
       description: "Plan your family's time, block by block."
 
-  subjects:
+  courses:
     index:
-      description: "What each learner is learning."
-      empty_title: "Subjects will live here"
-      empty_description: "Use subjects to organize what each learner is learning when you start building school plans."
+      title: "Classes"
+      description: "Classes are what you want to track or grade."
+      add: "Add class"
+      add_title: "Add class"
+      edit_title: "Edit class"
+      empty_title: "No classes yet"
+      empty_description: "Add a class for anything you want to track or grade, like Algebra 1, Piano, or Nature study."
+      no_learners: "No learners"
+    form:
+      name: "Name"
+      name_hint: "Something you want to track or grade, like Algebra 1 or Piano."
+      subject: "Subject"
+      subject_placeholder: "Choose or type a subject"
+      learners: "Learners"
+      learners_help: "Choose who takes this class. You can leave it empty."
+      add: "Add class"
+      save: "Save"
+      cancel: "Cancel"
+      delete: "Delete class"
+    notices:
+      created: "Class added."
+      updated: "Saved."
+      deleted: "Class deleted."
+    delete:
+      heading: "Delete %{name}?"
+      body: "This can't be undone."
+
+  learner_picker:
+    empty: "No learners yet."
+    add_learner: "Add a learner"
+    read_only_on_free: "Read-only on Free"
 
   support:
     show:
@@ -837,6 +865,23 @@ en:
               blank: "Enter a name to continue."
               taken_active: "You already have a learner named %{name}."
               taken_archived: "You already have an archived learner named %{name}. Restore them from archived learners, or use a different name."
+        course:
+          attributes:
+            name:
+              blank: "Enter a name for this class."
+              too_long: "Use 75 characters or fewer."
+            subject:
+              too_long: "Use 50 characters or fewer."
+              invalid: "Start the subject with a letter or number."
+            learners:
+              duplicate: "One of these learners was just added to this class. Try saving again."
+        enrollment:
+          attributes:
+            learner:
+              wrong_account: "must belong to the same family as the class"
+              taken: "%{name} is already in this class."
+              archived: "must be active to be added to a class"
+              read_only: "%{name} is read-only on Free, so they can't be added to a class."
         plan:
           attributes:
             base:

@@ -78,7 +78,7 @@ class FormFieldComponent < ViewComponent::Base
     elsif @error.present?
       "text-red-700 dark:text-red-400"
     else
-      "text-neutral-700 dark:text-neutral-300"
+      "text-foreground"
     end
 
     width_class = (@variant == :inline) ? "shrink-0" : ""
@@ -94,25 +94,13 @@ class FormFieldComponent < ViewComponent::Base
   end
 
   def helper_text_classes
-    size_class = case @size
-    when :sm then "text-xs"
-    when :lg then "text-sm"
-    else "text-xs"
-    end
-
     color_class = @disabled ? "text-neutral-400 dark:text-neutral-500" : "text-neutral-500 dark:text-neutral-400"
 
-    [size_class, color_class, "mt-1"].join(" ")
+    ["text-sm", color_class].join(" ")
   end
 
   def error_classes
-    size_class = case @size
-    when :sm then "text-xs"
-    when :lg then "text-sm"
-    else "text-xs"
-    end
-
-    [size_class, "text-red-600 dark:text-red-400 mt-1"].join(" ")
+    ["text-sm", "text-red-600 dark:text-red-400"].join(" ")
   end
 
   def addon_classes(position)

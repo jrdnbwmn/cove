@@ -5,6 +5,8 @@ class Learner < ApplicationRecord
   MAX_LENGTH = 50
 
   belongs_to :account
+  has_many :enrollments, dependent: :destroy
+  has_many :courses, through: :enrollments
 
   normalizes :name, with: ->(name) { name.strip }
   normalizes :grade_level, with: ->(grade_level) { grade_level.strip.presence }

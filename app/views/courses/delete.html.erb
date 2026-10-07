@@ -1,0 +1,11 @@
+<%= turbo_frame_tag "modal-lazy-content" do %>
+  <h2 class="modal-heading"><%= t("courses.delete.heading", name: @course.name) %></h2>
+  <p class="mt-2 text-muted-foreground"><%= t("courses.delete.body") %></p>
+
+  <div class="mt-6 flex flex-col gap-3 sm:flex-row sm:justify-end">
+    <%= render ButtonComponent.new(text: t("courses.form.cancel"), variant: :secondary, href: edit_course_path(@course)) %>
+    <%= form_with url: course_path(@course), method: :delete do %>
+      <%= render ButtonComponent.new(text: t("courses.form.delete"), variant: :destructive, type: "submit", full_width: true) %>
+    <% end %>
+  </div>
+<% end %>

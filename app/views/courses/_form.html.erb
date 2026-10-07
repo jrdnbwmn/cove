@@ -1,0 +1,37 @@
+<% learners = Current.account.learners.active.ordered.to_a %>
+<% read_only_ids = learners.filter_map { |learner| learner.id unless learner.editable? } %>
+<% selected_learner_ids = course.enrollments.reject(&:marked_for_destruction?).map(&:learner_id) & learners.map(&:id) %>
+<% subject_options = (Course.subject_options_for(Current.account) + [course.subject]).compact.uniq { |subject| subject.downcase } %>
+
+<%= form_with model: course, id: "course-form", class: "flex flex-col gap-y-5" do |form| %>
+  <%= render FormFieldComponent.new(label: t("courses.form.name"), name: "course[name]", required: true, helper_text: t("courses.form.name_hint"), error: course.errors[:name].first) do |field| %>
+    <% field.with_input do %>
+      <%= form.text_field :name, required: true, autofocus: true, maxlength: Course::NAME_MAX_LENGTH, autocomplete: "off", class: class_names("form-control", error: course.errors[:name].any?) %>
+    <% end %>
+  <% end %>
+
+  <%= render SelectComponent.new(
+    label: t("courses.form.subject"),
+    name: "course[subject]",
+    options: subject_options,
+    selected: course.subject,
+    placeholder: t("courses.form.subject_placeholder"),
+    allow_create: true,
+    disable_typing: false,
+    error: course.errors[:subject].first
+  ) %>
+
+  <%= render LearnerPickerComponent.new(
+    name: "course[learner_ids][]",
+    learners: learners,
+    selected_ids: selected_learner_ids,
+    read_only_ids: read_only_ids,
+    label: t("courses.form.learners"),
+    help: t("courses.form.learners_help"),
+    error: course.errors[:learners].first
+  ) %>
+<% end %>
+
+<%= render layout: "courses/actions", locals: {course: course} do %>
+  <%= render ButtonComponent.new(text: t(course.new_record? ? "courses.form.add" : "courses.form.save"), type: "submit", form: "course-form") %>
+<% end %>

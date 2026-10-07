@@ -1,0 +1,24 @@
+<%= render PageHeaderComponent.new(title: t(".title"), description: t(".description")) do |header| %>
+  <% if @courses.any? %>
+    <% header.with_primary_action do %>
+      <%= render "add_trigger" %>
+    <% end %>
+  <% end %>
+<% end %>
+
+<% if @courses.empty? %>
+  <%= render EmptyStateComponent.new(title: t(".empty_title"), description: t(".empty_description")) do |empty_state| %>
+    <% empty_state.with_icon do %>
+      <%= icon "book-open", class: "w-full h-full" %>
+    <% end %>
+    <% empty_state.with_primary_action do %>
+      <%= render "add_trigger" %>
+    <% end %>
+  <% end %>
+<% else %>
+  <div class="grid auto-rows-fr gap-4 sm:grid-cols-2 lg:grid-cols-3">
+    <% @courses.each do |course| %>
+      <%= render "course_card", course: course %>
+    <% end %>
+  </div>
+<% end %>
