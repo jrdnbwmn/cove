@@ -243,4 +243,65 @@ class CoursesTest < ActionDispatch::IntegrationTest
 
     assert_redirected_to courses_path(status: "archived")
   end
+
+  test "saving a class with a new status changes it and shows the status toast" do
+    sign_in users(:one)
+
+    patch course_path(@course), params: {course: {name: "Algebra 2", status: "completed", learner_ids: [""]}}
+    assert_redirected_to courses_path
+    assert_equal "Algebra 2 is complete. Nice work.", flash[:notice]
+    assert @course.reload.completed?
+    assert_equal "Algebra 2", @course.name
+
+    patch course_path(@course), params: {course: {name: "Algebra 2", status: "active", learner_ids: [""]}}
+    assert_equal "Algebra 2 is active again.", flash[:notice]
+    assert @course.reload.active?
+
+    patch course_path(@course), params: {course: {name: "Algebra 2", status: "archived", learner_ids: [""]}}
+    assert_equal "Algebra 2 archived.", flash[:notice]
+    assert @course.reload.archived?
+
+    patch course_path(@course), params: {course: {name: "Algebra 2", status: "active", learner_ids: [""]}}
+    assert_equal "Algebra 2 restored.", flash[:notice]
+    assert @course.reload.active?
+  end
+
+  test "saving a class without changing its status says Saved and keeps its date" do
+    sign_in users(:one)
+    completed_at = courses(:completed).completed_at
+
+    patch course_path(courses(:completed)), params: {course: {name: "Spanish 2", status: "completed", learner_ids: [""]}}
+
+    assert_redirected_to courses_path
+    assert_equal "Saved.", flash[:notice]
+    assert_equal completed_at, courses(:completed).reload.completed_at
+  end
+
+  test "a status move the rules don't allow re-renders the form and changes nothing" do
+    sign_in users(:one)
+
+    patch course_path(courses(:completed)), params: {course: {name: "Renamed", status: "archived", learner_ids: [""]}}
+
+    assert_response :unprocessable_content
+    assert_select "p", text: "Only an active class can be completed or archived."
+    assert courses(:completed).reload.completed?
+    assert_equal "Spanish 1", courses(:completed).name
+  end
+
+  test "an unknown status is ignored when saving" do
+    sign_in users(:one)
+
+    patch course_path(@course), params: {course: {name: "Algebra 2", status: "bogus", learner_ids: [""]}}
+
+    assert_equal "Saved.", flash[:notice]
+    assert @course.reload.active?
+  end
+
+  test "a new class is always active even if a status is submitted" do
+    sign_in users(:one)
+
+    post courses_path, params: {course: {name: "Geometry", status: "completed", learner_ids: [""]}}
+
+    assert @family.courses.find_by!(name: "Geometry").active?
+  end
 end

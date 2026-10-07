@@ -747,11 +747,10 @@ en:
       cancel: "Cancel"
       delete: "Delete class"
       status: "Status"
-      status_active: "Active"
-      complete_class: "Complete class"
-      archive_class: "Archive class"
-      reopen_class: "Reopen class"
-      restore_class: "Restore class"
+      statuses:
+        active: "Active"
+        completed: "Completed"
+        archived: "Archived"
     notices:
       created: "Class added."
       updated: "Saved."

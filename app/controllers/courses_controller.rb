@@ -4,12 +4,10 @@ class CoursesController < ApplicationController
   before_action :authenticate_user!
   before_action :set_course, only: %i[edit update delete destroy]
 
-  STATUSES = %w[active completed archived].freeze
-
   helper_method :course_list_path
 
   def index
-    @status = STATUSES.include?(params[:status]) ? params[:status] : "active"
+    @status = Course::STATUSES.include?(params[:status]) ? params[:status] : "active"
     @filter_learners = Current.account.learners.active.ordered.to_a
     # AIDEV-NOTE: Cards resolve enrollment IDs through the active-learner hash
     # so archived learners stay hidden without an N+1 query. Loading through
@@ -23,7 +21,7 @@ class CoursesController < ApplicationController
 
     filtered = filtered_courses
     # AIDEV-NOTE: Tab counts follow the learner and subject filters and use COUNT queries, not loaded records.
-    @status_counts = STATUSES.index_with { |status| filtered.public_send(status).count }
+    @status_counts = Course::STATUSES.index_with { |status| filtered.public_send(status).count }
     @courses = filtered.public_send(@status).ordered.includes(:enrollments)
   end
 
@@ -48,10 +46,12 @@ class CoursesController < ApplicationController
   end
 
   def update
+    previous_status = @course.status
     assign_course_attributes(@course)
+    @course.assign_status(course_params[:status])
 
     if @course.save
-      redirect_to course_list_return_path, status: :see_other, notice: t("courses.notices.updated")
+      redirect_to course_list_return_path, status: :see_other, notice: update_notice(previous_status)
     else
       render :edit, status: :unprocessable_content
     end
@@ -96,8 +96,21 @@ class CoursesController < ApplicationController
 
   def assign_course_attributes(course)
     attributes = course_params
-    course.assign_attributes(attributes.except(:learner_ids))
+    # AIDEV-NOTE: Status is only applied on update (assign_status); a new class is always active.
+    course.assign_attributes(attributes.except(:learner_ids, :status))
     course.assign_learners(attributes[:learner_ids])
+  end
+
+  # A status change made in the edit form gets the same toast as the card menu's action.
+  def update_notice(previous_status)
+    return t("courses.notices.updated") if @course.status == previous_status
+
+    key = case @course.status
+    when "completed" then :completed
+    when "archived" then :archived
+    else (previous_status == "archived") ? :restored : :reopened
+    end
+    t("courses.notices.#{key}", name: @course.name)
   end
 
   def render_duplicate_enrollment(template)
@@ -106,6 +119,6 @@ class CoursesController < ApplicationController
   end
 
   def course_params
-    params.expect(course: [:name, :subject, learner_ids: []])
+    params.expect(course: [:name, :subject, :status, learner_ids: []])
   end
 end

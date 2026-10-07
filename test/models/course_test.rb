@@ -315,4 +315,63 @@ class CourseBehaviorTest < ActiveSupport::TestCase
 
     assert_equal ["Latin", "Logic"], Course.subject_filter_options_for(@family)
   end
+
+  test "a class reports its status" do
+    assert_equal "active", courses(:one).status
+    assert_equal "completed", courses(:completed).status
+    assert_equal "archived", courses(:archived).status
+  end
+
+  test "assigning a status on save completes, archives, and returns a class to active" do
+    course = courses(:one)
+
+    course.assign_status("completed")
+    assert course.save
+    assert course.reload.completed?
+
+    course.assign_status("active")
+    assert course.save
+    assert course.reload.active?
+    assert_nil course.completed_at
+
+    course.assign_status("archived")
+    assert course.save
+    assert course.reload.archived?
+
+    course.assign_status("active")
+    assert course.save
+    assert course.reload.active?
+    assert_nil course.archived_at
+  end
+
+  test "assigning the status a class already has leaves its date alone" do
+    completed = courses(:completed)
+    original = completed.completed_at
+
+    completed.assign_status("completed")
+    assert completed.save
+    assert_equal original, completed.reload.completed_at
+  end
+
+  test "a completed class cannot become archived directly, nor an archived one completed" do
+    completed = courses(:completed)
+    completed.assign_status("archived")
+    assert_not completed.save
+    assert_equal ["Only an active class can be completed or archived."], completed.errors[:base]
+    assert completed.reload.completed?
+
+    archived = courses(:archived)
+    archived.assign_status("completed")
+    assert_not archived.save
+    assert archived.reload.archived?
+  end
+
+  test "an unknown or blank status is ignored" do
+    course = courses(:completed)
+
+    ["bogus", "", nil].each { |value| course.assign_status(value) }
+
+    assert course.save
+    assert course.reload.completed?
+  end
 end

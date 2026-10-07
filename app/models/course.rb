@@ -3,6 +3,7 @@ class Course < ApplicationRecord
   # `class` is reserved in Ruby.
   NAME_MAX_LENGTH = 75
   SUBJECT_MAX_LENGTH = 50
+  STATUSES = %w[active completed archived].freeze
   SUBJECT_SUGGESTIONS = ["Math", "Language Arts", "Science", "Social Studies", "World Languages", "Arts", "Health", "Electives"].freeze
 
   belongs_to :account
@@ -24,6 +25,7 @@ class Course < ApplicationRecord
   validates :subject, format: {without: /\A\{/}, allow_nil: true
   validate :enrollments_are_valid
   validate :not_completed_and_archived
+  validate :status_change_allowed
 
   # AIDEV-NOTE: Raw SQL because Rails has no scope for case-insensitive ordering with NULLs last.
   scope :ordered, -> { order(Arel.sql("subject IS NULL ASC, lower(subject) ASC, lower(name) ASC")) }
@@ -58,6 +60,34 @@ class Course < ApplicationRecord
 
   def archived?
     archived_at.present?
+  end
+
+  def status
+    if completed?
+      "completed"
+    elsif archived?
+      "archived"
+    else
+      "active"
+    end
+  end
+
+  # AIDEV-NOTE: The edit form's status select saves with the rest of the form, so this applies the same rules as
+  # the transition methods below without saving: only an active class can be completed or archived, and either
+  # can return to active. An unknown value is ignored; a refused move fails validation on save.
+  def assign_status(target)
+    target = target.to_s
+    return if STATUSES.exclude?(target) || target == status
+
+    if target == "active"
+      self.completed_at = nil
+      self.archived_at = nil
+    elsif active?
+      self.completed_at = Time.current if target == "completed"
+      self.archived_at = Time.current if target == "archived"
+    else
+      @status_change_refused = true
+    end
   end
 
   # AIDEV-NOTE: Each transition locks and reloads the row first, so a stale copy (another parent's change, a
@@ -117,6 +147,10 @@ class Course < ApplicationRecord
     errors.clear
     errors.add(:base, error, name: name)
     false
+  end
+
+  def status_change_allowed
+    errors.add(:base, :not_active) if @status_change_refused
   end
 
   def not_completed_and_archived

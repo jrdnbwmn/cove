@@ -30,44 +30,23 @@
     help: t("courses.form.learners_help"),
     error: course.errors[:learners].first
   ) %>
-<% end %>
 
-<% if course.persisted? %>
-  <%# AIDEV-NOTE: Status forms sit outside #course-form because forms can't nest, like Learners' Archive button.
-      data-discard-guard makes ui-modal-unsaved-changes ask before leaving the modal with unsaved edits.
-      Reversible changes get no other confirmation. %>
-  <div data-course-status class="mt-6 flex flex-col gap-3 border-t border-neutral-200 pt-4 sm:flex-row sm:items-center sm:justify-between">
-    <div>
-      <p class="text-sm font-medium"><%= t("courses.form.status") %></p>
-      <p class="text-sm text-muted-foreground">
-        <% if course.completed? %>
-          <%= t("courses.index.completed_on", date: friendly_date(course.completed_at)) %>
-        <% elsif course.archived? %>
-          <%= t("courses.index.archived_on", date: friendly_date(course.archived_at)) %>
-        <% else %>
-          <%= t("courses.form.status_active") %>
-        <% end %>
-      </p>
-    </div>
-    <div class="flex flex-col gap-3 sm:flex-row">
-      <% if course.active? %>
-        <%= form_with url: course_completion_path(course), method: :post, class: "contents", data: {discard_guard: true} do %>
-          <%= render ButtonComponent.new(text: t("courses.form.complete_class"), variant: :outline, size: :sm, type: "submit") %>
-        <% end %>
-        <%= form_with url: course_archive_path(course), method: :post, class: "contents", data: {discard_guard: true} do %>
-          <%= render ButtonComponent.new(text: t("courses.form.archive_class"), variant: :outline, size: :sm, type: "submit") %>
-        <% end %>
-      <% elsif course.completed? %>
-        <%= form_with url: course_completion_path(course), method: :delete, class: "contents", data: {discard_guard: true} do %>
-          <%= render ButtonComponent.new(text: t("courses.form.reopen_class"), variant: :outline, size: :sm, type: "submit") %>
-        <% end %>
-      <% else %>
-        <%= form_with url: course_archive_path(course), method: :delete, class: "contents", data: {discard_guard: true} do %>
-          <%= render ButtonComponent.new(text: t("courses.form.restore_class"), variant: :outline, size: :sm, type: "submit") %>
-        <% end %>
-      <% end %>
-    </div>
-  </div>
+  <% if course.persisted? %>
+    <%# AIDEV-NOTE: Only moves the rules allow are offered: an active class can be completed or archived; a
+        completed or archived class can only return to active. Saves with the form (assign_status). %>
+    <% status_options = course.active? ? Course::STATUSES : [course.status, "active"] %>
+    <%= render SelectComponent.new(
+      label: t("courses.form.status"),
+      name: "course[status]",
+      id: "course_status",
+      options: status_options.map { |status| [t("courses.form.statuses.#{status}"), status] },
+      selected: course.status,
+      placeholder: nil,
+      clearable: false,
+      description: (t("courses.index.#{course.status}_on", date: friendly_date(course.completed_at || course.archived_at)) unless course.active?),
+      error: course.errors[:base].first
+    ) %>
+  <% end %>
 <% end %>
 
 <%= render layout: "courses/actions", locals: {course: course} do %>

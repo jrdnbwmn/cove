@@ -132,20 +132,14 @@ class CoursesSystemTest < ApplicationSystemTestCase
     within("dialog[open]") { assert_field "Name", with: "Spanish 1" }
   end
 
-  private
-
-  def open_actions_menu(name)
-    find("button[aria-label='Actions for #{name}']").click
-    assert_selector "[role='menuitem']"
-  end
-
-  test "completing a class from the edit modal returns to the Active list with a toast" do
+  test "choosing Completed in the edit modal and saving moves the class off the Active list" do
     visit courses_path
     find("[data-course='#{courses(:one).id}']").click
 
     within("dialog[open]") do
       assert_text "Status"
-      click_button "Complete class"
+      choose_status "Completed"
+      click_button "Save"
     end
 
     assert_no_selector "dialog[open]"
@@ -154,52 +148,33 @@ class CoursesSystemTest < ApplicationSystemTestCase
     assert courses(:one).reload.completed?
   end
 
-  test "reopening a completed class from the edit modal keeps the Completed tab" do
+  test "a name and status changed together save together and keep the current tab" do
     visit courses_path(status: "completed")
     find("[data-course='#{courses(:completed).id}']").click
 
-    within("dialog[open]") { click_button "Reopen class" }
+    within("dialog[open]") do
+      fill_in "Name", with: "Spanish 2"
+      choose_status "Active"
+      click_button "Save"
+    end
 
     assert_no_selector "dialog[open]"
-    assert_text "Spanish 1 is active again."
+    assert_text "Spanish 2 is active again."
     assert_current_path courses_path(status: "completed")
-    assert courses(:completed).reload.active?
+    assert_equal "Spanish 2", courses(:completed).reload.name
+    assert courses(:completed).active?
   end
 
-  test "changing status with unsaved edits asks to discard them first" do
-    visit courses_path
-    find("[data-course='#{courses(:one).id}']").click
+  test "a completed class can only be moved back to Active from the status select" do
+    visit courses_path(status: "completed")
+    find("[data-course='#{courses(:completed).id}']").click
 
     within("dialog[open]") do
-      fill_in "Name", with: "Algebra 2"
-      click_button "Archive class"
-
-      assert_text "Discard your changes?"
-      assert courses(:one).reload.active?
-      click_button "Keep editing"
-      assert_field "Name", with: "Algebra 2"
-      assert courses(:one).reload.active?
-
-      click_button "Archive class"
-      click_button "Discard"
+      find("#course_status + .ts-wrapper .ts-control").click
+      assert_selector ".ts-dropdown [role='option']", count: 2
+      assert_selector ".ts-dropdown [role='option']", text: "Active"
+      assert_no_selector ".ts-dropdown [role='option']", text: "Archived"
     end
-
-    assert_no_selector "dialog[open]"
-    assert_text "Algebra 1 archived."
-    assert_equal "Algebra 1", courses(:one).reload.name
-    assert courses(:one).archived?
-  end
-
-  test "changing status without edits does not ask to discard" do
-    visit courses_path
-    find("[data-course='#{courses(:one).id}']").click
-
-    within("dialog[open]") do
-      click_button "Archive class"
-      assert_no_text "Discard your changes?"
-    end
-
-    assert_text "Algebra 1 archived."
   end
 
   test "a parent can return a filter to all learners or all subjects from the select itself" do
@@ -274,5 +249,18 @@ class CoursesSystemTest < ApplicationSystemTestCase
     find(control).click
     assert_selector ".ts-dropdown [role='option']", text: "All subjects"
     assert_equal closed_height, page.evaluate_script(height)
+  end
+
+  private
+
+  def open_actions_menu(name)
+    find("button[aria-label='Actions for #{name}']").click
+    assert_selector "[role='menuitem']"
+  end
+
+  # The status select is a TomSelect, so pick the option from its dropdown.
+  def choose_status(label)
+    find("#course_status + .ts-wrapper .ts-control").click
+    find(".ts-dropdown [role='option']", text: label).click
   end
 end
