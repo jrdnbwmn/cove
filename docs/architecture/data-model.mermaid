@@ -46,6 +46,8 @@ erDiagram
     bigint account_id FK
     string name
     string subject
+    datetime completed_at
+    datetime archived_at
   }
 
   ENROLLMENT {
@@ -136,6 +138,8 @@ erDiagram
   %% Courses are classes in the UI. They belong to one family and enroll zero
   %% or more learners through ENROLLMENT. The unique course_id/learner_id index
   %% permits each learner to be enrolled in a class at most once.
+  %% Class status is derived: completed_at set = completed, archived_at set =
+  %% archived, neither = active. A check constraint forbids both being set.
   USER ||--o{ ACCOUNT : owns
   ACCOUNT ||--o{ ACCOUNT_INVITATION : invitations
   USER o|--o{ ACCOUNT_INVITATION : invites

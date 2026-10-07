@@ -17,10 +17,14 @@ graph TD
   LearnerControllers --> LearnerArchivesController[ArchivesController]
   LearnerControllers --> LearnerKeptController[KeptController]
   Controllers --> CoursesController[CoursesController]
+  Controllers --> CourseControllers[courses/]
+  CourseControllers --> CourseCompletionsController[CompletionsController]
+  CourseControllers --> CourseArchivesController[ArchivesController]
   Controllers --> DevControllers[dev/]
   Controllers --> Concerns[concerns/]
   Concerns --> PremiumAccess[PremiumAccess]
   Concerns --> PlanChangeGuard[PlanChangeGuard]
+  Concerns --> CourseListReturn[CourseListReturn]
   Controllers --> BillingControllers[billing/subscriptions/]
   BillingControllers --> PlanChangesController[PlanChangesController]
   Controllers --> InboundWebhooksControllers[inbound_webhooks/]
@@ -142,6 +146,11 @@ graph TD
   LearnerKeptController --> Learner
   Learner --> Account
   CoursesController --> Course
+  CourseCompletionsController --> Course
+  CourseArchivesController --> Course
+  CoursesController --> CourseListReturn
+  CourseCompletionsController --> CourseListReturn
+  CourseArchivesController --> CourseListReturn
   CoursesController --> CourseViews
   Course --> Account
   Course --> Enrollment
