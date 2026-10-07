@@ -89,4 +89,22 @@ class CoursesTest < ActionDispatch::IntegrationTest
 
     assert_response :unprocessable_content
   end
+
+  test "a parent can confirm and delete a class" do
+    sign_in users(:one)
+    Enrollment.create!(course: @course, learner: learners(:one))
+
+    get delete_course_path(@course)
+    assert_response :success
+    assert_match "Delete Algebra 1?", response.body
+    assert_select "p", text: "This can't be undone."
+
+    assert_difference "Course.count", -1 do
+      assert_difference "Enrollment.count", -@course.enrollments.count do
+        delete course_path(@course)
+      end
+    end
+    assert_redirected_to courses_path
+    assert_equal "Class deleted.", flash[:notice]
+  end
 end

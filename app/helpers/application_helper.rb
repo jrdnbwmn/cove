@@ -56,8 +56,8 @@ module ApplicationHelper
     current_page_or_descendant?(schedules_path)
   end
 
-  def subjects_nav_active?
-    current_page_or_descendant?(subjects_path)
+  def classes_nav_active?
+    current_page_or_descendant?(courses_path)
   end
 
   def learners_nav_active?

@@ -729,6 +729,9 @@ en:
       created: "Class added."
       updated: "Saved."
       deleted: "Class deleted."
+    delete:
+      heading: "Delete %{name}?"
+      body: "This can't be undone."
 
   support:
     show:

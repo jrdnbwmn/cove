@@ -47,6 +47,8 @@ class CoursesController < ApplicationController
   end
 
   def destroy
+    @course.destroy!
+    redirect_to courses_path, status: :see_other, notice: t("courses.notices.deleted")
   end
 
   private

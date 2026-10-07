@@ -1,4 +1,7 @@
 <div data-course-actions class="mt-6 flex flex-col-reverse gap-3 sm:flex-row sm:items-center">
+  <% unless course.new_record? %>
+    <%= link_to t("courses.form.delete"), delete_course_path(course), class: "text-sm text-red-600", data: {turbo_frame: "modal-lazy-content"} %>
+  <% end %>
   <div class="flex flex-col-reverse gap-3 sm:ml-auto sm:flex-row sm:items-center">
     <%= render ButtonComponent.new(text: t("courses.form.cancel"), variant: :outline, data: {action: "click->ui-modal#close:prevent"}) %>
     <%= yield %>

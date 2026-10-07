@@ -16,19 +16,19 @@ class ApplicationHelperTest < ActionView::TestCase
   test "each product page highlights only its own sidebar item" do
     request.path = "/schedules"
     assert schedules_nav_active?
-    assert_not subjects_nav_active?
+    assert_not classes_nav_active?
     assert_not learners_nav_active?
     assert_not dashboard_nav_active?
 
-    request.path = "/subjects"
-    assert subjects_nav_active?
+    request.path = "/classes"
+    assert classes_nav_active?
     assert_not schedules_nav_active?
     assert_not learners_nav_active?
 
     request.path = "/learners"
     assert learners_nav_active?
     assert_not schedules_nav_active?
-    assert_not subjects_nav_active?
+    assert_not classes_nav_active?
 
     request.path = support_path
     assert support_nav_active?
@@ -110,7 +110,7 @@ class ApplicationHelperTest < ActionView::TestCase
     assert_not family_tab_active?
     assert_not dashboard_nav_active?
     assert_not schedules_nav_active?
-    assert_not subjects_nav_active?
+    assert_not classes_nav_active?
     assert_not learners_nav_active?
   end
 
