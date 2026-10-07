@@ -11,7 +11,7 @@
 | 2 | 1 — Data foundation | 1 | `Course` model, fixtures, Account association | Master | ✅ |
 | 3 | 1 — Data foundation | 1 | `Enrollment` model, fixtures, Learner association | Master | ✅ |
 | 4 | 1 — Data foundation | 2 | Save a class's learners safely (`Course#assign_learners`) | Master | ✅ |
-| 5 | 2 — Learner picker | 3 | Run /create-component for `LearnerPickerComponent` | Master | |
+| 5 | 2 — Learner picker | 3 | Run /create-component for `LearnerPickerComponent` | Master | ✅ |
 | 6 | 3 — Add and edit | 4 | Class routes, controller (index/new/create/edit/update), copy | Master | |
 | 7 | 3 — Add and edit | 4 | Add/edit modal form views | Clone | |
 | 8 | 3 — Add and edit | 4 | Classes list, cards, empty state | Clone | |

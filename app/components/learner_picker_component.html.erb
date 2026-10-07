@@ -1,0 +1,29 @@
+<fieldset aria-describedby="<%= described_by %>" class="space-y-3">
+  <legend class="text-sm font-medium text-foreground"><%= @label %></legend>
+
+  <% if @help.present? %>
+    <p id="<%= help_id %>" class="text-sm text-muted-foreground"><%= @help %></p>
+  <% end %>
+
+  <% if @error.present? %>
+    <p id="<%= error_id %>" class="text-sm text-red-600"><%= @error %></p>
+  <% end %>
+
+  <% if @learners.any? %>
+    <input type="hidden" name="<%= @name %>" value="">
+    <div class="space-y-3">
+      <% @learners.each do |learner| %>
+        <%= render CheckboxComponent.new(
+          label: learner.name,
+          label_html: label_html_for(learner),
+          name: @name,
+          value: learner.id,
+          checked: selected?(learner),
+          disabled: disabled?(learner)
+        ) %>
+      <% end %>
+    </div>
+  <% else %>
+    <p class="text-sm text-muted-foreground">No learners yet. <%= link_to "Add a learner", learners_path, class: "text-primary underline" %></p>
+  <% end %>
+</fieldset>
