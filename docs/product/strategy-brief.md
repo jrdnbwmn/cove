@@ -36,7 +36,7 @@ US homeschooling families, K–12, at any level of homeschooling experience.
 ## Pain points and how Cove would help (long-term vision, not current scope)
 
 - **Choosing curriculum is overwhelming.** Help parents research, compare,
-  and choose materials — or build their own curriculum.
+  and choose materials — or use their own homemade curriculum.
 - **Building a cohesive school plan takes too much work.** Combine curricula,
   homemade lessons, and extracurriculars into one school plan, using AI to
   streamline planning.
@@ -65,6 +65,18 @@ general-purpose apps. Cove differs by:
 - **Built from real homeschool problems.** Features start from a specific
   problem parents have ("what do I do today?", "am I meeting my state's
   requirements?"), not from what other tools include.
+
+## Not doing
+
+Don't propose these. Each was considered and rejected.
+
+- Assessments, quizzes, or mastery tracking
+- Profiling how a child learns
+- Lesson-level teaching help
+- Ongoing curriculum management (helping choose curriculum is fine)
+- AI-generated courses
+- Managing family life beyond school
+- Not now: other adults running school; funding or ESA tracking
 
 ## Failure signals
 

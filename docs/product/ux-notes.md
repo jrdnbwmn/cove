@@ -39,6 +39,22 @@ mean perfect consistency, high output, or matching another family's approach.
 - Flexible enough for real family life; inclusive of different approaches.
 - Not cutesy, "magical", corporate, clinical, or tech-bro.
 
+## Keep it light
+
+Overwhelming parents is the biggest risk to Cove. It takes on the busywork
+and gets out of the way.
+
+- A feature should remove more parent work than it asks for.
+- Defaults, not questions. Every setting has a default that works. Announce
+  a default once, with a Change link; ask only when no safe default exists.
+- Every decision Cove asks a parent to make has a recommended answer and a
+  one-line reason. Questions about what happened, which only the parent
+  knows, have none.
+- Forms show the few fields most people need; the rest go under "More
+  options".
+- Budgets: about 10 minutes from sign-up to a useful plan, under 2 minutes
+  for the daily check-in, and at most one or two questions a day.
+
 ## Voice and copy
 
 - Lead with useful information or the next action.
@@ -184,8 +200,8 @@ Formats, written as a person would:
 - Ranges: 9–12 Sep 2025, 30 Sep–2 Oct 2025, 28 Dec 2025–3 Jan 2026.
 - Times: 5:07pm, always with minutes (5:00pm).
 
-Dashboard: answers "what should I do right now, today?" — today's plan and
-the next step, not a summary of everything.
+Today (the home page): answers "what should I do right now, today?" — today's
+plan and the next step, not a summary of everything.
 
 ## Never add unless explicitly asked
 
