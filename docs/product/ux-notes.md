@@ -3,6 +3,10 @@
 How Cove should look, sound, and behave. Read before writing any user-facing
 text or screen state. Use the glossary terms in `AGENTS.md`.
 
+## Feature design
+
+- Net-work test: a feature ships only if it removes more parent work than it asks for, and pays back its input within a week.
+
 ## Priorities
 
 When choices compete, in this order:
@@ -199,6 +203,6 @@ color, consistent components, and handled edge cases — not low contrast,
 dense dashboards, tiny controls, hidden actions, heavy animation, or
 decoration without purpose.
 
-- Explain what sensitive information is collected and why (learner data rule:
-  `product-brief.md`). Sharing is opt-in. Privacy, export, deletion, and
-  account controls are easy to find.
+Explain what sensitive information is collected and why (learner data rule:
+`product-brief.md`). Sharing is opt-in. Privacy, export, deletion, and
+account controls are easy to find.
