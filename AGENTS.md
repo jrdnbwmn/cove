@@ -150,7 +150,10 @@ Routes are modularized in `config/routes/`:
   read before changing families, learners, billing, plan status,
   notifications, AI behavior, or anything that stores learner data.
   `ux-notes.md` — read before writing user-facing text, screen states, or page layout.
-  `strategy-brief.md` — who Cove is for and its positioning.
+  `strategy-brief.md` — who Cove is for, its positioning, and what it doesn't do.
+  Only add to these docs what is cross-cutting, not visible in code, and true now.
+  Specs for features not yet built live in their tickets. When a ticket ships
+  something that meets that bar, update the doc in the same PR.
 - Glossary (use these terms in UI copy and docs):
   - **Family** = `Account`. **Parent** = an `AccountUser` (all are admins);
     **Owner** = the one parent who can delete the family or transfer ownership.
@@ -162,9 +165,11 @@ Routes are modularized in `config/routes/`:
     adjective; say "polished". **Complimentary** = superadmin-granted Premium.
   - **Plan** in code = billing plan (`Plan` model). In UI copy, the
     learning plan is a **school plan**.
-  - **Schedule** = the time-based view (never "calendar"); its items are
-    **schedule blocks**. Schedule blocks are **done**; classes are
-    **completed**.
+  - **Today** = the signed-in home page (the sidebar says "Home" until Today
+    is built). **Planner** = where school plans are built and viewed (the
+    `/schedules` placeholder is renamed when the Planner is built; never
+    "calendar" for the page). Its items are **schedule blocks**. Schedule
+    blocks are **done**; classes are **completed**.
 - Adding or removing a parent must not change subscription quantity.
 - Normal sessions never switch families; derive the current family from the
   user membership rather than an account cookie.
