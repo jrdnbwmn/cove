@@ -110,8 +110,12 @@ paperwork — but the parent decides. Without asking, AI may take an action
 only if it is **visible, undoable in one step, affects only the parent's own
 view or drafts, and doesn't contact anyone, spend money, delete anything, or
 share data.** Suggestions, drafts, and reminders qualify. Anything else —
-e.g. moving schedule blocks — needs the parent's approval. Every AI feature
-has a non-AI path, so a parent who never uses AI still gets a complete product.
+e.g. moving schedule blocks — needs the parent's approval. Standing orders are 
+the parent’s own rules, decided in advance. Applying one is the parent’s 
+decision, not Cove’s: Cove shows each change, and it undoes in one step. AI is 
+woven through Cove. It makes most features better, and some features exist only 
+with it. The floor: a family without AI (on Free, or during an outage) can 
+still plan, run, and record school.
 
 ## Billing (Built)
 
