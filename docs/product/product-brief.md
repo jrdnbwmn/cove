@@ -15,8 +15,8 @@ Each section is marked **Built** or **Decided, not built**.
 - Pricing is flat per family. No per-learner fee; Stripe quantity and pricing
   structure never change with learner count.
 - No trial — Free serves that purpose.
-- Which future features are Premium is decided per feature. Don't decide
-  Premium gating for a new feature; ask.
+- Every AI feature is Premium. For any other new feature, Premium gating is
+  decided per feature: don't decide it; ask.
 
 ## Families (Built)
 
@@ -99,14 +99,16 @@ The bar is high. When in doubt, don't collect it and ask.
   parent plan status only), and never to any third party unless a feature
   requires it.
 - AI features may send learner data to an AI provider only for a feature the
-  parent turned on, and only to a provider that doesn't train on or keep it.
+  parent turned on, and only to a provider that doesn't train on it and keeps
+  it for the shortest period it offers. Learner names are replaced with
+  placeholders before anything is sent.
 - Deleting a learner removes their data.
 - Learner data never appears in logs or error reports.
 
 ## AI behavior (Decided, not built)
 
-AI is proactive — it suggests next steps, drafts school plans, handles
-paperwork — but the parent decides. Without asking, AI may take an action
+Cove is proactive — it suggests next steps, drafts school plans, handles
+paperwork — but the parent decides. Without asking, Cove may take an action
 only if it is **visible, undoable in one step, affects only the parent's own
 view or drafts, and doesn't contact anyone, spend money, delete anything, or
 share data.** Suggestions, drafts, and reminders qualify. Anything else —
@@ -116,8 +118,9 @@ are the parent's decisions, not Cove's. Applying one doesn't need approval
 again, as long as Cove shows each change and it undoes in one step.
 
 AI is woven through Cove. It makes most features better, and some features
-exist only with it. The floor: a family without AI (on Free, or during an
-outage) can still plan, run, and record school.
+exist only with it. AI is used only where code can't give the same result. The
+floor: a family without AI (on Free, or during an outage) can still plan, run,
+and record school.
 
 ## Billing (Built)
 
@@ -148,7 +151,3 @@ outage) can still plan, run, and record school.
 - Reminders, including the day's schedule by email or in-app, are **opt-in**.
   Never guilt-based, never about inactivity. (Decided, not built)
 - Cove never emails or messages learners.
-
-## Open questions
-
-- Learner logins: under-13 learners bring COPPA obligations. No position yet.
