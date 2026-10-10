@@ -76,6 +76,7 @@ Don't propose these. Each was considered and rejected.
 - Ongoing curriculum management (helping choose curriculum is fine)
 - AI-generated courses
 - Managing family life beyond school
+- Parent coaching, sibling memory, or community features
 - Not now: other adults running school; funding or ESA tracking
 
 ## Failure signals
