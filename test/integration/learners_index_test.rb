@@ -68,9 +68,46 @@ class LearnersIndexTest < ActionDispatch::IntegrationTest
 
     get learners_path
 
-    assert_select "[data-ui-modal-turbo-frame-src-value='#{new_learner_path}']", count: 1
+    assert_select "[data-page-header-actions] [data-ui-modal-turbo-frame-src-value='#{new_learner_path}']", count: 1
     assert_select "h2", text: "Add learner"
     assert_select "button[data-action='click->ui-modal#open:prevent']", text: /Add learner/
+  end
+
+  test "the Active learner grid ends with the add tile while the header trigger remains unchanged" do
+    learners(:two).archive!
+    sign_in users(:one)
+
+    get learners_path
+
+    assert_select "[data-page-header-actions] [data-ui-modal-turbo-frame-src-value='#{new_learner_path}']:not(.h-full)", count: 1
+    assert_select ".grid > [data-ui-modal-turbo-frame-src-value='#{new_learner_path}'].h-full:last-child" do
+      assert_select "button[data-action='click->ui-modal#open:prevent']", text: "Add learner"
+    end
+  end
+
+  test "the learner tile is absent from Archived and empty views" do
+    learners(:two).archive!
+    sign_in users(:one)
+
+    get learners_path(archived: 1)
+
+    assert_select ".grid > [data-ui-modal-turbo-frame-src-value='#{new_learner_path}'].h-full", count: 0
+
+    learners(:one).archive!
+    get learners_path
+
+    assert_select ".grid > [data-ui-modal-turbo-frame-src-value='#{new_learner_path}'].h-full", count: 0
+  end
+
+  test "a learner tile opens the existing limit modal when the family is at its limit" do
+    sign_in users(:one)
+
+    get learners_path
+
+    assert_select ".grid > [data-controller~='ui-modal'].h-full:last-child" do
+      assert_select "button[data-action='click->ui-modal#open:prevent']", text: "Add learner"
+      assert_select "dialog h2", text: "Free includes 2 learners."
+    end
   end
 
   test "a Free family at its limit still sees Add learner, which opens a modal explaining the limit" do
@@ -124,7 +161,7 @@ class LearnersIndexTest < ActionDispatch::IntegrationTest
 
     get learners_path
 
-    assert_select "[data-ui-modal-turbo-frame-src-value='#{new_learner_path}']", count: 1
+    assert_select "[data-page-header-actions] [data-ui-modal-turbo-frame-src-value='#{new_learner_path}']", count: 1
     assert_select "a[href^='mailto:']", count: 0
   end
 
@@ -134,7 +171,7 @@ class LearnersIndexTest < ActionDispatch::IntegrationTest
 
     get learners_path
 
-    assert_select "[data-ui-modal-turbo-frame-src-value='#{new_learner_path}']", count: 1
+    assert_select "[data-page-header-actions] [data-ui-modal-turbo-frame-src-value='#{new_learner_path}']", count: 1
     assert_select "a[href='#{pricing_path}']", count: 0
     assert_no_match "Free includes", response.body
   end

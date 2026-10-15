@@ -207,7 +207,7 @@ class PricingAndBillingSystemTest < ApplicationSystemTestCase
 
     login_as users(:subscribed), scope: :user
     visit billing_subscription_cancel_path(pay_subscriptions(:subscribed))
-    assert_text "Your plan will be canceled on 15 Oct."
+    assert_text "Your plan will be canceled on #{friendly_date(pay_subscriptions(:subscribed).current_period_end)}."
     assert_link "Refund policy", href: refunds_path
 
     pay_subscriptions(:subscribed).update!(current_period_end: nil)

@@ -1,0 +1,5 @@
+<div class="grid auto-rows-fr gap-4 lg:grid-cols-3">
+  <%= render CardComponent.new(classes: "h-full").with_content("Ada has two classes this week.") %>
+  <%= render CardComponent.new(classes: "h-full").with_content("Miles is working on independent reading.") %>
+  <%= render AddTileComponent.new(text: "Add another learner to this family") %>
+</div>

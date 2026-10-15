@@ -5,6 +5,18 @@ class LearnersSystemTest < ApplicationSystemTestCase
     login_as users(:one), scope: :user
   end
 
+  test "adding the first learner keeps modal headings and labels left aligned" do
+    Learner.where(account: accounts(:company)).destroy_all
+    visit learners_path
+    click_button "Add learner"
+
+    assert_selector "dialog[open] input[name='learner[name]']"
+    within("dialog[open]") do
+      assert_equal "left", find("h2").evaluate_script("getComputedStyle(this).textAlign")
+      assert_equal "left", find("label[for='learner_name']").evaluate_script("getComputedStyle(this).textAlign")
+    end
+  end
+
   test "a duplicate name shows its error inside the open modal" do
     open_slot
     visit learners_path
@@ -90,13 +102,13 @@ class LearnersSystemTest < ApplicationSystemTestCase
     within("dialog[open]") do
       fill_in "Name", with: "Nora"
       fill_in "Grade level", with: "5th"
-      click_button "Add learner"
+      wait_for_turbo_navigation { click_button "Add learner" }
     end
 
-    assert_no_selector "dialog[open]"
-    assert_selector "p", text: "Nora"
-    assert_text "Nora added."
     assert_current_path learners_path
+    assert_no_selector "dialog[open]"
+    assert_text "Nora added."
+    assert_selector "[data-learner]", text: "Nora"
   end
 
   test "editing a learner keeps validation in the modal and saves with a toast" do
@@ -109,12 +121,12 @@ class LearnersSystemTest < ApplicationSystemTestCase
       assert_text "You already have a learner named Theo."
 
       fill_in "Name", with: "Maya R"
-      click_button "Save"
+      wait_for_turbo_navigation { click_button "Save" }
     end
 
     assert_no_selector "dialog[open]"
-    assert_selector "p", text: "Maya R"
     assert_text "Saved."
+    assert_selector "[data-learner]", text: "Maya R"
   end
 
   test "archived learners are hidden until the Archived view is chosen and can be restored" do
@@ -164,7 +176,7 @@ class LearnersSystemTest < ApplicationSystemTestCase
     visit learners_path
     open_edit_modal("Maya")
 
-    within("dialog[open]") { click_button "Archive" }
+    within("dialog[open]") { wait_for_turbo_navigation { click_button "Archive" } }
 
     assert_text "Maya archived."
     assert_no_selector "dialog[open]"
@@ -184,7 +196,7 @@ class LearnersSystemTest < ApplicationSystemTestCase
     within("dialog[open]") do
       assert_text "Delete Maya?"
       assert_no_selector "h2", text: "Edit Maya"
-      click_button "Delete Maya"
+      wait_for_turbo_navigation { click_button "Delete Maya" }
     end
 
     assert_text "Maya deleted."
@@ -298,7 +310,7 @@ class LearnersSystemTest < ApplicationSystemTestCase
 
     open_actions_menu("Maya")
     click_button "Delete"
-    within("dialog[open]") { click_button "Delete Maya" }
+    within("dialog[open]") { wait_for_turbo_navigation { click_button "Delete Maya" } }
 
     assert_text "Maya deleted."
     assert_not Learner.exists?(ActiveRecord::FixtureSet.identify(:one))
@@ -307,7 +319,7 @@ class LearnersSystemTest < ApplicationSystemTestCase
   test "at the Free limit, Add learner explains the limit and links to plans" do
     visit learners_path
 
-    find("button", text: "Add learner", match: :first).click
+    click_header_add_learner
 
     within("dialog[open]") do
       assert_selector "h2", text: "Free includes 2 learners."
@@ -319,7 +331,7 @@ class LearnersSystemTest < ApplicationSystemTestCase
   test "the limit modal is sized to its content on desktop, not the full window height" do
     visit learners_path
 
-    find("button", text: "Add learner", match: :first).click
+    click_header_add_learner
 
     assert_selector "dialog[open]"
     dialog_height = evaluate_script("document.querySelector('dialog[open]').getBoundingClientRect().height")
@@ -335,7 +347,7 @@ class LearnersSystemTest < ApplicationSystemTestCase
     login_as users(:subscribed), scope: :user
     visit learners_path
 
-    find("button", text: "Add learner", match: :first).click
+    click_header_add_learner
 
     within("dialog[open]") do
       assert_selector "h2", text: "Premium includes 3 learners."
@@ -371,6 +383,37 @@ class LearnersSystemTest < ApplicationSystemTestCase
     assert_not Learner.exists?(name: "Nora")
   end
 
+  test "a parent can open the add learner form from the inline tile" do
+    open_slot
+    visit learners_path
+
+    within(inline_add_tile) { click_button "Add learner" }
+
+    assert_selector "dialog[open] input[name='learner[name]']"
+  end
+
+  test "reaching the learner limit switches the inline tile to the limit modal" do
+    open_slot
+    visit learners_path
+
+    within(inline_add_tile) { click_button "Add learner" }
+    within("dialog[open]") do
+      fill_in "Name", with: "Nora"
+      wait_for_turbo_navigation { click_button "Add learner" }
+    end
+
+    assert_current_path learners_path
+    assert_text "Nora added."
+    assert_selector limit_tile
+    assert_no_selector "#{limit_tile}[data-ui-modal-turbo-frame-src-value]"
+
+    within(limit_tile) { click_button "Add learner" }
+    within("dialog[open]") do
+      assert_selector "h2", text: "Free includes 2 learners."
+      assert_no_selector "input[name='learner[name]']"
+    end
+  end
+
   test "a parent chooses which two learners remain editable on Free" do
     logout(:user)
     login_as users(:downgraded), scope: :user
@@ -393,7 +436,7 @@ class LearnersSystemTest < ApplicationSystemTestCase
 
       assert_field "Avery", disabled: true
       assert_button "Save", disabled: false
-      click_button "Save"
+      wait_for_turbo_navigation { click_button "Save" }
     end
 
     assert_no_selector "dialog[open]"
@@ -414,8 +457,20 @@ class LearnersSystemTest < ApplicationSystemTestCase
   end
 
   def open_add_modal
-    find("button", text: "Add learner", match: :first).click
+    click_header_add_learner
     assert_selector "dialog[open] input[name='learner[name]']"
+  end
+
+  def click_header_add_learner
+    within("[data-page-header-actions]") { click_button "Add learner" }
+  end
+
+  def inline_add_tile
+    ".grid > [data-ui-modal-turbo-frame-src-value='#{new_learner_path}'].h-full:last-child"
+  end
+
+  def limit_tile
+    ".grid > [data-controller~='ui-modal'].h-full:last-child"
   end
 
   def open_edit_modal(name)

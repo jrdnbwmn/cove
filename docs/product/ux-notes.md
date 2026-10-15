@@ -184,6 +184,13 @@ Lists:
 - Toolbar at the top of the list: search, filters, sort, Active/Archived
   (where archived items live). Adding goes here instead of the header only
   when the list isn't the page's main subject.
+- Adding: the header's primary "Add …" stays, and the list also ends with an inline
+  add in the same words — a dashed card the size of the others in card lists, a
+  borderless muted last row ("+ Add …") in row lists. It appears only after at
+  least one item, on views where a new item would show up (not Archived/Completed
+  tabs, not a filter with no matches). It behaves exactly like the header button,
+  including opening the limit modal at a plan limit. An empty list shows its empty
+  state, never a lone add tile.
 - Clicking an item opens it; per-item actions go in a "…" menu. Nothing
   hover-only.
 - Multi-select: "Select" in the toolbar shows checkboxes; a bar shows the

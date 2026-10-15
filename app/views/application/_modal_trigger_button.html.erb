@@ -1,0 +1,7 @@
+<%# locals: (text:, tile: false, button: {}) %>
+<%# AIDEV-NOTE: The trigger inside a UiModalComponent's with_trigger slot: the inline AddTileComponent at the end of a card list, or a ButtonComponent (options in `button`). Pass the same `tile` to the modal's wrapper_classes ("h-full") so the tile fills its grid cell. %>
+<% if tile %>
+  <%= render AddTileComponent.new(text: text, data: {action: "click->ui-modal#open:prevent"}) %>
+<% else %>
+  <%= render ButtonComponent.new(text: text, **button, data: {action: "click->ui-modal#open:prevent"}) %>
+<% end %>

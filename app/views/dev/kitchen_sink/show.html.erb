@@ -247,6 +247,8 @@
 
         <%= render CardComponent.new(variant: :well).with_content("A low-emphasis well card.") %>
 
+        <%= render AddTileComponent.new(text: "Add learner") %>
+
         <% starter_plan = Plan.new(name: "Starter", amount: 1900, interval: "month", description: "A plan-card example with a price, features, and an action.", details: {features: ["Unlimited projects", "Email support"]}) %>
         <%= render PlanCardComponent.new(plan: starter_plan) do %>
           <%= render ButtonComponent.new(text: "Upgrade to Premium", href: "#", full_width: true) %>

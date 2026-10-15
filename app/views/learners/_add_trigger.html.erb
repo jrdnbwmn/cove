@@ -1,5 +1,2 @@
-<%= render UiModalComponent.new(title: t("learners.index.add_title"), lazy_load: true, turbo_frame_src: new_learner_path) do |modal| %>
-  <% modal.with_trigger do %>
-    <%= render ButtonComponent.new(text: t("learners.index.add"), icon: icon("plus", class: "size-full"), data: {action: "click->ui-modal#open:prevent"}) %>
-  <% end %>
-<% end %>
+<%# locals: (tile: false) %>
+<%= render "application/lazy_modal", title: t("learners.index.add_title"), src: new_learner_path, text: t("learners.index.add"), button: {icon: icon("plus", class: "size-full")}, tile: tile %>

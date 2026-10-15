@@ -32,6 +32,16 @@ class UiModalComponentTest < ViewComponent::TestCase
     assert_selector "dialog[data-ui-modal-target='dialog']", visible: :all
   end
 
+  test "applies an optional wrapper class without moving the trigger outside the modal scope" do
+    render_inline(UiModalComponent.new(title: "Add learner", wrapper_classes: "h-full")) do |modal|
+      modal.with_trigger { '<button data-action="click->ui-modal#open:prevent">Add learner</button>'.html_safe }
+      "Modal content"
+    end
+
+    assert_selector "[data-controller~='ui-modal'].h-full"
+    assert_selector "[data-controller~='ui-modal'].h-full button[data-action='click->ui-modal#open:prevent']", text: "Add learner"
+  end
+
   test "renders the custom trigger preview" do
     render_preview(:custom_trigger)
 

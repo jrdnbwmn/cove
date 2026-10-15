@@ -1,4 +1,4 @@
-<div <%= tag.attributes(controller_data) %> data-action="ui-modal-unsaved-changes:discard->ui-modal#close ui-modal-unsaved-changes:visibility-changed->ui-modal#updateFocusableElements">
+<div <%= tag.attributes(controller_data.merge(class: wrapper_classes)) %> data-action="ui-modal-unsaved-changes:discard->ui-modal#close ui-modal-unsaved-changes:visibility-changed->ui-modal#updateFocusableElements">
   <% if trigger? %>
     <%= trigger %>
   <% else %>
@@ -7,7 +7,8 @@
     </button>
   <% end %>
 
-  <dialog class="<%= dialog_classes %>" data-ui-modal-target="dialog" data-ui-modal-unsaved-changes-target="dialog" data-action="mousedown->ui-modal#backdropClose turbo:frame-render->ui-modal-unsaved-changes#frameRendered">
+  <%# AIDEV-NOTE: Reset inherited alignment when a trigger sits inside a centered empty state. %>
+  <dialog class="text-left <%= dialog_classes %>" data-ui-modal-target="dialog" data-ui-modal-unsaved-changes-target="dialog" data-action="mousedown->ui-modal#backdropClose turbo:frame-render->ui-modal-unsaved-changes#frameRendered">
     <%# AIDEV-NOTE: The close button sits outside the scrolling wrapper so it stays put while a tall modal scrolls. %>
     <% if show_close_button %>
       <button type="button" data-action="ui-modal#close:prevent" class="<%= close_button_classes %>">
