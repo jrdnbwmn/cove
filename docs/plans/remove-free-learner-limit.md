@@ -18,9 +18,9 @@
 | 9 | 2 | 4 | Make every active learner card editable | Master |✅ |
 | 10 | 2 | 4 | Simplify LearnerPickerComponent | subagent |✅ |
 | 11 | 2 | 4 | Remove class screen read-only states | subagent |✅ |
-| 12 | 2 | 5 | Update picker previews and examples | subagent | |
-| 13 | 2 | 5 | Resolve pricing capacity and preserve typography demo | subagent | |
-| 14 | 2 | 5 | Apply approved pricing cards and footnote | Master | |
+| 12 | 2 | 5 | Update picker previews and examples | subagent |✅ |
+| 13 | 2 | 5 | Resolve pricing capacity and preserve typography demo | subagent |✅ |
+| 14 | 2 | 5 | Apply approved pricing cards and footnote | Master |✅ |
 | 15 | 2 | 6 | Update billing copy and browser expectations | subagent | |
 | 16 | 2 | 6 | Update Terms of Service | subagent | |
 | 17 | 2 | 6 | Remove kept flag and obsolete fixtures | Master | |
@@ -48,6 +48,8 @@ Checkpoint 1 also updates existing test setup/default-count expectations in `lea
 Phase 2 gate adjustment approved during execution: checkpoints 2–5 use focused tests and local review; full-suite failures from remaining coupled callers are recorded. A green full suite is required when Phase 2 is complete.
 
 Checkpoint 3 local review: stale-route tests pass; learner request/list test errors remain in the card/Delete Cancel callers owned by Task 9. Full suite: 1301 runs, 5 failures, 95 errors. Rerun these focused files after Task 9.
+
+Checkpoint 5 also updates the existing exact Free description expectation in `test/integration/plans_test.rb`, discovered by the full suite. Remaining failures are billing callers (Task 15) and learner-form capacity setup (Task 18).
 
 ## Tasks
 

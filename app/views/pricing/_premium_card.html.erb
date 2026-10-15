@@ -4,7 +4,7 @@
   card_options = {
     plan: plan,
     description: t("pricing.show.premium.description"),
-    features: [t("pricing.show.premium.learners"), t("pricing.show.premium.both_parents")]
+    features: [t("pricing.show.premium.everything_in_free"), safe_join([t("pricing.show.premium.learners"), tag.span("*", aria: {hidden: true})]), t("pricing.show.premium.both_parents"), t("pricing.show.premium.new_features")]
   }
   if yearly
     card_options[:price_text] = monthly_equivalent(plan)

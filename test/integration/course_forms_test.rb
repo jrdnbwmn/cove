@@ -36,6 +36,27 @@ class CourseFormsTest < ActionDispatch::IntegrationTest
     assert_select "input[name='course[learner_ids][]'][value='#{learners(:one).id}'][checked]"
   end
 
+  test "class forms let a Free family select every active learner after downgrade" do
+    family = accounts(:downgraded)
+    archived = Learner.create!(account: family, name: "Archived learner")
+    archived.archive!
+    assert_not family.premium?
+    assert_operator family.learners.active.count, :>, 2
+    sign_in users(:downgraded)
+
+    [new_course_path, edit_course_path(courses(:downgraded_course))].each do |path|
+      get path
+
+      assert_response :success
+      family.learners.active.each do |learner|
+        assert_select "input[type='checkbox'][name='course[learner_ids][]'][value='#{learner.id}']:not([disabled])"
+      end
+      assert_select "input[type='checkbox'][value='#{archived.id}']", count: 0
+      assert_select "input[type='checkbox'][value='#{learners(:one).id}']", count: 0
+      assert_no_match "Read-only", response.body
+    end
+  end
+
   test "the edit form shows visible selected learners but excludes archived learners" do
     get edit_course_path(@course)
 

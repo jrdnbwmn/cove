@@ -6,8 +6,8 @@ module PlanPricingHelper
     "$#{formatted_amount}/mo"
   end
 
-  def premium_learner_limit
-    return current_account.learner_limit if current_account&.premium?
+  def pricing_learner_limit
+    return current_account.learner_limit if current_account
 
     Account.default_learner_limit
   end

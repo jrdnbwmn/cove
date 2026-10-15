@@ -74,8 +74,8 @@
           name: "course[learner_ids][]",
           learners: learner_picker_learners,
           selected_ids: [learner_picker_learners.first.id],
-          read_only_ids: learner_picker_learners.first(2).map(&:id),
-          label: "Learners"
+          label: "Learners",
+          error: "Maya is already in this class."
         ) %>
       </div>
 

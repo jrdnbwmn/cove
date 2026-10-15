@@ -148,24 +148,24 @@ class Jumpstart::PublicTest < ActionDispatch::IntegrationTest
     assert_includes response.body, ">#{I18n.t("pricing.show.free.both_parents")}<"
   end
 
-  test "the Free pricing card says 2 learners" do
+  test "the Free pricing card includes unlimited learners" do
     get pricing_path
 
-    assert_includes response.body, ">2 learners<"
+    assert_select "[data-pricing-target='plans'] span[aria-hidden='true']", text: "*"
   end
 
   test "the Premium pricing card shows unlimited learners" do
     get pricing_path
 
-    assert_includes response.body, ">Unlimited learners<"
+    assert_select "[data-pricing-target='plans'] div", text: "Unlimited learners*"
     assert_not_includes response.body, "Up to"
   end
 
   test "a signed-out visitor is invited to contact support for more than 15 learners" do
     get pricing_path
 
-    assert_includes response.body, "More than 15 learners?"
-    assert_select "a[href^=?]", "mailto:#{Jumpstart.config.support_email}", text: "Contact us"
+    assert_includes response.body, "Teaching more than 15?"
+    assert_select "a[href^=?]", "mailto:#{Jumpstart.config.support_email}", text: "Just let us know"
   end
 
   test "a raised Premium family sees its own number in the contact line" do
@@ -174,7 +174,7 @@ class Jumpstart::PublicTest < ActionDispatch::IntegrationTest
 
     get pricing_path
 
-    assert_includes response.body, "More than 20 learners?"
+    assert_includes response.body, "Teaching more than 20?"
   end
 
   test "pricing page navbar is borderless and shows the logo" do
