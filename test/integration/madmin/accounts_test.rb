@@ -66,19 +66,19 @@ class Madmin::AccountsTest < ActionDispatch::IntegrationTest
   end
 
   test "superadmin can update a family learner limit" do
-    patch madmin_account_path(@account), params: {account: {learner_limit: 14}}
+    patch madmin_account_path(@account), params: {account: {learner_limit: 20}}
 
     assert_redirected_to madmin_account_path(@account)
-    assert_equal 14, @account.reload.learner_limit
+    assert_equal 20, @account.reload.learner_limit
   end
 
   test "invalid learner limit update shows errors and retains the stored value" do
     stored_limit = @account.learner_limit
 
-    patch madmin_account_path(@account), params: {account: {learner_limit: 0}}
+    patch madmin_account_path(@account), params: {account: {learner_limit: 14}}
 
     assert_response :unprocessable_entity
-    assert_includes response.body, "Learner limit must be greater than or equal to 2"
+    assert_includes response.body, "Learner limit must be greater than or equal to 15"
     assert_equal stored_limit, @account.reload.learner_limit
   end
 

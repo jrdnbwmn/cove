@@ -23,12 +23,12 @@ class PlanPricingHelperTest < ActionView::TestCase
   test "uses the signed-in Premium Family learner limit" do
     Current.account = accounts(:complimentary)
 
-    assert_equal 10, premium_learner_limit
+    assert_equal 15, premium_learner_limit
   end
 
   test "does not advertise a Free Family stored learner limit" do
     account = accounts(:one)
-    account.update!(learner_limit: 10)
+    account.update!(learner_limit: 20)
     Current.account = account
 
     assert_equal Account.default_learner_limit, premium_learner_limit

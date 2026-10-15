@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_10_07_120000) do
+ActiveRecord::Schema[8.1].define(version: 2026_10_15_220114) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -47,7 +47,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_07_120000) do
     t.datetime "created_at", null: false
     t.string "domain"
     t.text "extra_billing_info"
-    t.integer "learner_limit", default: 10, null: false
+    t.integer "learner_limit", default: 15, null: false
     t.string "name", null: false
     t.bigint "owner_id"
     t.boolean "personal", default: false, null: false

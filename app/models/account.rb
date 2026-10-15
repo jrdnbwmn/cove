@@ -13,7 +13,7 @@ class Account < ApplicationRecord
   scope :archived, -> { where.not(archived_at: nil) }
 
   validates :personal, exclusion: {in: [true], message: "must be false"}
-  validates :learner_limit, numericality: {only_integer: true, greater_than_or_equal_to: FREE_LEARNER_LIMIT}
+  validates :learner_limit, numericality: {only_integer: true, greater_than_or_equal_to: -> { Account.default_learner_limit }}
   validates :complimentary_premium_note, presence: true, if: :complimentary_premium?
 
   # AIDEV-NOTE: The database default is the single source for the Premium cap

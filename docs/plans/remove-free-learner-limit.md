@@ -7,8 +7,8 @@
 
 | Task | Phase | Checkpoint | Description | Assign | Done |
 | ---- | ----- | ---------- | ----------- | ------ | ---- |
-| 1 | 1 | 1 | Raise and backfill the default cap | Master | |
-| 2 | 1 | 1 | Enforce the new superadmin minimum | Master | |
+| 1 | 1 | 1 | Raise and backfill the default cap | Master | ✅ |
+| 2 | 1 | 1 | Enforce the new superadmin minimum | Master | ✅ |
 | 3 | 2 | 2 | Give every plan the same capacity | Master | |
 | 4 | 2 | 2 | Remove learner editability rules and replace locale copy | Master | |
 | 5 | 2 | 2 | Allow all active learners in classes | subagent | |
@@ -40,6 +40,10 @@
 - Inspect each task's diff and run its focused checks before starting another task. Keep parallel batches within approximately seven changed files. Rails test processes run sequentially.
 - Shared file ownership stays with Master: models, routes, migrations, schema, and `config/locales/en.yml`.
 - Use the approved design's exact copy. Leave unrelated gating, billing behavior, agreement metadata, architecture diagrams, and component catalog updates outside this implementation.
+
+## Approved sequencing adjustment
+
+Checkpoint 1 also updates existing test setup/default-count expectations in `learner_test.rb`, `learners_index_test.rb`, `plan_pricing_helper_test.rb`, and `public_test.rb` for the new default/minimum. Behavior changes remain in their assigned tasks. Approved during execution.
 
 ## Tasks
 

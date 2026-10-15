@@ -294,23 +294,23 @@ class LearnerLimitTest < ActiveSupport::TestCase
 
   test "a Premium family is refused past its limit with Premium copy" do
     family = accounts(:subscribed)
-    family.update!(learner_limit: 3)
+    family.update!(learner_limit: 15)
     Learner.where(account: family).delete_all
-    3.times { |i| Learner.create!(account: family, name: "S#{i}") }
+    15.times { |i| Learner.create!(account: family, name: "S#{i}") }
 
     learner = Learner.new(account: family, name: "Extra")
     assert_not learner.save
-    assert_equal ["Premium includes 3 learners. Contact us to add more."], learner.errors[:base]
+    assert_equal ["Premium includes 15 learners. Contact us to add more."], learner.errors[:base]
   end
 
   test "a complimentary Premium family sees the Premium copy" do
     family = accounts(:complimentary)
     Learner.where(account: family).delete_all
-    10.times { |i| Learner.create!(account: family, name: "S#{i}") }
+    15.times { |i| Learner.create!(account: family, name: "S#{i}") }
 
     learner = Learner.new(account: family, name: "Extra")
     assert_not learner.save
-    assert_equal ["Premium includes 10 learners. Contact us to add more."], learner.errors[:base]
+    assert_equal ["Premium includes 15 learners. Contact us to add more."], learner.errors[:base]
   end
 
   test "a learner cannot be restored while the family is at its limit" do

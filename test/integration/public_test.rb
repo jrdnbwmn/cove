@@ -161,20 +161,20 @@ class Jumpstart::PublicTest < ActionDispatch::IntegrationTest
     assert_not_includes response.body, "Up to"
   end
 
-  test "a signed-out visitor is invited to contact support for more than 10 learners" do
+  test "a signed-out visitor is invited to contact support for more than 15 learners" do
     get pricing_path
 
-    assert_includes response.body, "More than 10 learners?"
+    assert_includes response.body, "More than 15 learners?"
     assert_select "a[href^=?]", "mailto:#{Jumpstart.config.support_email}", text: "Contact us"
   end
 
   test "a raised Premium family sees its own number in the contact line" do
-    accounts(:complimentary).update!(learner_limit: 14)
+    accounts(:complimentary).update!(learner_limit: 20)
     sign_in users(:complimentary)
 
     get pricing_path
 
-    assert_includes response.body, "More than 14 learners?"
+    assert_includes response.body, "More than 20 learners?"
   end
 
   test "pricing page navbar is borderless and shows the logo" do

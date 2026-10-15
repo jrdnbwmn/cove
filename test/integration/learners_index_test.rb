@@ -127,14 +127,14 @@ class LearnersIndexTest < ActionDispatch::IntegrationTest
 
   test "a Premium family at its limit still sees Add learner, with a Contact us action" do
     account = accounts(:subscribed)
-    account.update!(learner_limit: 3)
-    3.times { |i| Learner.create!(account: account, name: "Learner #{i}") }
+    account.update!(learner_limit: 15)
+    15.times { |i| Learner.create!(account: account, name: "Learner #{i}") }
     sign_in users(:subscribed)
 
     get learners_path
 
     assert_select "button[data-action='click->ui-modal#open:prevent']", text: /Add learner/
-    assert_select "dialog h2", text: "Premium includes 3 learners."
+    assert_select "dialog h2", text: "Premium includes 15 learners."
     assert_select "dialog a[href^='mailto:']", text: "Contact us"
     assert_select "dialog a[href='#{pricing_path}']", count: 0
     assert_select "[data-ui-modal-turbo-frame-src-value='#{new_learner_path}']", count: 0
@@ -142,21 +142,21 @@ class LearnersIndexTest < ActionDispatch::IntegrationTest
 
   test "a Complimentary Premium family at its limit is told to contact support" do
     account = accounts(:complimentary)
-    10.times { |i| Learner.create!(account: account, name: "Learner #{i}") }
+    15.times { |i| Learner.create!(account: account, name: "Learner #{i}") }
     sign_in users(:complimentary)
 
     get learners_path
 
-    assert_select "dialog h2", text: "Premium includes 10 learners."
+    assert_select "dialog h2", text: "Premium includes 15 learners."
     assert_select "dialog a[href^='mailto:']", text: "Contact us"
     assert_select "[data-ui-modal-turbo-frame-src-value='#{new_learner_path}']", count: 0
   end
 
   test "a Premium family with a raised limit can add learners again" do
     account = accounts(:subscribed)
-    account.update!(learner_limit: 3)
-    3.times { |i| Learner.create!(account: account, name: "Learner #{i}") }
-    account.update!(learner_limit: 4)
+    account.update!(learner_limit: 15)
+    15.times { |i| Learner.create!(account: account, name: "Learner #{i}") }
+    account.update!(learner_limit: 20)
     sign_in users(:subscribed)
 
     get learners_path
@@ -253,8 +253,8 @@ class LearnersIndexTest < ActionDispatch::IntegrationTest
 
   test "a Premium family at its limit is told to contact us before restoring" do
     account = accounts(:subscribed)
-    account.update!(learner_limit: 3)
-    3.times { |i| Learner.create!(account: account, name: "Learner #{i}") }
+    account.update!(learner_limit: 15)
+    15.times { |i| Learner.create!(account: account, name: "Learner #{i}") }
     old = Learner.create!(account: account, name: "Old", archived_at: 1.day.ago)
     sign_in users(:subscribed)
 
