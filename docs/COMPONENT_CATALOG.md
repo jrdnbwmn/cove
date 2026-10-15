@@ -5,6 +5,7 @@
 | Component | Purpose | Key args | Composes | Preview |
 | --- | --- | --- | --- | --- |
 | `ButtonComponent` | Renders an action button or link with visual variants, sizes, and states. | `text`, `variant`, `size`, `style`, `href` | — | `ButtonComponentPreview` |
+| `AddTileComponent` | Renders a dashed add-action tile with a plus icon. | `text`, `data`, `classes` | — | `AddTileComponentPreview` |
 | `FormFieldComponent` | Wraps a labeled raw form control with helper, error, required, and layout states. | `label`, `name`, `size`, `variant`, `error` | — | `FormFieldComponentPreview` |
 | `LearnerPickerComponent` | Renders a multi-select learner picker with free-plan read-only states. | `name`, `learners`, `selected_ids`, `read_only_ids`, `label`, `error` | `CheckboxComponent` | `LearnerPickerComponentPreview` |
 | `CheckboxComponent` | Renders a labeled checkbox with optional supporting text and validation state. | `label`, `name`, `checked`, `disabled`, `error`, `data` | — | `CheckboxComponentPreview` |
@@ -78,6 +79,27 @@ localized as "Working...").
 
 ```erb
 <%= render ButtonComponent.new(text: "Save changes") %>
+```
+
+### AddTileComponent
+
+**Purpose:** Renders a dashed add-action tile with a plus icon for adding an
+item alongside existing cards. Fills its container's width and height.
+
+**Arguments:**
+
+| Argument | Type | Default | Description |
+| --- | --- | --- | --- |
+| `text` | `String` | required | Visible action label. |
+| `data` | `Hash` | `{}` | Data attributes for the button, including Stimulus actions. |
+| `classes` | `String` | `nil` | Additional button classes. |
+
+**Preview:** `AddTileComponentPreview`
+
+**Usage:**
+
+```erb
+<%= render AddTileComponent.new(text: "Add class", data: { action: "click->ui-modal#open:prevent" }) %>
 ```
 
 ### FormFieldComponent
@@ -444,8 +466,10 @@ continues to serve its existing behavior.
 Only a confirmation may open on top of a modal; prefer an inline prompt (see the unsaved-changes prompt).
 
 **Arguments:** Use `size`, `title`, `show_close_button`, `prevent_dismiss`,
-`lazy_load`, `turbo_frame_src`, `auto_focus`, `classes`, `trigger_text`, and
-`trigger_classes` to configure the dialog and its trigger.
+`lazy_load`, `turbo_frame_src`, `auto_focus`, `classes`, `trigger_text`,
+`trigger_classes`, and `wrapper_classes` to configure the dialog, trigger, and
+outer modal controller wrapper. Use `wrapper_classes` to make the wrapper fill
+a grid cell when a custom trigger is an `AddTileComponent`.
 
 **Variants:** Supports `:sm`, `:md`, `:lg`, `:xl`, `:"2xl"` through `:"7xl"`,
 and `:fullscreen` sizes. Header and footer slots replace the default title and
@@ -462,7 +486,8 @@ scrolling content wrapper. Lazy loading replaces only the modal content region,
 preserving the title and close control. The default `<h2>` title is marked
 `data-ui-modal-unsaved-changes-target="heading"` so the unsaved-changes
 discard prompt can hide it while the prompt shows; a custom `header` slot is not
-marked.
+marked. Dialog content is left-aligned even when the trigger sits in a centered
+container.
 
 **Preview:** `UiModalComponentPreview`
 
