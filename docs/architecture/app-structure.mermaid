@@ -15,7 +15,6 @@ graph TD
   Controllers --> LearnersController[LearnersController]
   Controllers --> LearnerControllers[learners/]
   LearnerControllers --> LearnerArchivesController[ArchivesController]
-  LearnerControllers --> LearnerKeptController[KeptController]
   Controllers --> CoursesController[CoursesController]
   Controllers --> CourseControllers[courses/]
   CourseControllers --> CourseCompletionsController[CompletionsController]
@@ -143,7 +142,6 @@ graph TD
   PlanChangesController --> PlanChangeView
   LearnersController --> Learner
   LearnerArchivesController --> Learner
-  LearnerKeptController --> Learner
   Learner --> Account
   CoursesController --> Course
   CourseCompletionsController --> Course
