@@ -44,11 +44,13 @@ class AccountDeletionHelperTest < ActionView::TestCase
   test "an active family is told the plan ends at period end" do
     subscription = pay_subscriptions(:subscribed)
 
-    assert_not cancels_immediately?(subscription)
-    notice = cancellation_end_notice(subscription)
+    travel_to Time.zone.parse("2026-10-10 12:00:00 UTC") do
+      assert_not cancels_immediately?(subscription)
+      notice = cancellation_end_notice(subscription)
 
-    assert_includes notice, "15 Oct"
-    assert_includes notice, 'href="/refunds"'
+      assert_includes notice, "15 Oct"
+      assert_includes notice, 'href="/refunds"'
+    end
   end
 
   test "an active family without a period end date is still told the plan ends at period end" do

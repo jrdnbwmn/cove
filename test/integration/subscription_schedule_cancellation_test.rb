@@ -17,11 +17,13 @@ class SubscriptionScheduleCancellationTest < ActionDispatch::IntegrationTest
       }
     })
 
-    sign_in users(:subscribed)
-    get billing_subscription_cancel_path(subscription)
+    travel_to(switch_date - 1.minute) do
+      sign_in users(:subscribed)
+      get billing_subscription_cancel_path(subscription)
 
-    assert_response :success
-    assert_includes response.body, I18n.t("billing.subscriptions.cancels.show.pending_plan_change", date: ApplicationController.helpers.friendly_date(switch_date))
+      assert_response :success
+      assert_includes response.body, I18n.t("billing.subscriptions.cancels.show.pending_plan_change", date: ApplicationController.helpers.friendly_date(switch_date))
+    end
   end
 
   test "a cancel page does not mention a switch when none is pending" do
