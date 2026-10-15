@@ -290,10 +290,10 @@ en:
     show:
       heading: "Pricing Plans"
       subhead: "Simple, straightforward pricing"
+      learners: "Unlimited learners"
       free:
         name: "Free"
         description: "Everything you need to run school for the whole family. Free forever."
-        learners: "Unlimited learners"
         classes: "Unlimited classes"
         both_parents: "Both parents"
         get_started: "Get started free"
@@ -303,7 +303,6 @@ en:
         everything_in_free: "Everything in Free"
         new_features: "New Premium features as they're added"
         yearly_price_note: "billed %{amount} yearly"
-        learners: "Unlimited learners"
         both_parents: "Both parents"
         get_premium: "Get Premium"
         upgrade: "Upgrade"
@@ -313,7 +312,6 @@ en:
       refund_policy: "See our refund policy."
       more_learners_html: "*Cove is built for families. Teaching more than %{learner_limit}? %{link}."
       more_learners_contact: "Just let us know"
-      more_learners_subject: "More learners on %{product}"
 
   plan_intervals:
     day:
@@ -543,9 +541,7 @@ en:
   dev:
     typography:
       show:
-        pricing_sample:
-          one: "Free forever for %{count} learner. Upgrade to Premium for unlimited learners and both parents."
-          other: "Free forever for %{count} learners. Upgrade to Premium for unlimited learners and both parents."
+        pricing_sample: "Everything you need to run school for the whole family. Free forever."
 
   checkouts:
     already_subscribed: "You are already subscribed."
@@ -768,6 +764,7 @@ en:
     add_learner: "Add a learner"
 
   support:
+    more_learners_subject: "More learners on %{product}"
     show:
       description: "Help with Cove, whenever you need it."
       empty_title: "How can we help?"
@@ -798,7 +795,6 @@ en:
       body: "Cove is built for families, so we check in at %{limit}. Send us a quick note and we'll raise it for you."
       close: "Close"
       contact: "Email us"
-      more_learners_subject: "More learners on %{product}"
     form:
       name: "Name"
       grade_level: "Grade level"

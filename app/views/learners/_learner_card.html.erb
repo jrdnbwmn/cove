@@ -6,15 +6,13 @@
   <div class="flex items-start gap-3 pr-10 <%= "opacity-60" if archived %>">
     <%= render "learners/color_dot", learner: learner, classes: "mt-1.5" %>
     <div class="min-w-0">
-      <div class="flex flex-wrap items-center gap-2">
-        <p class="font-medium break-words">
-          <% if archived %>
-            <%= learner.name %>
-          <% else %>
-            <button type="button" class="<%= card_link_classes %>" data-learner-card-link data-action="click->ui-modal#open:prevent"><%= learner.name %></button>
-          <% end %>
-        </p>
-      </div>
+      <p class="font-medium break-words">
+        <% if archived %>
+          <%= learner.name %>
+        <% else %>
+          <button type="button" class="<%= card_link_classes %>" data-learner-card-link data-action="click->ui-modal#open:prevent"><%= learner.name %></button>
+        <% end %>
+      </p>
       <% if learner.grade_level.present? %>
         <p class="text-sm text-muted-foreground break-words"><%= learner.grade_level %></p>
       <% end %>

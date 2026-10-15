@@ -9,6 +9,6 @@
   <%# Close sits left of the action on desktop; on phones the action stacks on top. %>
   <div class="mt-6 flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
     <%= render ButtonComponent.new(text: t(".close"), variant: :secondary, classes: "w-full sm:w-auto", data: {action: "click->ui-modal#close:prevent"}) %>
-    <%= render ButtonComponent.new(text: t(".contact"), href: "mailto:#{Jumpstart.config.support_email}?subject=#{ERB::Util.url_encode(t(".more_learners_subject", product: Jumpstart.config.application_name))}", classes: "w-full sm:w-auto") %>
+    <%= render ButtonComponent.new(text: t(".contact"), href: more_learners_mailto, classes: "w-full sm:w-auto") %>
   </div>
 <% end %>

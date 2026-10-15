@@ -25,7 +25,7 @@
   <% can_restore = can_add_learner %>
   <% unless can_restore %>
     <p class="mb-4 text-sm text-muted-foreground">
-      <%= t(".restore_blocked_html", link: mail_to(Jumpstart.config.support_email, t(".restore_contact"), subject: t("learners.limit_modal.more_learners_subject", product: Jumpstart.config.application_name), class: "underline text-foreground hover:text-primary")) %>
+      <%= t(".restore_blocked_html", link: link_to(t(".restore_contact"), more_learners_mailto, class: "underline text-foreground hover:text-primary")) %>
     </p>
   <% end %>
   <div class="grid auto-rows-fr gap-4 sm:grid-cols-2 lg:grid-cols-3">
