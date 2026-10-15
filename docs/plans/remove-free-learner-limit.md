@@ -15,9 +15,9 @@
 | 6 | 2 | 3 | Remove read-only controller behavior and routes | Master |✅ |
 | 7 | 2 | 3 | Delete the picker flow and read-only view | Master |✅ |
 | 8 | 2 | 3 | Simplify learner list and limit modal | Master |✅ |
-| 9 | 2 | 4 | Make every active learner card editable | Master | |
-| 10 | 2 | 4 | Simplify LearnerPickerComponent | subagent | |
-| 11 | 2 | 4 | Remove class screen read-only states | subagent | |
+| 9 | 2 | 4 | Make every active learner card editable | Master |✅ |
+| 10 | 2 | 4 | Simplify LearnerPickerComponent | subagent |✅ |
+| 11 | 2 | 4 | Remove class screen read-only states | subagent |✅ |
 | 12 | 2 | 5 | Update picker previews and examples | subagent | |
 | 13 | 2 | 5 | Resolve pricing capacity and preserve typography demo | subagent | |
 | 14 | 2 | 5 | Apply approved pricing cards and footnote | Master | |

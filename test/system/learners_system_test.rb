@@ -228,7 +228,7 @@ class LearnersSystemTest < ApplicationSystemTestCase
     assert_no_selector "dialog[open]"
   end
 
-  test "cancelling Delete returns to a read-only learner in the same dialog" do
+  test "cancelling Delete returns to editing after downgrade in the same dialog" do
     logout(:user)
     login_as users(:downgraded), scope: :user
     visit learners_path
@@ -244,8 +244,8 @@ class LearnersSystemTest < ApplicationSystemTestCase
 
     assert_selector "dialog[open]", count: 1
     within("dialog[open]") do
-      assert_selector "h2", text: "Casey"
-      assert_text "Casey can't be edited on Free. You can still archive or delete this learner."
+      assert_selector "h2", text: "Edit Casey"
+      assert_field "Name", with: "Casey"
     end
   end
 
@@ -316,19 +316,21 @@ class LearnersSystemTest < ApplicationSystemTestCase
     assert_not Learner.exists?(ActiveRecord::FixtureSet.identify(:one))
   end
 
-  test "at the Free limit, Add learner explains the limit and links to plans" do
+  test "at the family cap, Add learner offers Email us" do
+    fill_to_capacity(accounts(:company))
     visit learners_path
 
     click_header_add_learner
 
     within("dialog[open]") do
-      assert_selector "h2", text: "Free includes 2 learners."
+      assert_selector "h2", text: "Adding more than 15 learners?"
       assert_no_selector "input[name='learner[name]']"
-      assert_link "See plans", href: pricing_path
+      assert_link "Email us"
     end
   end
 
   test "the limit modal is sized to its content on desktop, not the full window height" do
+    fill_to_capacity(accounts(:company))
     visit learners_path
 
     click_header_add_learner
@@ -339,10 +341,10 @@ class LearnersSystemTest < ApplicationSystemTestCase
     assert_operator dialog_height, :<, window_height / 2
   end
 
-  test "at the Premium cap, Add learner explains the limit and offers Contact us" do
+  test "at the Premium cap, Add learner explains the limit and offers Email us" do
     account = accounts(:subscribed)
-    account.update!(learner_limit: 3)
-    3.times { |i| Learner.create!(account: account, name: "Learner #{i}") }
+    account.update!(learner_limit: 15)
+    15.times { |i| Learner.create!(account: account, name: "Learner #{i}") }
     logout(:user)
     login_as users(:subscribed), scope: :user
     visit learners_path
@@ -350,14 +352,15 @@ class LearnersSystemTest < ApplicationSystemTestCase
     click_header_add_learner
 
     within("dialog[open]") do
-      assert_selector "h2", text: "Premium includes 3 learners."
+      assert_selector "h2", text: "Adding more than 15 learners?"
       assert_no_selector "input[name='learner[name]']"
-      assert_link "Contact us"
+      assert_link "Email us"
       assert_no_link "See plans"
     end
   end
 
   test "an archived learner has no Restore button while the family is at its limit" do
+    fill_to_capacity(accounts(:company))
     visit learners_path(archived: 1)
 
     assert_selector "p", text: "Iris"
@@ -370,13 +373,13 @@ class LearnersSystemTest < ApplicationSystemTestCase
     visit learners_path
     open_add_modal
 
-    Learner.create!(account: accounts(:company), name: "Sam", color: "sky")
+    fill_to_capacity(accounts(:company))
 
     within("dialog[open]") do
       fill_in "Name", with: "Nora"
       click_button "Add learner"
 
-      assert_text "Free includes 2 learners. Upgrade to Premium to add more."
+      assert_text "To add more than 15 learners, send us a quick note and we'll raise your limit."
       assert_field "Name", with: "Nora"
     end
     assert_selector "dialog[open]"
@@ -393,7 +396,7 @@ class LearnersSystemTest < ApplicationSystemTestCase
   end
 
   test "reaching the learner limit switches the inline tile to the limit modal" do
-    open_slot
+    fill_to_capacity(accounts(:company), slots: 1)
     visit learners_path
 
     within(inline_add_tile) { click_button "Add learner" }
@@ -409,49 +412,42 @@ class LearnersSystemTest < ApplicationSystemTestCase
 
     within(limit_tile) { click_button "Add learner" }
     within("dialog[open]") do
-      assert_selector "h2", text: "Free includes 2 learners."
+      assert_selector "h2", text: "Adding more than 15 learners?"
       assert_no_selector "input[name='learner[name]']"
     end
   end
 
-  test "a parent chooses which two learners remain editable on Free" do
+  test "downgrading a family with five learners leaves every learner editable" do
+    family = accounts(:downgraded)
+    family.update!(complimentary_premium: true, complimentary_premium_note: "Test access")
+    assert_equal 5, family.learners.active.count
+    family.update!(complimentary_premium: false)
     logout(:user)
     login_as users(:downgraded), scope: :user
     visit learners_path
-
-    click_button "Change"
-
-    within("dialog[open]") do
-      assert_checked_field "Avery"
-      assert_checked_field "Blake"
-      assert_field "Casey", disabled: true
-      assert_button "Save", disabled: false
-
-      uncheck "Avery"
-
-      assert_field "Casey", disabled: false
-      assert_button "Save", disabled: true
-
-      check "Casey"
-
-      assert_field "Avery", disabled: true
-      assert_button "Save", disabled: false
-      wait_for_turbo_navigation { click_button "Save" }
-    end
-
-    assert_no_selector "dialog[open]"
-    assert_text "Saved. Blake and Casey stay editable."
-
-    within("[data-learner='#{learners(:kept).id}']") { click_button "Avery" }
-    within("dialog[open]") do
-      assert_text "Avery can't be edited on Free. You can still archive or delete this learner."
+    assert_no_text "Read-only"
+    assert_no_button "Change"
+    family.learners.active.each do |learner|
+      within("[data-learner='#{learner.id}']") { click_button learner.name }
+      within("dialog[open]") do
+        assert_field "Name", with: learner.name
+        fill_in "Grade level", with: "4th"
+        wait_for_turbo_navigation { click_button "Save" }
+      end
+      assert_no_selector "dialog[open]"
+      assert_equal "4th", learner.reload.grade_level
     end
   end
 
   private
 
-  # AIDEV-NOTE: the Free fixture family starts at its 2 active learner limit;
-  # remove one active learner so tests that add or restore have an open slot.
+  def fill_to_capacity(account, slots: 0)
+    (account.learners.active.count...(account.learner_limit - slots)).each do |i|
+      Learner.create!(account: account, name: "Learner #{i}")
+    end
+  end
+
+  # Keep one baseline learner for tests exercising add/restore flows.
   def open_slot
     learners(:two).destroy!
   end

@@ -52,14 +52,39 @@ class CoursesTest < ActionDispatch::IntegrationTest
     assert_response :not_found
   end
 
-  test "a read-only learner submitted with a class returns an inline error without saving" do
+  test "a parent on Free can select active learners and add a class after downgrade" do
     sign_in users(:downgraded)
+    learner = learners(:read_only)
 
-    assert_no_difference "Course.count" do
-      post courses_path, params: {course: {name: "Algebra 1", learner_ids: [learners(:read_only).id]}}
+    get new_course_path
+    assert_response :success
+    assert_select "input[type='checkbox'][value='#{learner.id}']:not([disabled])"
+    assert_no_match "Read-only", response.body
+
+    assert_difference "Course.count", 1 do
+      post courses_path, params: {course: {name: "Algebra 1", learner_ids: [learner.id]}}
     end
 
-    assert_response :unprocessable_content
+    assert_redirected_to courses_path
+    assert_equal [learner], accounts(:downgraded).courses.find_by!(name: "Algebra 1").learners.to_a
+  end
+
+  test "a parent on Free can change a class's learners after downgrade" do
+    sign_in users(:downgraded)
+    course = courses(:downgraded_course)
+    learner = learners(:read_only_two)
+
+    get edit_course_path(course)
+    assert_response :success
+    assert_select "input[type='checkbox'][value='#{learners(:read_only).id}'][checked]:not([disabled])"
+    assert_select "input[type='checkbox'][value='#{learner.id}']:not([checked]):not([disabled])"
+    assert_no_match "Read-only", response.body
+
+    patch course_path(course), params: {course: {name: "Updated class", learner_ids: [learner.id]}}
+
+    assert_redirected_to courses_path
+    assert_equal "Updated class", course.reload.name
+    assert_equal [learner], course.learners.to_a
   end
 
   test "unchecking every learner clears the class" do

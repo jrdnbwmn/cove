@@ -31,12 +31,24 @@ class CoursesIndexTest < ActionDispatch::IntegrationTest
     assert_no_match "Iris", response.body
   end
 
-  test "a read-only learner has a badge on their class" do
+  test "class cards show active learners without badges on Free after downgrade" do
     sign_in users(:downgraded)
 
     get courses_path
 
-    assert_select "[data-course='#{courses(:downgraded_course).id}'] span", text: "Read-only"
+    assert_response :success
+    assert_select "[data-course='#{courses(:downgraded_course).id}'] .course-learners", text: /Casey/
+    assert_select "[data-course='#{courses(:downgraded_course).id}'] .course-learners", text: /Avery/
+    assert_no_match "Read-only", response.body
+    accounts(:downgraded).learners.active.each do |learner|
+      assert_select "select[name='learner'] option[value='#{learner.id}']", text: learner.name
+    end
+
+    get courses_path(learner: learners(:read_only).id)
+
+    assert_response :success
+    assert_equal [courses(:downgraded_course).name], listed_names
+    assert_select "select[name='learner'] option[selected][value='#{learners(:read_only).id}']"
   end
 
   test "a class with no visible learners says no learners" do
@@ -243,12 +255,6 @@ class CoursesIndexTest < ActionDispatch::IntegrationTest
 
     assert_select "p", text: "No classes match these filters."
     assert_select "p", text: /No active classes/, count: 0
-  end
-
-  test "the free-limit check is queried once while rendering class cards" do
-    sign_in users(:downgraded)
-
-    assert_queries_match(/SELECT COUNT\(\*\) FROM "learners"/i, count: 1) { get courses_path }
   end
 
   def listed_names

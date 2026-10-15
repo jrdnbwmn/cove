@@ -46,25 +46,13 @@ class LearnerArchivesTest < ActionDispatch::IntegrationTest
     assert_equal stamp.to_i, @archived.reload.archived_at.to_i
   end
 
-  test "archiving a selected learner clears only that learner's selection" do
+  test "every active learner remains archivable after downgrade" do
     sign_in users(:downgraded)
-
-    post learner_archive_path(learners(:kept))
-
-    assert_redirected_to learners_path
-    assert learners(:kept).reload.archived?
-    assert_not learners(:kept).kept_on_free?
-    assert_predicate learners(:kept_two).reload, :kept_on_free?
-  end
-
-  test "archiving an already archived selected learner clears its selection" do
-    @archived.update!(kept_on_free: true)
-    sign_in users(:one)
-
-    post learner_archive_path(@archived)
-
-    assert_redirected_to learners_path
-    assert_not @archived.reload.kept_on_free?
+    accounts(:downgraded).learners.active.each do |learner|
+      post learner_archive_path(learner)
+      assert_redirected_to learners_path
+      assert learner.reload.archived?
+    end
   end
 
   test "a parent can restore an archived learner and the color is unchanged" do
@@ -82,12 +70,13 @@ class LearnerArchivesTest < ActionDispatch::IntegrationTest
 
   test "restoring past the family limit is refused and the learner stays archived" do
     sign_in users(:one)
+    13.times { |i| Learner.create!(account: accounts(:company), name: "Learner #{i}") }
 
     delete learner_archive_path(@archived)
 
     assert_redirected_to learners_path
     assert_response :see_other
-    assert_equal "Free includes 2 learners. Upgrade to Premium to add more.", flash[:alert]
+    assert_equal "To add more than 15 learners, send us a quick note and we'll raise your limit.", flash[:alert]
     assert @archived.reload.archived?
   end
 
