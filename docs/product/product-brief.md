@@ -9,7 +9,7 @@ Each section is marked **Built** or **Decided, not built**.
 
 | | Free | Premium |
 |---|---|---|
-| Learners | 2 | Advertised as unlimited; real cap is `learner_limit` (default 10, raisable per family by a superadmin) |
+| Learners | Advertised as unlimited; real cap is `learner_limit` (default 15, raisable per family by a superadmin) | Advertised as unlimited; real cap is `learner_limit` (default 15, raisable per family by a superadmin) |
 | Parents | Up to 2 | Up to 2 |
 
 - Pricing is flat per family. No per-learner fee; Stripe quantity and pricing
@@ -37,25 +37,17 @@ Each section is marked **Built** or **Decided, not built**.
 ## Learners (Built — `/learners`)
 
 - Learner logins are a future version.
-- Families above Premium's `learner_limit` contact support. The cap keeps
-  co-ops and micro-schools off a family plan.
-- Only active learners count toward a family's limit. Creating or restoring a
-  learner uses a slot; archived learners do not. Free includes two learners
-  and sees an upgrade prompt at the limit; Premium uses its configured cap and
-  sees "Contact us" at that limit.
+- Every plan has the same soft learner cap, `learner_limit` (default 15,
+  raisable per family by a superadmin, never below the default). It's
+  advertised as unlimited; families above it email us. The cap keeps co-ops
+  and micro-schools off a family plan, so copy at the cap is soft and never
+  names a plan.
+- Only active learners count toward the cap. Creating or restoring a learner
+  uses a slot; archived learners do not. At the cap, any plan sees "Email us".
+  Restore remains unavailable while it would exceed the cap.
 - Parents can archive learners to keep their records or delete them permanently.
-  Restore remains unavailable while it would exceed the applicable limit.
-- **On downgrade:**
-  - No learner is ever deleted.
-  - A calm banner on `/learners` says something like "Premium ended. Choose
-    which 2 learners stay editable." Until the parent chooses, all learners
-    are read-only. Nothing else is blocked.
-  - The parent can change the pick at any time; swapping makes the previously
-    editable learner read-only.
-  - Re-subscribing makes every learner editable again.
-  - Read-only learners still appear on schedule blocks they're already
-    assigned to, but future features must not allow new classes, schedule
-    blocks, or other records to be assigned to them.
+- **On downgrade**, learners don't change: none is deleted, and every learner
+  stays editable.
 
 ## Classes (Built — `/classes`)
 
@@ -66,8 +58,6 @@ Each section is marked **Built** or **Decided, not built**.
 - Deleting a learner removes their enrollments.
 - Archiving a learner keeps their enrollments but hides them from classes; they
   appear again when restored.
-- Read-only learners stay visible and marked "Read-only" in their existing
-  classes. They can't be added to a class, but can be removed from one.
 - Deleting a class deletes its enrollments. Delete works in every status and
   always asks for confirmation.
 - A class is **Active**, **Completed**, or **Archived**, never more than one.
@@ -83,7 +73,7 @@ Each section is marked **Built** or **Decided, not built**.
 - Status changes are reversible, so they don't ask for confirmation. The word
   "Done" is reserved for schedule blocks; classes are "completed".
 - `/classes` shows one status tab at a time (Active by default) with counts,
-  and can be filtered by learner (active learners, including read-only ones)
+  and can be filtered by learner (active learners)
   and by subject (case-insensitive; "Math" and "math" are one subject). Tab,
   learner, and subject filters combine, and they live only in the URL. Counts
   follow the learner and subject filters. Unknown filter values are ignored.

@@ -9,16 +9,6 @@ class LearnerPickerComponentPreview < ViewComponent::Preview
     )
   end
 
-  def read_only
-    render LearnerPickerComponent.new(
-      name: "course[learner_ids][]",
-      learners: learners,
-      selected_ids: [learners.first.id],
-      read_only_ids: learners.first(2).map(&:id),
-      label: "Learners"
-    )
-  end
-
   def empty
     render LearnerPickerComponent.new(name: "course[learner_ids][]", learners: [], selected_ids: [], label: "Learners")
   end
@@ -29,7 +19,7 @@ class LearnerPickerComponentPreview < ViewComponent::Preview
       learners: learners,
       selected_ids: [],
       label: "Learners",
-      error: "Casey is read-only on Free, so they can't be added to a class."
+      error: "Maya is already in this class."
     )
   end
 

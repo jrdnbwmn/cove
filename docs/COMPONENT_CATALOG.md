@@ -7,7 +7,7 @@
 | `ButtonComponent` | Renders an action button or link with visual variants, sizes, and states. | `text`, `variant`, `size`, `style`, `href` | — | `ButtonComponentPreview` |
 | `AddTileComponent` | Renders a dashed add-action tile with a plus icon. | `text`, `data`, `classes` | — | `AddTileComponentPreview` |
 | `FormFieldComponent` | Wraps a labeled raw form control with helper, error, required, and layout states. | `label`, `name`, `size`, `variant`, `error` | — | `FormFieldComponentPreview` |
-| `LearnerPickerComponent` | Renders a multi-select learner picker with free-plan read-only states. | `name`, `learners`, `selected_ids`, `read_only_ids`, `label`, `error` | `CheckboxComponent` | `LearnerPickerComponentPreview` |
+| `LearnerPickerComponent` | Renders a multi-select learner picker. | `name`, `learners`, `selected_ids`, `label`, `help`, `error` | `CheckboxComponent` | `LearnerPickerComponentPreview` |
 | `CheckboxComponent` | Renders a labeled checkbox with optional supporting text and validation state. | `label`, `name`, `checked`, `disabled`, `error`, `data` | — | `CheckboxComponentPreview` |
 | `RadioComponent` | Renders a labeled radio option with optional supporting text and validation state. | `label`, `name`, `value`, `checked`, `disabled` | — | `RadioComponentPreview` |
 | `SwitchComponent` | Renders a toggle switch with label, status, and validation state. | `label`, `name`, `checked`, `show_icons`, `disabled` | — | `SwitchComponentPreview` |
@@ -150,8 +150,6 @@ small, medium, and large text treatments. Apply `form-control`,
 ### LearnerPickerComponent
 
 **Purpose:** Renders a fieldset of learner checkboxes for selecting learners.
-Learners that are read-only remain selected when applicable, while unavailable
-ones are disabled and labeled for the free plan.
 
 **Arguments:**
 
@@ -161,12 +159,10 @@ ones are disabled and labeled for the free plan.
 | `learners` | collection | required | Learners available for selection. |
 | `selected_ids` | collection | required | IDs of learners initially selected. |
 | `label` | `String` | required | Visible fieldset legend. |
-| `read_only_ids` | collection | `[]` | IDs subject to the free-plan read-only rule. |
 | `help` | `String` | `nil` | Supporting text announced with the fieldset. |
 | `error` | `String` | `nil` | Validation message announced with the fieldset. |
 
-**States:** Supports selected learners, disabled read-only learners, help text,
-validation errors, and an empty state that links to add a learner.
+**States:** Supports selected learners, help text, validation errors, and an empty state that links to add a learner.
 
 **Composes:** `CheckboxComponent`
 

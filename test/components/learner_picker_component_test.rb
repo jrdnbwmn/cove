@@ -20,19 +20,30 @@ class LearnerPickerComponentTest < ViewComponent::TestCase
     assert_selector "fieldset[aria-describedby]"
   end
 
-  test "disables unselected read-only learners and allows selected ones to be removed" do
+  test "all learners on Free remain selectable after downgrade" do
     render_inline(LearnerPickerComponent.new(
       name: "course[learner_ids][]",
-      learners: [learners(:kept), learners(:read_only)],
-      selected_ids: [learners(:kept).id],
-      read_only_ids: [learners(:kept).id, learners(:read_only).id],
+      learners: [learners(:downgraded_one), learners(:downgraded_three)],
+      selected_ids: [learners(:downgraded_one).id],
       label: "Learners"
     ))
 
-    assert_selector "input[value='#{learners(:read_only).id}'][disabled]"
-    assert_text "Read-only on Free"
-    assert_selector "input[value='#{learners(:kept).id}'][checked]:not([disabled])"
-    assert_text "Read-only"
+    assert_selector "input[value='#{learners(:downgraded_three).id}']:not([checked]):not([disabled])"
+    assert_selector "input[value='#{learners(:downgraded_one).id}'][checked]:not([disabled])"
+    assert_no_selector "input[type='checkbox'][disabled]"
+    assert_no_text "Read-only"
+  end
+
+  test "the picker no longer accepts plan-based learner restrictions" do
+    assert_raises ArgumentError do
+      LearnerPickerComponent.new(
+        name: "course[learner_ids][]",
+        learners: [learners(:downgraded_three)],
+        selected_ids: [],
+        read_only_ids: [learners(:downgraded_three).id],
+        label: "Learners"
+      )
+    end
   end
 
   test "renders the empty and error states" do
@@ -41,11 +52,11 @@ class LearnerPickerComponentTest < ViewComponent::TestCase
       learners: [],
       selected_ids: [],
       label: "Learners",
-      error: "Casey is read-only on Free, so they can't be added to a class."
+      error: "Maya is already in this class."
     ))
 
     assert_text "No learners yet."
     assert_selector "a[href='/learners']", text: "Add a learner"
-    assert_text "Casey is read-only on Free, so they can't be added to a class."
+    assert_text "Maya is already in this class."
   end
 end

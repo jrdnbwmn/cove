@@ -34,14 +34,8 @@ class Learner < ApplicationRecord
     archived_at.present?
   end
 
-  # AIDEV-NOTE: kept_on_free deliberately survives re-subscribing (it only matters while the family is over the Free
-  # limit), so a later downgrade reuses the earlier pick. Only archiving or choosing again clears it.
-  def editable?
-    !account.over_free_learner_limit? || kept_on_free?
-  end
-
   def archive!
-    update!(archived_at: archived_at || Time.current, kept_on_free: false)
+    update!(archived_at: archived_at || Time.current)
   end
 
   def restore!
@@ -68,8 +62,7 @@ class Learner < ApplicationRecord
     account.lock!
     return if account.can_add_learner?
 
-    key = account.premium? ? :learner_limit_premium : :learner_limit_free
-    errors.add(:base, key, count: account.learners_allowed)
+    errors.add(:base, :learner_limit, count: account.learner_limit)
   end
 
   def assign_color

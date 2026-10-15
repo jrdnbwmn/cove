@@ -12,8 +12,16 @@ class TermsPageTest < ActionDispatch::IntegrationTest
     assert_includes response.body, "307 N 990 E"
     assert_select "a[href='#{refunds_path}']"
     assert_not_includes response.body, "Some suggestions to help create"
-    assert_no_match(/\b\d+ learners\b/, response.body)
     assert_no_match(/student/i, response.body)
+  end
+
+  test "terms explain shared learner capacity and editable learners after downgrading" do
+    get terms_path
+
+    assert_response :success
+    assert_select "section p", text: "Every plan includes unlimited learners for a single family. When a family reaches 15 active learners, we ask you to contact us so we can raise the limit. Archived learners don't count."
+    assert_select "section p", text: "If you move from Premium to Free, nothing is deleted and every learner stays editable."
+    assert_no_match(/Free plan's limit|read-only|choose which learners to keep active/i, response.body)
   end
 
   test "terms and privacy pages show the October 6, 2026 last updated date" do

@@ -1,12 +1,19 @@
 require "test_helper"
 
 class BillingPolicyCopyTest < ActionDispatch::IntegrationTest
-  test "the billing page tells a Free family it can have 2 learners" do
+  test "the billing page describes Free without a learner count at any family capacity" do
     Jumpstart.config.stub(:payments_enabled?, true) do
       sign_in users(:one)
-      get billing_path
 
-      assert_includes response.body, "Your Family can have 2 learners."
+      [15, 20].each do |capacity|
+        accounts(:company).update!(learner_limit: capacity)
+        get billing_path
+
+        assert_response :success
+        assert_select "p", text: "Everything you need to run school for the whole family. Free forever."
+        assert_no_match(/Your Family can have \d+ learners|Up to \d+ learners/i, response.body)
+        assert_select "a[href='#{pricing_path}']", text: "Upgrade to Premium"
+      end
     end
   end
 

@@ -19,15 +19,6 @@ class LearnerTest < ActiveSupport::TestCase
     end
   end
 
-  test "database defaults kept on free to false and requires a value" do
-    learner = LearnerRow.create!(row_attributes)
-    assert_not learner.kept_on_free?
-
-    assert_raises(ActiveRecord::NotNullViolation) do
-      LearnerRow.new(row_attributes(name: "Kept", kept_on_free: nil)).save!(validate: false)
-    end
-  end
-
   test "database rejects a learner for a family that does not exist" do
     assert_raises(ActiveRecord::InvalidForeignKey) do
       LearnerRow.create!(row_attributes(account_id: 0))
@@ -52,8 +43,6 @@ class LearnerTest < ActiveSupport::TestCase
 end
 
 class LearnerBehaviorTest < ActiveSupport::TestCase
-  # AIDEV-NOTE: General learner behavior runs on a Premium family so tests that
-  # create many learners aren't stopped by the Free limit; limit tests use Free families.
   setup do
     @family = accounts(:subscribed)
     @other_family = accounts(:one)
@@ -196,25 +185,6 @@ class LearnerBehaviorTest < ActiveSupport::TestCase
     assert_equal stamp, learner.reload.archived_at
   end
 
-  test "archiving clears a selected learner while leaving the other selected learner intact" do
-    kept = learners(:kept)
-    other_kept = learners(:kept_two)
-
-    kept.archive!
-
-    assert_not kept.reload.kept_on_free?
-    assert_predicate other_kept.reload, :kept_on_free?
-  end
-
-  test "archiving an already archived selected learner clears its selection" do
-    learner = learners(:kept)
-    learner.update!(archived_at: Time.current)
-
-    learner.archive!
-
-    assert_not learner.reload.kept_on_free?
-  end
-
   test "restoring is idempotent and keeps the color" do
     learner = Learner.create!(account: @family, name: "Maya", color: "ochre", archived_at: Time.current)
     learner.restore!
@@ -246,76 +216,53 @@ class LearnerEnrollmentTest < ActiveSupport::TestCase
   end
 end
 
-class LearnerEditabilityTest < ActiveSupport::TestCase
-  setup do
-    @family = accounts(:downgraded)
-    @kept = learners(:kept)
-    @read_only = learners(:read_only)
-  end
-
-  test "a selected learner is editable while an unselected learner is read-only after a Free downgrade" do
-    assert_predicate @kept, :editable?
-    assert_not_predicate @read_only, :editable?
-  end
-
-  test "reaching two active learners makes both selected and unselected learners editable" do
-    learners(:read_only).archive!
-    learners(:read_only_two).archive!
-    learners(:read_only_three).archive!
-
-    assert_not @family.reload.over_free_learner_limit?
-    assert_predicate @kept, :editable?
-    assert_predicate @read_only, :editable?
-  end
-
-  test "re-subscribing makes all learners editable while retaining the later-downgrade selection" do
-    @family.update!(complimentary_premium: true, complimentary_premium_note: "Temporary Premium")
-
-    assert_predicate @kept, :editable?
-    assert_predicate @read_only, :editable?
-    assert_predicate @kept.reload, :kept_on_free?
-  end
-end
-
 class LearnerLimitTest < ActiveSupport::TestCase
   setup do
     @free = accounts(:one)
     Learner.where(account: @free).delete_all
   end
 
-  test "a Free family can add a second learner but not a third" do
-    Learner.create!(account: @free, name: "Maya")
-    assert Learner.new(account: @free, name: "Theo").save
-
-    third = Learner.new(account: @free, name: "Iris")
-    assert_not third.save
-    assert_equal ["Free includes 2 learners. Upgrade to Premium to add more."], third.errors[:base]
+  test "a Free family can add a third learner and continue to fifteen" do
+    15.times do |i|
+      assert Learner.new(account: @free, name: "Learner #{i}").save
+    end
+    extra = Learner.new(account: @free, name: "Extra")
+    assert_not extra.save
+    assert_equal ["To add more than 15 learners, send us a quick note and we'll raise your limit."], extra.errors[:base]
   end
 
-  test "a Premium family is refused past its limit with Premium copy" do
+  test "a Free family can use a raised cap of twenty" do
+    @free.update!(learner_limit: 20)
+    20.times { |i| Learner.create!(account: @free, name: "Learner #{i}") }
+    extra = Learner.new(account: @free, name: "Extra")
+    assert_not extra.save
+    assert_equal ["To add more than 20 learners, send us a quick note and we'll raise your limit."], extra.errors[:base]
+  end
+
+  test "a Premium family is refused past its limit with the soft capacity message" do
     family = accounts(:subscribed)
-    family.update!(learner_limit: 3)
+    family.update!(learner_limit: 15)
     Learner.where(account: family).delete_all
-    3.times { |i| Learner.create!(account: family, name: "S#{i}") }
+    15.times { |i| Learner.create!(account: family, name: "S#{i}") }
 
     learner = Learner.new(account: family, name: "Extra")
     assert_not learner.save
-    assert_equal ["Premium includes 3 learners. Contact us to add more."], learner.errors[:base]
+    assert_equal ["To add more than 15 learners, send us a quick note and we'll raise your limit."], learner.errors[:base]
   end
 
-  test "a complimentary Premium family sees the Premium copy" do
+  test "a complimentary Premium family sees the same soft capacity message" do
     family = accounts(:complimentary)
     Learner.where(account: family).delete_all
-    10.times { |i| Learner.create!(account: family, name: "S#{i}") }
+    15.times { |i| Learner.create!(account: family, name: "S#{i}") }
 
     learner = Learner.new(account: family, name: "Extra")
     assert_not learner.save
-    assert_equal ["Premium includes 10 learners. Contact us to add more."], learner.errors[:base]
+    assert_equal ["To add more than 15 learners, send us a quick note and we'll raise your limit."], learner.errors[:base]
   end
 
   test "a learner cannot be restored while the family is at its limit" do
     Learner.create!(account: @free, name: "Maya")
-    Learner.create!(account: @free, name: "Theo")
+    14.times { |i| Learner.create!(account: @free, name: "Learner #{i}") }
     archived = Learner.create!(account: @free, name: "Iris", archived_at: Time.current)
 
     assert_raises(ActiveRecord::RecordInvalid) { archived.restore! }
@@ -324,7 +271,7 @@ class LearnerLimitTest < ActiveSupport::TestCase
 
   test "a learner can be restored once a slot opens" do
     maya = Learner.create!(account: @free, name: "Maya")
-    Learner.create!(account: @free, name: "Theo")
+    14.times { |i| Learner.create!(account: @free, name: "Learner #{i}") }
     archived = Learner.create!(account: @free, name: "Iris", archived_at: Time.current)
 
     maya.archive!
@@ -335,13 +282,13 @@ class LearnerLimitTest < ActiveSupport::TestCase
 
   test "an archived learner can be created at the limit" do
     Learner.create!(account: @free, name: "Maya")
-    Learner.create!(account: @free, name: "Theo")
+    14.times { |i| Learner.create!(account: @free, name: "Learner #{i}") }
 
     assert Learner.new(account: @free, name: "Iris", archived_at: Time.current).save
   end
 
   test "editing and archiving still work when a family is over its limit" do
-    learners = %w[Maya Theo Iris].map { |name| Learner.new(account: @free, name: name, color: "sage").tap { |s| s.save!(validate: false) } }
+    learners = 16.times.map { |i| Learner.new(account: @free, name: "Learner #{i}", color: "sage").tap { |s| s.save!(validate: false) } }
 
     assert learners.first.update(grade_level: "4th")
     assert_nothing_raised { learners.first.archive! }
@@ -364,26 +311,29 @@ class LearnerLimitConcurrencyTest < ActiveSupport::TestCase
   setup do
     @family_id = accounts(:one).id
     Learner.where(account_id: @family_id).delete_all
-    Learner.create!(account_id: @family_id, name: "Maya")
+    14.times { |i| Learner.create!(account_id: @family_id, name: "Learner #{i}") }
   end
 
   teardown do
     Learner.where(account_id: @family_id).delete_all
   end
 
-  test "two parents saving the last free slot at once only get one learner" do
+  test "two parents saving the last family slot at once only get one learner" do
     start = Queue.new
     results = %w[Theo Iris].map do |name|
       Thread.new do
         ActiveRecord::Base.connection_pool.with_connection do
           start.pop
-          Learner.new(account_id: @family_id, name: name).save
+          learner = Learner.new(account_id: @family_id, name: name)
+          [learner.save, learner.errors[:base]]
         end
       end
     end
     2.times { start << true }
 
-    assert_equal [false, true], results.map(&:value).sort_by { |saved| saved ? 1 : 0 }
-    assert_equal 2, Learner.active.where(account_id: @family_id).count
+    outcomes = results.map(&:value)
+    assert_equal [false, true], outcomes.map(&:first).sort_by { |saved| saved ? 1 : 0 }
+    assert_equal ["To add more than 15 learners, send us a quick note and we'll raise your limit."], outcomes.find { |saved, _| !saved }.last
+    assert_equal 15, Learner.active.where(account_id: @family_id).count
   end
 end

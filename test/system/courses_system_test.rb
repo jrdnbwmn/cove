@@ -5,6 +5,38 @@ class CoursesSystemTest < ApplicationSystemTestCase
     login_as users(:one), scope: :user
   end
 
+  test "a paid downgrade leaves all five learner checkboxes usable for adding and editing classes" do
+    family = accounts(:subscribed)
+    children = 5.times.map { |i| Learner.create!(account: family, name: "Child #{i}") }
+    archived = Learner.create!(account: family, name: "Archived child", archived_at: Time.current)
+    family.pay_subscriptions.sole.update!(status: "unpaid")
+    assert family.reload.free?
+    logout(:user)
+    login_as users(:subscribed), scope: :user
+    visit courses_path
+    click_button "Add class"
+    within("dialog[open]") do
+      fill_in "Name", with: "Family class"
+      children.each { |child| check child.name }
+      assert_no_text "Read-only"
+      assert_no_field archived.name
+      wait_for_turbo_navigation { click_button "Add class" }
+    end
+    assert_no_selector "dialog[open]"
+    course = family.courses.find_by!(name: "Family class")
+    assert_equal children.map(&:id).sort, course.learner_ids.sort
+    find("[data-course='#{course.id}']").click
+    within("dialog[open]") do
+      children.each do |child|
+        assert_checked_field child.name, disabled: false
+        uncheck child.name
+      end
+      wait_for_turbo_navigation { click_button "Save" }
+    end
+    assert_no_selector "dialog[open]"
+    assert_empty course.reload.learners
+  end
+
   test "adding the first class keeps modal headings and labels left aligned" do
     Course.where(account: accounts(:company)).destroy_all
     visit courses_path

@@ -10,9 +10,8 @@ class CoursesController < ApplicationController
     @status = Course::STATUSES.include?(params[:status]) ? params[:status] : "active"
     @filter_learners = Current.account.learners.active.ordered.to_a
     # AIDEV-NOTE: Cards resolve enrollment IDs through the active-learner hash
-    # so archived learners stay hidden without an N+1 query. Loading through
-    # Current.account shares its memoized Free-limit check, so learner.editable?
-    # in the cards costs no extra queries. The learner filter reuses the same lookup.
+    # so archived learners stay hidden without an N+1 query. The learner filter
+    # reuses the same lookup.
     @learners_by_id = @filter_learners.index_by(&:id)
     @learner_filter = @learners_by_id[string_param(:learner).to_i]
     @subject_filter = string_param(:subject)

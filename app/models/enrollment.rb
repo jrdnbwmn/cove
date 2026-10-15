@@ -6,7 +6,7 @@ class Enrollment < ApplicationRecord
   # AIDEV-NOTE: On create only — Course validates every kept enrollment on each
   # save, and the unique index already guards existing pairs.
   validate :learner_is_not_already_enrolled, on: :create
-  validate :learner_is_active_and_editable, on: :create
+  validate :learner_is_active, on: :create
 
   private
 
@@ -22,13 +22,9 @@ class Enrollment < ApplicationRecord
     errors.add(:learner, :taken, name: learner.name)
   end
 
-  def learner_is_active_and_editable
-    return unless learner
+  def learner_is_active
+    return unless learner&.archived?
 
-    if learner.archived?
-      errors.add(:learner, :archived)
-    elsif !learner.editable?
-      errors.add(:learner, :read_only, name: learner.name)
-    end
+    errors.add(:learner, :archived)
   end
 end

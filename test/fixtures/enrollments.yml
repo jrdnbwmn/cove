@@ -10,13 +10,13 @@ one_archived:
   course: one
   learner: archived
 
-downgraded_read_only:
+downgraded_three:
   course: downgraded_course
-  learner: read_only
+  learner: downgraded_three
 
-downgraded_kept:
+downgraded_one:
   course: downgraded_course
-  learner: kept
+  learner: downgraded_one
 
 completed_two:
   course: completed

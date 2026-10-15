@@ -17,10 +17,11 @@ class LearnerFormsTest < ActionDispatch::IntegrationTest
   end
 
   test "a rejected add at the family limit shows the limit message and keeps what was typed" do
+    13.times { |i| Learner.create!(account: @family, name: "Learner #{i}") }
     post learners_path, params: {learner: {name: "Nora", grade_level: "5th"}}
 
     assert_response :unprocessable_content
-    assert_select "form#learner-form h3", text: /Free includes 2 learners\. Upgrade to Premium to add more\./
+    assert_select "form#learner-form h3", text: "To add more than 15 learners, send us a quick note and we'll raise your limit."
     assert_select "input#learner_name[value='Nora']"
     assert_select "input#learner_grade_level[value='5th']"
   end

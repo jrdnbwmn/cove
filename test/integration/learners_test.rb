@@ -7,28 +7,28 @@ class LearnersTest < ActionDispatch::IntegrationTest
     @other_family_learner = Learner.create!(account: accounts(:one), name: "Outsider")
   end
 
-  # The Free fixture family starts at its 2-learner limit; archiving Theo opens a slot.
+  # Archive a learner for tests exercising creation with an archived sibling.
   def open_learner_slot
     learners(:two).archive!
   end
 
   test "a parent cannot add a learner past the family limit and keeps what they typed" do
     sign_in users(:one)
+    13.times { |i| Learner.create!(account: @family, name: "Learner #{i}") }
 
     assert_no_difference -> { Learner.count } do
       post learners_path, params: {learner: {name: "Nora", grade_level: "5th"}}
     end
 
     assert_response :unprocessable_content
-    assert_match "Free includes 2 learners. Upgrade to Premium to add more.", response.body
+    assert_match "To add more than 15 learners, send us a quick note and we&#39;ll raise your limit.", response.body
     assert_select "input[name='learner[name]'][value='Nora']"
     assert_select "input[name='learner[grade_level]'][value='5th']"
   end
 
-  test "a parent can still edit and archive a selected learner while over the family limit" do
+  test "a parent can still edit and archive a learner while over the family limit" do
     sign_in users(:one)
-    Learner.new(account: @family, name: "Extra", color: "rose").save!(validate: false)
-    @maya.update!(kept_on_free: true)
+    14.times { |i| Learner.new(account: @family, name: "Extra #{i}", color: "rose").save!(validate: false) }
 
     patch learner_path(@maya), params: {learner: {grade_level: "4th"}}
     assert_redirected_to learners_path
@@ -224,28 +224,15 @@ class LearnersTest < ActionDispatch::IntegrationTest
     assert_equal "Iris", learners(:archived).reload.name
   end
 
-  test "a parent cannot open or directly save a read-only learner's edit form" do
-    learner = learners(:read_only)
+  test "a Free family above the old limit can edit and save every active learner" do
     sign_in users(:downgraded)
-
-    get edit_learner_path(learner)
-    assert_redirected_to learners_path
-    assert_equal "Casey can't be edited on Free. You can still archive or delete this learner.", flash[:alert]
-
-    patch learner_path(learner), params: {learner: {name: "Changed"}}
-    assert_redirected_to learners_path
-    assert_equal "Casey", learner.reload.name
-  end
-
-  test "a selected learner and all learners after re-subscribing can be edited" do
-    sign_in users(:downgraded)
-
-    get edit_learner_path(learners(:kept))
-    assert_response :success
-
-    accounts(:downgraded).update!(complimentary_premium: true, complimentary_premium_note: "Temporary Premium")
-    get edit_learner_path(learners(:read_only))
-    assert_response :success
+    accounts(:downgraded).learners.active.each do |learner|
+      get edit_learner_path(learner)
+      assert_response :success
+      patch learner_path(learner), params: {learner: {grade_level: "4th"}}
+      assert_redirected_to learners_path
+      assert_equal "4th", learner.reload.grade_level
+    end
   end
 
   test "another family's learner cannot be edited or updated" do
@@ -295,36 +282,14 @@ class LearnersTest < ActionDispatch::IntegrationTest
     assert_select "form[action='#{learner_path(@maya)}'] input[name='_method'][value='delete']"
   end
 
-  test "a parent can view a read-only learner and return there from delete confirmation" do
-    sign_in users(:downgraded)
-
-    get learner_path(learners(:read_only))
-    assert_response :success
-    assert_select "turbo-frame#modal-lazy-content"
-    assert_select "p", text: /Casey can't be edited on Free/
-
-    get delete_learner_path(learners(:read_only))
-    assert_select "a[href='#{learner_path(learners(:read_only))}']", text: "Cancel"
-  end
-
-  test "viewing an editable learner sends the parent to the edit form instead" do
-    sign_in users(:downgraded)
-
-    get learner_path(learners(:kept))
-    assert_redirected_to edit_learner_path(learners(:kept))
-
-    sign_in users(:one)
-    get learner_path(learners(:one))
-    assert_redirected_to edit_learner_path(learners(:one))
-  end
-
-  test "guests and other families cannot view a learner" do
-    get learner_path(learners(:read_only))
-    assert_redirected_to new_user_session_path
-
-    sign_in users(:one)
-    get learner_path(learners(:read_only))
-    assert_response :not_found
+  test "removed learner pages and stale picker submissions return not found" do
+    [["get", "/learners/#{learners(:one).id}"], ["get", "/learners/kept/edit"], ["patch", "/learners/kept"]].each do |method, path|
+      sign_in users(:one)
+      before = @family.learners.order(:id).map(&:attributes)
+      public_send(method, path, params: {learner_ids: [learners(:one).id]})
+      assert_response :not_found
+      assert_equal before, @family.learners.reload.order(:id).map(&:attributes)
+    end
   end
 
   test "cancelling the confirmation for an archived learner closes the modal" do

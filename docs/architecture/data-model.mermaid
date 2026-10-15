@@ -19,10 +19,9 @@ erDiagram
     string complimentary_premium_note
   }
 
-  %% learner_limit is the configurable Premium cap (default 10). Free-family
-  %% capacity is Account::FREE_LEARNER_LIMIT (2), intentionally not persisted.
-  %% Account derives its current capacity from plan entitlement; Learner
-  %% validates new and restored active records against that capacity.
+  %% learner_limit is the single configurable cap shared by all families
+  %% (default 15, no separate free-plan limit). Learner validates new and
+  %% restored active records against it.
 
   ACCOUNT_USER {
     bigint id PK
@@ -38,7 +37,6 @@ erDiagram
     string grade_level
     string color
     datetime archived_at
-    boolean kept_on_free
   }
 
   COURSE {
@@ -132,9 +130,7 @@ erDiagram
   %% Learners belong to one family. A unique expression index prevents
   %% case-insensitive duplicate names within that family; archived_at supports
   %% restoring a learner without deleting their record. Only active learners
-  %% consume the Family's learner_limit / FREE_LEARNER_LIMIT capacity.
-  %% kept_on_free marks the learners a downgraded (Free) family chose to keep
-  %% active when over FREE_LEARNER_LIMIT; set via Account#keep_learners_on_free.
+  %% consume the Family's learner_limit capacity.
   %% Courses are classes in the UI. They belong to one family and enroll zero
   %% or more learners through ENROLLMENT. The unique course_id/learner_id index
   %% permits each learner to be enrolled in a class at most once.

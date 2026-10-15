@@ -42,7 +42,7 @@ class EnrollmentTest < ActiveSupport::TestCase
   end
 
   test "a learner from another family cannot join a class" do
-    enrollment = Enrollment.new(course: courses(:one), learner: learners(:kept))
+    enrollment = Enrollment.new(course: courses(:one), learner: learners(:downgraded_one))
 
     assert_not enrollment.valid?
     assert_includes enrollment.errors[:learner], "must belong to the same family as the class"
@@ -63,15 +63,19 @@ class EnrollmentTest < ActiveSupport::TestCase
     assert_includes enrollment.errors[:learner], "must be active to be added to a class"
   end
 
-  test "a read-only learner cannot be added to a class" do
-    enrollment = Enrollment.new(course: courses(:downgraded_course), learner: learners(:read_only_two))
+  test "an active learner can join a class on Free after downgrade" do
+    assert_not accounts(:downgraded).premium?
+    assert_operator accounts(:downgraded).learners.active.count, :>, 2
+    enrollment = Enrollment.new(course: courses(:downgraded_course), learner: learners(:downgraded_four))
 
-    assert_not enrollment.valid?
-    assert_equal ["Dakota is read-only on Free, so they can't be added to a class."], enrollment.errors[:learner]
+    assert_difference "Enrollment.count", 1 do
+      assert enrollment.save
+    end
+    assert_includes courses(:downgraded_course).learners, learners(:downgraded_four)
   end
 
-  test "an existing enrollment for a read-only learner remains valid and can be deleted" do
-    enrollment = enrollments(:downgraded_read_only)
+  test "an existing enrollment remains valid and can be deleted after downgrade" do
+    enrollment = enrollments(:downgraded_three)
 
     assert enrollment.valid?
     assert enrollment.destroy

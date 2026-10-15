@@ -15,6 +15,14 @@ module ApplicationHelper
     CARD_LINK_CLASSES
   end
 
+  # AIDEV-NOTE: The one "I need more learners" support request, shared by the learner limit
+  # modal, the restore-blocked line, and the pricing footnote. Callers only differ in how
+  # they present the link; the address and subject live here and in `support.more_learners_subject`.
+  def more_learners_mailto
+    subject = t("support.more_learners_subject", product: Jumpstart.config.application_name)
+    "mailto:#{Jumpstart.config.support_email}?subject=#{ERB::Util.url_encode(subject)}"
+  end
+
   # "Completed on …" / "Archived on …" for a class, or nil while it is active.
   def course_status_date(course)
     return if course.active?

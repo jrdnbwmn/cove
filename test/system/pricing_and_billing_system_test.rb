@@ -13,8 +13,17 @@ class PricingAndBillingSystemTest < ApplicationSystemTestCase
 
     within pricing_group("monthly") do
       assert_text "Free"
+      assert_pricing_copy
       assert_button I18n.t("pricing.show.free.current_plan"), disabled: true
       assert_link I18n.t("pricing.show.premium.upgrade"), href: checkout_path(plan: @premium_monthly)
+    end
+
+    find("[data-pricing-target='frequency'][data-frequency='yearly']").click
+
+    within pricing_group("yearly") do
+      assert_pricing_copy
+      assert_button I18n.t("pricing.show.free.current_plan"), disabled: true
+      assert_link I18n.t("pricing.show.premium.upgrade"), href: checkout_path(plan: @premium_yearly)
     end
   end
 
@@ -29,6 +38,7 @@ class PricingAndBillingSystemTest < ApplicationSystemTestCase
     find("[data-pricing-target='frequency'][data-frequency='yearly']").click
 
     within pricing_group("yearly") do
+      assert_pricing_copy
       assert_link I18n.t("pricing.show.premium.change_plan")
       assert_text "$10/mo"
       assert_text "billed $120 yearly"
@@ -89,6 +99,7 @@ class PricingAndBillingSystemTest < ApplicationSystemTestCase
     visit pricing_path
 
     within pricing_group("monthly") do
+      assert_pricing_copy
       assert_link I18n.t("pricing.show.free.get_started"), href: new_user_registration_path
       assert_link I18n.t("pricing.show.premium.get_premium"), href: checkout_path(plan: @premium_monthly)
     end
@@ -118,6 +129,8 @@ class PricingAndBillingSystemTest < ApplicationSystemTestCase
     login_as users(:one), scope: :user
     visit billing_path
     assert_text I18n.t("billing.show.free_title")
+    assert_text "Everything you need to run school for the whole family. Free forever."
+    assert_no_text(/Your Family can have \d+ learners/i)
     assert_link I18n.t("billing.show.upgrade"), href: pricing_path
 
     logout(:user)
@@ -236,6 +249,17 @@ class PricingAndBillingSystemTest < ApplicationSystemTestCase
   end
 
   private
+
+  def assert_pricing_copy
+    assert_text "Everything you need to run school for the whole family. Free forever."
+    assert_text "Unlimited learners", count: 2
+    assert_text "Unlimited classes"
+    assert_text "Both parents"
+    assert_text "Everything in Free, plus new tools as they ship."
+    assert_text "Everything in Free"
+    assert_text "New Premium features as they're added"
+    assert_no_text(/Up to \d+ learners|More than \d+ learners\?/i)
+  end
 
   def with_stubbed_stripe_session(&block)
     session = Struct.new(:client_secret).new("cs_test_secret")

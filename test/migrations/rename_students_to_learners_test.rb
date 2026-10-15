@@ -8,13 +8,13 @@ class RenameStudentsToLearnersTest < ActiveSupport::TestCase
     assert_not connection.table_exists?(:students)
   end
 
-  test "families default to a learner limit of ten" do
+  test "families default to a learner limit of fifteen" do
     column = Account.columns_hash.fetch("learner_limit")
 
     assert_equal :integer, column.type
     assert_not_predicate column, :null
-    assert_equal 10, column.default
-    assert_equal 10, accounts(:one).learner_limit
+    assert_equal 15, column.default
+    assert_equal 15, accounts(:one).learner_limit
     assert_not Account.column_names.include?("student_limit")
   end
 

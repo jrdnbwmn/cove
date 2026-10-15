@@ -6,9 +6,13 @@ module PlanPricingHelper
     "$#{formatted_amount}/mo"
   end
 
-  def premium_learner_limit
-    return current_account.learner_limit if current_account&.premium?
+  def pricing_learner_limit
+    current_account&.learner_limit || Account.default_learner_limit
+  end
 
-    Account.default_learner_limit
+  # The "Unlimited learners" feature line. The asterisk points at the footnote under the
+  # cards, so it is hidden from screen readers (the footnote is plain text, not a note marker).
+  def pricing_learners_feature
+    safe_join([t("pricing.show.learners"), tag.span("*", aria: {hidden: true})])
   end
 end

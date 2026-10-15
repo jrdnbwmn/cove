@@ -6,18 +6,13 @@
   <div class="flex items-start gap-3 pr-10 <%= "opacity-60" if archived %>">
     <%= render "learners/color_dot", learner: learner, classes: "mt-1.5" %>
     <div class="min-w-0">
-      <div class="flex flex-wrap items-center gap-2">
-        <p class="font-medium break-words">
-          <% if archived %>
-            <%= learner.name %>
-          <% else %>
-            <button type="button" class="<%= card_link_classes %>" data-learner-card-link data-action="click->ui-modal#open:prevent"><%= learner.name %></button>
-          <% end %>
-        </p>
-        <% if !archived && !learner.editable? %>
-          <%= render BadgeComponent.new(text: t("learners.index.read_only_badge"), variant: :neutral, size: :sm) %>
+      <p class="font-medium break-words">
+        <% if archived %>
+          <%= learner.name %>
+        <% else %>
+          <button type="button" class="<%= card_link_classes %>" data-learner-card-link data-action="click->ui-modal#open:prevent"><%= learner.name %></button>
         <% end %>
-      </div>
+      </p>
       <% if learner.grade_level.present? %>
         <p class="text-sm text-muted-foreground break-words"><%= learner.grade_level %></p>
       <% end %>
@@ -29,16 +24,12 @@
     <% card.with_body do %>
       <% if archived %>
         <%= identity %>
-      <% elsif learner.editable? %>
+      <% else %>
         <%= render UiModalComponent.new(lazy_load: true, turbo_frame_src: edit_learner_path(learner)) do |modal| %>
           <% modal.with_trigger do %>
             <%= identity %>
             <%= form_with url: "#", method: :get, id: dom_id(learner, :edit), class: "hidden", data: {action: "submit->ui-modal#open:prevent"} do %><% end %>
           <% end %>
-        <% end %>
-      <% else %>
-        <%= render UiModalComponent.new(lazy_load: true, turbo_frame_src: learner_path(learner)) do |modal| %>
-          <% modal.with_trigger do %><%= identity %><% end %>
         <% end %>
       <% end %>
 
@@ -51,7 +42,7 @@
           <% end %>
           <% if archived && can_restore %>
             <% dropdown.with_item_button(text: t("learners.index.restore"), icon: icon("archive-restore", class: "size-4"), type: "submit", form: dom_id(learner, :restore)) %>
-          <% elsif !archived && learner.editable? %>
+          <% elsif !archived %>
             <% dropdown.with_item_button(text: t("learners.index.edit"), icon: icon("pencil", class: "size-4"), type: "submit", form: dom_id(learner, :edit)) %>
             <% dropdown.with_item_button(text: t("learners.form.archive"), icon: icon("archive", class: "size-4"), type: "submit", form: dom_id(learner, :archive)) %>
           <% end %>
@@ -61,7 +52,7 @@
 
       <% if archived && can_restore %>
         <%= form_with url: learner_archive_path(learner), method: :delete, id: dom_id(learner, :restore), class: "hidden" do %><% end %>
-      <% elsif !archived && learner.editable? %>
+      <% elsif !archived %>
         <%= form_with url: learner_archive_path(learner), method: :post, id: dom_id(learner, :archive), class: "hidden" do %><% end %>
       <% end %>
 

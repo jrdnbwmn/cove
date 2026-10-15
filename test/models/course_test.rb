@@ -145,7 +145,7 @@ class CourseBehaviorTest < ActiveSupport::TestCase
 
   test "other-family and archived learners submitted to a class are ignored" do
     course = Course.new(account: accounts(:company), name: "Algebra 1")
-    course.assign_learners([learners(:kept).id, learners(:archived).id])
+    course.assign_learners([learners(:downgraded_one).id, learners(:archived).id])
 
     assert course.save
     assert_empty course.reload.learners
@@ -167,23 +167,28 @@ class CourseBehaviorTest < ActiveSupport::TestCase
     assert_includes course.reload.learners.active, archived
   end
 
-  test "a read-only learner makes the class save fail without persisting changes" do
+  test "active learners can join a new class on Free after downgrade" do
     family = accounts(:downgraded)
+    assert_not family.premium?
+    assert_operator family.learners.active.count, :>, 2
     course = Course.new(account: family, name: "Algebra 1")
-    course.assign_learners([learners(:read_only).id])
+    selected = [learners(:downgraded_three), learners(:downgraded_four)]
+    course.assign_learners(selected.map(&:id))
 
-    assert_no_difference ["Course.count", "Enrollment.count"] do
-      assert_not course.save
+    assert_difference "Course.count", 1 do
+      assert_difference "Enrollment.count", 2 do
+        assert course.save
+      end
     end
-    assert_equal ["Casey is read-only on Free, so they can't be added to a class."], course.errors[:learners]
+    assert_equal selected.sort_by(&:id), course.reload.learners.order(:id).to_a
   end
 
-  test "a read-only learner already enrolled can be unchecked" do
+  test "a learner already enrolled can be unchecked after downgrade" do
     course = courses(:downgraded_course)
-    course.assign_learners([learners(:kept).id])
+    course.assign_learners([learners(:downgraded_one).id])
 
     assert course.save
-    assert_equal [learners(:kept)], course.reload.learners.to_a
+    assert_equal [learners(:downgraded_one)], course.reload.learners.to_a
   end
 
   test "a new class is active" do

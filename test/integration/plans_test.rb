@@ -91,7 +91,7 @@ class Jumpstart::PlansTest < ActionDispatch::IntegrationTest
   test "free card puts Free forever. in the description and has no price note" do
     get "/pricing"
 
-    assert_includes response.body, "Everything you need to get started. Free forever."
+    assert_includes response.body, "Everything you need to run school for the whole family. Free forever."
     assert_select "p", text: "forever", count: 0
   end
 

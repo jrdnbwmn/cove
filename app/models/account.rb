@@ -1,7 +1,6 @@
 class Account < ApplicationRecord
   include Billing, Domains, Transfer, Types
 
-  FREE_LEARNER_LIMIT = 2
   MAX_PARENTS = 2
   # Pay statuses of a subscription that has ended; everything else can still bill and so needs cancelling on delete.
   ENDED_SUBSCRIPTION_STATUSES = %w[canceled incomplete_expired].freeze
@@ -13,11 +12,10 @@ class Account < ApplicationRecord
   scope :archived, -> { where.not(archived_at: nil) }
 
   validates :personal, exclusion: {in: [true], message: "must be false"}
-  validates :learner_limit, numericality: {only_integer: true, greater_than_or_equal_to: FREE_LEARNER_LIMIT}
+  validates :learner_limit, numericality: {only_integer: true, greater_than_or_equal_to: -> { Account.default_learner_limit }}
   validates :complimentary_premium_note, presence: true, if: :complimentary_premium?
 
-  # AIDEV-NOTE: The database default is the single source for the Premium cap
-  # advertised to signed-out visitors and Free families.
+  # AIDEV-NOTE: The database default is the single source for the advertised family cap.
   def self.default_learner_limit
     column_defaults.fetch("learner_limit").to_i
   end
@@ -72,7 +70,6 @@ class Account < ApplicationRecord
 
   def reload(*)
     remove_instance_variable(:@paid_premium) if defined?(@paid_premium)
-    remove_instance_variable(:@over_free_learner_limit) if defined?(@over_free_learner_limit)
     super
   end
 
@@ -80,45 +77,12 @@ class Account < ApplicationRecord
     !premium?
   end
 
-  # AIDEV-NOTE: Premium is advertised as unlimited, but learner_limit (default
-  # 10, raised per family by a superadmin) is the real cap that keeps co-ops
-  # and micro-schools off a family plan; families above it contact support. No
-  # per-learner fee — pricing stays flat per family and Stripe quantity never changes.
-  def learners_allowed
-    premium? ? learner_limit : FREE_LEARNER_LIMIT
-  end
-
-  # Fresh count query (not learners.size) so a loaded association can't answer stale.
+  # AIDEV-NOTE: Every plan shares one soft family cap to keep co-ops and
+  # micro-schools off a family plan. Families above it email support for an
+  # increase. Pricing stays flat per family; Stripe quantity never changes.
   def can_add_learner?
-    learners.active.count < learners_allowed
-  end
-
-  # AIDEV-NOTE: The result is memoized for one rendered page because every
-  # learner card asks it. Reload clears it when a request changes the family.
-  def over_free_learner_limit?
-    return @over_free_learner_limit if defined?(@over_free_learner_limit)
-
-    @over_free_learner_limit = free? && learners.active.count > FREE_LEARNER_LIMIT
-  end
-
-  def learner_pick_needed?
-    over_free_learner_limit? && learners.active.where(kept_on_free: true).count < FREE_LEARNER_LIMIT
-  end
-
-  def keep_learners_on_free(ids)
-    errors.clear
-    ids = Array(ids)
-
-    with_lock do
-      valid_ids = ids.size == FREE_LEARNER_LIMIT && ids.uniq.size == FREE_LEARNER_LIMIT &&
-        learners.active.where(id: ids).count == FREE_LEARNER_LIMIT
-      return invalid_learner_pick unless valid_ids
-
-      learners.update_all(kept_on_free: false)
-      learners.active.where(id: ids).update_all(kept_on_free: true)
-    end
-
-    true
+    # Fresh count so a loaded association cannot answer with stale capacity.
+    learners.active.count < learner_limit
   end
 
   def joinable_by?(user)
@@ -145,11 +109,6 @@ class Account < ApplicationRecord
 
   def learners_empty?
     learners.none?
-  end
-
-  def invalid_learner_pick
-    errors.add(:base, I18n.t("learners.kept.error", limit: FREE_LEARNER_LIMIT))
-    false
   end
 
   # AIDEV-NOTE: Three deliberately different subscription sets. Billable = paying now (Pay's `active` scope also
