@@ -233,7 +233,7 @@ class LearnersSystemTest < ApplicationSystemTestCase
     login_as users(:downgraded), scope: :user
     visit learners_path
 
-    within("[data-learner='#{learners(:read_only).id}']") { click_button "Casey" }
+    within("[data-learner='#{learners(:downgraded_three).id}']") { click_button "Casey" }
     within("dialog[open]") { click_link "Delete" }
 
     assert_selector "dialog[open]", count: 1

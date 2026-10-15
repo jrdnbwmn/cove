@@ -44,11 +44,11 @@ class CoursesIndexTest < ActionDispatch::IntegrationTest
       assert_select "select[name='learner'] option[value='#{learner.id}']", text: learner.name
     end
 
-    get courses_path(learner: learners(:read_only).id)
+    get courses_path(learner: learners(:downgraded_three).id)
 
     assert_response :success
     assert_equal [courses(:downgraded_course).name], listed_names
-    assert_select "select[name='learner'] option[selected][value='#{learners(:read_only).id}']"
+    assert_select "select[name='learner'] option[selected][value='#{learners(:downgraded_three).id}']"
   end
 
   test "a class with no visible learners says no learners" do
@@ -335,7 +335,7 @@ class CoursesIndexTest < ActionDispatch::IntegrationTest
 
   test "an unknown, foreign, archived, or malformed learner is ignored" do
     sign_in users(:one)
-    foreign = learners(:kept)
+    foreign = learners(:downgraded_one)
 
     [foreign.id, learners(:archived).id, 0, "abc", "1; DROP TABLE courses"].each do |value|
       get courses_path(learner: value)

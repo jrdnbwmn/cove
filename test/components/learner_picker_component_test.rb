@@ -23,13 +23,13 @@ class LearnerPickerComponentTest < ViewComponent::TestCase
   test "all learners on Free remain selectable after downgrade" do
     render_inline(LearnerPickerComponent.new(
       name: "course[learner_ids][]",
-      learners: [learners(:kept), learners(:read_only)],
-      selected_ids: [learners(:kept).id],
+      learners: [learners(:downgraded_one), learners(:downgraded_three)],
+      selected_ids: [learners(:downgraded_one).id],
       label: "Learners"
     ))
 
-    assert_selector "input[value='#{learners(:read_only).id}']:not([checked]):not([disabled])"
-    assert_selector "input[value='#{learners(:kept).id}'][checked]:not([disabled])"
+    assert_selector "input[value='#{learners(:downgraded_three).id}']:not([checked]):not([disabled])"
+    assert_selector "input[value='#{learners(:downgraded_one).id}'][checked]:not([disabled])"
     assert_no_selector "input[type='checkbox'][disabled]"
     assert_no_text "Read-only"
   end
@@ -38,9 +38,9 @@ class LearnerPickerComponentTest < ViewComponent::TestCase
     assert_raises ArgumentError do
       LearnerPickerComponent.new(
         name: "course[learner_ids][]",
-        learners: [learners(:read_only)],
+        learners: [learners(:downgraded_three)],
         selected_ids: [],
-        read_only_ids: [learners(:read_only).id],
+        read_only_ids: [learners(:downgraded_three).id],
         label: "Learners"
       )
     end

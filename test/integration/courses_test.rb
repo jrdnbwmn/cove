@@ -54,7 +54,7 @@ class CoursesTest < ActionDispatch::IntegrationTest
 
   test "a parent on Free can select active learners and add a class after downgrade" do
     sign_in users(:downgraded)
-    learner = learners(:read_only)
+    learner = learners(:downgraded_three)
 
     get new_course_path
     assert_response :success
@@ -72,11 +72,11 @@ class CoursesTest < ActionDispatch::IntegrationTest
   test "a parent on Free can change a class's learners after downgrade" do
     sign_in users(:downgraded)
     course = courses(:downgraded_course)
-    learner = learners(:read_only_two)
+    learner = learners(:downgraded_four)
 
     get edit_course_path(course)
     assert_response :success
-    assert_select "input[type='checkbox'][value='#{learners(:read_only).id}'][checked]:not([disabled])"
+    assert_select "input[type='checkbox'][value='#{learners(:downgraded_three).id}'][checked]:not([disabled])"
     assert_select "input[type='checkbox'][value='#{learner.id}']:not([checked]):not([disabled])"
     assert_no_match "Read-only", response.body
 
