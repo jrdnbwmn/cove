@@ -21,9 +21,9 @@
 | 12 | 2 | 5 | Update picker previews and examples | subagent |✅ |
 | 13 | 2 | 5 | Resolve pricing capacity and preserve typography demo | subagent |✅ |
 | 14 | 2 | 5 | Apply approved pricing cards and footnote | Master |✅ |
-| 15 | 2 | 6 | Update billing copy and browser expectations | subagent | |
-| 16 | 2 | 6 | Update Terms of Service | subagent | |
-| 17 | 2 | 6 | Remove kept flag and obsolete fixtures | Master | |
+| 15 | 2 | 6 | Update billing copy and browser expectations | subagent |✅ |
+| 16 | 2 | 6 | Update Terms of Service | subagent |✅ |
+| 17 | 2 | 6 | Remove kept flag and obsolete fixtures | Master |✅ |
 | 18 | 2 | 7 | Complete learner and class browser regressions | Master | |
 | 19 | 3 | 8 | Update product documentation | Master | |
 | 20 | 3 | 8 | Run final verification and inspect the diff | Master | |
@@ -50,6 +50,8 @@ Phase 2 gate adjustment approved during execution: checkpoints 2–5 use focused
 Checkpoint 3 local review: stale-route tests pass; learner request/list test errors remain in the card/Delete Cancel callers owned by Task 9. Full suite: 1301 runs, 5 failures, 95 errors. Rerun these focused files after Task 9.
 
 Checkpoint 5 also updates the existing exact Free description expectation in `test/integration/plans_test.rb`, discovered by the full suite. Remaining failures are billing callers (Task 15) and learner-form capacity setup (Task 18).
+
+Task 18 learner-form cap setup/copy adjustment was brought into checkpoint 6 to make the full suite green after removal of all production callers. The remaining Task 18 browser acceptance work stays at checkpoint 7. All five downgraded-family learner fixtures remain necessary for the five-learner regression; only their obsolete flags were removed.
 
 ## Tasks
 
