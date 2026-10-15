@@ -292,15 +292,16 @@ en:
       subhead: "Simple, straightforward pricing"
       free:
         name: "Free"
-        description: "Everything you need to get started. Free forever."
-        learners:
-          one: "%{count} learner"
-          other: "%{count} learners"
+        description: "Everything you need to run school for the whole family. Free forever."
+        learners: "Unlimited learners"
+        classes: "Unlimited classes"
         both_parents: "Both parents"
         get_started: "Get started free"
         current_plan: "Current plan"
       premium:
-        description: "More room for your family."
+        description: "Everything in Free, plus new tools as they ship."
+        everything_in_free: "Everything in Free"
+        new_features: "New Premium features as they're added"
         yearly_price_note: "billed %{amount} yearly"
         learners: "Unlimited learners"
         both_parents: "Both parents"
@@ -310,8 +311,8 @@ en:
         current_plan: "Current plan"
       no_refunds_html: "Cancel anytime. You keep Premium until the end of the period you have paid for. No refunds are issued for unused time. %{link}"
       refund_policy: "See our refund policy."
-      more_learners_html: "More than %{learner_limit} learners? %{link}."
-      more_learners_contact: "Contact us"
+      more_learners_html: "*Cove is built for families. Teaching more than %{learner_limit}? %{link}."
+      more_learners_contact: "Just let us know"
       more_learners_subject: "More learners on %{product}"
 
   plan_intervals:
@@ -371,9 +372,7 @@ en:
       not_subscribed: "You are not currently subscribed."
       choose_plan: "Choose a plan"
       free_title: "You're on Free"
-      free_description:
-        one: "Your Family can have %{count} learner."
-        other: "Your Family can have %{count} learners."
+      free_description: "Everything you need to run school for the whole family. Free forever."
       upgrade: "Upgrade to Premium"
       premium: "Premium"
       complimentary_premium: "Complimentary Premium"
@@ -767,7 +766,6 @@ en:
   learner_picker:
     empty: "No learners yet."
     add_learner: "Add a learner"
-    read_only_on_free: "Read-only on Free"
 
   support:
     show:
@@ -778,17 +776,6 @@ en:
       email_subject: "Help with Cove"
 
   learners:
-    free_limit_banner:
-      heading: "Premium ended. Choose which %{limit} learners stay editable."
-      description: "Nothing's been deleted. You can change this anytime."
-      choose: "Choose learners"
-      picked: "%{limit} learners are editable on Free."
-      change: "Change"
-      upgrade: "Upgrade instead"
-    kept:
-      title: "Choose learners to keep editable"
-      intro: "Choose %{limit}. The rest stay saved and read-only until you upgrade or archive some."
-      error: "Choose %{limit} learners to keep editable."
     index:
       title: "Learners"
       description: "Everyone you're teaching, in one place."
@@ -797,30 +784,20 @@ en:
       edit_title: "Edit %{name}"
       edit: "Edit"
       actions_label: "Actions for %{name}"
-      read_only_badge: "Read-only"
       empty_title: "Add your first learner"
       empty_description: "Each learner gets a color so you can spot them across Cove."
       filter_label: "Filter learners"
       active: "Active"
       archived: "Archived"
       restore: "Restore"
-      restore_blocked_free_html: "Free accounts can have a maximum of two active learners. To restore a learner, archive one first or %{link}."
-      restore_blocked_premium_html: "To restore a learner, archive one first or %{link}."
-      restore_upgrade: "upgrade to Premium"
-      restore_contact: "contact us"
+      restore_blocked_html: "To restore a learner, archive one first or %{link} and we'll make room."
+      restore_contact: "send us a note"
       delete: "Delete"
     limit_modal:
-      title_free:
-        one: "Free includes %{limit} learner."
-        other: "Free includes %{limit} learners."
-      title_premium:
-        one: "Premium includes %{limit} learner."
-        other: "Premium includes %{limit} learners."
-      body_free: "Upgrade to Premium to add more learners."
-      body_premium: "If you need more, contact us and we'll help."
+      title: "Adding more than %{limit} learners?"
+      body: "Cove is built for families, so we check in at %{limit}. Send us a quick note and we'll raise it for you."
       close: "Close"
-      see_plans: "See plans"
-      contact: "Contact us"
+      contact: "Email us"
       more_learners_subject: "More learners on %{product}"
     form:
       name: "Name"
@@ -848,8 +825,6 @@ en:
       slate: "Slate"
     notices:
       created: "%{name} added."
-      kept: "Saved. %{names} stay editable."
-      read_only: "%{name} can't be edited on Free. You can still archive or delete this learner."
       updated: "Saved."
       archived: "%{name} archived."
       restored: "%{name} restored."
@@ -887,12 +862,7 @@ en:
         learner:
           attributes:
             base:
-              learner_limit_free:
-                one: "Free includes %{count} learner. Upgrade to Premium to add more."
-                other: "Free includes %{count} learners. Upgrade to Premium to add more."
-              learner_limit_premium:
-                one: "Premium includes %{count} learner. Contact us to add more."
-                other: "Premium includes %{count} learners. Contact us to add more."
+              learner_limit: "To add more than %{count} learners, send us a quick note and we'll raise your limit."
             name:
               blank: "Enter a name to continue."
               taken_active: "You already have a learner named %{name}."
@@ -920,7 +890,6 @@ en:
               wrong_account: "must belong to the same family as the class"
               taken: "%{name} is already in this class."
               archived: "must be active to be added to a class"
-              read_only: "%{name} is read-only on Free, so they can't be added to a class."
         plan:
           attributes:
             base:
