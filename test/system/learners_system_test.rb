@@ -102,14 +102,11 @@ class LearnersSystemTest < ApplicationSystemTestCase
     within("dialog[open]") do
       fill_in "Name", with: "Nora"
       fill_in "Grade level", with: "5th"
-      click_button "Add learner"
+      wait_for_turbo_navigation { click_button "Add learner" }
     end
 
     assert_current_path learners_path
     assert_no_selector "dialog[open]"
-    # AIDEV-NOTE: Wait for the toast (a whole-page text check) before checking a
-    # card. Checking elements while Turbo swaps in the redirected page can raise
-    # Chrome's "Node ... does not belong to the document", which Capybara doesn't retry.
     assert_text "Nora added."
     assert_selector "[data-learner]", text: "Nora"
   end
@@ -124,7 +121,7 @@ class LearnersSystemTest < ApplicationSystemTestCase
       assert_text "You already have a learner named Theo."
 
       fill_in "Name", with: "Maya R"
-      click_button "Save"
+      wait_for_turbo_navigation { click_button "Save" }
     end
 
     assert_no_selector "dialog[open]"
@@ -179,7 +176,7 @@ class LearnersSystemTest < ApplicationSystemTestCase
     visit learners_path
     open_edit_modal("Maya")
 
-    within("dialog[open]") { click_button "Archive" }
+    within("dialog[open]") { wait_for_turbo_navigation { click_button "Archive" } }
 
     assert_text "Maya archived."
     assert_no_selector "dialog[open]"
@@ -199,7 +196,7 @@ class LearnersSystemTest < ApplicationSystemTestCase
     within("dialog[open]") do
       assert_text "Delete Maya?"
       assert_no_selector "h2", text: "Edit Maya"
-      click_button "Delete Maya"
+      wait_for_turbo_navigation { click_button "Delete Maya" }
     end
 
     assert_text "Maya deleted."
@@ -313,7 +310,7 @@ class LearnersSystemTest < ApplicationSystemTestCase
 
     open_actions_menu("Maya")
     click_button "Delete"
-    within("dialog[open]") { click_button "Delete Maya" }
+    within("dialog[open]") { wait_for_turbo_navigation { click_button "Delete Maya" } }
 
     assert_text "Maya deleted."
     assert_not Learner.exists?(ActiveRecord::FixtureSet.identify(:one))
@@ -402,7 +399,7 @@ class LearnersSystemTest < ApplicationSystemTestCase
     within(inline_add_tile) { click_button "Add learner" }
     within("dialog[open]") do
       fill_in "Name", with: "Nora"
-      click_button "Add learner"
+      wait_for_turbo_navigation { click_button "Add learner" }
     end
 
     assert_current_path learners_path
@@ -439,7 +436,7 @@ class LearnersSystemTest < ApplicationSystemTestCase
 
       assert_field "Avery", disabled: true
       assert_button "Save", disabled: false
-      click_button "Save"
+      wait_for_turbo_navigation { click_button "Save" }
     end
 
     assert_no_selector "dialog[open]"

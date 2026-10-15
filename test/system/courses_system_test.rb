@@ -30,7 +30,7 @@ class CoursesSystemTest < ApplicationSystemTestCase
     within("dialog[open]") do
       check "Maya"
       check "Theo"
-      click_button "Add class"
+      wait_for_turbo_navigation { click_button "Add class" }
     end
 
     assert_no_selector "dialog[open]"
@@ -42,7 +42,7 @@ class CoursesSystemTest < ApplicationSystemTestCase
     find("[data-course='#{course.id}']").click
     within("dialog[open]") do
       fill_in "Name", with: "Geometry"
-      click_button "Save"
+      wait_for_turbo_navigation { click_button "Save" }
     end
     assert_text "Saved."
 
@@ -50,7 +50,7 @@ class CoursesSystemTest < ApplicationSystemTestCase
     within("dialog[open]") { click_link "Delete class" }
     within("dialog[open]") do
       assert_text "Delete Geometry?"
-      click_button "Delete class"
+      wait_for_turbo_navigation { click_button "Delete class" }
     end
     assert_no_selector "dialog[open]"
     assert_text "Class deleted."
@@ -128,7 +128,7 @@ class CoursesSystemTest < ApplicationSystemTestCase
 
     within("dialog[open]") do
       assert_text "Delete Nature study?"
-      click_button "Delete class"
+      wait_for_turbo_navigation { click_button "Delete class" }
     end
 
     assert_text "Class deleted."
@@ -166,7 +166,7 @@ class CoursesSystemTest < ApplicationSystemTestCase
     within("dialog[open]") do
       assert_text "Status"
       choose_status "Completed"
-      click_button "Save"
+      wait_for_turbo_navigation { click_button "Save" }
     end
 
     assert_no_selector "dialog[open]"
@@ -182,7 +182,7 @@ class CoursesSystemTest < ApplicationSystemTestCase
     within("dialog[open]") do
       fill_in "Name", with: "Spanish 2"
       choose_status "Active"
-      click_button "Save"
+      wait_for_turbo_navigation { click_button "Save" }
     end
 
     assert_no_selector "dialog[open]"
@@ -229,7 +229,8 @@ class CoursesSystemTest < ApplicationSystemTestCase
   test "adding a filtered class from the inline tile keeps the filter and confirms the add" do
     visit courses_path
     find("#course_filter_subject + .ts-wrapper .ts-control").click
-    find(".ts-dropdown [role='option']", text: "Math").click
+    wait_for_turbo_navigation { find(".ts-dropdown [role='option']", text: "Math").click }
+    assert_no_text "Piano"
 
     within(inline_add_tile) { click_button "Add class" }
     within("dialog[open]") do
@@ -237,7 +238,7 @@ class CoursesSystemTest < ApplicationSystemTestCase
     end
     find("dialog[open] .ts-control").click
     find("dialog[open] > .ts-dropdown [role='option']", text: "Arts", match: :first).click
-    within("dialog[open]") { click_button "Add class" }
+    within("dialog[open]") { wait_for_turbo_navigation { click_button "Add class" } }
 
     assert_no_selector "dialog[open]"
     assert_text "Class added."

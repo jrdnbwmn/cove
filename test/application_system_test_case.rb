@@ -23,6 +23,28 @@ class ApplicationSystemTestCase < ActionDispatch::SystemTestCase
   include Warden::Test::Helpers
   include TrixSystemTestHelper
   include TurboResilienceSystemHelper
+
+  def wait_for_turbo_navigation
+    # AIDEV-NOTE: Modal redirects close the dialog before Turbo replaces the body.
+    # Poll JS state so the wait never holds a WebElement from the old page.
+    # A full reload clears the marker; a Turbo visit sets it on turbo:load.
+    page.execute_script(<<~JAVASCRIPT)
+      window.systemTestNavigationComplete = false
+      document.addEventListener("turbo:load", () => {
+        window.systemTestNavigationComplete = true
+      }, {once: true})
+    JAVASCRIPT
+
+    yield
+
+    page.document.synchronize do
+      complete = page.evaluate_script(<<~JAVASCRIPT)
+        window.systemTestNavigationComplete === true ||
+          (window.systemTestNavigationComplete === undefined && document.readyState === "complete")
+      JAVASCRIPT
+      raise Capybara::ExpectationNotMet, "Turbo navigation did not finish" unless complete
+    end
+  end
 end
 
 Capybara.default_max_wait_time = 10
