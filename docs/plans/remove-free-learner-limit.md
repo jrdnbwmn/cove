@@ -25,8 +25,8 @@
 | 16 | 2 | 6 | Update Terms of Service | subagent |✅ |
 | 17 | 2 | 6 | Remove kept flag and obsolete fixtures | Master |✅ |
 | 18 | 2 | 7 | Complete learner and class browser regressions | Master |✅ |
-| 19 | 3 | 8 | Update product documentation | Master | |
-| 20 | 3 | 8 | Run final verification and inspect the diff | Master | |
+| 19 | 3 | 8 | Update product documentation | Master |✅ |
+| 20 | 3 | 8 | Run final verification and inspect the diff | Master |✅ |
 
 ## Prerequisites
 
