@@ -7,7 +7,7 @@ class CoursesSystemTest < ApplicationSystemTestCase
 
   test "a parent can add, edit, and delete a class from the modal" do
     visit courses_path
-    find("button", text: "Add class", match: :first).click
+    within("[data-page-header-actions]") { click_button "Add class" }
 
     within("dialog[open]") do
       fill_in "Name", with: "Algebra 1"
@@ -47,7 +47,7 @@ class CoursesSystemTest < ApplicationSystemTestCase
 
   test "a blank class name keeps the modal and entered values open" do
     visit courses_path
-    find("button", text: "Add class", match: :first).click
+    within("[data-page-header-actions]") { click_button "Add class" }
 
     within("dialog[open]") do
       fill_in "Name", with: " "
@@ -214,9 +214,33 @@ class CoursesSystemTest < ApplicationSystemTestCase
     assert_selector ".course-name", text: "Piano"
   end
 
+  test "adding a filtered class from the inline tile keeps the filter and confirms the add" do
+    visit courses_path
+    find("#course_filter_subject + .ts-wrapper .ts-control").click
+    find(".ts-dropdown [role='option']", text: "Math").click
+
+    within(inline_add_tile) { click_button "Add class" }
+    within("dialog[open]") do
+      fill_in "Name", with: "French conversation"
+    end
+    find("dialog[open] .ts-control").click
+    find("dialog[open] > .ts-dropdown [role='option']", text: "Arts", match: :first).click
+    within("dialog[open]") { click_button "Add class" }
+
+    assert_no_selector "dialog[open]"
+    assert_text "Class added."
+    assert_includes current_url, "subject=Math"
+    assert_no_selector ".course-name", text: "French conversation"
+
+    click_link "Completed"
+    assert_no_selector ".grid button", text: "Add class"
+    click_link "Archived"
+    assert_no_selector ".grid button", text: "Add class"
+  end
+
   test "the discard prompt on the add class modal shows no Add class heading" do
     visit courses_path
-    find("button", text: "Add class", match: :first).click
+    within("[data-page-header-actions]") { click_button "Add class" }
 
     within("dialog[open]") do
       assert_selector "h2", text: "Add class"
@@ -233,7 +257,7 @@ class CoursesSystemTest < ApplicationSystemTestCase
 
   test "the cross, an outside click, and Escape on the discard prompt keep editing" do
     visit courses_path
-    find("button", text: "Add class", match: :first).click
+    within("[data-page-header-actions]") { click_button "Add class" }
 
     [-> { find("dialog[open] button", text: "Close").click },
       -> { page.driver.browser.action.move_to_location(5, 5).click.perform },
@@ -309,6 +333,10 @@ class CoursesSystemTest < ApplicationSystemTestCase
   def open_actions_menu(name)
     find("button[aria-label='Actions for #{name}']").click
     assert_selector "[role='menuitem']"
+  end
+
+  def inline_add_tile
+    ".grid > [data-ui-modal-turbo-frame-src-value='#{new_course_path}'].h-full:last-child"
   end
 
   # The status select is a TomSelect, so pick the option from its dropdown.

@@ -20,6 +20,7 @@ class UiModalComponent < ViewComponent::Base
   # @param classes [String] Additional CSS classes for the dialog element
   # @param trigger_text [String] Text for the trigger button (default: "Open Modal")
   # @param trigger_classes [String] Additional classes for the trigger button
+  # @param wrapper_classes [String] Additional classes for the outer modal controller wrapper
   def initialize(
     size: :md,
     title: nil,
@@ -30,7 +31,8 @@ class UiModalComponent < ViewComponent::Base
     auto_focus: false,
     classes: nil,
     trigger_text: "Open Modal",
-    trigger_classes: nil
+    trigger_classes: nil,
+    wrapper_classes: nil
   )
     super()
     @size = SIZES.include?(size) ? size : :md
@@ -43,6 +45,7 @@ class UiModalComponent < ViewComponent::Base
     @classes = classes
     @trigger_text = trigger_text
     @trigger_classes = trigger_classes
+    @wrapper_classes = wrapper_classes
   end
 
   def controller_data
@@ -124,5 +127,5 @@ class UiModalComponent < ViewComponent::Base
     icon("x", class: "size-4")
   end
 
-  attr_reader :title, :show_close_button, :prevent_dismiss, :lazy_load, :trigger_text
+  attr_reader :title, :show_close_button, :prevent_dismiss, :lazy_load, :trigger_text, :wrapper_classes
 end

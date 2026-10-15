@@ -57,6 +57,45 @@ class CoursesIndexTest < ActionDispatch::IntegrationTest
     assert_select "p", text: "Add a class for anything you want to track or grade, like Algebra 1, Piano, or Nature study."
     assert_select "button[data-action='click->ui-modal#open:prevent']", text: "Add class", count: 1
     assert_select "[data-page-header-actions]", count: 0
+    assert_select ".grid > [data-controller~='ui-modal'].h-full", count: 0
+  end
+
+  test "the Active class grid ends with a tile that opens the plain Add class form" do
+    sign_in users(:one)
+
+    [{}, {learner: learners(:one).id, subject: "Science"}].each do |filters|
+      get courses_path(**filters)
+
+      assert_response :success
+      assert_select ".grid > [data-course]", minimum: 1
+      assert_select ".grid > [data-controller~='ui-modal'].h-full", count: 1
+      assert_select ".grid > [data-ui-modal-turbo-frame-src-value='#{new_course_path}'].h-full:last-child", count: 1 do
+        assert_select "button[data-action='click->ui-modal#open:prevent']", text: "Add class"
+        assert_select "dialog h2", text: "Add class"
+      end
+    end
+  end
+
+  test "the add class tile is absent from Completed and Archived grids" do
+    sign_in users(:one)
+
+    %w[completed archived].each do |status|
+      get courses_path(status: status)
+
+      assert_select ".grid > [data-course]", minimum: 1
+      assert_select ".grid > [data-controller~='ui-modal'].h-full", count: 0
+    end
+  end
+
+  test "filters that match no classes hide the add tile on every tab" do
+    sign_in users(:one)
+
+    %w[active completed archived].each do |status|
+      get courses_path(status: status, subject: "Latin")
+
+      assert_select "p", text: "No classes match these filters."
+      assert_select ".grid > [data-controller~='ui-modal'].h-full", count: 0
+    end
   end
 
   test "the filter toolbar and status tabs show when the family has classes" do
@@ -134,7 +173,14 @@ class CoursesIndexTest < ActionDispatch::IntegrationTest
     assert_select "h2", text: "No classes yet", count: 0
     assert_select "form[action='#{courses_path}'][method='get']"
     assert_select "[data-page-header-actions] button", text: "Add class"
-    assert_select "p", text: "No active classes. Add one, or find past classes under Completed and Archived."
+    assert_select "h2", text: "No active classes"
+    assert_select "p", text: "Find past classes under Completed and Archived, or add a new one."
+    assert_select "h2", text: "No active classes" do |headings|
+      assert_select headings.first.parent, "[data-ui-modal-turbo-frame-src-value='#{new_course_path}']" do
+        assert_select "button[data-action='click->ui-modal#open:prevent']", text: "Add class"
+      end
+    end
+    assert_select ".grid > [data-controller~='ui-modal'].h-full", count: 0
   end
 
   test "the header add action shows on every tab" do

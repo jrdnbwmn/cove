@@ -7,14 +7,14 @@
 
 | Task | Phase | Checkpoint | Description | Assign | Done |
 | ---- | ----- | ---------- | ----------- | ------ | ---- |
-| 1 | 1 | 1 | Create the card-style `AddTileComponent` | Master | |
-| 2 | 1 | 1 | Add Lookbook previews | subagent | |
-| 3 | 1 | 1 | Allow a modal trigger wrapper to fill a grid cell | Master | |
-| 4 | 2 | 2 | Add the tile to Active learners | Master | |
-| 5 | 2 | 2 | Verify learner tile interactions in the browser | subagent | |
-| 6 | 3 | 3 | Add the tile to Active classes | Master | |
-| 7 | 3 | 3 | Replace the no-active-classes line with an empty state | Master | |
-| 8 | 3 | 3 | Verify class interactions and document the list rule | subagent | |
+| 1 | 1 | 1 | Create the card-style `AddTileComponent` | Master | ✅ |
+| 2 | 1 | 1 | Add Lookbook previews | subagent | ✅ |
+| 3 | 1 | 1 | Allow a modal trigger wrapper to fill a grid cell | Master | ✅ |
+| 4 | 2 | 2 | Add the tile to Active learners | Master | ✅ |
+| 5 | 2 | 2 | Verify learner tile interactions in the browser | subagent | ✅ |
+| 6 | 3 | 3 | Add the tile to Active classes | Master | ✅ |
+| 7 | 3 | 3 | Replace the no-active-classes line with an empty state | Master | ✅ |
+| 8 | 3 | 3 | Verify class interactions and document the list rule | subagent | ✅ |
 
 ## Prerequisites
 

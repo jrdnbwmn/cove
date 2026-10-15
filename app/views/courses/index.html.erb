@@ -62,6 +62,9 @@
       <% @courses.each do |course| %>
         <%= render "course_card", course: course %>
       <% end %>
+      <% if @status == "active" %>
+        <%= render "add_trigger", tile: true %>
+      <% end %>
     </div>
   <% elsif @learner_filter || @subject_filter %>
     <div class="flex flex-col items-start gap-3 py-6">
@@ -69,10 +72,10 @@
       <%= render ButtonComponent.new(text: t(".clear_filters"), variant: :outline, href: courses_path({status: (@status unless @status == "active")}.compact)) %>
     </div>
   <% elsif @status == "active" %>
-    <div class="flex flex-col items-start gap-3 py-6">
-      <p class="text-muted-foreground"><%= t(".none_active") %></p>
-      <%= render "add_trigger" %>
-    </div>
+    <%= render EmptyStateComponent.new(title: t(".none_active_title"), description: t(".none_active_description")) do |empty_state| %>
+      <% empty_state.with_icon { icon "book-open", class: "w-full h-full" } %>
+      <% empty_state.with_primary_action { render "add_trigger" } %>
+    <% end %>
   <% else %>
     <p class="py-6 text-muted-foreground"><%= t(".none_#{@status}") %></p>
   <% end %>

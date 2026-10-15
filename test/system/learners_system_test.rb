@@ -93,10 +93,10 @@ class LearnersSystemTest < ApplicationSystemTestCase
       click_button "Add learner"
     end
 
+    assert_current_path learners_path
     assert_no_selector "dialog[open]"
     assert_selector "p", text: "Nora"
     assert_text "Nora added."
-    assert_current_path learners_path
   end
 
   test "editing a learner keeps validation in the modal and saves with a toast" do
@@ -307,7 +307,7 @@ class LearnersSystemTest < ApplicationSystemTestCase
   test "at the Free limit, Add learner explains the limit and links to plans" do
     visit learners_path
 
-    find("button", text: "Add learner", match: :first).click
+    click_header_add_learner
 
     within("dialog[open]") do
       assert_selector "h2", text: "Free includes 2 learners."
@@ -319,7 +319,7 @@ class LearnersSystemTest < ApplicationSystemTestCase
   test "the limit modal is sized to its content on desktop, not the full window height" do
     visit learners_path
 
-    find("button", text: "Add learner", match: :first).click
+    click_header_add_learner
 
     assert_selector "dialog[open]"
     dialog_height = evaluate_script("document.querySelector('dialog[open]').getBoundingClientRect().height")
@@ -335,7 +335,7 @@ class LearnersSystemTest < ApplicationSystemTestCase
     login_as users(:subscribed), scope: :user
     visit learners_path
 
-    find("button", text: "Add learner", match: :first).click
+    click_header_add_learner
 
     within("dialog[open]") do
       assert_selector "h2", text: "Premium includes 3 learners."
@@ -369,6 +369,37 @@ class LearnersSystemTest < ApplicationSystemTestCase
     end
     assert_selector "dialog[open]"
     assert_not Learner.exists?(name: "Nora")
+  end
+
+  test "a parent can open the add learner form from the inline tile" do
+    open_slot
+    visit learners_path
+
+    within(inline_add_tile) { click_button "Add learner" }
+
+    assert_selector "dialog[open] input[name='learner[name]']"
+  end
+
+  test "reaching the learner limit switches the inline tile to the limit modal" do
+    open_slot
+    visit learners_path
+
+    within(inline_add_tile) { click_button "Add learner" }
+    within("dialog[open]") do
+      fill_in "Name", with: "Nora"
+      click_button "Add learner"
+    end
+
+    assert_current_path learners_path
+    assert_text "Nora added."
+    assert_selector limit_tile
+    assert_no_selector "#{limit_tile}[data-ui-modal-turbo-frame-src-value]"
+
+    within(limit_tile) { click_button "Add learner" }
+    within("dialog[open]") do
+      assert_selector "h2", text: "Free includes 2 learners."
+      assert_no_selector "input[name='learner[name]']"
+    end
   end
 
   test "a parent chooses which two learners remain editable on Free" do
@@ -414,8 +445,20 @@ class LearnersSystemTest < ApplicationSystemTestCase
   end
 
   def open_add_modal
-    find("button", text: "Add learner", match: :first).click
+    click_header_add_learner
     assert_selector "dialog[open] input[name='learner[name]']"
+  end
+
+  def click_header_add_learner
+    within("[data-page-header-actions]") { click_button "Add learner" }
+  end
+
+  def inline_add_tile
+    ".grid > [data-ui-modal-turbo-frame-src-value='#{new_learner_path}'].h-full:last-child"
+  end
+
+  def limit_tile
+    ".grid > [data-controller~='ui-modal'].h-full:last-child"
   end
 
   def open_edit_modal(name)

@@ -1,7 +1,8 @@
+<% can_add_learner = Current.account.can_add_learner? %>
 <%= render PageHeaderComponent.new(title: t(".title"), description: t(".description")) do |header| %>
   <% if @learners.any? %>
     <% header.with_primary_action do %>
-      <% if Current.account.can_add_learner? %>
+      <% if can_add_learner %>
         <%= render "add_trigger" %>
       <% else %>
         <%= render "limit_modal", account: Current.account %>
@@ -25,7 +26,7 @@
 <% end %>
 
 <% if @show_archived %>
-  <% can_restore = Current.account.can_add_learner? %>
+  <% can_restore = can_add_learner %>
   <% unless can_restore %>
     <p class="mb-4 text-sm text-muted-foreground">
       <% if Current.account.premium? %>
@@ -53,6 +54,11 @@
   <div class="grid auto-rows-fr gap-4 sm:grid-cols-2 lg:grid-cols-3">
     <% @learners.each do |learner| %>
       <%= render "learner_card", learner: learner %>
+    <% end %>
+    <% if can_add_learner %>
+      <%= render "add_trigger", tile: true %>
+    <% else %>
+      <%= render "limit_modal", account: Current.account, tile: true %>
     <% end %>
   </div>
 <% end %>
