@@ -23,11 +23,7 @@ Rails.application.routes.draw do
     resource :completion, only: %i[create destroy], module: :courses
     resource :archive, only: %i[create destroy], module: :courses
   end
-  # AIDEV-NOTE: Must stay above `resources :learners`, or /learners/kept/edit matches learners#edit with id "kept".
-  scope :learners, as: :learners, module: :learners do
-    resource :kept, only: %i[edit update], controller: :kept
-  end
-  resources :learners do
+  resources :learners, except: :show do
     get :delete, on: :member
     resource :archive, only: %i[create destroy], module: :learners
   end

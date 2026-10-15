@@ -12,9 +12,9 @@
 | 3 | 2 | 2 | Give every plan the same capacity | Master |✅ |
 | 4 | 2 | 2 | Remove learner editability rules and replace locale copy | Master |✅ |
 | 5 | 2 | 2 | Allow all active learners in classes | subagent |✅ |
-| 6 | 2 | 3 | Remove read-only controller behavior and routes | Master | |
-| 7 | 2 | 3 | Delete the picker flow and read-only view | Master | |
-| 8 | 2 | 3 | Simplify learner list and limit modal | Master | |
+| 6 | 2 | 3 | Remove read-only controller behavior and routes | Master |✅ |
+| 7 | 2 | 3 | Delete the picker flow and read-only view | Master |✅ |
+| 8 | 2 | 3 | Simplify learner list and limit modal | Master |✅ |
 | 9 | 2 | 4 | Make every active learner card editable | Master | |
 | 10 | 2 | 4 | Simplify LearnerPickerComponent | subagent | |
 | 11 | 2 | 4 | Remove class screen read-only states | subagent | |
@@ -46,6 +46,8 @@
 Checkpoint 1 also updates existing test setup/default-count expectations in `learner_test.rb`, `learners_index_test.rb`, `plan_pricing_helper_test.rb`, and `public_test.rb` for the new default/minimum. Behavior changes remain in their assigned tasks. Approved during execution.
 
 Phase 2 gate adjustment approved during execution: checkpoints 2–5 use focused tests and local review; full-suite failures from remaining coupled callers are recorded. A green full suite is required when Phase 2 is complete.
+
+Checkpoint 3 local review: stale-route tests pass; learner request/list test errors remain in the card/Delete Cancel callers owned by Task 9. Full suite: 1301 runs, 5 failures, 95 errors. Rerun these focused files after Task 9.
 
 ## Tasks
 

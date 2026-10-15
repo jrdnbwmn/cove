@@ -1,9 +1,7 @@
 class LearnersController < ApplicationController
   before_action :authenticate_user!
-  before_action :set_learner, only: %i[show edit update delete destroy]
+  before_action :set_learner, only: %i[edit update delete destroy]
   before_action :redirect_archived_learner, only: %i[edit update]
-  before_action :redirect_read_only_learner, only: %i[edit update]
-  before_action :redirect_editable_learner, only: :show
 
   def index
     @learners = Current.account.learners.active.ordered.load
@@ -29,9 +27,6 @@ class LearnersController < ApplicationController
   end
 
   def edit
-  end
-
-  def show
   end
 
   def update
@@ -62,17 +57,6 @@ class LearnersController < ApplicationController
 
   def redirect_archived_learner
     redirect_to learners_path if @learner.archived?
-  end
-
-  # AIDEV-NOTE: The View modal explains why a learner is read-only, so a stale link to an editable one goes to Edit.
-  def redirect_editable_learner
-    redirect_to edit_learner_path(@learner) if @learner.editable?
-  end
-
-  def redirect_read_only_learner
-    return if @learner.editable?
-
-    redirect_to learners_path, alert: t("learners.notices.read_only", name: @learner.name)
   end
 
   def learner_params

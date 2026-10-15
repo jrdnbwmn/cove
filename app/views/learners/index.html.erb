@@ -11,10 +11,6 @@
   <% end %>
 <% end %>
 
-<% if Current.account.over_free_learner_limit? %>
-  <%= render "free_limit_banner", account: Current.account %>
-<% end %>
-
 <% if @archived_count.positive? %>
   <%# AIDEV-NOTE: Active/Archived is an underline-tab list switch (ux-notes, Sections and tabs). It shows whenever archived learners exist, even when no active ones do, so they stay reachable. %>
   <div class="mb-4">
@@ -29,11 +25,7 @@
   <% can_restore = can_add_learner %>
   <% unless can_restore %>
     <p class="mb-4 text-sm text-muted-foreground">
-      <% if Current.account.premium? %>
-        <%= t(".restore_blocked_premium_html", link: mail_to(Jumpstart.config.support_email, t(".restore_contact"), subject: t("learners.limit_modal.more_learners_subject", product: Jumpstart.config.application_name), class: "underline text-foreground hover:text-primary")) %>
-      <% else %>
-        <%= t(".restore_blocked_free_html", link: link_to(t(".restore_upgrade"), pricing_path, class: "underline text-foreground hover:text-primary")) %>
-      <% end %>
+      <%= t(".restore_blocked_html", link: mail_to(Jumpstart.config.support_email, t(".restore_contact"), subject: t("learners.limit_modal.more_learners_subject", product: Jumpstart.config.application_name), class: "underline text-foreground hover:text-primary")) %>
     </p>
   <% end %>
   <div class="grid auto-rows-fr gap-4 sm:grid-cols-2 lg:grid-cols-3">
