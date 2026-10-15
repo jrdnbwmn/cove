@@ -107,8 +107,11 @@ class LearnersSystemTest < ApplicationSystemTestCase
 
     assert_current_path learners_path
     assert_no_selector "dialog[open]"
-    assert_selector "p", text: "Nora"
+    # AIDEV-NOTE: Wait for the toast (a whole-page text check) before checking a
+    # card. Checking elements while Turbo swaps in the redirected page can raise
+    # Chrome's "Node ... does not belong to the document", which Capybara doesn't retry.
     assert_text "Nora added."
+    assert_selector "[data-learner]", text: "Nora"
   end
 
   test "editing a learner keeps validation in the modal and saves with a toast" do
@@ -125,8 +128,8 @@ class LearnersSystemTest < ApplicationSystemTestCase
     end
 
     assert_no_selector "dialog[open]"
-    assert_selector "p", text: "Maya R"
     assert_text "Saved."
+    assert_selector "[data-learner]", text: "Maya R"
   end
 
   test "archived learners are hidden until the Archived view is chosen and can be restored" do
