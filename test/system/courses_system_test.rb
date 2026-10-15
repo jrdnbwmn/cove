@@ -5,6 +5,18 @@ class CoursesSystemTest < ApplicationSystemTestCase
     login_as users(:one), scope: :user
   end
 
+  test "adding the first class keeps modal headings and labels left aligned" do
+    Course.where(account: accounts(:company)).destroy_all
+    visit courses_path
+    click_button "Add class"
+
+    assert_selector "dialog[open] input[name='course[name]']"
+    within("dialog[open]") do
+      assert_equal "left", find("h2").evaluate_script("getComputedStyle(this).textAlign")
+      assert_equal "left", find("label[for='course_name']").evaluate_script("getComputedStyle(this).textAlign")
+    end
+  end
+
   test "a parent can add, edit, and delete a class from the modal" do
     visit courses_path
     within("[data-page-header-actions]") { click_button "Add class" }

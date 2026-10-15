@@ -5,6 +5,18 @@ class LearnersSystemTest < ApplicationSystemTestCase
     login_as users(:one), scope: :user
   end
 
+  test "adding the first learner keeps modal headings and labels left aligned" do
+    Learner.where(account: accounts(:company)).destroy_all
+    visit learners_path
+    click_button "Add learner"
+
+    assert_selector "dialog[open] input[name='learner[name]']"
+    within("dialog[open]") do
+      assert_equal "left", find("h2").evaluate_script("getComputedStyle(this).textAlign")
+      assert_equal "left", find("label[for='learner_name']").evaluate_script("getComputedStyle(this).textAlign")
+    end
+  end
+
   test "a duplicate name shows its error inside the open modal" do
     open_slot
     visit learners_path
