@@ -28,7 +28,7 @@ class LearnersTest < ActionDispatch::IntegrationTest
 
   test "a parent can still edit and archive a learner while over the family limit" do
     sign_in users(:one)
-    Learner.new(account: @family, name: "Extra", color: "rose").save!(validate: false)
+    14.times { |i| Learner.new(account: @family, name: "Extra #{i}", color: "rose").save!(validate: false) }
 
     patch learner_path(@maya), params: {learner: {grade_level: "4th"}}
     assert_redirected_to learners_path

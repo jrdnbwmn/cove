@@ -418,12 +418,13 @@ class LearnersSystemTest < ApplicationSystemTestCase
   end
 
   test "downgrading a family with five learners leaves every learner editable" do
-    family = accounts(:downgraded)
-    family.update!(complimentary_premium: true, complimentary_premium_note: "Test access")
+    family = accounts(:subscribed)
+    5.times { |i| Learner.create!(account: family, name: "Child #{i}") }
+    family.pay_subscriptions.sole.update!(status: "unpaid")
+    assert family.reload.free?
     assert_equal 5, family.learners.active.count
-    family.update!(complimentary_premium: false)
     logout(:user)
-    login_as users(:downgraded), scope: :user
+    login_as users(:subscribed), scope: :user
     visit learners_path
     assert_no_text "Read-only"
     assert_no_button "Change"
@@ -437,6 +438,49 @@ class LearnersSystemTest < ApplicationSystemTestCase
       assert_no_selector "dialog[open]"
       assert_equal "4th", learner.reload.grade_level
     end
+  end
+
+  test "a Free family adds a third learner without an upgrade prompt" do
+    visit learners_path
+    open_add_modal
+    within("dialog[open]") do
+      fill_in "Name", with: "Nora"
+      wait_for_turbo_navigation { click_button "Add learner" }
+    end
+    assert_no_selector "dialog[open]"
+    assert_equal 3, accounts(:company).learners.active.count
+    assert_text "Nora added."
+    assert_no_text "Read-only"
+    assert_no_link "See plans"
+  end
+
+  test "a Free family at twenty uses both soft Add triggers and can restore when a slot opens" do
+    account = accounts(:company)
+    account.update!(learner_limit: 20)
+    fill_to_capacity(account)
+    visit learners_path
+    ["[data-page-header-actions]", limit_tile].each do |trigger|
+      within(trigger) { click_button "Add learner" }
+      within("dialog[open]") do
+        assert_selector "h2", text: "Adding more than 20 learners?"
+        assert_text "Cove is built for families, so we check in at 20. Send us a quick note and we'll raise it for you."
+        assert_link "Email us"
+        assert_no_text "Premium"
+        find("button[data-action='click->ui-modal#close:prevent']", text: "Close", exact_text: true).click
+      end
+      assert_no_selector "dialog[open]"
+    end
+    visit learners_path(archived: 1)
+    assert_text "To restore a learner, archive one first or send us a note and we'll make room."
+    open_actions_menu("Iris")
+    assert_no_button "Restore"
+    account.learners.active.last.archive!
+    visit learners_path(archived: 1)
+    open_actions_menu("Iris")
+    wait_for_turbo_navigation { click_button "Restore" }
+    assert_text "Iris restored."
+    assert_not learners(:archived).reload.archived?
+    assert_equal 20, account.learners.active.count
   end
 
   private
