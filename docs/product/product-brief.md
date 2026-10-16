@@ -63,8 +63,9 @@ Each section is marked **Built** or **Decided, not built**.
 
 ## Classes (Built — `/classes`)
 
-- Classes are what a family wants to track or grade. Casual or one-off things
-  are schedule blocks, not classes.
+- A class is anything the family needs a record of: attendance, curriculum
+  progress, grades, credits, or a place on a transcript, portfolio, or report.
+  Being logged isn't enough. Everything else is a schedule block.
 - Classes have no Free limit.
 - Grades always belong to a class. Evaluations are a separate, later record.
 - Deleting a learner removes their enrollments.
@@ -103,9 +104,11 @@ The bar is high. When in doubt, don't collect it and ask.
 - Learner data never goes to marketing, analytics, or email tools (Loops gets
   parent plan status only), and never to any third party unless a feature
   requires it.
-- AI features may send learner data to an AI provider only for a feature the
-  parent turned on, and only to a provider that doesn't train on it and keeps
-  it for the shortest period it offers. Learner names are replaced with
+- AI features may send learner data to an AI provider only while the
+  family's AI help is on (on by default for Premium; Cove explains what's sent
+  the first time, and any parent can turn it off in Settings → Family), and
+  only to a provider that doesn't train on it and keeps it for the shortest
+  period it offers. Learner names are replaced with
   placeholders before anything is sent.
 - Deleting a learner removes their data.
 - Learner data never appears in logs or error reports.

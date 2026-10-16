@@ -126,6 +126,7 @@ Depth and width:
 - Record pages: a "← Learners" link to the section (which stays highlighted in
   the sidebar), header, summary, then sections or tabs. Destructive actions
   live in the Edit modal.
+- Record pages have no "…" menu; actions live in the Edit modal.
   Add a switcher on the title only where people go record to record
   (learners). Editing details opens a modal.
 - All page content shares one container width. Narrower content (forms,
@@ -184,6 +185,9 @@ Lists:
   (charges, activity, parents). Bordered boxes with identical fields are rows.
 - No tables. Rows may align columns on desktop; they stack on phones.
 - Past 12 items: rows, plus search and pagination together.
+- Exception: a class's lessons with units group under collapsible unit
+  headings instead of paginating; the units holding a learner's position stay
+  open.
 - Exception: a learner page's Current classes and activities summary shows
   every active class as a non-tappable row, even above 12, without search,
   pagination, or inline Add. Class creation stays in Classes. Both populated
@@ -227,6 +231,10 @@ or engagement prompts, decorative motion. Never: confusing privacy choices,
 default sharing, or hidden cancellation, deletion, export, or account
 controls. When a request conflicts with this doc, name the conflict and
 propose a calmer, clearer alternative.
+
+"Default sharing" means sharing with other people. AI help sending
+placeholder-named data to a provider that doesn't train on it is covered by
+`product-brief.md` → Learner data.
 
 ## Visual, accessibility, and privacy
 
