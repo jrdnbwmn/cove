@@ -82,7 +82,7 @@ class CoursesSystemTest < ApplicationSystemTestCase
     within("dialog[open]") { click_link "Delete class" }
     within("dialog[open]") do
       assert_text "Delete Geometry?"
-      wait_for_turbo_navigation { click_button "Delete class" }
+      wait_for_turbo_navigation { click_button "Delete Geometry" }
     end
     assert_no_selector "dialog[open]"
     assert_text "Class deleted."
@@ -160,7 +160,7 @@ class CoursesSystemTest < ApplicationSystemTestCase
 
     within("dialog[open]") do
       assert_text "Delete Nature study?"
-      wait_for_turbo_navigation { click_button "Delete class" }
+      wait_for_turbo_navigation { click_button "Delete Nature study" }
     end
 
     assert_text "Class deleted."
@@ -180,6 +180,37 @@ class CoursesSystemTest < ApplicationSystemTestCase
 
     assert_no_selector "dialog[open]"
     assert_selector ".course-name", text: "Nature study"
+  end
+
+  test "Delete then Cancel preserves all unsaved class details through repeated confirmations" do
+    visit courses_path
+    open_actions_menu("Science Lab")
+    click_button "Edit"
+    within("dialog[open]") do
+      fill_in "Name", with: "Unsaved science"
+      find("select[name='course[subject]'] + .ts-wrapper .ts-control").click
+      find("select[name='course[subject]'] + .ts-wrapper .ts-control input").set("Custom studies")
+      find(".ts-dropdown .create").click
+      assert_selector "select[name='course[subject]'] + .ts-wrapper .item", text: "Custom studies"
+      uncheck "Maya"
+      choose_status "Completed"
+      2.times do
+        click_link "Delete class"
+        assert_text "Delete Science Lab?"
+        click_link "Cancel"
+        assert_field "Name", with: "Unsaved science"
+        assert_selector "select[name='course[subject]'] + .ts-wrapper .item", text: "Custom studies"
+        assert_unchecked_field "Maya"
+        assert_checked_field "Theo"
+        assert_selector "#course_status + .ts-wrapper .item", text: "Completed"
+      end
+      click_button "Cancel"
+      assert_text "Discard your changes?"
+      click_button "Discard"
+    end
+    assert_no_selector "dialog[open]"
+    assert_equal "Science Lab", courses(:shared).reload.name
+    assert courses(:shared).active?
   end
 
   test "a completed class can be edited from its menu" do

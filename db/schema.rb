@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_10_15_221452) do
+ActiveRecord::Schema[8.1].define(version: 2026_10_16_184338) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -177,6 +177,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_15_221452) do
     t.datetime "updated_at", null: false
     t.index "account_id, lower((name)::text)", name: "index_learners_on_account_id_and_lower_name", unique: true
     t.index ["account_id"], name: "index_learners_on_account_id"
+    t.check_constraint "grade_level IS NULL OR (grade_level::text = ANY (ARRAY['Pre-K'::character varying, 'Kindergarten'::character varying, '1st grade'::character varying, '2nd grade'::character varying, '3rd grade'::character varying, '4th grade'::character varying, '5th grade'::character varying, '6th grade'::character varying, '7th grade'::character varying, '8th grade'::character varying, '9th grade'::character varying, '10th grade'::character varying, '11th grade'::character varying, '12th grade'::character varying]::text[]))", name: "learners_grade_level_is_canonical"
   end
 
   create_table "loops_webhook_events", force: :cascade do |t|

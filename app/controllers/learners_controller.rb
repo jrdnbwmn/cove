@@ -1,6 +1,8 @@
 class LearnersController < ApplicationController
+  include LearnerReturn
+
   before_action :authenticate_user!
-  before_action :set_learner, only: %i[edit update delete destroy]
+  before_action :set_learner, only: %i[show edit update delete destroy]
   before_action :redirect_archived_learner, only: %i[edit update]
 
   def index
@@ -8,6 +10,11 @@ class LearnersController < ApplicationController
     @archived_learners = Current.account.learners.archived.ordered
     @archived_count = @archived_learners.size
     @show_archived = params[:archived] == "1" && @archived_count.positive?
+  end
+
+  def show
+    @current_courses = @learner.courses.active.ordered unless @learner.archived?
+    @switchable_learners = Current.account.learners.active.ordered.where.not(id: @learner.id)
   end
 
   def new
@@ -31,7 +38,7 @@ class LearnersController < ApplicationController
 
   def update
     if @learner.update(learner_params)
-      redirect_to learners_path, status: :see_other, notice: t("learners.notices.updated")
+      redirect_to learner_return_path, status: :see_other, notice: t("learners.notices.updated")
     else
       render :edit, status: :unprocessable_content
     end
@@ -56,7 +63,7 @@ class LearnersController < ApplicationController
   end
 
   def redirect_archived_learner
-    redirect_to learners_path if @learner.archived?
+    redirect_to learner_return_path if @learner.archived?
   end
 
   def learner_params

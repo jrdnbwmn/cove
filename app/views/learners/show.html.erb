@@ -1,0 +1,66 @@
+<%= link_to "← #{t('learners.index.title')}", learners_path, class: "mb-4 inline-block text-sm text-muted-foreground hover:text-foreground" %>
+<% title = capture do %>
+  <span class="inline-flex max-w-full items-start gap-3">
+    <%= render "learners/color_dot", learner: @learner, classes: "mt-3 shrink-0" %>
+    <span class="min-w-0 wrap-anywhere"><%= @learner.name %></span>
+  </span>
+<% end %>
+<%= render PageHeaderComponent.new(title: title, description: @learner.grade_level) do |header| %>
+  <% if @switchable_learners.any? %>
+    <% header.with_title_suffix do %>
+      <%= render DropdownComponent.new(trigger_variant: :icon) do |dropdown| %>
+        <% dropdown.with_trigger do %>
+          <button type="button" aria-label="<%= t(".switch") %>" aria-haspopup="menu" class="<%= DropdownComponent::ICON_TRIGGER_CLASSES %>" data-ui-dropdown-popover-target="button" data-action="click->ui-dropdown-popover#toggle">
+            <%= icon "chevron-down", class: "size-4" %>
+          </button>
+        <% end %>
+        <% @switchable_learners.each do |learner| %>
+          <% dropdown.with_item_link(text: learner.name, href: learner_path(learner), classes: "whitespace-normal wrap-anywhere") %>
+        <% end %>
+      <% end %>
+    <% end %>
+  <% end %>
+  <% unless @learner.archived? %>
+    <% header.with_primary_action do %>
+      <%= render "application/lazy_modal", src: edit_learner_path(@learner), text: t("learners.index.edit"), button: {variant: :outline} %>
+    <% end %>
+  <% end %>
+<% end %>
+
+<% if @learner.archived? %>
+  <%= render AlertComponent.new(title: t(".archived", name: @learner.name), variant: :info) %>
+  <div class="mt-4">
+    <% if Current.account.can_add_learner? %>
+      <%= form_with url: learner_archive_path(@learner), method: :delete do %>
+        <%= render ButtonComponent.new(text: t("learners.index.restore"), type: "submit", variant: :outline) %>
+      <% end %>
+    <% else %>
+      <p class="text-sm text-muted-foreground"><%= t("learners.index.restore_blocked_html", link: link_to(t("learners.index.restore_contact"), more_learners_mailto, class: "underline text-foreground hover:text-primary")) %></p>
+    <% end %>
+  </div>
+<% end %>
+
+<% unless @learner.archived? %>
+  <section data-current-classes aria-labelledby="current-classes-title">
+    <%= render CardComponent.new(shadow: :none) do |card| %>
+      <% card.with_body do %>
+        <h2 id="current-classes-title" class="mb-4 font-sans text-lg font-medium"><%= t(".classes_title") %></h2>
+        <% if @current_courses.any? %>
+          <div class="divide-y divide-border">
+            <% @current_courses.each do |course| %>
+              <div class="flex flex-col gap-1 py-4 sm:flex-row sm:items-baseline sm:justify-between sm:gap-4" data-current-class-row>
+                <p class="min-w-0 wrap-anywhere font-medium" data-current-class-name><%= course.name %></p>
+                <% if course.subject.present? %>
+                  <p class="min-w-0 wrap-anywhere text-sm text-muted-foreground" data-current-class-subject><%= course.subject %></p>
+                <% end %>
+              </div>
+            <% end %>
+          </div>
+        <% else %>
+          <%= render EmptyStateComponent.new(title: t(".classes_empty_title"), description: t(".classes_empty_description", name: @learner.name), heading_level: 3) %>
+        <% end %>
+        <%= link_to t(".classes_link"), courses_path(learner: @learner.id), class: "mt-4 inline-block text-sm text-primary underline hover:text-primary-hover" %>
+      <% end %>
+    <% end %>
+  </section>
+<% end %>

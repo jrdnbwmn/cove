@@ -1,7 +1,7 @@
 one:
   account: company
   name: "Maya"
-  grade_level: "3rd"
+  grade_level: "3rd grade"
   color: sage
 
 two:
@@ -12,36 +12,36 @@ two:
 archived:
   account: company
   name: "Iris"
-  grade_level: "6th"
+  grade_level: "6th grade"
   color: sky
   archived_at: <%= 1.day.ago %>
 
 downgraded_one:
   account: downgraded
   name: "Avery"
-  grade_level: "3rd"
+  grade_level: "3rd grade"
   color: sage
 
 downgraded_two:
   account: downgraded
   name: "Blake"
-  grade_level: "4th"
+  grade_level: "4th grade"
   color: sea
 
 downgraded_three:
   account: downgraded
   name: "Casey"
-  grade_level: "5th"
+  grade_level: "5th grade"
   color: sky
 
 downgraded_four:
   account: downgraded
   name: "Dakota"
-  grade_level: "6th"
+  grade_level: "6th grade"
   color: lavender
 
 downgraded_five:
   account: downgraded
   name: "Emerson"
-  grade_level: "7th"
+  grade_level: "7th grade"
   color: rose

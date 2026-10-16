@@ -2,6 +2,7 @@ class Learner < ApplicationRecord
   # AIDEV-NOTE: The database stores only the key; application.css defines a
   # matching --learner-<key> token for each, so views never repeat hex values.
   COLORS = %w[sage sea sky lavender rose clay ochre slate].freeze
+  GRADE_LEVELS = ["Pre-K", "Kindergarten", "1st grade", "2nd grade", "3rd grade", "4th grade", "5th grade", "6th grade", "7th grade", "8th grade", "9th grade", "10th grade", "11th grade", "12th grade"].freeze
   MAX_LENGTH = 50
 
   belongs_to :account
@@ -14,7 +15,7 @@ class Learner < ApplicationRecord
   before_validation :assign_color, on: :create
 
   validates :name, presence: true, length: {maximum: MAX_LENGTH}
-  validates :grade_level, length: {maximum: MAX_LENGTH}
+  validates :grade_level, inclusion: {in: GRADE_LEVELS}, allow_nil: true
   validates :color, inclusion: {in: COLORS}
   validate :name_unique_within_account
   validate :within_learner_limit, if: :becoming_active?

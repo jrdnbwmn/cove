@@ -12,27 +12,72 @@ class LearnersTest < ActionDispatch::IntegrationTest
     learners(:two).archive!
   end
 
+  test "guests cannot view learner pages" do
+    get learner_path(@maya)
+    assert_redirected_to new_user_session_path
+  end
+
+  [:one, :two].each do |parent|
+    test "#{parent} can view active and archived learner pages on Free with Learners selected" do
+      sign_in users(parent)
+      assert @family.free?
+      [@maya, learners(:archived)].each do |learner|
+        get learner_path(learner)
+        assert_response :success
+        assert_select "h1", text: learner.name
+        assert_select "a[href='#{learners_path}']", text: "← Learners"
+        assert_select "a[href='#{learners_path}'][aria-current='page']"
+        assert_select ".learner-color[data-learner-color='#{learner.color}']"
+        assert_select "p", text: learner.grade_level
+      end
+    end
+  end
+
+  test "missing and other-family learner pages return not found" do
+    [@other_family_learner.id, 0].each do |id|
+      sign_in users(:one)
+      get learner_path(id)
+      assert_response :not_found
+    end
+  end
+
+  test "tampered grades cannot create or update learners and show an inline error" do
+    sign_in users(:one)
+    ["3rd", "unknown", "a" * 51].each do |grade|
+      assert_no_difference "Learner.count" do
+        post learners_path, params: {learner: {name: "Nora", grade_level: grade}}
+      end
+      assert_response :unprocessable_content
+      assert_select "form#learner-form p.text-red-600", text: /./
+      original = @maya.attributes
+      patch learner_path(@maya), params: {learner: {name: "Changed", grade_level: grade}}
+      assert_response :unprocessable_content
+      assert_select "form#learner-form p.text-red-600", text: /./
+      assert_equal original, @maya.reload.attributes
+    end
+  end
+
   test "a parent cannot add a learner past the family limit and keeps what they typed" do
     sign_in users(:one)
     13.times { |i| Learner.create!(account: @family, name: "Learner #{i}") }
 
     assert_no_difference -> { Learner.count } do
-      post learners_path, params: {learner: {name: "Nora", grade_level: "5th"}}
+      post learners_path, params: {learner: {name: "Nora", grade_level: "5th grade"}}
     end
 
     assert_response :unprocessable_content
     assert_match "To add more than 15 learners, send us a quick note and we&#39;ll raise your limit.", response.body
     assert_select "input[name='learner[name]'][value='Nora']"
-    assert_select "input[name='learner[grade_level]'][value='5th']"
+    assert_select "select[name='learner[grade_level]'] option[selected][value='5th grade']"
   end
 
   test "a parent can still edit and archive a learner while over the family limit" do
     sign_in users(:one)
     14.times { |i| Learner.new(account: @family, name: "Extra #{i}", color: "rose").save!(validate: false) }
 
-    patch learner_path(@maya), params: {learner: {grade_level: "4th"}}
+    patch learner_path(@maya), params: {learner: {grade_level: "4th grade"}}
     assert_redirected_to learners_path
-    assert_equal "4th", @maya.reload.grade_level
+    assert_equal "4th grade", @maya.reload.grade_level
 
     post learner_archive_path(@maya)
     assert_redirected_to learners_path
@@ -78,10 +123,10 @@ class LearnersTest < ActionDispatch::IntegrationTest
     open_learner_slot
     sign_in users(:one)
 
-    post learners_path, params: {learner: {name: "Nora", grade_level: "5th", color: "slate"}}
+    post learners_path, params: {learner: {name: "Nora", grade_level: "5th grade", color: "slate"}}
 
     learner = @family.learners.find_by!(name: "Nora")
-    assert_equal "5th", learner.grade_level
+    assert_equal "5th grade", learner.grade_level
     assert_equal "slate", learner.color
   end
 
@@ -92,9 +137,9 @@ class LearnersTest < ActionDispatch::IntegrationTest
     post learners_path, params: {learner: {name: "Nora"}}
     assert_redirected_to learners_path
 
-    patch learner_path(@maya), params: {learner: {grade_level: "4th"}}
+    patch learner_path(@maya), params: {learner: {grade_level: "4th grade"}}
     assert_redirected_to learners_path
-    assert_equal "4th", @maya.reload.grade_level
+    assert_equal "4th grade", @maya.reload.grade_level
   end
 
   test "learner params cannot reassign the family" do
@@ -112,25 +157,25 @@ class LearnersTest < ActionDispatch::IntegrationTest
     sign_in users(:one)
 
     assert_no_difference -> { Learner.count } do
-      post learners_path, params: {learner: {name: " ", grade_level: "5th", color: "slate"}}
+      post learners_path, params: {learner: {name: " ", grade_level: "5th grade", color: "slate"}}
     end
 
     assert_response :unprocessable_content
     assert_select "turbo-frame#modal-lazy-content"
     assert_match "Enter a name to continue.", response.body
-    assert_select "input[name='learner[grade_level]'][value='5th']"
+    assert_select "select[name='learner[grade_level]'] option[selected][value='5th grade']"
   end
 
   test "adding a duplicate name is refused ignoring case and keeps typed values" do
     sign_in users(:one)
 
     assert_no_difference -> { Learner.count } do
-      post learners_path, params: {learner: {name: " MAYA ", grade_level: "7th"}}
+      post learners_path, params: {learner: {name: " MAYA ", grade_level: "7th grade"}}
     end
 
     assert_response :unprocessable_content
     assert_match "You already have a learner named MAYA.", response.body
-    assert_select "input[name='learner[grade_level]'][value='7th']"
+    assert_select "select[name='learner[grade_level]'] option[selected][value='7th grade']"
   end
 
   test "adding a name that matches an archived learner explains how to restore them" do
@@ -148,13 +193,13 @@ class LearnersTest < ActionDispatch::IntegrationTest
 
     with_friendly_uniqueness_check_disabled do
       assert_no_difference -> { Learner.count } do
-        post learners_path, params: {learner: {name: "maya", grade_level: "7th"}}
+        post learners_path, params: {learner: {name: "maya", grade_level: "7th grade"}}
       end
     end
 
     assert_response :unprocessable_content
     assert_match "You already have a learner named maya.", response.body
-    assert_select "input[name='learner[grade_level]'][value='7th']"
+    assert_select "select[name='learner[grade_level]'] option[selected][value='7th grade']"
   end
 
   test "a parent can open the edit form for an active learner" do
@@ -183,7 +228,7 @@ class LearnersTest < ActionDispatch::IntegrationTest
   test "a learner can be saved with their own name unchanged" do
     sign_in users(:one)
 
-    patch learner_path(@maya), params: {learner: {name: "maya", grade_level: "8th"}}
+    patch learner_path(@maya), params: {learner: {name: "maya", grade_level: "8th grade"}}
 
     assert_redirected_to learners_path
     assert_equal "maya", @maya.reload.name
@@ -192,12 +237,12 @@ class LearnersTest < ActionDispatch::IntegrationTest
   test "editing with an invalid value shows the error and keeps typed values" do
     sign_in users(:one)
 
-    patch learner_path(@maya), params: {learner: {name: "Theo", grade_level: "9th"}}
+    patch learner_path(@maya), params: {learner: {name: "Theo", grade_level: "9th grade"}}
 
     assert_response :unprocessable_content
     assert_select "turbo-frame#modal-lazy-content"
     assert_match "You already have a learner named Theo.", response.body
-    assert_select "input[name='learner[grade_level]'][value='9th']"
+    assert_select "select[name='learner[grade_level]'] option[selected][value='9th grade']"
     assert_equal "Maya", @maya.reload.name
   end
 
@@ -229,9 +274,9 @@ class LearnersTest < ActionDispatch::IntegrationTest
     accounts(:downgraded).learners.active.each do |learner|
       get edit_learner_path(learner)
       assert_response :success
-      patch learner_path(learner), params: {learner: {grade_level: "4th"}}
+      patch learner_path(learner), params: {learner: {grade_level: "4th grade"}}
       assert_redirected_to learners_path
-      assert_equal "4th", learner.reload.grade_level
+      assert_equal "4th grade", learner.reload.grade_level
     end
   end
 
@@ -282,8 +327,8 @@ class LearnersTest < ActionDispatch::IntegrationTest
     assert_select "form[action='#{learner_path(@maya)}'] input[name='_method'][value='delete']"
   end
 
-  test "removed learner pages and stale picker submissions return not found" do
-    [["get", "/learners/#{learners(:one).id}"], ["get", "/learners/kept/edit"], ["patch", "/learners/kept"]].each do |method, path|
+  test "stale picker submissions return not found" do
+    [["get", "/learners/kept/edit"], ["patch", "/learners/kept"]].each do |method, path|
       sign_in users(:one)
       before = @family.learners.order(:id).map(&:attributes)
       public_send(method, path, params: {learner_ids: [learners(:one).id]})
@@ -300,6 +345,41 @@ class LearnersTest < ActionDispatch::IntegrationTest
     assert_response :success
     assert_select "a[href='#{edit_learner_path(learners(:archived))}']", count: 0
     assert_select "button[data-action='click->ui-modal#performClose:prevent']", text: "Cancel"
+  end
+
+  [:one, :two].each do |parent|
+    [false, true].each do |archived|
+      test "#{parent} sees every class link counted when deleting an #{archived ? "archived" : "active"} learner" do
+        sign_in users(parent)
+        @maya.enrollments.destroy_all
+        linked = %i[one completed archived].map { |label| courses(label) }
+        [0, 1, 3].each do |count|
+          @maya.restore! if @maya.archived?
+          @maya.enrollments.destroy_all
+          linked.first(count).each { |course| @maya.enrollments.create!(course: course) }
+          @maya.archive! if archived
+          get delete_learner_path(@maya)
+          assert_select "h2", text: "Delete Maya?"
+          assert_select "button", text: /Delete Maya/
+          assert_select "p", text: /can't be undone/
+          assert_select "p", text: archived ? /keep Maya archived/ : /archive instead/
+          if count.zero?
+            assert_no_match(/will be removed from/, response.body)
+          else
+            sentence = (count == 1) ? "Maya will be removed from 1 class, which stays for everyone else." : "Maya will be removed from 3 classes, which stay for everyone else."
+            assert_select "p", text: sentence
+          end
+          assert_select "a", text: /Export/, count: 0
+        end
+        class_ids = @family.courses.pluck(:id).sort
+        assert_difference "Enrollment.count", -3 do
+          assert_difference "Learner.count", -1 do
+            delete learner_path(@maya)
+          end
+        end
+        assert_equal class_ids, @family.courses.pluck(:id).sort
+      end
+    end
   end
 
   test "a parent can permanently delete a learner" do

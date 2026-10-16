@@ -7,25 +7,25 @@
 
 | Task | Phase | Checkpoint | Description | Assign | Done |
 | ---- | ----- | ---------- | ----------- | ------ | ---- |
-| 1 | 1 — Fixed grades | 1 | Prepare canonical fixtures, seeds, and assertions | Master | |
-| 2 | 1 | 1 | Convert existing grade values | Master | |
-| 3 | 1 | 2 | Replace grade text fields with the fixed select | Master | |
-| 4 | 1 | 2 | Update browser coverage for grade selection | Master | |
-| 5 | 1 | 3 | Enforce canonical grades in Rails | Master | |
-| 6 | 1 | 3 | Enforce canonical grades in PostgreSQL | Master | |
-| 7 | 2 — Learner pages | 4 | Support a switcher beside the shared page title | Master | |
-| 8 | 2 | 5 | Add the family-scoped learner page | Master | |
-| 9 | 2 | 5 | Add switching, Edit, and archived state | Master | |
-| 10 | 2 | 5 | Show current classes and the filtered Classes link | Master | |
-| 11 | 2 | 6 | Preserve page-aware action destinations | Master | |
-| 12 | 2 | 6 | Verify learner-page browser flows and phone layout | Master | |
-| 13 | 2 | 7 | Make active and archived cards open learner pages | Master | |
-| 14 | 3 — Confirmations and completion | 8 | Preserve unsaved learner details through Delete → Cancel | Master | |
-| 15 | 3 | 8 | Apply confirmation recovery to class editing | Master | |
-| 16 | 3 | 9 | Explain learner deletion and count every class link | Master | |
-| 17 | 3 | 10 | Explain class deletion and count every learner link | subagent | |
-| 18 | 3 | 10 | Update the product and UX rules | subagent | |
-| 19 | 3 | 11 | Complete regression and visual verification | Master | |
+| 1 | 1 — Fixed grades | 1 | Prepare canonical fixtures, seeds, and assertions | Master | ✅ |
+| 2 | 1 | 1 | Convert existing grade values | Master | ✅ |
+| 3 | 1 | 2 | Replace grade text fields with the fixed select | Master | ✅ |
+| 4 | 1 | 2 | Update browser coverage for grade selection | Master | ✅ |
+| 5 | 1 | 3 | Enforce canonical grades in Rails | Master | ✅ |
+| 6 | 1 | 3 | Enforce canonical grades in PostgreSQL | Master | ✅ |
+| 7 | 2 — Learner pages | 4 | Support a switcher beside the shared page title | Master | ✅ |
+| 8 | 2 | 5 | Add the family-scoped learner page | Master | ✅ |
+| 9 | 2 | 5 | Add switching, Edit, and archived state | Master | ✅ |
+| 10 | 2 | 5 | Show current classes and the filtered Classes link | Master | ✅ |
+| 11 | 2 | 6 | Preserve page-aware action destinations | Master | ✅ |
+| 12 | 2 | 6 | Verify learner-page browser flows and phone layout | Master | ✅ |
+| 13 | 2 | 7 | Make active and archived cards open learner pages | Master | ✅ |
+| 14 | 3 — Confirmations and completion | 8 | Preserve unsaved learner details through Delete → Cancel | Master | ✅ |
+| 15 | 3 | 8 | Apply confirmation recovery to class editing | Master | ✅ |
+| 16 | 3 | 9 | Explain learner deletion and count every class link | Master | ✅ |
+| 17 | 3 | 10 | Explain class deletion and count every learner link | subagent | ✅ |
+| 18 | 3 | 10 | Update the product and UX rules | subagent | ✅ |
+| 19 | 3 | 11 | Complete regression and visual verification | Master | ✅ |
 
 ## Prerequisites
 

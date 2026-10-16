@@ -164,8 +164,9 @@ Sections and tabs:
 
 - A section is a heading plus content, separated by space. No cards inside
   cards.
-- Serif only for page titles and major section headings; everything else is
-  sans.
+- Serif for page titles and major section headings; record-page summary
+  sections use bordered containers with sans serif headings and divided rows
+  for their classes or schedule blocks. Everything else is sans.
 - Tabs switch views of a page, never list items. Each has its own URL, about
   five at most, scrolling sideways on phones. A list's Active/Archived switch
   uses underline tabs with counts; other filters use a filter control.
@@ -183,6 +184,12 @@ Lists:
   (charges, activity, parents). Bordered boxes with identical fields are rows.
 - No tables. Rows may align columns on desktop; they stack on phones.
 - Past 12 items: rows, plus search and pagination together.
+- Exception: a learner page's Current classes and activities summary shows
+  every active class as a non-tappable row, even above 12, without search,
+  pagination, or inline Add. Class creation stays in Classes. Both populated
+  and empty summaries offer “See all in Classes,” filtered to the learner.
+  The empty state says “No classes yet. Classes Mia takes will appear here.”
+  using the learner's name. Archived learner pages hide the whole summary.
 - Toolbar at the top of the list: search, filters, sort, Active/Archived
   (where archived items live). Adding goes here instead of the header only
   when the list isn't the page's main subject.

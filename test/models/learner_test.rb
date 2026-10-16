@@ -54,9 +54,9 @@ class LearnerBehaviorTest < ActiveSupport::TestCase
   end
 
   test "name and grade level are stripped and a blank grade level is removed" do
-    learner = Learner.create!(account: @family, name: "  Maya  ", grade_level: "  3rd ")
+    learner = Learner.create!(account: @family, name: "  Maya  ", grade_level: "  3rd grade ")
     assert_equal "Maya", learner.name
-    assert_equal "3rd", learner.grade_level
+    assert_equal "3rd grade", learner.grade_level
 
     learner.update!(grade_level: "   ")
     assert_nil learner.grade_level
@@ -68,13 +68,23 @@ class LearnerBehaviorTest < ActiveSupport::TestCase
     assert_equal ["Enter a name to continue."], learner.errors[:name]
   end
 
-  test "name and grade level can each be 50 characters but not more" do
-    assert build_learner(name: "a" * 50, grade_level: "b" * 50).valid?
+  test "a name can be 50 characters but not more" do
+    assert build_learner(name: "a" * 50).valid?
 
-    learner = build_learner(name: "a" * 51, grade_level: "b" * 51)
+    learner = build_learner(name: "a" * 51)
     assert_not learner.valid?
     assert learner.errors[:name].any?
-    assert learner.errors[:grade_level].any?
+  end
+
+  test "only canonical grade labels or no grade are accepted" do
+    ["Pre-K", "Kindergarten", "1st grade", "2nd grade", "3rd grade", "4th grade", "5th grade", "6th grade", "7th grade", "8th grade", "9th grade", "10th grade", "11th grade", "12th grade", nil, "", "  "].each do |grade|
+      assert build_learner(grade_level: grade).valid?, grade.inspect
+    end
+    ["3rd", "Grade 3", "kindergarten", "Freshman", "unknown", "a" * 51].each do |grade|
+      learner = build_learner(grade_level: grade)
+      assert_not learner.valid?, grade
+      assert learner.errors[:grade_level].any?
+    end
   end
 
   test "grade level is optional" do
@@ -106,7 +116,7 @@ class LearnerBehaviorTest < ActiveSupport::TestCase
 
   test "a learner can keep their own name when updated" do
     learner = Learner.create!(account: @family, name: "Maya")
-    assert learner.update(grade_level: "4th")
+    assert learner.update(grade_level: "4th grade")
   end
 
   test "color must be in the palette" do
@@ -290,7 +300,7 @@ class LearnerLimitTest < ActiveSupport::TestCase
   test "editing and archiving still work when a family is over its limit" do
     learners = 16.times.map { |i| Learner.new(account: @free, name: "Learner #{i}", color: "sage").tap { |s| s.save!(validate: false) } }
 
-    assert learners.first.update(grade_level: "4th")
+    assert learners.first.update(grade_level: "4th grade")
     assert_nothing_raised { learners.first.archive! }
     assert learners.first.reload.archived?
   end

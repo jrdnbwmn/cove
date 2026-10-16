@@ -3,6 +3,7 @@
 # after an add, edit, delete, or status change. Only our own list path and its three list params are honored.
 module CourseListReturn
   extend ActiveSupport::Concern
+  include ReferrerPath
 
   LIST_PARAMS = %w[status learner subject].freeze
 
@@ -22,12 +23,10 @@ module CourseListReturn
   end
 
   def course_list_return_path
-    uri = URI.parse(request.referer.to_s)
-    return courses_path unless uri.path == courses_path && [nil, request.host].include?(uri.host)
+    uri = same_origin_referrer
+    return courses_path unless uri&.path == courses_path
 
     list_params = Rack::Utils.parse_query(uri.query.to_s).slice(*LIST_PARAMS).select { |_, value| value.is_a?(String) }
     list_params.empty? ? courses_path : courses_path(list_params)
-  rescue URI::InvalidURIError
-    courses_path
   end
 end

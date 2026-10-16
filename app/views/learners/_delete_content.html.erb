@@ -1,6 +1,9 @@
 <%# locals: (learner:, close_on_cancel:) %>
-<h2 class="modal-heading"><%= t("learners.delete.heading", name: learner.name) %></h2>
-<p class="mt-2 text-muted-foreground"><%= t("learners.delete.body", name: learner.name) %></p>
+<% link_count = learner.enrollments.count %>
+<%= render "application/delete_summary",
+  heading: t("learners.delete.heading", name: learner.name),
+  links: (t("learners.delete.links", count: link_count, name: learner.name) if link_count.positive?),
+  body: t(learner.archived? ? "learners.delete.archived_body" : "learners.delete.body", name: learner.name) %>
 
 <div class="mt-6 flex flex-col gap-3 sm:flex-row sm:justify-end">
   <%# AIDEV-NOTE: List and archived confirms close the modal on Cancel. Confirms reached from Edit swap the edit form back into this modal. %>
@@ -11,6 +14,6 @@
     <%= render ButtonComponent.new(text: t("learners.delete.cancel"), variant: :secondary, href: edit_learner_path(learner)) %>
   <% end %>
   <%= form_with url: learner_path(learner), method: :delete do %>
-    <%= render ButtonComponent.new(text: t("learners.delete.confirm", name: learner.name), variant: :destructive, type: "submit", full_width: true) %>
+    <%= render ButtonComponent.new(text: t("learners.delete.confirm", name: learner.name), variant: :destructive, type: "submit", full_width: true, classes: "whitespace-normal! wrap-anywhere") %>
   <% end %>
 </div>

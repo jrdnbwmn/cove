@@ -8,6 +8,25 @@ class PageHeaderComponentTest < ViewComponent::TestCase
     assert_selector "h1", text: "Learners"
   end
 
+  test "title suffix is beside one wrapping heading and outside its semantics" do
+    render_inline(PageHeaderComponent.new(title: "Maya")) do |component|
+      component.with_title_suffix { '<button type="button">Switch learner</button>'.html_safe }
+    end
+    assert_selector "h1", count: 1, text: "Maya"
+    assert_no_selector "h1 button"
+    assert_selector "h1 + [data-page-header-title-suffix] button", text: "Switch learner"
+    assert_selector "[data-page-header-title] h1.wrap-anywhere"
+  end
+
+  test "the learner switcher preview renders working components" do
+    require Rails.root.join("test/components/previews/page_header_component_preview")
+    preview = PageHeaderComponentPreview.new.with_title_switcher
+    render_inline(preview[:component])
+    assert_selector "[data-page-header-title-suffix] button", text: "Switch learner"
+    assert_selector "[data-page-header-title-suffix] a", text: "Theo", visible: :all
+    assert_selector "[data-page-header-actions] button", text: "Edit"
+  end
+
   test "renders the description when given" do
     render_inline(PageHeaderComponent.new(title: "Learners", description: "The people learning with you."))
 

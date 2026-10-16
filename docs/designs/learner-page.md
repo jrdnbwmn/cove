@@ -175,9 +175,9 @@ Top to bottom:
 2. Header: existing color dot and learner name, title switcher, optional
    grade on the line below, and outlined Edit at the right. No header “…”
    menu or quick actions.
-3. Current classes and activities: simple divided rows showing class name
-   and subject when present. Use existing Classes ordering: subject, then
-   class name. Rows have no links, chevrons, or click styling.
+3. Current classes and activities: a bordered container with a sans serif
+   heading and simple divided rows showing class name and subject when
+   present. Use existing Classes ordering: subject, then class name. Rows have no links, chevrons, or click styling.
 4. “See all in Classes” opens `/classes?learner=<learner id>`, using the
    existing Active default. Parents can use the existing Classes tabs and
    filters there.
