@@ -99,8 +99,9 @@ and gets out of the way.
 - Treat inactivity and interruptions as normal. Offer recovery paths:
   continue, reschedule, simplify, pause, archive, or revise.
 - Destructive or sensitive actions name the item, explain the consequence,
-  and use specific labels ("Delete subject"). They live at the bottom of
-  record and settings pages, never in the page header.
+  and use specific labels ("Delete subject"). On a record, they live at the
+  bottom of its Edit modal; on settings pages, at the bottom of the page.
+  Never in the page header.
 - Phone and desktop are equal: every flow works fully on both. Common tasks
   fit short, interrupted moments.
 
@@ -123,7 +124,8 @@ Depth and width:
 - Section pages (Learners) may link to record pages (one learner). Nothing
   deeper; extra scope becomes tabs (Settings is the model).
 - Record pages: a "← Learners" link to the section (which stays highlighted in
-  the sidebar), header, summary, sections or tabs, then the destructive area.
+  the sidebar), header, summary, then sections or tabs. Destructive actions
+  live in the Edit modal.
   Add a switcher on the title only where people go record to record
   (learners). Editing details opens a modal.
 - All page content shares one container width. Narrower content (forms,
@@ -147,8 +149,8 @@ Where things open:
 - Never open a modal on top of another modal, confirmations included. A
   decision that comes up inside a modal happens in that same modal.
 - Closing a modal with unsaved changes asks before discarding.
-- After creating, go to the new record page; with none, stay on the list
-  with a toast.
+- After creating, stay where you were with a toast naming the new item
+  ("Mia added."). Never jump to the new record's page.
 
 Spacing: everything on a 4px grid (sizes, spacing, line heights); 2px half
 steps only inside small elements (badges, icon nudges).
