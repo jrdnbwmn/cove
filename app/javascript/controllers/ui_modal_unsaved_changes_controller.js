@@ -80,25 +80,32 @@ export default class extends Controller {
     const fields = this.editableFields(form);
     snapshot.fields.forEach((saved) => {
       const index = fields.findIndex((field) => field.name === saved.name && field.type === saved.type);
-      if (index === -1) return;
-      const field = fields.splice(index, 1)[0];
-      if (saved.options) {
-        saved.options.forEach((option) => {
-          if (!Array.from(field.options).some((existing) => existing.value === option.value)) {
-            field.add(new Option(option.text, option.value));
-          }
-        });
-        Array.from(field.options).forEach((option) => {
-          option.selected = saved.options.some((savedOption) => savedOption.value === option.value);
-        });
-      } else if (["radio", "checkbox"].includes(field.type)) {
-        field.checked = saved.checked;
-      } else {
-        field.value = saved.value;
-      }
+      if (index !== -1) this.restoreField(fields.splice(index, 1)[0], saved);
     });
     this.restoredDirty = snapshot.dirty;
     this.formSnapshot = null;
+  }
+
+  restoreField(field, saved) {
+    if (saved.options) {
+      this.restoreSelect(field, saved.options);
+    } else if (["radio", "checkbox"].includes(field.type)) {
+      field.checked = saved.checked;
+    } else {
+      field.value = saved.value;
+    }
+  }
+
+  // Options typed in by the user (e.g. a new subject) may be absent from the fetched form, so add them first.
+  restoreSelect(field, savedOptions) {
+    savedOptions.forEach((option) => {
+      if (!Array.from(field.options).some((existing) => existing.value === option.value)) {
+        field.add(new Option(option.text, option.value));
+      }
+    });
+    Array.from(field.options).forEach((option) => {
+      option.selected = savedOptions.some((savedOption) => savedOption.value === option.value);
+    });
   }
 
   frameRendered(event) {
