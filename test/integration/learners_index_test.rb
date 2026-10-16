@@ -49,7 +49,7 @@ class LearnersIndexTest < ActionDispatch::IntegrationTest
 
     get learners_path
 
-    assert_select ".grid p.text-muted-foreground", count: 1, text: "3rd"
+    assert_select ".grid p.text-muted-foreground", count: 1, text: "3rd grade"
   end
 
   test "each learner card has a decorative color dot using its color token" do
@@ -234,13 +234,13 @@ class LearnersIndexTest < ActionDispatch::IntegrationTest
     assert_select "h2", text: "Add your first learner"
   end
 
-  test "an editable learner's name opens their edit modal and the card has no footer buttons" do
+  test "an active learner's name opens their page and the card has no footer buttons" do
     sign_in users(:one)
 
     get learners_path
 
     assert_select "[data-learner='#{learners(:one).id}']" do
-      assert_select "button[data-action='click->ui-modal#open:prevent']", text: "Maya"
+      assert_select "a[href='#{learner_path(learners(:one))}'][data-learner-card-link]", text: "Maya"
       assert_select "[data-ui-modal-turbo-frame-src-value='#{edit_learner_path(learners(:one))}']", count: 1
       assert_select "button", text: "Edit", count: 1 # only the menu item, not a footer button
       assert_select "button[aria-label='Actions for Maya']", count: 1
@@ -272,21 +272,21 @@ class LearnersIndexTest < ActionDispatch::IntegrationTest
     assert_select "#{delete_modal} h2", count: 0
   end
 
-  test "an archived learner has no click target and its menu offers Restore and Delete" do
+  test "an archived learner opens their page and its menu offers Restore and Delete" do
     learners(:two).archive!
     sign_in users(:one)
 
     get learners_path(archived: 1)
 
     assert_select "[data-learner='#{learners(:archived).id}']" do
-      assert_select "p.font-medium button", count: 0
+      assert_select "a[href='#{learner_path(learners(:archived))}'][data-learner-card-link]", text: "Iris"
       assert_select "[role='menuitem']", count: 2
       assert_select "button[role='menuitem'][type='submit'][form]", text: /Restore/
       assert_select "button[role='menuitem']", text: /Delete/
     end
   end
 
-  test "only active learner cards expose the stretched click target" do
+  test "active and archived learner cards expose a stretched navigation link" do
     learners(:two).archive!
     sign_in users(:one)
 
@@ -296,7 +296,7 @@ class LearnersIndexTest < ActionDispatch::IntegrationTest
 
     get learners_path(archived: 1)
 
-    assert_select "[data-learner='#{learners(:two).id}'] [data-learner-card-link]", count: 0
+    assert_select "[data-learner='#{learners(:two).id}'] a[data-learner-card-link]", count: 1
   end
 
   test "each card has an edit trigger for that learner" do

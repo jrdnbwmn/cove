@@ -11,6 +11,12 @@ module ApplicationHelper
   # ::after covers the whole relatively positioned card, so a click anywhere opens the modal.
   CARD_LINK_CLASSES = "cursor-pointer text-left after:absolute after:inset-0 after:rounded-xl focus-visible:outline-none focus-visible:after:outline-2 focus-visible:after:outline-offset-2 focus-visible:after:outline-primary".freeze
 
+  # AIDEV-NOTE: Opts a confirmation link into the unsaved-changes modal's in-memory form capture, so
+  # Delete -> Cancel restores the edit form's draft values.
+  def capture_form_data
+    {action: "click->ui-modal-unsaved-changes#captureForm"}
+  end
+
   def card_link_classes
     CARD_LINK_CLASSES
   end

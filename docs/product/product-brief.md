@@ -34,7 +34,7 @@ Each section is marked **Built** or **Decided, not built**.
   another parent is in the family. A non-owner parent deleting their login
   just leaves.
 
-## Learners (Built — `/learners`)
+## Learners (Built — `/learners`, `/learners/:id`)
 
 - Learner logins are a future version.
 - Every plan has the same soft learner cap, `learner_limit` (default 15,
@@ -46,8 +46,20 @@ Each section is marked **Built** or **Decided, not built**.
   uses a slot; archived learners do not. At the cap, any plan sees "Email us".
   Restore remains unavailable while it would exceed the cap.
 - Parents can archive learners to keep their records or delete them permanently.
+- Learner record pages are available on Free and Premium. Active learners'
+  pages show their current active classes; class creation stays in Classes.
+  Both empty and populated summaries link to Classes filtered to that learner.
+- Archived learner pages are view-only: they keep the learner's identity and
+  archive notice, offer Restore when capacity allows, and hide Edit and the
+  classes summary.
+- Grade level is optional and uses a fixed list: Pre-K, Kindergarten, and
+  1st grade through 12th grade. “No grade level” leaves it unset; parents
+  cannot enter a custom grade.
+- Save, Archive, and Restore return to the learner page when begun there,
+  or to Learners when begun on the list. Add and Delete return to Learners.
 - **On downgrade**, learners don't change: none is deleted, and every learner
-  stays editable.
+  keeps the same access (active learners stay editable; archived learners
+  stay view-only).
 
 ## Classes (Built — `/classes`)
 
@@ -57,7 +69,10 @@ Each section is marked **Built** or **Decided, not built**.
 - Grades always belong to a class. Evaluations are a separate, later record.
 - Deleting a learner removes their enrollments.
 - Archiving a learner keeps their enrollments but hides them from classes; they
-  appear again when restored.
+  appear again when restored. Editing a class preserves those hidden links.
+- Retained class links describe membership, not a historical activity record.
+  Future work, attendance, and participation features must distinguish past
+  records from future activity after archival; that history is not built yet.
 - Deleting a class deletes its enrollments. Delete works in every status and
   always asks for confirmation.
 - A class is **Active**, **Completed**, or **Archived**, never more than one.

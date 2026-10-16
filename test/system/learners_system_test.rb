@@ -101,7 +101,7 @@ class LearnersSystemTest < ApplicationSystemTestCase
 
     within("dialog[open]") do
       fill_in "Name", with: "Nora"
-      fill_in "Grade level", with: "5th"
+      choose_grade "5th grade"
       wait_for_turbo_navigation { click_button "Add learner" }
     end
 
@@ -205,12 +205,14 @@ class LearnersSystemTest < ApplicationSystemTestCase
     assert_not Learner.exists?(ActiveRecord::FixtureSet.identify(:one))
   end
 
-  test "cancelling Delete returns to the saved edit form without a discard prompt" do
+  test "cancelling Delete restores unsaved learner details and still asks before discarding" do
     visit learners_path
     open_edit_modal("Maya")
 
     within("dialog[open]") do
-      fill_in "Grade level", with: "4th"
+      fill_in "Name", with: "Unsaved Maya"
+      choose_grade "4th grade"
+      find("label[for='learner_color_rose']").click
       click_link "Delete"
     end
 
@@ -222,10 +224,15 @@ class LearnersSystemTest < ApplicationSystemTestCase
 
     assert_selector "dialog[open]", count: 1
     within("dialog[open]") do
-      assert_field "Grade level", with: learners(:one).grade_level
+      assert_field "Name", with: "Unsaved Maya"
+      assert_selector "#learner_grade_level + .ts-wrapper .item", text: "4th grade"
+      assert_checked_field "Rose", visible: :all
       click_button "Cancel"
+      assert_text "Discard your changes?"
+      click_button "Discard"
     end
     assert_no_selector "dialog[open]"
+    assert_equal "Maya", learners(:one).reload.name
   end
 
   test "cancelling Delete returns to editing after downgrade in the same dialog" do
@@ -233,7 +240,7 @@ class LearnersSystemTest < ApplicationSystemTestCase
     login_as users(:downgraded), scope: :user
     visit learners_path
 
-    within("[data-learner='#{learners(:downgraded_three).id}']") { click_button "Casey" }
+    open_edit_modal("Casey")
     within("dialog[open]") { click_link "Delete" }
 
     assert_selector "dialog[open]", count: 1
@@ -263,18 +270,23 @@ class LearnersSystemTest < ApplicationSystemTestCase
     assert_not Learner.exists?(ActiveRecord::FixtureSet.identify(:archived))
   end
 
-  test "clicking a learner card opens their edit modal" do
+  test "clicking active and archived learner cards opens their pages" do
     visit learners_path
 
     find("[data-learner='#{learners(:one).id}']").click
 
-    assert_selector "dialog[open] input[name='learner[name]'][value='Maya']"
+    assert_current_path learner_path(learners(:one))
+    assert_no_selector "dialog[open]"
+    visit learners_path(archived: 1)
+    find("[data-learner='#{learners(:archived).id}'] [data-learner-card-link]").click
+    assert_current_path learner_path(learners(:archived))
+    assert_no_button "Edit"
   end
 
   test "the actions menu is reachable by keyboard" do
     visit learners_path
 
-    find("button", text: "Maya", exact_text: true).send_keys(:tab)
+    find("a[data-learner-card-link]", text: "Maya", exact_text: true).send_keys(:tab)
     assert_equal "Actions for Maya", evaluate_script("document.activeElement.getAttribute('aria-label')")
     page.send_keys(:enter)
 
@@ -429,14 +441,14 @@ class LearnersSystemTest < ApplicationSystemTestCase
     assert_no_text "Read-only"
     assert_no_button "Change"
     family.learners.active.each do |learner|
-      within("[data-learner='#{learner.id}']") { click_button learner.name }
+      open_edit_modal(learner.name)
       within("dialog[open]") do
         assert_field "Name", with: learner.name
-        fill_in "Grade level", with: "4th"
+        choose_grade "4th grade"
         wait_for_turbo_navigation { click_button "Save" }
       end
       assert_no_selector "dialog[open]"
-      assert_equal "4th", learner.reload.grade_level
+      assert_equal "4th grade", learner.reload.grade_level
     end
   end
 
@@ -483,7 +495,30 @@ class LearnersSystemTest < ApplicationSystemTestCase
     assert_equal 20, account.learners.active.count
   end
 
+  test "a chosen grade survives validation and No grade level saves no grade" do
+    visit learners_path
+    open_edit_modal("Maya")
+    within("dialog[open]") do
+      choose_grade "12th grade"
+      fill_in "Name", with: "Theo"
+      click_button "Save"
+      assert_text "You already have a learner named Theo."
+      assert_selector "#learner_grade_level + .ts-wrapper .item", text: "12th grade"
+      fill_in "Name", with: "Maya"
+      choose_grade "No grade level"
+      wait_for_turbo_navigation { click_button "Save" }
+    end
+    assert_nil learners(:one).reload.grade_level
+    open_edit_modal("Maya")
+    assert_selector "#learner_grade_level + .ts-wrapper .item", text: "No grade level"
+  end
+
   private
+
+  def choose_grade(label)
+    find("#learner_grade_level + .ts-wrapper .ts-control").click
+    find(".ts-dropdown [role='option']", text: label, exact_text: true).click
+  end
 
   def fill_to_capacity(account, slots: 0)
     (account.learners.active.count...(account.learner_limit - slots)).each do |i|
@@ -514,8 +549,9 @@ class LearnersSystemTest < ApplicationSystemTestCase
   end
 
   def open_edit_modal(name)
-    learner = Learner.find_by!(name: name)
-    within("[data-learner='#{learner.id}']") { click_button name }
+    Learner.find_by!(name: name)
+    open_actions_menu(name)
+    click_button "Edit"
     assert_selector "dialog[open] input[name='learner[name]']"
   end
 

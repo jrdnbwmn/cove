@@ -7,23 +7,36 @@ class LearnerFormsTest < ActionDispatch::IntegrationTest
     sign_in users(:one)
   end
 
-  test "the add form has labelled name and grade fields limited to 50 characters" do
+  test "the add form has a labelled name and optional fixed grade select" do
     get new_learner_path
 
     assert_select "label[for='learner_name']", text: /Name/
     assert_select "input#learner_name[name='learner[name]'][maxlength='50'][autofocus]"
     assert_select "label[for='learner_grade_level']", text: /Grade level/
-    assert_select "input#learner_grade_level[name='learner[grade_level]'][maxlength='50'][placeholder='e.g. 3rd, Pre-K']"
+    assert_select "select#learner_grade_level[name='learner[grade_level]']"
+  end
+
+  test "add and edit offer canonical grades followed by No grade level" do
+    expected = ["Pre-K", "Kindergarten", "1st grade", "2nd grade", "3rd grade", "4th grade", "5th grade", "6th grade", "7th grade", "8th grade", "9th grade", "10th grade", "11th grade", "12th grade", "No grade level"]
+    [new_learner_path, edit_learner_path(@maya)].each do |path|
+      get path
+      assert_equal expected, css_select("#learner_grade_level option").map(&:text)
+      assert_select "#learner_grade_level[data-select-clear-button-value='false'][data-select-allow-empty-option-value='true']"
+      assert_select "#learner_grade_level[data-select-allow-new-value]", count: 0
+    end
+    assert_select "#learner_grade_level option[selected][value='3rd grade']"
+    get new_learner_path
+    assert_select "#learner_grade_level option[selected][value='']", text: "No grade level"
   end
 
   test "a rejected add at the family limit shows the limit message and keeps what was typed" do
     13.times { |i| Learner.create!(account: @family, name: "Learner #{i}") }
-    post learners_path, params: {learner: {name: "Nora", grade_level: "5th"}}
+    post learners_path, params: {learner: {name: "Nora", grade_level: "5th grade"}}
 
     assert_response :unprocessable_content
     assert_select "form#learner-form h3", text: "To add more than 15 learners, send us a quick note and we'll raise your limit."
     assert_select "input#learner_name[value='Nora']"
-    assert_select "input#learner_grade_level[value='5th']"
+    assert_select "select#learner_grade_level option[selected][value='5th grade']"
   end
 
   test "the add form offers the next color pre-selected and an Add learner button" do
@@ -77,13 +90,13 @@ class LearnerFormsTest < ActionDispatch::IntegrationTest
   end
 
   test "a failed save keeps the submitted color selected and shows the error beside the name" do
-    post learners_path, params: {learner: {name: " ", grade_level: "5th", color: "slate"}}
+    post learners_path, params: {learner: {name: " ", grade_level: "5th grade", color: "slate"}}
 
     assert_response :unprocessable_content
     assert_select "input[type=radio][name='learner[color]'][checked]", 1
     assert_select "input[type=radio][name='learner[color]'][value='slate'][checked]"
     assert_select "p", text: "Enter a name to continue."
-    assert_select "input[name='learner[grade_level]'][value='5th'][maxlength='50']"
+    assert_select "select[name='learner[grade_level]'] option[selected][value='5th grade']"
   end
 
   test "the forms never hard-code swatch colors" do

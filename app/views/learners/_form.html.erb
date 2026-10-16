@@ -10,11 +10,17 @@
     <% end %>
   <% end %>
 
-  <%= render FormFieldComponent.new(label: t("learners.form.grade_level"), name: "learner[grade_level]", error: learner.errors[:grade_level].first) do |field| %>
-    <% field.with_input do %>
-      <%= form.text_field :grade_level, maxlength: Learner::MAX_LENGTH, autocomplete: "off", placeholder: t("learners.form.grade_level_placeholder"), class: class_names("form-control", error: learner.errors[:grade_level].any?) %>
-    <% end %>
-  <% end %>
+  <%= render SelectComponent.new(
+    label: t("learners.form.grade_level"),
+    name: "learner[grade_level]",
+    id: "learner_grade_level",
+    options: Learner::GRADE_LEVELS + [[t("learners.form.no_grade_level"), ""]],
+    selected: learner.grade_level.to_s,
+    placeholder: nil,
+    clearable: false,
+    error: learner.errors[:grade_level].first,
+    data: {select_allow_empty_option_value: true}
+  ) %>
 
   <%= render "learners/color_picker", form: form, learner: learner %>
 <% end %>

@@ -124,6 +124,84 @@ class CourseFormsTest < ActionDispatch::IntegrationTest
     assert_select "select[name='course[status]'] option[value='completed'][selected]"
   end
 
+  test "a class with no learners explains permanent deletion without a link count" do
+    course = courses(:two)
+
+    get delete_course_path(course)
+
+    assert_response :success
+    assert_select "h2", text: "Delete Piano?"
+    assert_select "p", text: "This permanently removes Piano and can't be undone. To keep the class, archive instead."
+    assert_select "p", text: /links? to .*learners?/, count: 0
+    assert_select "button[type='submit'] .when-enabled", text: "Delete Piano"
+  end
+
+  test "a class counts a single archived learner when explaining removed links" do
+    course = courses(:one)
+    assert_equal [learners(:archived)], course.learners.to_a
+
+    get delete_course_path(course)
+
+    assert_response :success
+    assert_select "p", text: "Algebra 1's link to 1 learner will be removed. The learner stays."
+  end
+
+  test "a class counts active and archived learners when explaining removed links" do
+    learners(:archived).restore!
+    Enrollment.create!(course: @course, learner: learners(:archived))
+    learners(:archived).archive!
+
+    get delete_course_path(@course)
+
+    assert_response :success
+    assert_select "p", text: "Science Lab's links to 3 learners will be removed. The learners stay."
+  end
+
+  test "every class status names deletion and offers the appropriate way to keep the class" do
+    [courses(:one), courses(:completed), courses(:archived)].each do |course|
+      get delete_course_path(course)
+
+      assert_response :success
+      assert_select "h2", text: "Delete #{course.name}?"
+      assert_select "button[type='submit'] .when-enabled", text: "Delete #{course.name}"
+      alternative = course.archived? ? "keep #{course.name} archived instead." : "archive instead."
+      assert_select "p", text: "This permanently removes #{course.name} and can't be undone. To keep the class, #{alternative}"
+      assert_select "turbo-frame#modal-lazy-content form", count: 1
+      assert_select "form[action='#{course_path(course)}'] input[name='_method'][value='delete']"
+      assert_select "a[href='#{edit_course_path(course)}']", text: /Cancel/
+      assert_select "button, a", text: /\A(?:Archive class|Complete class|Restore class|Reopen class)\z/, count: 0
+    end
+  end
+
+  test "deleting classes in every status retains their learners and returns to the existing tab and filters" do
+    [courses(:shared), courses(:completed), courses(:archived)].each do |course|
+      learners(:archived).restore!
+      Enrollment.create!(course: course, learner: learners(:archived))
+      learners(:archived).archive!
+      learner_ids = course.learners.pluck(:id)
+      link_count = course.enrollments.count
+      list_path = courses_path(status: course.status, learner: learners(:two).id, subject: "Science")
+
+      get delete_course_path(course, from: "list"), headers: {"Referer" => "http://www.example.com#{list_path}"}
+
+      assert_response :success
+      assert_select "button[data-action='click->ui-modal#performClose:prevent']", text: /Cancel/
+      assert_select "a[href='#{edit_course_path(course)}']", count: 0
+      assert_no_difference "Learner.count" do
+        assert_difference "Course.count", -1 do
+          assert_difference "Enrollment.count", -link_count do
+            delete course_path(course), headers: {"Referer" => "http://www.example.com#{list_path}"}
+          end
+        end
+      end
+
+      assert_redirected_to list_path
+      assert_equal "Class deleted.", flash[:notice]
+      assert_equal learner_ids.sort, Learner.where(id: learner_ids).pluck(:id).sort
+      assert learners(:archived).reload.archived?
+    end
+  end
+
   private
 
   def helper_date(time)

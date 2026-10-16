@@ -1,0 +1,6 @@
+<%# locals: (heading:, links:, body:) %>
+<h2 class="pr-8 wrap-anywhere modal-heading"><%= heading %></h2>
+<% if links.present? %>
+  <p class="mt-2 wrap-anywhere text-muted-foreground"><%= links %></p>
+<% end %>
+<p class="mt-2 wrap-anywhere text-muted-foreground"><%= body %></p>

@@ -1,6 +1,9 @@
 <%= turbo_frame_tag "modal-lazy-content" do %>
-  <h2 class="modal-heading"><%= t("courses.delete.heading", name: @course.name) %></h2>
-  <p class="mt-2 text-muted-foreground"><%= t("courses.delete.body") %></p>
+  <% enrollment_count = @course.enrollments.count %>
+  <%= render "application/delete_summary",
+    heading: t("courses.delete.heading", name: @course.name),
+    links: (t("courses.delete.links", name: @course.name, count: enrollment_count) if enrollment_count.positive?),
+    body: t(@course.archived? ? "courses.delete.archived_body" : "courses.delete.active_body", name: @course.name) %>
 
   <div class="mt-6 flex flex-col gap-3 sm:flex-row sm:justify-end">
     <%# AIDEV-NOTE: Reached from a card's menu (from=list) there is no edit form behind this, so Cancel closes the modal. From the edit modal it swaps the edit form back in. The delete form's hidden method field would count as an unsaved change, so close directly. %>
@@ -10,7 +13,7 @@
       <%= render ButtonComponent.new(text: t("courses.form.cancel"), variant: :secondary, href: edit_course_path(@course)) %>
     <% end %>
     <%= form_with url: course_path(@course), method: :delete do %>
-      <%= render ButtonComponent.new(text: t("courses.form.delete"), variant: :destructive, type: "submit", full_width: true) %>
+      <%= render ButtonComponent.new(text: t("courses.delete.confirm", name: @course.name), variant: :destructive, type: "submit", full_width: true, classes: "whitespace-normal! wrap-anywhere") %>
     <% end %>
   </div>
 <% end %>

@@ -23,7 +23,7 @@ Rails.application.routes.draw do
     resource :completion, only: %i[create destroy], module: :courses
     resource :archive, only: %i[create destroy], module: :courses
   end
-  resources :learners, except: :show do
+  resources :learners do
     get :delete, on: :member
     resource :archive, only: %i[create destroy], module: :learners
   end

@@ -15,6 +15,15 @@ class PageHeaderComponentPreview < ViewComponent::Preview
     render component
   end
 
+  def with_title_switcher
+    component = PageHeaderComponent.new(title: "Maya", description: "3rd grade")
+    dropdown = DropdownComponent.new(trigger_text: "Switch learner")
+    dropdown.with_item_link(text: "Theo", href: "#")
+    component.with_title_suffix { component.render(dropdown) }
+    component.with_primary_action { component.render(ButtonComponent.new(text: "Edit", variant: :outline)) }
+    render component
+  end
+
   def with_menu
     component = PageHeaderComponent.new(title: "Learners")
     component.with_primary_action { '<button type="button">Add learner</button>'.html_safe }

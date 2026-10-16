@@ -123,7 +123,7 @@ class CoursesTest < ActionDispatch::IntegrationTest
     get delete_course_path(@course)
     assert_response :success
     assert_match "Delete Algebra 1?", response.body
-    assert_select "p", text: "This can't be undone."
+    assert_select "p", text: "This permanently removes Algebra 1 and can't be undone. To keep the class, archive instead."
 
     assert_difference "Course.count", -1 do
       assert_difference "Enrollment.count", -@course.enrollments.count do

@@ -757,7 +757,12 @@ en:
       restored: "%{name} restored."
     delete:
       heading: "Delete %{name}?"
-      body: "This can't be undone."
+      active_body: "This permanently removes %{name} and can't be undone. To keep the class, archive instead."
+      archived_body: "This permanently removes %{name} and can't be undone. To keep the class, keep %{name} archived instead."
+      links:
+        one: "%{name}'s link to 1 learner will be removed. The learner stays."
+        other: "%{name}'s links to %{count} learners will be removed. The learners stay."
+      confirm: "Delete %{name}"
 
   learner_picker:
     empty: "No learners yet."
@@ -773,6 +778,13 @@ en:
       email_subject: "Help with Cove"
 
   learners:
+    show:
+      switch: "Switch learner"
+      archived: "%{name} is archived. %{name}'s records are kept."
+      classes_title: "Current classes and activities"
+      classes_empty_title: "No classes yet."
+      classes_empty_description: "Classes %{name} takes will appear here."
+      classes_link: "See all in Classes"
     index:
       title: "Learners"
       description: "Everyone you're teaching, in one place."
@@ -798,7 +810,7 @@ en:
     form:
       name: "Name"
       grade_level: "Grade level"
-      grade_level_placeholder: "e.g. 3rd, Pre-K"
+      no_grade_level: "No grade level"
       color: "Color"
       add: "Add learner"
       save: "Save"
@@ -808,6 +820,10 @@ en:
     delete:
       heading: "Delete %{name}?"
       body: "This permanently removes %{name} and can't be undone. To keep their records, archive instead."
+      archived_body: "This permanently removes %{name} and can't be undone. To keep their records, keep %{name} archived instead."
+      links:
+        one: "%{name} will be removed from 1 class, which stays for everyone else."
+        other: "%{name} will be removed from %{count} classes, which stay for everyone else."
       confirm: "Delete %{name}"
       cancel: "Cancel"
     colors:

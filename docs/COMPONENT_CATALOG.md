@@ -483,7 +483,8 @@ preserving the title and close control. The default `<h2>` title is marked
 `data-ui-modal-unsaved-changes-target="heading"` so the unsaved-changes
 discard prompt can hide it while the prompt shows; a custom `header` slot is not
 marked. Dialog content is left-aligned even when the trigger sits in a centered
-container.
+container. Turbo frame updates notify the unsaved-changes controller before
+and after rendering.
 
 **Preview:** `UiModalComponentPreview`
 
@@ -642,7 +643,9 @@ the description on phones.
 **Arguments:** `title` is required. Use `description` for optional supporting
 text below the title.
 
-**Slots:** `with_primary_action` adds the always-visible primary action.
+**Slots:** `with_title_suffix` adds non-shrinking content beside the title,
+such as a help control; long titles wrap within the available space.
+`with_primary_action` adds the always-visible primary action.
 `with_secondary_action` adds up to two secondary actions; they are shown
 directly from small screens upward and move into the overflow menu on phones.
 `with_menu` adds custom content to that overflow menu. The overflow menu is

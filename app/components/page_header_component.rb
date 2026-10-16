@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 class PageHeaderComponent < ViewComponent::Base
+  renders_one :title_suffix
   renders_one :primary_action
   renders_many :secondary_actions
   renders_one :menu

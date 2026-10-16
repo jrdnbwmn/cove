@@ -56,7 +56,7 @@ if Rails.env.local?
     AccountUser.create!(account: family, user: admin, admin: true)
   end
 
-  [["Maya", "3rd"], ["Theo", "Pre-K"]].each do |name, grade_level|
+  [["Maya", "3rd grade"], ["Theo", "Pre-K"]].each do |name, grade_level|
     family.learners.find_or_create_by!(name: name) { |learner| learner.grade_level = grade_level }
   end
 

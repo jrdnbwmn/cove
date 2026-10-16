@@ -1,6 +1,13 @@
 <%# AIDEV-NOTE: DOM and phone order is title, description, actions. From sm up, order-* moves the actions onto the title's line and leaves the description on its own line below. %>
 <div class="mb-6 flex flex-wrap items-center justify-between gap-x-4 sm:mb-8">
-  <h1 class="w-full sm:w-auto"><%= @title %></h1>
+  <% if title_suffix? %>
+    <div class="flex min-w-0 w-full items-start gap-2 sm:w-auto sm:flex-1" data-page-header-title>
+      <h1 class="min-w-0 wrap-anywhere"><%= @title %></h1>
+      <div class="shrink-0" data-page-header-title-suffix><%= title_suffix %></div>
+    </div>
+  <% else %>
+    <h1 class="min-w-0 w-full wrap-anywhere sm:w-auto"><%= @title %></h1>
+  <% end %>
 
   <% if @description.present? %>
     <p class="mt-2 w-full font-sans text-muted-foreground sm:order-3"><%= @description %></p>
