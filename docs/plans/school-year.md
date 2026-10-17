@@ -9,8 +9,8 @@
 | ---- | ----- | ---------- | ----------- | ------ | ---- |
 | 1 | 1 | 1 | Add schema and database constraints | Master | ✅ |
 | 2 | 1 | 1 | Add the family clock | Master | ✅ |
-| 3 | 1 | 2 | Add SchoolYear and fixtures | Master | |
-| 4 | 1 | 2 | Add time-off rules and fixtures | Master | |
+| 3 | 1 | 2 | Add SchoolYear and fixtures | Master | ✅ |
+| 4 | 1 | 2 | Add time-off rules and fixtures | Master | ✅ |
 | 5 | 1 | 3 | Protect past dates and weekday history | Master | |
 | 6 | 1 | 3 | Implement school-day counting | subagent | |
 | 7 | 1 | 4 | Implement default years | Master | |

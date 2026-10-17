@@ -7,6 +7,7 @@ class Account < ApplicationRecord
 
   has_many :learners, dependent: :destroy
   has_many :courses, dependent: :destroy
+  has_many :school_years, dependent: :destroy
 
   scope :active, -> { where(archived_at: nil) }
   scope :archived, -> { where.not(archived_at: nil) }
@@ -31,6 +32,10 @@ class Account < ApplicationRecord
   # AIDEV-NOTE: School days turn over at 1am in the shared family zone.
   def today
     (Time.current.in_time_zone(time_zone) - 1.hour).to_date
+  end
+
+  def school_year
+    school_years.active.first
   end
 
   def full?
