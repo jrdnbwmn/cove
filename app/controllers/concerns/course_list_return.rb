@@ -1,11 +1,11 @@
 # AIDEV-NOTE: Class forms live in modals loaded by Turbo frames, so the Referer is still the /classes page the
-# parent was on. Reading it back (instead of threading a param through every form) keeps their tab and filters
-# after an add, edit, delete, or status change. Only our own list path and its three list params are honored.
+# parent was on. Reading it back keeps their tab, filters, search, and page after an add, edit, delete, or
+# status change without threading params through every form. Only our own list path and scalar list params are honored.
 module CourseListReturn
   extend ActiveSupport::Concern
   include ReferrerPath
 
-  LIST_PARAMS = %w[status learner subject].freeze
+  LIST_PARAMS = %w[status learner subject q page].freeze
 
   private
 

@@ -7,8 +7,8 @@
 
 | Task | Phase | Checkpoint | Description | Assign | Done |
 | ---- | ----- | ---------- | ----------- | ------ | ---- |
-| 1 | 1 | 1 | Add literal name-and-subject search | Master | |
-| 2 | 1 | 1 | Preserve search and page after modal actions | subagent | |
+| 1 | 1 | 1 | Add literal name-and-subject search | Master | ✅ |
+| 2 | 1 | 1 | Preserve search and page after modal actions | subagent | ✅ |
 | 3 | 2 | 2 | Add the shared modal row trigger | Master | |
 | 4 | 2 | 3 | Replace class cards with responsive rows | Master | |
 | 5 | 2 | 3 | Connect the inline Add class row | Master | |

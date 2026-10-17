@@ -187,13 +187,22 @@ class CoursesTest < ActionDispatch::IntegrationTest
     assert @course.reload.active?
   end
 
-  test "a status change returns to the tab and filters the parent was on" do
+  test "completing, reopening, archiving, and restoring a class keep the current search page and filters" do
     sign_in users(:one)
-    referer = "http://www.example.com/classes?status=completed&learner=7&subject=Math"
+    referer = {"Referer" => "http://www.example.com/classes?status=completed&learner=7&subject=Math&q=Algebra+1&page=3"}
+    list_path = courses_path(status: "completed", learner: "7", subject: "Math", q: "Algebra 1", page: "3")
 
-    delete course_completion_path(courses(:completed)), headers: {"Referer" => referer}
+    post course_completion_path(@course), headers: referer
+    assert_redirected_to list_path
 
-    assert_redirected_to courses_path(status: "completed", learner: "7", subject: "Math")
+    delete course_completion_path(@course), headers: referer
+    assert_redirected_to list_path
+
+    post course_archive_path(@course), headers: referer
+    assert_redirected_to list_path
+
+    delete course_archive_path(@course), headers: referer
+    assert_redirected_to list_path
   end
 
   test "a status change ignores a referrer that is not the class list" do
@@ -250,10 +259,10 @@ class CoursesTest < ActionDispatch::IntegrationTest
     assert @other_family_course.reload.archived?
   end
 
-  test "adding, editing, or deleting a class returns to the tab and filters the parent was on" do
+  test "adding, editing, or deleting a class keep the current search page and filters" do
     sign_in users(:one)
-    referer = {"Referer" => "http://www.example.com/classes?status=completed&learner=7&subject=Math"}
-    list_path = courses_path(status: "completed", learner: "7", subject: "Math")
+    referer = {"Referer" => "http://www.example.com/classes?status=completed&learner=7&subject=Math&q=Algebra+1&page=3"}
+    list_path = courses_path(status: "completed", learner: "7", subject: "Math", q: "Algebra 1", page: "3")
 
     post courses_path, params: {course: {name: "Geometry", learner_ids: []}}, headers: referer
     assert_redirected_to list_path
@@ -271,7 +280,7 @@ class CoursesTest < ActionDispatch::IntegrationTest
     post courses_path, params: {course: {name: "Geometry", learner_ids: []}}
     assert_redirected_to courses_path
 
-    ["http://evil.example/classes?status=archived", "http://www.example.com/learners?status=archived", "http://[bad"].each do |referer|
+    ["http://evil.example/classes?q=Algebra&page=3", "https://www.example.com/classes?q=Algebra&page=3", "http://www.example.com:3000/classes?q=Algebra&page=3", "http://www.example.com/learners?q=Algebra&page=3", "http://[bad"].each do |referer|
       patch course_path(@course), params: {course: {name: "Algebra 1", learner_ids: []}}, headers: {"Referer" => referer}
       assert_redirected_to courses_path
     end
@@ -281,9 +290,24 @@ class CoursesTest < ActionDispatch::IntegrationTest
     sign_in users(:one)
 
     patch course_path(@course), params: {course: {name: "Algebra 1", learner_ids: []}},
-      headers: {"Referer" => "http://www.example.com/classes?status=archived&page=3&subject[]=a"}
+      headers: {"Referer" => "http://www.example.com/classes?status=archived&page=3&q=Algebra+1&subject[]=a&learner[id]=7&redirect_to=https://evil.example"}
 
-    assert_redirected_to courses_path(status: "archived")
+    assert_redirected_to courses_path(status: "archived", q: "Algebra 1", page: "3")
+  end
+
+  test "a class list return excludes structured and repeated search or page parameters" do
+    sign_in users(:one)
+
+    [
+      "q[]=Algebra&page[number]=3",
+      "q[text]=Algebra&page[]=3",
+      "q=Algebra&q=Math&page=2&page=3"
+    ].each do |query|
+      patch course_path(@course), params: {course: {name: "Algebra 1", learner_ids: []}},
+        headers: {"Referer" => "http://www.example.com/classes?status=active&#{query}"}
+
+      assert_redirected_to courses_path(status: "active")
+    end
   end
 
   test "saving a class with a new status changes it and shows the status toast" do
