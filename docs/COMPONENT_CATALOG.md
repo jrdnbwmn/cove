@@ -9,6 +9,7 @@
 | `FormFieldComponent` | Wraps a labeled raw form control with helper, error, required, and layout states. | `label`, `name`, `size`, `variant`, `error` | — | `FormFieldComponentPreview` |
 | `LearnerPickerComponent` | Renders a multi-select learner picker. | `name`, `learners`, `selected_ids`, `label`, `help`, `error` | `CheckboxComponent` | `LearnerPickerComponentPreview` |
 | `CheckboxComponent` | Renders a labeled checkbox with optional supporting text and validation state. | `label`, `name`, `checked`, `disabled`, `error`, `data` | — | `CheckboxComponentPreview` |
+| `ToggleChipComponent` | Renders a keyboard-accessible checkbox as a pill chip. | `label`, `name`, `value`, `checked`, `disabled`, `error`, `data` | — | `ToggleChipComponentPreview` |
 | `RadioComponent` | Renders a labeled radio option with optional supporting text and validation state. | `label`, `name`, `value`, `checked`, `disabled` | — | `RadioComponentPreview` |
 | `SwitchComponent` | Renders a toggle switch with label, status, and validation state. | `label`, `name`, `checked`, `show_icons`, `disabled` | — | `SwitchComponentPreview` |
 | `SelectComponent` | Renders a locally enhanced single or multiple select. | `name`, `options`, `selected`, `multiple`, `error` | — | `SelectComponentPreview` |
@@ -235,6 +236,25 @@ optional status-icon states.
 
 ```erb
 <%= render SwitchComponent.new(label: "Enable summary", name: "preferences[summary]", checked: true) %>
+```
+
+### ToggleChipComponent
+
+**Purpose:** A native checkbox styled as a pill chip, adapted from RailsBlocks custom checkboxes. Group related chips in a fieldset with a visible legend.
+
+**Arguments:** `label` (required), `name`, `id`, `value` (default `"1"`), `checked`, `disabled`, `error`, and input `data` attributes.
+
+**States:** Unselected, selected, disabled, error, and visible keyboard focus. Uses the primary brand tokens. No JavaScript.
+
+**Preview:** `ToggleChipComponentPreview`
+
+**Usage:**
+
+```erb
+<fieldset class="flex flex-wrap gap-2">
+  <legend class="mb-2 text-sm font-medium">School days</legend>
+  <%= render ToggleChipComponent.new(label: "Mon", name: "school_year[school_weekdays][]", value: 1, checked: true) %>
+</fieldset>
 ```
 
 ### SelectComponent

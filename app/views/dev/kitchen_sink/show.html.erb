@@ -57,6 +57,17 @@
         <%= render PasswordComponent.new(name: "user[password]", hint: "Use at least 8 characters.") %>
       </div>
 
+      <fieldset class="mt-8 flex flex-wrap gap-2" id="weekday-toggle-chips">
+        <legend class="mb-2 text-sm font-medium">School days</legend>
+        <% %w[Mon Tue Wed Thu Fri Sat Sun].each_with_index do |day, index| %>
+          <%= render ToggleChipComponent.new(label: day, name: "school_weekdays[]", value: (index + 1) % 7, checked: index < 5) %>
+        <% end %>
+      </fieldset>
+      <div class="mt-4 flex flex-wrap gap-4">
+        <%= render ToggleChipComponent.new(label: "Disabled", checked: true, disabled: true) %>
+        <%= render ToggleChipComponent.new(label: "Error", error: "Choose at least one school day.") %>
+      </div>
+
       <% learner_picker_learners = [
         Learner.new(id: 1, name: "Maya", color: "sage"),
         Learner.new(id: 2, name: "Theo", color: "sea"),
@@ -212,7 +223,7 @@
         <div class="overflow-hidden rounded-lg border border-neutral-200 dark:border-neutral-800">
         <%= render SidebarComponent.new(variant: :inset, show_mobile_toggle: false, min_height_class: "min-h-[500px]") do |sidebar| %>
           <% sidebar.with_item(label: "Dashboard", href: "#", active: true, icon: icon("layout-dashboard", class: "size-4 sm:size-4.5")) %>
-          <% sidebar.with_item(label: "Schedules", href: "#", icon: icon("calendar", class: "size-4 sm:size-4.5")) %>
+          <% sidebar.with_item(label: "Planner", href: "#", icon: icon("calendar", class: "size-4 sm:size-4.5")) %>
           <% sidebar.with_item(label: "Settings", href: "#", icon: icon("settings", class: "size-4 sm:size-4.5")) %>
 
           <% sidebar.with_footer do %>

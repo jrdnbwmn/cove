@@ -1,0 +1,15 @@
+<div class="inline-flex flex-col gap-1">
+  <%# AIDEV-NOTE: Adapted from RailsBlocks custom checkboxes; sr-only keeps keyboard access. %>
+  <%= tag.label for: @id, class: "relative inline-flex !mb-0" do %>
+    <%= check_box_tag @name, @value, @checked,
+      id: @id,
+      disabled: @disabled,
+      class: "peer sr-only",
+      aria: {invalid: @error.present? || nil, describedby: @error.present? ? "#{@id}_error" : nil},
+      data: @data %>
+    <span class="inline-flex min-h-10 items-center justify-center rounded-full border border-border bg-background px-4 py-2 text-sm font-medium text-foreground cursor-pointer peer-checked:border-primary peer-checked:bg-primary peer-checked:text-primary-foreground peer-focus-visible:ring-2 peer-focus-visible:ring-primary peer-focus-visible:ring-offset-2 peer-disabled:cursor-not-allowed peer-disabled:opacity-50 <%= "border-red-500" if @error.present? %>"><%= @label %></span>
+  <% end %>
+  <% if @error.present? %>
+    <%= tag.p @error, id: "#{@id}_error", class: "text-sm text-red-600" %>
+  <% end %>
+</div>
