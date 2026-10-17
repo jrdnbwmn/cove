@@ -1,0 +1,9 @@
+<%= render "header", active_tab: :schedule %>
+
+<div class="mt-6 sm:mt-8">
+  <%= render EmptyStateComponent.new(title: "Coming soon", description: "Schedule planning will be available here.") do |component| %>
+    <% component.with_icon do %>
+      <%= icon "calendar", class: "w-full h-full" %>
+    <% end %>
+  <% end %>
+</div>

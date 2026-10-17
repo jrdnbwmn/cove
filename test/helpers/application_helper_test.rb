@@ -9,30 +9,41 @@ class ApplicationHelperTest < ActionView::TestCase
     request.path = "/"
     assert dashboard_nav_active?
 
-    request.path = "/schedules"
+    request.path = "/planner"
     assert_not dashboard_nav_active?
   end
 
   test "each product page highlights only its own sidebar item" do
-    request.path = "/schedules"
-    assert schedules_nav_active?
+    request.path = "/planner"
+    assert planner_nav_active?
     assert_not classes_nav_active?
     assert_not learners_nav_active?
     assert_not dashboard_nav_active?
 
     request.path = "/classes"
     assert classes_nav_active?
-    assert_not schedules_nav_active?
+    assert_not planner_nav_active?
     assert_not learners_nav_active?
 
     request.path = "/learners"
     assert learners_nav_active?
-    assert_not schedules_nav_active?
+    assert_not planner_nav_active?
     assert_not classes_nav_active?
 
     request.path = support_path
     assert support_nav_active?
     assert_not learners_nav_active?
+  end
+
+  test "Planner stays active on both tabs and only real descendant paths" do
+    ["/planner", "/planner/school_year", "/planner/school_year/edit"].each do |path|
+      request.path = path
+      assert planner_nav_active?
+    end
+    ["/planners", "/planner_other", "/schedules"].each do |path|
+      request.path = path
+      assert_not planner_nav_active?
+    end
   end
 
   test "settings stays highlighted across profile, security, and two-factor pages" do
@@ -109,7 +120,7 @@ class ApplicationHelperTest < ActionView::TestCase
     assert_not settings_nav_active?
     assert_not family_tab_active?
     assert_not dashboard_nav_active?
-    assert_not schedules_nav_active?
+    assert_not planner_nav_active?
     assert_not classes_nav_active?
     assert_not learners_nav_active?
   end
@@ -157,5 +168,25 @@ class ApplicationHelperTest < ActionView::TestCase
     travel_to Time.zone.local(2025, 9, 9, 12) do
       assert_equal "Today", friendly_date_range(Date.new(2025, 9, 9), Date.new(2025, 9, 9))
     end
+  end
+
+  test "friendly_date can follow the family's day instead of the calendar day" do
+    travel_to Time.zone.local(2025, 9, 9, 0, 30) do
+      family_today = Date.new(2025, 9, 8)
+      assert_equal "Today", friendly_date(Date.new(2025, 9, 8), today: family_today)
+      assert_equal "Tomorrow", friendly_date(Date.new(2025, 9, 9), today: family_today)
+      assert_equal "Today", friendly_date_range(Date.new(2025, 9, 8), Date.new(2025, 9, 8), today: family_today)
+    end
+  end
+
+  test "friendly_date_range omits only the family's current year" do
+    assert_equal "9–12 Sep", friendly_date_range(Date.new(2026, 9, 9), Date.new(2026, 9, 12), today: Date.new(2026, 1, 1))
+    assert_equal "9–12 Sep 2026", friendly_date_range(Date.new(2026, 9, 9), Date.new(2026, 9, 12), today: Date.new(2025, 12, 31))
+  end
+
+  test "account_time_zone_options keeps a stored zone we no longer offer" do
+    assert_includes account_time_zone_options(Account.new(time_zone: "Eastern Time (US & Canada)")).map(&:last), "Eastern Time (US & Canada)"
+    options = account_time_zone_options(Account.new(time_zone: "Retired/Zone"))
+    assert_equal ["Unknown time zone: Retired/Zone", "Retired/Zone"], options.last
   end
 end

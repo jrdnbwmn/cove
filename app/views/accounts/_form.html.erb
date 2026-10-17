@@ -12,6 +12,19 @@
     <% end %>
   <% end %>
 
+  <%= render SelectComponent.new(
+    label: "Time zone",
+    name: "account[time_zone]",
+    id: "account_time_zone",
+    options: account_time_zone_options(account),
+    selected: account.time_zone,
+    placeholder: nil,
+    clearable: false,
+    description: "Sets when each school day starts and ends for everyone in your family.",
+    error: account.errors[:time_zone].first,
+    classes: "mb-6"
+  ) %>
+
   <% if Jumpstart::Multitenancy.domain? %>
     <%= render FormFieldComponent.new(
       label: form.object.class.human_attribute_name(:domain),

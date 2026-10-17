@@ -1,0 +1,4 @@
+<%= turbo_frame_tag "modal-lazy-content", class: "block text-left" do %>
+  <h2 class="mb-2 modal-heading text-foreground"><%= @time_off.persisted? ? "Edit time off" : "Add time off" %></h2>
+  <%= render "form", time_off: @time_off, conflicts: @conflicts || [] %>
+<% end %>

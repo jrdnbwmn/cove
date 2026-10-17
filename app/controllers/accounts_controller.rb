@@ -38,7 +38,7 @@ class AccountsController < Accounts::BaseController
   end
 
   def account_params
-    attributes = [:name, :avatar]
+    attributes = [:name, :avatar, :time_zone]
     attributes << :domain if Jumpstart::Multitenancy.domain?
     attributes << :subdomain if Jumpstart::Multitenancy.subdomain?
     params.expect(account: attributes)

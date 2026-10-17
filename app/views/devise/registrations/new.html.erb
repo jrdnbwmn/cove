@@ -17,6 +17,7 @@
 
   <%= form_with(model: resource, as: resource_name, url: registration_path(resource_name, invite: params[:invite])) do |f| %>
     <%= render "error_messages", resource: resource %>
+    <%= f.hidden_field :time_zone, data: {controller: "browser-time-zone"} %>
 
     <%# Add any extra fields when creating an Account as part of registration %>
     <!--

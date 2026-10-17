@@ -15,12 +15,18 @@ graph TD
   Controllers --> LearnersController[LearnersController]
   Controllers --> LearnerControllers[learners/]
   LearnerControllers --> LearnerArchivesController[ArchivesController]
+  Controllers --> PlannersController[PlannersController]
+  Controllers --> SchoolYearsController[SchoolYearsController]
+  Controllers --> SchoolYearControllers[school_years/]
+  SchoolYearControllers --> BreaksController[BreaksController]
+  SchoolYearControllers --> EndDatePreviewsController[EndDatePreviewsController]
   Controllers --> CoursesController[CoursesController]
   Controllers --> CourseControllers[courses/]
   CourseControllers --> CourseCompletionsController[CompletionsController]
   CourseControllers --> CourseArchivesController[ArchivesController]
   Controllers --> DevControllers[dev/]
   Controllers --> Concerns[concerns/]
+  Concerns --> CurrentSchoolYear[CurrentSchoolYear]
   Concerns --> PremiumAccess[PremiumAccess]
   Concerns --> PlanChangeGuard[PlanChangeGuard]
   Concerns --> CourseListReturn[CourseListReturn]
@@ -38,6 +44,11 @@ graph TD
   Models --> Course[Course]
   Models --> Enrollment[Enrollment]
   Models --> Current[Current]
+  Models --> SchoolYear[SchoolYear]
+  Models --> Break[Break]
+  Models --> SchoolYearConcerns[school_year/]
+  SchoolYearConcerns --> SchoolYearCounting[Counting]
+  SchoolYearConcerns --> SchoolYearDefaults[Defaults]
   Models --> UserConcerns[user/]
   UserConcerns --> AccountCreatedEmail[AccountCreatedEmail]
   UserConcerns --> MarketingConsent[MarketingConsent]
@@ -83,6 +94,10 @@ graph TD
   CourseViews --> CourseNew[new.html.erb]
   CourseViews --> CourseEdit[edit.html.erb]
   CourseViews --> CourseDelete[delete.html.erb]
+  Views --> PlannerViews[planners/]
+  Views --> SchoolYearViews[school_years/]
+  SchoolYearViews --> TimeOffViews[breaks/]
+  SchoolYearViews --> EndDatePreviewViews[end_date_previews/]
   Views --> PublicViews[public/]
   Views --> UserViews[users/]
   Views --> BillingViews[billing/subscriptions/]
@@ -95,6 +110,7 @@ graph TD
 
   App --> JavaScript[app/javascript]
   JavaScript --> Stimulus[controllers/]
+  Stimulus --> SchoolYearPreviewController[school_year_preview_controller.js]
   JavaScript --> Channels[channels/]
 
   App --> Configuration[config]
@@ -158,3 +174,16 @@ graph TD
   Course --> Account
   Course --> Enrollment
   Enrollment --> Learner
+  PlannersController --> CurrentSchoolYear
+  SchoolYearsController --> CurrentSchoolYear
+  BreaksController --> CurrentSchoolYear
+  EndDatePreviewsController --> CurrentSchoolYear
+  CurrentSchoolYear --> SchoolYear
+  SchoolYear --> Account
+  SchoolYear --> Break
+  SchoolYear --> SchoolYearCounting
+  SchoolYear --> SchoolYearDefaults
+  PlannersController --> PlannerViews
+  SchoolYearsController --> SchoolYearViews
+  BreaksController --> TimeOffViews
+  EndDatePreviewsController --> EndDatePreviewViews

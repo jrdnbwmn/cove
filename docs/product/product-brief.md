@@ -97,6 +97,37 @@ Each section is marked **Built** or **Decided, not built**.
 - Classes are listed as rows. Past 12 classes, the list adds search, which
   matches class name and subject and combines with the tab and filters.
 
+## School year (Built — `/planner/school_year`)
+
+- Everything here is **Free** and available to either parent; nothing gates
+  on plan status.
+- Every family always has one active school year, created with the family
+  (and by a one-time backfill for existing families). A parent who joins by
+  invitation shares the family's year. A family signing up mid-year gets a
+  year starting that day, with only time off still ahead; signing up in
+  summer or on the default end date gets the upcoming year.
+- The default year starts the first Monday on or after 15 Aug and ends the
+  last Friday on or before 31 May, Mon–Fri, with Thanksgiving (Thursday and
+  Friday) and Winter holidays (21 Dec–1 Jan) as time off.
+- School days are computed from the year's dates, school weekdays, and time
+  off — never stored. A weekday change takes effect from today; days before
+  today keep the weekdays they had. Past counts never change.
+- Past days are protected: new time off can't start before today, started
+  time off can only change its name and end date, and started time off can't
+  be deleted. The end date can't move before today or before the last time
+  off. In a family's first year the start can still move earlier after the
+  year begins; in later years it's locked.
+- An ended year can't be edited; the page says so and keeps its records.
+  Planning the next year isn't built.
+- Overlapping time off is never silently merged. Replace swaps the overlapping
+  entries for the new one only when every one of them is still in the future;
+  if any has started, nothing is deleted and the parent edits that entry
+  instead. Deleting time off is permanent, with an Undo that re-adds it
+  through the normal checks and says why if it no longer fits.
+- The family has one time zone (Settings → Family, defaulting from the first
+  parent's browser at signup, else Mountain). It decides what "today" is for
+  both parents.
+
 ## Learner data (Decided — applies to every feature)
 
 The bar is high. When in doubt, don't collect it and ask.

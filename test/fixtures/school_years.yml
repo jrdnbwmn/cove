@@ -1,0 +1,97 @@
+one:
+  account: one
+  starts_on: 2026-08-17
+  ends_on: 2027-05-28
+  school_weekdays: [1, 2, 3, 4, 5]
+  tracked_from: 2026-08-17
+
+two:
+  account: two
+  starts_on: 2026-08-17
+  ends_on: 2027-05-28
+  school_weekdays: [1, 2, 3, 4, 5]
+  tracked_from: 2026-08-17
+
+company:
+  account: company
+  starts_on: 2026-08-17
+  ends_on: 2027-05-28
+  school_weekdays: [1, 2, 3, 4, 5]
+  tracked_from: 2026-08-17
+
+invited:
+  account: invited
+  starts_on: 2026-08-17
+  ends_on: 2027-05-28
+  school_weekdays: [1, 2, 3, 4, 5]
+  tracked_from: 2026-08-17
+
+fake_processor:
+  account: fake_processor
+  starts_on: 2026-08-17
+  ends_on: 2027-05-28
+  school_weekdays: [1, 2, 3, 4, 5]
+  tracked_from: 2026-08-17
+
+subscribed:
+  account: subscribed
+  starts_on: 2026-08-17
+  ends_on: 2027-05-28
+  school_weekdays: [1, 2, 3, 4, 5]
+  tracked_from: 2026-08-17
+
+complimentary:
+  account: complimentary
+  starts_on: 2026-08-17
+  ends_on: 2027-05-28
+  school_weekdays: [1, 2, 3, 4, 5]
+  tracked_from: 2026-08-17
+
+past_due:
+  account: past_due
+  starts_on: 2026-08-17
+  ends_on: 2027-05-28
+  school_weekdays: [1, 2, 3, 4, 5]
+  tracked_from: 2026-08-17
+
+unpaid:
+  account: unpaid
+  starts_on: 2026-08-17
+  ends_on: 2027-05-28
+  school_weekdays: [1, 2, 3, 4, 5]
+  tracked_from: 2026-08-17
+
+paused:
+  account: paused
+  starts_on: 2026-08-17
+  ends_on: 2027-05-28
+  school_weekdays: [1, 2, 3, 4, 5]
+  tracked_from: 2026-08-17
+
+canceled_in_period:
+  account: canceled_in_period
+  starts_on: 2026-08-17
+  ends_on: 2027-05-28
+  school_weekdays: [1, 2, 3, 4, 5]
+  tracked_from: 2026-08-17
+
+canceled_ended:
+  account: canceled_ended
+  starts_on: 2026-08-17
+  ends_on: 2027-05-28
+  school_weekdays: [1, 2, 3, 4, 5]
+  tracked_from: 2026-08-17
+
+old_price:
+  account: old_price
+  starts_on: 2026-08-17
+  ends_on: 2027-05-28
+  school_weekdays: [1, 2, 3, 4, 5]
+  tracked_from: 2026-08-17
+
+downgraded:
+  account: downgraded
+  starts_on: 2026-08-17
+  ends_on: 2027-05-28
+  school_weekdays: [1, 2, 3, 4, 5]
+  tracked_from: 2026-08-17

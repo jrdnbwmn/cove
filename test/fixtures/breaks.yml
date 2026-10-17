@@ -1,0 +1,13 @@
+thanksgiving:
+  school_year: one
+  name: Thanksgiving
+  starts_on: 2026-11-26
+  ends_on: 2026-11-27
+  source: default
+
+winter:
+  school_year: one
+  name: Winter break
+  starts_on: 2026-12-21
+  ends_on: 2027-01-01
+  source: default

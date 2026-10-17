@@ -7,11 +7,13 @@ class Account < ApplicationRecord
 
   has_many :learners, dependent: :destroy
   has_many :courses, dependent: :destroy
+  has_many :school_years, dependent: :destroy
 
   scope :active, -> { where(archived_at: nil) }
   scope :archived, -> { where.not(archived_at: nil) }
 
   validates :personal, exclusion: {in: [true], message: "must be false"}
+  validates :time_zone, inclusion: {in: ->(_) { Account.time_zones.map(&:name) }}
   validates :learner_limit, numericality: {only_integer: true, greater_than_or_equal_to: -> { Account.default_learner_limit }}
   validates :complimentary_premium_note, presence: true, if: :complimentary_premium?
 
@@ -20,11 +22,34 @@ class Account < ApplicationRecord
     column_defaults.fetch("learner_limit").to_i
   end
 
+  def self.time_zones
+    @time_zones ||= (ActiveSupport::TimeZone.us_zones + ActiveSupport::TimeZone.all).uniq(&:name).freeze
+  end
+
+  # Maps a browser zone (an IANA id like "America/New_York") or a Rails zone name to the
+  # Rails zone name we store, or nil when it isn't one we offer.
+  def self.normalize_time_zone(value)
+    time_zones.find { |zone| zone.tzinfo.identifier == value || zone.name == value }&.name
+  end
+
   before_destroy :cancel_live_subscriptions!
   after_update_commit :sync_plan_status_to_marketing_subscribed_parents, if: :saved_change_to_complimentary_premium?
 
   def parents
     admins
+  end
+
+  # AIDEV-NOTE: School days turn over at 1am in the shared family zone.
+  def today
+    (Time.current.in_time_zone(time_zone) - 1.hour).to_date
+  end
+
+  def school_year
+    school_years.active.first
+  end
+
+  def school_year!
+    school_year || raise(ActiveRecord::RecordNotFound)
   end
 
   def full?

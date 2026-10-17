@@ -39,6 +39,40 @@ class UserTest < ActiveSupport::TestCase
     assert_nil user.family
   end
 
+  test "signup creates the family year and holidays together using the parent's time zone" do
+    travel_to Time.utc(2026, 7, 10, 12) do
+      user = nil
+      assert_difference({"Account.count" => 1, "SchoolYear.count" => 1, "Break.count" => 2}) do
+        user = User.create!(name: "School Parent", email: "school-parent@example.com", password: "password", terms_of_service: true, time_zone: "Eastern Time (US & Canada)")
+      end
+      assert_equal "Eastern Time (US & Canada)", user.family.time_zone
+      assert_equal Date.new(2026, 8, 17), user.family.school_year.starts_on
+      assert_no_difference ["Account.count", "SchoolYear.count", "Break.count"] do
+        assert_equal user.family, user.create_default_account
+      end
+    end
+  end
+
+  test "signup falls back to Mountain time when the parent has no zone" do
+    user = User.create!(name: "Default Parent", email: "default-parent@example.com", password: "password", terms_of_service: true)
+    assert_equal "Mountain Time (US & Canada)", user.family.time_zone
+    assert user.family.school_year
+  end
+
+  test "a failure creating the family leaves no partial signup records" do
+    assert_no_difference ["User.count", "Account.count", "SchoolYear.count", "Break.count"] do
+      assert_raises ActiveRecord::RecordInvalid do
+        User.create!(name: "Invalid Zone", email: "invalid-zone@example.com", password: "password", terms_of_service: true, time_zone: "Unknown/Zone")
+      end
+    end
+  end
+
+  test "an invitation signup creates no year or holidays" do
+    assert_no_difference ["Account.count", "SchoolYear.count", "Break.count"] do
+      User.create!(name: "Invited School Parent", email: "invited-school@example.com", password: "password", terms_of_service: true, invitation_signup: true)
+    end
+  end
+
   test "changing the password revokes the user's API tokens" do
     user = users(:one)
     assert user.api_tokens.exists?

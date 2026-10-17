@@ -166,10 +166,18 @@ Routes are modularized in `config/routes/`:
   - **Plan** in code = billing plan (`Plan` model). In UI copy, the
     learning plan is a **school plan**.
   - **Today** = the signed-in home page (the sidebar says "Home" until Today
-    is built). **Planner** = where school plans are built and viewed (the
-    `/schedules` placeholder is renamed when the Planner is built; never
-    "calendar" for the page). Its items are **schedule blocks**. Schedule
-    blocks are **done**; classes are **completed**.
+    is built). **Planner** = where school plans are built and viewed (`/planner`;
+    `/schedules` permanently redirects to it; never "calendar" for the page).
+    It has two tabs: **Schedule** (still a placeholder) and **School year**.
+    Schedule items are **schedule blocks**. Schedule blocks are **done**;
+    classes are **completed**.
+  - **School year** = `SchoolYear`, one active per family. **Time off** = `Break`
+    (the UI never says "break" as a noun); its entries are the days off inside
+    a school year. A **school day** is computed, never stored.
+- The family's clock is `Account#today` (the family's `time_zone`, with the day
+  turning over at 1:00am). All school-day logic uses it — never `Date.current`
+  or `Time.zone.today` — so both parents see the same day. Requests set
+  `Time.zone` from the family's zone, not the parent's.
 - Adding or removing a parent must not change subscription quantity.
 - Normal sessions never switch families; derive the current family from the
   user membership rather than an account cookie.

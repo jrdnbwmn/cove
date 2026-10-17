@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_10_16_184338) do
+ActiveRecord::Schema[8.1].define(version: 2026_10_17_194737) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -52,6 +52,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_16_184338) do
     t.bigint "owner_id"
     t.boolean "personal", default: false, null: false
     t.string "subdomain"
+    t.string "time_zone", default: "Mountain Time (US & Canada)", null: false
     t.datetime "updated_at", null: false
     t.index ["archived_at"], name: "index_accounts_on_archived_at"
     t.index ["owner_id"], name: "index_accounts_on_owner_id"
@@ -121,6 +122,19 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_16_184338) do
     t.bigint "user_id", null: false
     t.index ["token"], name: "index_api_tokens_on_token", unique: true
     t.index ["user_id"], name: "index_api_tokens_on_user_id"
+  end
+
+  create_table "breaks", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.date "ends_on", null: false
+    t.string "name", null: false
+    t.bigint "school_year_id", null: false
+    t.string "source", default: "added", null: false
+    t.date "starts_on", null: false
+    t.datetime "updated_at", null: false
+    t.index ["school_year_id"], name: "index_breaks_on_school_year_id"
+    t.check_constraint "ends_on >= starts_on", name: "breaks_dates_ordered"
+    t.check_constraint "source::text = ANY (ARRAY['default'::character varying, 'added'::character varying, 'repeating'::character varying]::text[])", name: "breaks_source_allowed"
   end
 
   create_table "connected_accounts", force: :cascade do |t|
@@ -366,6 +380,22 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_16_184338) do
     t.datetime "updated_at", precision: nil, null: false
   end
 
+  create_table "school_years", force: :cascade do |t|
+    t.bigint "account_id", null: false
+    t.datetime "created_at", null: false
+    t.date "ends_on", null: false
+    t.time "school_starts_at"
+    t.integer "school_weekdays", null: false, array: true
+    t.date "starts_on", null: false
+    t.string "status", default: "active", null: false
+    t.date "tracked_from"
+    t.datetime "updated_at", null: false
+    t.jsonb "weekday_history", default: [], null: false
+    t.index ["account_id"], name: "index_school_years_on_account_id"
+    t.index ["account_id"], name: "index_school_years_on_active_account", unique: true, where: "((status)::text = 'active'::text)"
+    t.check_constraint "ends_on > starts_on", name: "school_years_dates_ordered"
+  end
+
   create_table "users", force: :cascade do |t|
     t.datetime "accepted_privacy_at", precision: nil
     t.datetime "accepted_terms_at", precision: nil
@@ -420,6 +450,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_16_184338) do
   add_foreign_key "accounts", "users", column: "owner_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "api_tokens", "users"
+  add_foreign_key "breaks", "school_years"
   add_foreign_key "courses", "accounts"
   add_foreign_key "enrollments", "courses"
   add_foreign_key "enrollments", "learners"
@@ -427,4 +458,5 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_16_184338) do
   add_foreign_key "pay_charges", "pay_customers", column: "customer_id"
   add_foreign_key "pay_payment_methods", "pay_customers", column: "customer_id"
   add_foreign_key "pay_subscriptions", "pay_customers", column: "customer_id"
+  add_foreign_key "school_years", "accounts"
 end

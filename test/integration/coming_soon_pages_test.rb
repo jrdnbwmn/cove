@@ -1,22 +1,30 @@
 require "test_helper"
 
 class ComingSoonPagesTest < ActionDispatch::IntegrationTest
-  test "redirects guests to sign in for schedules" do
-    get schedules_path
+  test "redirects guests to sign in for Planner" do
+    get planner_path
 
     assert_redirected_to new_user_session_path
   end
 
-  test "shows a coming-soon empty state for signed-in users on schedules" do
+  test "Planner keeps the Schedule placeholder with real tab links" do
     sign_in users(:one)
 
-    get schedules_path
+    get planner_path
 
     assert_response :success
-    assert_select "h1", text: "Schedules"
+    assert_select "h1", text: "Planner"
+    assert_select "nav a[href=?][aria-current='page']", planner_path, text: "Schedule"
+    assert_select "nav a[href=?]", planner_school_year_path, text: "School year"
     assert_select "h2", text: "Coming soon"
     assert_select "p", text: "Schedule planning will be available here."
     assert_select "svg path[d='M3 10h18']"
+  end
+
+  test "the old schedules URL permanently redirects to Planner" do
+    get "/schedules"
+    assert_response :moved_permanently
+    assert_redirected_to planner_path
   end
 
   test "subjects no longer has a route" do

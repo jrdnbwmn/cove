@@ -1,0 +1,21 @@
+<%# locals: (time_off:) %>
+<% editable = time_off.editable? %>
+<div data-time-off="<%= time_off.id %>" class="relative p-4 <%= "transition-colors hover:bg-muted" if editable %>">
+  <% if editable %>
+    <%= render UiModalComponent.new(lazy_load: true, turbo_frame_src: edit_planner_school_year_break_path(time_off)) do |modal| %>
+      <% modal.with_trigger do %>
+        <div class="flex min-w-0 flex-col gap-2 sm:flex-row sm:items-center sm:gap-4">
+          <p class="min-w-0 flex-1 font-medium break-words">
+            <button type="button" class="<%= card_link_classes %>" data-action="click->ui-modal#open:prevent"><%= time_off.name %></button>
+          </p>
+          <p class="shrink-0 text-sm text-muted-foreground"><%= friendly_date_range(time_off.starts_on, time_off.ends_on, today: @school_year.account.today) %></p>
+        </div>
+      <% end %>
+    <% end %>
+  <% else %>
+    <div class="flex min-w-0 flex-col gap-2 sm:flex-row sm:items-center sm:gap-4">
+      <p class="min-w-0 flex-1 font-medium break-words"><%= time_off.name %></p>
+      <p class="shrink-0 text-sm text-muted-foreground"><%= friendly_date_range(time_off.starts_on, time_off.ends_on, today: @school_year.account.today) %></p>
+    </div>
+  <% end %>
+</div>

@@ -29,7 +29,11 @@ class User < ApplicationRecord
     return family if family
     return if invitation_signup
 
-    owned_accounts.create!(name: "#{name}'s Family", personal: false)
+    transaction do
+      account = owned_accounts.create!(name: "#{name}'s Family", personal: false, time_zone: time_zone.presence || Account.column_defaults.fetch("time_zone"))
+      SchoolYear.create_default_for!(account)
+      account
+    end
   end
 
   private

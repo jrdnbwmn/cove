@@ -16,4 +16,16 @@ class AccountSystemTest < ApplicationSystemTestCase
     assert @user.reload.avatar.attached?
     assert_selector "[data-controller='sidebar'] img[alt='#{@user.name}']"
   end
+
+  test "a parent changes the shared time zone inside the Family modal" do
+    visit account_path(accounts(:company))
+    click_button "Edit Family"
+    assert_selector "dialog[open] select[name='account[time_zone]']", visible: :all
+    find("#account_time_zone + .ts-wrapper .ts-control").click
+    assert_selector "dialog[open] .ts-dropdown [data-value='Eastern Time (US & Canada)']", visible: :all
+    find("dialog[open] .ts-dropdown [data-value='Eastern Time (US & Canada)']").click
+    wait_for_turbo_navigation { click_button I18n.t("helpers.submit.update", model: Account.model_name.human) }
+    assert_equal "Eastern Time (US & Canada)", accounts(:company).reload.time_zone
+    assert_no_selector "dialog[open]"
+  end
 end

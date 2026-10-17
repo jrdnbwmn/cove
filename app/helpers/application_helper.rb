@@ -36,39 +36,49 @@ module ApplicationHelper
     t("courses.index.#{course.status}_on", date: friendly_date(course.completed_at || course.archived_at))
   end
 
-  def friendly_date(date)
+  # AIDEV-NOTE: School-day views pass today: Account#today so "Today" follows the family's 1am turnover.
+  def friendly_date(date, today: Date.current)
     date = date.in_time_zone.to_date
 
     case date
-    when Date.current
+    when today
       t("friendly_dates.today")
-    when Date.tomorrow
+    when today + 1
       t("friendly_dates.tomorrow")
-    when Date.yesterday
+    when today - 1
       t("friendly_dates.yesterday")
-    when Date.current.beginning_of_year..Date.current.end_of_year
+    when today.beginning_of_year..today.end_of_year
       l(date, format: :friendly_short)
     else
       l(date, format: :friendly)
     end
   end
 
+  # Zone choices for the Family settings select. A stored zone we no longer offer stays selectable.
+  def account_time_zone_options(account)
+    options = Account.time_zones.map { |zone| [zone.to_s, zone.name] }
+    if account.time_zone.present? && options.none? { |_, value| value == account.time_zone }
+      options << ["Unknown time zone: #{account.time_zone}", account.time_zone]
+    end
+    options
+  end
+
   def friendly_time(time)
     l(time.in_time_zone, format: :friendly)
   end
 
-  def friendly_date_range(start_date, end_date)
+  def friendly_date_range(start_date, end_date, today: Date.current)
     start_date = start_date.in_time_zone.to_date
     end_date = end_date.in_time_zone.to_date
 
-    return friendly_date(start_date) if start_date == end_date
+    return friendly_date(start_date, today: today) if start_date == end_date
 
     if start_date.year != end_date.year
       "#{l(start_date, format: :friendly_short)} #{start_date.year}–#{l(end_date, format: :friendly_short)} #{end_date.year}"
     elsif start_date.month == end_date.month
-      "#{start_date.day}–#{end_date.day} #{friendly_month(end_date)}#{friendly_year(end_date)}"
+      "#{start_date.day}–#{end_date.day} #{friendly_month(end_date)}#{friendly_year(end_date, today)}"
     else
-      "#{l(start_date, format: :friendly_short)}–#{l(end_date, format: :friendly_short)}#{friendly_year(end_date)}"
+      "#{l(start_date, format: :friendly_short)}–#{l(end_date, format: :friendly_short)}#{friendly_year(end_date, today)}"
     end
   end
 
@@ -81,8 +91,8 @@ module ApplicationHelper
     current_page_or_descendant?(user_root_path)
   end
 
-  def schedules_nav_active?
-    current_page_or_descendant?(schedules_path)
+  def planner_nav_active?
+    current_page_or_descendant?(planner_path)
   end
 
   def classes_nav_active?
@@ -136,8 +146,8 @@ module ApplicationHelper
     l(date, format: :friendly_short).delete_prefix("#{date.day} ")
   end
 
-  def friendly_year(date)
-    " #{date.year}" unless date.year == Date.current.year
+  def friendly_year(date, today)
+    " #{date.year}" unless date.year == today.year
   end
 
   def current_page_or_descendant?(path)

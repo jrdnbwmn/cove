@@ -20,7 +20,7 @@ module Authentication
 
   def configure_permitted_parameters
     extra_keys = [:avatar, :name, :preferred_language, :theme]
-    devise_parameter_sanitizer.permit(:sign_up, keys: extra_keys + [:terms_of_service, :marketing_opt_in, :invite])
+    devise_parameter_sanitizer.permit(:sign_up, keys: extra_keys + [:terms_of_service, :marketing_opt_in, :invite, :time_zone])
     devise_parameter_sanitizer.permit(:account_update, keys: extra_keys)
     devise_parameter_sanitizer.permit(:accept_invitation, keys: extra_keys)
   end
