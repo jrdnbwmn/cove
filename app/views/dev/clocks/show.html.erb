@@ -1,0 +1,25 @@
+<div class="max-w-3xl">
+  <%= render PageHeaderComponent.new(title: "Dev clock") %>
+  <% override = DevClock.today %>
+  <div class="space-y-6">
+    <div class="space-y-2">
+      <p>Real today for your family: <%= current_account.real_today.strftime("%-d %b %Y") %></p>
+      <p>Override: <%= override ? override.strftime("%-d %b %Y") : "none" %></p>
+      <p>Every family's today uses this date until you clear it.</p>
+      <p class="text-sm text-muted-foreground">Edits made while pretending stay when you clear it. Reseed if data looks odd.</p>
+    </div>
+    <%= form_with url: dev_clock_path, method: :patch, class: "flex flex-col items-start gap-4" do |form| %>
+      <%= render FormFieldComponent.new(label: "Pretend date", name: "date", error: @error) do |field| %>
+        <% field.with_input do %>
+          <%= form.date_field :date, value: params[:date] || override&.iso8601, class: "form-control", required: true %>
+        <% end %>
+      <% end %>
+      <%= render ButtonComponent.new(text: "Set", type: "submit") %>
+    <% end %>
+    <% if override %>
+      <%= form_with url: dev_clock_path, method: :delete do %>
+        <%= render ButtonComponent.new(text: "Clear", type: "submit", variant: :outline) %>
+      <% end %>
+    <% end %>
+  </div>
+</div>

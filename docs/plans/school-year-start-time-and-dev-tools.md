@@ -11,7 +11,7 @@
 | 2 | 1 | 1 | Add the action to both Planner tabs | Master | ✅ |
 | 3 | 1 | 2 | Verify start-time behavior and update header guidance | subagent | ✅ |
 | 4 | 2 | 3 | Implement the development clock and family-clock fallback | Master | ✅ |
-| 5 | 2 | 4 | Build the development clock page and guards | Master | |
+| 5 | 2 | 4 | Build the development clock page and guards | Master | ✅ |
 | 6 | 2 | 5 | Create the dev clock strip component | Master | |
 | 7 | 2 | 6 | Mount the strip and verify clock flows | subagent | |
 | 8 | 3 | 7 | Share existing default school-year calendar rules | Master | |

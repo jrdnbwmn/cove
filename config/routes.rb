@@ -43,5 +43,8 @@ Rails.application.routes.draw do
     mount Lookbook::Engine, at: "/lookbook" if defined?(Lookbook::Engine)
     get "dev/kitchen_sink", to: "dev/kitchen_sink#show"
     get "dev/typography", to: "dev/typography#show"
+    namespace :dev do
+      resource :clock, only: %i[show update destroy]
+    end
   end
 end
