@@ -104,6 +104,21 @@ class TimeOffSystemTest < ApplicationSystemTestCase
     assert_not @year.breaks.exists?(id: entry.id)
   end
 
+  test "deleting time off offers Undo in a toast that brings it back" do
+    entry = @year.breaks.create!(name: "Teacher day", starts_on: "2026-10-20", ends_on: "2026-10-20", source: "added")
+    visit planner_school_year_path
+    find("[data-time-off='#{entry.id}'] button").click
+    within("dialog[open]") do
+      wait_for_turbo_navigation { click_button "Delete time off" }
+    end
+    assert_selector "[role='status']", text: "Time off removed"
+    assert_no_selector "[data-time-off]", text: "Teacher day"
+    assert_not @year.breaks.exists?(id: entry.id)
+    wait_for_turbo_navigation { click_button "Undo" }
+    assert_selector "[data-time-off]", text: "Teacher day"
+    assert_equal 1, @year.breaks.where(name: "Teacher day").count
+  end
+
   private
 
   def open_add_time_off

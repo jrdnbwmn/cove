@@ -1,0 +1,5 @@
+<%= turbo_frame_tag "end-date-preview", class: "block text-sm text-muted-foreground" do %>
+  <% if @added_days %>
+    Adds <%= pluralize(@added_days, "school day") %>.
+  <% end %>
+<% end %>

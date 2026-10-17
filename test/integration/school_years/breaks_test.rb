@@ -169,7 +169,72 @@ class SchoolYearBreaksTest < ActionDispatch::IntegrationTest
     assert Break.exists?(foreign.id)
   end
 
+  test "deleting time off removes it and offers a signed Undo" do
+    entry = @year.breaks.create!(name: "Spring break", starts_on: "2027-03-15", ends_on: "2027-03-19", source: "default")
+    assert_difference("Break.count", -1) { delete planner_school_year_break_path(entry) }
+    assert_redirected_to planner_school_year_path
+    toast = flash[:notice].with_indifferent_access
+    assert_equal "Time off removed", toast[:title]
+    assert_equal "Undo", toast[:action][:label]
+    assert_equal planner_school_year_breaks_path, toast[:action][:url]
+    assert toast[:action][:params][:restore].present?
+  end
+
+  test "Undo restores the deleted entry with its original source" do
+    entry = @year.breaks.create!(name: "Spring break", starts_on: "2027-03-15", ends_on: "2027-03-19", source: "default")
+    delete planner_school_year_break_path(entry)
+    token = undo_token
+    assert_difference("@year.breaks.count", 1) { post planner_school_year_breaks_path, params: {restore: token} }
+    assert_redirected_to planner_school_year_path
+    restored = @year.breaks.find_by!(name: "Spring break")
+    assert_equal [Date.new(2027, 3, 15), Date.new(2027, 3, 19), "default"], [restored.starts_on, restored.ends_on, restored.source]
+    assert_nil flash[:restore_error]
+  end
+
+  test "Undo explains an overlap that appeared after deletion and creates nothing" do
+    entry = @year.breaks.create!(name: "Spring break", starts_on: "2027-03-15", ends_on: "2027-03-19", source: "added")
+    delete planner_school_year_break_path(entry)
+    token = undo_token
+    @year.breaks.create!(name: "Teacher day", starts_on: "2027-03-17", ends_on: "2027-03-17")
+    assert_no_difference("Break.count") { post planner_school_year_breaks_path, params: {restore: token} }
+    assert_redirected_to planner_school_year_path
+    assert_equal "We couldn't restore Spring break. It overlaps Teacher day.", flash[:restore_error]
+  end
+
+  test "Undo explains a start that has passed since deletion" do
+    entry = @year.breaks.create!(name: "Spring break", starts_on: "2026-10-25", ends_on: "2026-10-26", source: "added")
+    delete planner_school_year_break_path(entry)
+    token = undo_token
+    travel_to Time.utc(2026, 10, 26, 12) do
+      assert_no_difference("Break.count") { post planner_school_year_breaks_path, params: {restore: token} }
+      assert_equal "We couldn't restore Spring break. It would start in the past.", flash[:restore_error]
+    end
+  end
+
+  test "submitting Undo twice restores once" do
+    entry = @year.breaks.create!(name: "Spring break", starts_on: "2027-03-15", ends_on: "2027-03-19", source: "added")
+    delete planner_school_year_break_path(entry)
+    token = undo_token
+    post planner_school_year_breaks_path, params: {restore: token}
+    assert_no_difference("Break.count") { post planner_school_year_breaks_path, params: {restore: token} }
+    assert_equal 1, @year.breaks.where(name: "Spring break").count
+    assert_match(/We couldn't restore Spring break/, flash[:restore_error])
+  end
+
+  test "Undo payloads from another family or tampered with restore nothing" do
+    foreign_token = breaks(:winter).restore_token
+    [foreign_token, "#{foreign_token}x", "garbage"].each do |token|
+      assert_no_difference("Break.count") { post planner_school_year_breaks_path, params: {restore: token} }
+      assert_redirected_to planner_school_year_path
+      assert_equal "We couldn't restore that time off.", flash[:restore_error]
+    end
+  end
+
   private
+
+  def undo_token
+    flash[:notice].with_indifferent_access.dig(:action, :params, :restore)
+  end
 
   def overlap_attributes
     {name: "Fall trip", starts_on: "2026-10-19", ends_on: "2026-10-21"}

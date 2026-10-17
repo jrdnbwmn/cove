@@ -14,6 +14,24 @@ class Break < ApplicationRecord
   validate :past_days_are_protected
   before_destroy :protect_started_entry
 
+  # AIDEV-NOTE: Undo posts these signed attributes back through create, so the restore is re-validated
+  # like any new entry. The year id ties the token to one family.
+  def restore_token
+    attributes = {school_year_id:, name:, starts_on: starts_on.iso8601, ends_on: ends_on.iso8601, source:}
+    self.class.restore_verifier.generate(attributes, purpose: :time_off_restore)
+  end
+
+  def self.restore_attributes(token, school_year)
+    data = restore_verifier.verified(token.to_s, purpose: :time_off_restore)&.with_indifferent_access
+    return unless data && data[:school_year_id] == school_year.id
+
+    {name: data[:name], starts_on: Date.iso8601(data[:starts_on]), ends_on: Date.iso8601(data[:ends_on]), source: data[:source]}
+  rescue ArgumentError
+    nil
+  end
+
+  def self.restore_verifier = Rails.application.message_verifier(:time_off_restore)
+
   def overlaps
     return self.class.none unless school_year && starts_on && ends_on
 
