@@ -23,7 +23,13 @@ class Account < ApplicationRecord
   end
 
   def self.time_zones
-    (ActiveSupport::TimeZone.us_zones + ActiveSupport::TimeZone.all).uniq(&:name)
+    @time_zones ||= (ActiveSupport::TimeZone.us_zones + ActiveSupport::TimeZone.all).uniq(&:name).freeze
+  end
+
+  # Maps a browser zone (an IANA id like "America/New_York") or a Rails zone name to the
+  # Rails zone name we store, or nil when it isn't one we offer.
+  def self.normalize_time_zone(value)
+    time_zones.find { |zone| zone.tzinfo.identifier == value || zone.name == value }&.name
   end
 
   before_destroy :cancel_live_subscriptions!
@@ -40,6 +46,10 @@ class Account < ApplicationRecord
 
   def school_year
     school_years.active.first
+  end
+
+  def school_year!
+    school_year || raise(ActiveRecord::RecordNotFound)
   end
 
   def full?

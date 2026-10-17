@@ -27,8 +27,7 @@
     <legend class="mb-2 text-sm font-medium">School days</legend>
     <%= hidden_field_tag "school_year[school_weekdays][]", "", id: nil %>
     <div class="flex flex-wrap gap-2">
-      <% %w[Mon Tue Wed Thu Fri Sat Sun].each_with_index do |day, index| %>
-        <% value = (index + 1) % 7 %>
+      <% school_weekday_options.each do |day, value| %>
         <%= render ToggleChipComponent.new(label: day, name: "school_year[school_weekdays][]", value: value, checked: school_year.school_weekdays.to_a.include?(value)) %>
       <% end %>
     </div>

@@ -129,4 +129,8 @@ class SchoolYearTest < ActiveSupport::TestCase
       assert_empty @year.reload.weekday_history
     end
   end
+
+  test "a year can end up to twelve months after it starts" do
+    assert_equal Date.new(2027, 8, 17), @year.tap { |year| year.starts_on = Date.new(2026, 8, 17) }.max_ends_on
+  end
 end

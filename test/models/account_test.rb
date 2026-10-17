@@ -601,4 +601,17 @@ class AccountTest < ActiveSupport::TestCase
       {status: 200, body: stripe_subscription_json(subscription, "status" => "canceled", "ended_at" => Time.current.to_i).to_json}
     }
   end
+
+  test "browser zones map to the Rails zone names we store" do
+    assert_equal "Eastern Time (US & Canada)", Account.normalize_time_zone("America/New_York")
+    assert_equal "Eastern Time (US & Canada)", Account.normalize_time_zone("Eastern Time (US & Canada)")
+    assert_nil Account.normalize_time_zone("Unknown/Zone")
+    assert_nil Account.normalize_time_zone(nil)
+  end
+
+  test "a family without a school year raises not found when one is required" do
+    assert_equal accounts(:company).school_year, accounts(:company).school_year!
+    accounts(:company).school_years.destroy_all
+    assert_raises(ActiveRecord::RecordNotFound) { accounts(:company).school_year! }
+  end
 end

@@ -169,4 +169,24 @@ class ApplicationHelperTest < ActionView::TestCase
       assert_equal "Today", friendly_date_range(Date.new(2025, 9, 9), Date.new(2025, 9, 9))
     end
   end
+
+  test "friendly_date can follow the family's day instead of the calendar day" do
+    travel_to Time.zone.local(2025, 9, 9, 0, 30) do
+      family_today = Date.new(2025, 9, 8)
+      assert_equal "Today", friendly_date(Date.new(2025, 9, 8), today: family_today)
+      assert_equal "Tomorrow", friendly_date(Date.new(2025, 9, 9), today: family_today)
+      assert_equal "Today", friendly_date_range(Date.new(2025, 9, 8), Date.new(2025, 9, 8), today: family_today)
+    end
+  end
+
+  test "friendly_date_range omits only the family's current year" do
+    assert_equal "9–12 Sep", friendly_date_range(Date.new(2026, 9, 9), Date.new(2026, 9, 12), today: Date.new(2026, 1, 1))
+    assert_equal "9–12 Sep 2026", friendly_date_range(Date.new(2026, 9, 9), Date.new(2026, 9, 12), today: Date.new(2025, 12, 31))
+  end
+
+  test "account_time_zone_options keeps a stored zone we no longer offer" do
+    assert_includes account_time_zone_options(Account.new(time_zone: "Eastern Time (US & Canada)")).map(&:last), "Eastern Time (US & Canada)"
+    options = account_time_zone_options(Account.new(time_zone: "Retired/Zone"))
+    assert_equal ["Unknown time zone: Retired/Zone", "Retired/Zone"], options.last
+  end
 end

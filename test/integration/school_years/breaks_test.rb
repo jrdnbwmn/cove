@@ -70,7 +70,7 @@ class SchoolYearBreaksTest < ActionDispatch::IntegrationTest
   end
 
   test "started entries reject moving their start and deleting" do
-    travel_to Time.utc(2026, 10, 20, 12) do
+    travel_to Time.utc(2026, 10, 22, 12) do
       patch planner_school_year_break_path(@entry), params: {break: {starts_on: "2026-10-21", ends_on: "2026-10-21"}}
       assert_response :unprocessable_content
       assert_equal Date.new(2026, 10, 20), @entry.reload.starts_on
@@ -134,7 +134,7 @@ class SchoolYearBreaksTest < ActionDispatch::IntegrationTest
 
   test "started overlaps block Replace, delete nothing, and link to Edit" do
     future = @year.breaks.create!(name: "Co-op day", starts_on: "2026-10-23", ends_on: "2026-10-23")
-    travel_to Time.utc(2026, 10, 20, 12) do
+    travel_to Time.utc(2026, 10, 22, 12) do
       [{}, {replace: "1"}].each do |extra|
         assert_no_difference("Break.count") do
           post planner_school_year_breaks_path, params: {break: overlap_attributes.merge(starts_on: "2026-10-20", ends_on: "2026-10-23").merge(extra)}
@@ -152,7 +152,7 @@ class SchoolYearBreaksTest < ActionDispatch::IntegrationTest
   test "a conflict that starts after the warning was shown is not deleted" do
     post planner_school_year_breaks_path, params: {break: overlap_attributes}
     assert_select "input[name='break[replace]']"
-    travel_to Time.utc(2026, 10, 20, 12) do
+    travel_to Time.utc(2026, 10, 22, 12) do
       assert_no_difference("Break.count") { post planner_school_year_breaks_path, params: {break: overlap_attributes.merge(replace: "1")} }
       assert_response :unprocessable_content
     end
@@ -202,12 +202,21 @@ class SchoolYearBreaksTest < ActionDispatch::IntegrationTest
   end
 
   test "Undo explains a start that has passed since deletion" do
-    entry = @year.breaks.create!(name: "Spring break", starts_on: "2026-10-25", ends_on: "2026-10-26", source: "added")
+    entry = @year.breaks.create!(name: "Spring break", starts_on: "2026-10-21", ends_on: "2026-10-22", source: "added")
     delete planner_school_year_break_path(entry)
     token = undo_token
-    travel_to Time.utc(2026, 10, 26, 12) do
+    travel_to Time.utc(2026, 10, 22, 12) do
       assert_no_difference("Break.count") { post planner_school_year_breaks_path, params: {restore: token} }
       assert_equal "We couldn't restore Spring break. It would start in the past.", flash[:restore_error]
+    end
+  end
+
+  test "an Undo token stops working after a week" do
+    delete planner_school_year_break_path(@entry)
+    token = undo_token
+    travel_to Time.utc(2026, 10, 25, 12) do
+      assert_no_difference("Break.count") { post planner_school_year_breaks_path, params: {restore: token} }
+      assert_equal "We couldn't restore that time off.", flash[:restore_error]
     end
   end
 

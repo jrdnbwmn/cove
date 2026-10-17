@@ -2,6 +2,8 @@ class SchoolYear < ApplicationRecord
   include Counting
   include Defaults
 
+  ENDED_ERROR = "This year has ended."
+
   belongs_to :account
   has_many :breaks, dependent: :destroy
 
@@ -23,13 +25,18 @@ class SchoolYear < ApplicationRecord
     ends_on.present? && ends_on < account.today
   end
 
+  # A year can run up to 12 months from its start.
+  def max_ends_on
+    starts_on.advance(years: 1)
+  end
+
   private
 
   def dates_are_valid
     return unless starts_on && ends_on
 
     errors.add(:ends_on, "End the year after it starts.") if ends_on <= starts_on
-    errors.add(:ends_on, "The year can be up to 12 months.") if ends_on > starts_on.advance(years: 1)
+    errors.add(:ends_on, "The year can be up to 12 months.") if ends_on > max_ends_on
   end
 
   def weekdays_are_valid
@@ -41,23 +48,29 @@ class SchoolYear < ApplicationRecord
   end
 
   def past_days_are_protected
-    today = account.today
-    if ends_on_in_database < today
-      errors.add(:base, "This year has ended.")
-      return
+    # AIDEV-NOTE: Compare the persisted dates; the in-memory ones may already be edited.
+    if ends_on_in_database < account.today
+      errors.add(:base, ENDED_ERROR)
+    else
+      start_date_is_protected
+      end_date_is_protected
     end
+  end
 
-    if will_save_change_to_starts_on? && starts_on && starts_on_in_database <= today
-      if tracked_from_in_database.nil? || starts_on > starts_on_in_database
-        errors.add(:starts_on, "The year has started. You can only move the start earlier.")
-      end
-    end
-    if ends_on
-      errors.add(:ends_on, "The end can't be before today.") if ends_on < today
-      last_break = breaks.order(ends_on: :desc).first
-      if last_break && last_break.ends_on > ends_on
-        errors.add(:ends_on, "#{last_break.name} ends after this date. Change it first.")
-      end
+  def start_date_is_protected
+    return unless will_save_change_to_starts_on? && starts_on && starts_on_in_database <= account.today
+    return unless tracked_from_in_database.nil? || starts_on > starts_on_in_database
+
+    errors.add(:starts_on, "The year has started. You can only move the start earlier.")
+  end
+
+  def end_date_is_protected
+    return unless ends_on
+
+    errors.add(:ends_on, "The end can't be before today.") if ends_on < account.today
+    last_break = breaks.order(ends_on: :desc).first
+    if last_break && last_break.ends_on > ends_on
+      errors.add(:ends_on, "#{last_break.name} ends after this date. Change it first.")
     end
   end
 

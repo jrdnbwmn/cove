@@ -23,8 +23,10 @@ module SchoolYear::Counting
     count_school_days(starts_on, [tracked_from - 1, ends_on].min)
   end
 
+  # Nil when the date is past the 12-month limit, so no preview applies.
   def added_days_if_ended_on(date)
     return 0 if date <= ends_on
+    return if date > max_ends_on
 
     count_school_days(ends_on + 1, date)
   end

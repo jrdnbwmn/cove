@@ -108,7 +108,7 @@ Each section is marked **Built** or **Decided, not built**.
   summer or on the default end date gets the upcoming year.
 - The default year starts the first Monday on or after 15 Aug and ends the
   last Friday on or before 31 May, Mon–Fri, with Thanksgiving (Thursday and
-  Friday) and Winter break (21 Dec–1 Jan) as time off.
+  Friday) and Winter holidays (21 Dec–1 Jan) as time off.
 - School days are computed from the year's dates, school weekdays, and time
   off — never stored. A weekday change takes effect from today; days before
   today keep the weekdays they had. Past counts never change.

@@ -19,9 +19,10 @@
 
 <section class="mt-8 sm:mt-12" aria-labelledby="time-off-heading">
   <h2 id="time-off-heading" class="mb-4">Time off</h2>
-  <% if @school_year.breaks.any? %>
+  <% time_off_entries = @school_year.breaks.ordered.load %>
+  <% if time_off_entries.any? %>
     <div class="divide-y divide-border">
-      <%= render partial: "break", collection: @school_year.breaks.ordered, as: :time_off %>
+      <%= render partial: "break", collection: time_off_entries, as: :time_off %>
       <% unless @school_year.ended? %>
         <div id="time-off-inline-add">
           <%= render "application/lazy_modal", src: new_planner_school_year_break_path, text: "Add time off", row: true %>

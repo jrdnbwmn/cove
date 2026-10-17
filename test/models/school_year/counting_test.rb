@@ -94,6 +94,7 @@ class SchoolYear::CountingTest < ActiveSupport::TestCase
     assert_equal 0, @year.added_days_if_ended_on(@year.ends_on)
     assert_equal 0, @year.added_days_if_ended_on(Date.new(2026, 8, 30))
     assert_equal 2, @year.added_days_if_ended_on(Date.new(2026, 9, 1))
+    assert_nil @year.added_days_if_ended_on(@year.max_ends_on + 1)
     assert_equal Date.new(2026, 8, 28), @year.ends_on
     @year.school_weekdays = [2]
     assert_equal 1, @year.added_days_if_ended_on(Date.new(2026, 9, 1))

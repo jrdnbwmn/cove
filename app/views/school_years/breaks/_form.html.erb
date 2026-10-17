@@ -1,6 +1,6 @@
 <% underway = time_off.persisted? && time_off.started? %>
 <% conflicts = local_assigns.fetch(:conflicts, []) %>
-<% replaceable = conflicts.any? && conflicts.none?(&:started?) && !time_off.school_year.ended? %>
+<% replaceable = time_off.replaceable?(conflicts) %>
 <%= form_with model: time_off, scope: :break, url: time_off.persisted? ? planner_school_year_break_path(time_off) : planner_school_year_breaks_path, id: "time-off-form", class: "flex flex-col gap-6", data: {controller: "time-off-dates"} do |form| %>
   <%= render FormFieldComponent.new(label: "Name", name: "break[name]", id: "break_name", error: time_off.errors[:name].first) do |field| %>
     <% field.with_input do %>
@@ -30,7 +30,7 @@
     <%= render ButtonComponent.new(text: time_off_submit_label(time_off, conflicts, replaceable), type: "submit") %>
   </div>
 <% end %>
-<% if time_off.persisted? && !time_off.started? %>
+<% if time_off.deletable? %>
   <div class="mt-6 border-t border-border pt-6">
     <%= form_with url: planner_school_year_break_path(time_off), method: :delete do %>
       <%= render ButtonComponent.new(text: "Delete time off", type: "submit", variant: :destructive) %>

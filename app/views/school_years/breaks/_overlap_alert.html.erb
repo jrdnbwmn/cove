@@ -1,4 +1,4 @@
-<% names = conflicts.map { |entry| "#{entry.name} (#{friendly_date_range(entry.starts_on, entry.ends_on)})" } %>
+<% names = conflicts.map { |entry| "#{entry.name} (#{friendly_date_range(entry.starts_on, entry.ends_on, today: entry.school_year.account.today)})" } %>
 <% started = conflicts.select(&:started?) %>
 <%= render AlertComponent.new(
   title: "This overlaps #{names.to_sentence}.",

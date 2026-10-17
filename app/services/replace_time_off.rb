@@ -12,7 +12,7 @@ class ReplaceTimeOff
       # AIDEV-NOTE: Re-query after locking; the modal's earlier conflicts may be stale.
       conflicts = time_off.overlaps.to_a
       if time_off.school_year.ended?
-        time_off.errors.add(:base, "This year has ended.")
+        time_off.errors.add(:base, SchoolYear::ENDED_ERROR)
       elsif conflicts.any?(&:started?)
         time_off.errors.add(:base, Break::STARTED_DELETE_ERROR)
       else

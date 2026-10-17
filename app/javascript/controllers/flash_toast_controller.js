@@ -44,6 +44,9 @@ export default class extends Controller {
   // form so Turbo handles the redirect and the request carries the CSRF token.
   serverAction() {
     const { label, url, params = {} } = this.actionValue
+    // The form carries the CSRF token, so it may only ever post back to this app.
+    if (new URL(url, window.location.origin).origin !== window.location.origin) return null
+
     let submitted = false
 
     return {

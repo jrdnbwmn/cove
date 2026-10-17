@@ -12,15 +12,11 @@
     <% end %>
   <% end %>
 
-  <% time_zones = Account.time_zones.map { |zone| [zone.to_s, zone.name] } %>
-  <% if account.time_zone.present? && time_zones.none? { |_, value| value == account.time_zone } %>
-    <% time_zones << ["Unknown time zone: #{account.time_zone}", account.time_zone] %>
-  <% end %>
   <%= render SelectComponent.new(
     label: "Time zone",
     name: "account[time_zone]",
     id: "account_time_zone",
-    options: time_zones,
+    options: account_time_zone_options(account),
     selected: account.time_zone,
     placeholder: nil,
     clearable: false,

@@ -16,8 +16,7 @@ class Users::RegistrationsController < Devise::RegistrationsController
 
   def build_resource(hash = {})
     self.resource = resource_class.new_with_session(hash, session)
-    browser_zone = resource.time_zone
-    resource.time_zone = Account.time_zones.find { |zone| zone.tzinfo.identifier == browser_zone || zone.name == browser_zone }&.name
+    resource.time_zone = Account.normalize_time_zone(resource.time_zone)
 
     # Registering to accept an invitation should display the invitation on sign up
     if params[:invite] && (invite = AccountInvitation.for_active_account.find_by(token: params[:invite]))

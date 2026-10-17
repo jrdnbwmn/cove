@@ -16,7 +16,7 @@ class SchoolYear::DefaultsTest < ActiveSupport::TestCase
         assert_equal [1, 2, 3, 4, 5], school_year.school_weekdays
         assert_equal total, school_year.school_days_count
         assert_equal school_year.starts_on, school_year.tracked_from
-        assert_equal ["Thanksgiving", "Winter break"], school_year.breaks.ordered.pluck(:name)
+        assert_equal ["Thanksgiving", "Winter holidays"], school_year.breaks.ordered.pluck(:name)
         assert_equal ["default"], school_year.breaks.distinct.pluck(:source)
         school_year.destroy!
       end
@@ -76,7 +76,7 @@ class SchoolYear::DefaultsTest < ActiveSupport::TestCase
     travel_to Time.utc(2026, 12, 26, 12) do
       year = SchoolYear.create_default_for!(@account)
       entry = year.breaks.sole
-      assert_equal "Winter break", entry.name
+      assert_equal "Winter holidays", entry.name
       assert_equal Date.new(2026, 12, 26), entry.starts_on
       assert_equal Date.new(2027, 1, 1), entry.ends_on
       assert_equal Date.new(2027, 1, 4), year.tracked_from

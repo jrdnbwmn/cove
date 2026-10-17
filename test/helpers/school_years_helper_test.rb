@@ -49,4 +49,16 @@ class SchoolYearsHelperTest < ActionView::TestCase
   test "year date ranges keep both years when crossing calendar years" do
     assert_includes school_year_summary(school_years(:one)), "17 Aug 2026–28 May 2027"
   end
+
+  test "school weekday options start on Monday and use wday values" do
+    assert_equal [["Mon", 1], ["Tue", 2], ["Wed", 3], ["Thu", 4], ["Fri", 5], ["Sat", 6], ["Sun", 0]], school_weekday_options
+  end
+
+  test "the time off button says what it will do" do
+    entry = Break.new
+    assert_equal "Add time off", time_off_submit_label(entry, [], false)
+    entry.stub(:persisted?, true) { assert_equal "Save", time_off_submit_label(entry, [], false) }
+    assert_equal "Replace it", time_off_submit_label(entry, [Break.new], true)
+    assert_equal "Replace them", time_off_submit_label(entry, [Break.new, Break.new], true)
+  end
 end

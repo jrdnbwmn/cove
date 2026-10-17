@@ -56,6 +56,14 @@ class FlashMessagesSystemTest < ApplicationSystemTestCase
     assert_no_button "Undo"
   end
 
+  test "a server-backed toast action never posts to another origin" do
+    visit root_path
+    add_server_toast(message: "Time off removed", action: {label: "Undo", url: "https://example.com/restore", params: {}})
+
+    assert_selector "[role='status']", text: "Time off removed"
+    assert_no_button "Undo"
+  end
+
   test "Turbo navigation clears a server-backed toast action" do
     visit root_path
     add_server_toast(message: "Time off removed", action: {label: "Undo", url: "/restore", params: {}})

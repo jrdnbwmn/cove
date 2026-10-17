@@ -5,8 +5,9 @@ class Break < ApplicationRecord
   STARTED_DELETE_ERROR = "Time off that has started can't be deleted."
 
   scope :ordered, -> { order(:starts_on, :id) }
+  scope :overlapping, ->(first_day, last_day) { where(starts_on: ..last_day, ends_on: first_day..) }
 
-  validates :name, presence: {message: "Add a name."}
+  validates :name, presence: {message: "Add a name."}, length: {maximum: 100, message: "Use 100 characters or fewer."}
   validates :starts_on, :ends_on, presence: true
   validates :source, inclusion: {in: %w[default added repeating]}
   validate :dates_are_valid
@@ -18,7 +19,7 @@ class Break < ApplicationRecord
   # like any new entry. The year id ties the token to one family.
   def restore_token
     attributes = {school_year_id:, name:, starts_on: starts_on.iso8601, ends_on: ends_on.iso8601, source:}
-    self.class.restore_verifier.generate(attributes, purpose: :time_off_restore)
+    self.class.restore_verifier.generate(attributes, purpose: :time_off_restore, expires_in: 1.week)
   end
 
   def self.restore_attributes(token, school_year)
@@ -35,12 +36,26 @@ class Break < ApplicationRecord
   def overlaps
     return self.class.none unless school_year && starts_on && ends_on
 
-    school_year.breaks.where.not(id: id).where("starts_on <= ? AND ends_on >= ?", ends_on, starts_on).ordered
+    school_year.breaks.where.not(id: id).overlapping(starts_on, ends_on).ordered
   end
 
   def started?
     start_date = persisted? ? starts_on_in_database : starts_on
     start_date.present? && start_date <= school_year.account.today
+  end
+
+  # Whether a parent can still open this entry to change it.
+  def editable?
+    !school_year.ended? && ends_on >= school_year.account.today
+  end
+
+  def deletable?
+    persisted? && !started? && !school_year.ended?
+  end
+
+  # Replace deletes the conflicts, so it only applies while none of them has started.
+  def replaceable?(conflicts)
+    conflicts.any? && conflicts.none?(&:started?) && !school_year.ended?
   end
 
   private
@@ -62,10 +77,10 @@ class Break < ApplicationRecord
     return unless school_year
 
     today = school_year.account.today
-    errors.add(:base, "This year has ended.") if school_year.ended?
+    errors.add(:base, SchoolYear::ENDED_ERROR) if school_year.ended?
     if new_record? || !started?
       errors.add(:starts_on, "Choose a start date from today on.") if starts_on && starts_on < today
-    elsif started?
+    else
       if will_save_change_to_starts_on? || will_save_change_to_school_year_id? || will_save_change_to_source?
         errors.add(:starts_on, "Already started. You can change the end date.")
       end
@@ -76,7 +91,7 @@ class Break < ApplicationRecord
   def protect_started_entry
     # AIDEV-NOTE: Family deletion must remove its historical records too.
     return if destroyed_by_association
-    return unless started? || school_year.ended?
+    return if deletable?
 
     errors.add(:base, STARTED_DELETE_ERROR)
     throw :abort

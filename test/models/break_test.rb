@@ -22,6 +22,12 @@ class BreakTest < ActiveSupport::TestCase
     end
   end
 
+  test "time off names stay short enough to fit in a flash message" do
+    @break.name = "a" * 101
+    assert_not @break.valid?
+    assert_not_empty @break.errors[:name]
+  end
+
   test "time off stays inside the year and ends on or after its start" do
     [[@year.starts_on - 1, @year.starts_on], [@year.ends_on, @year.ends_on + 1],
       [Date.new(2026, 10, 22), Date.new(2026, 10, 21)]].each do |start_date, end_date|
@@ -95,6 +101,34 @@ class BreakTest < ActiveSupport::TestCase
   test "deleting a family removes even protected historical time off" do
     travel_to Time.utc(2027, 6, 1, 12) do
       assert_difference("Break.count", -2) { @year.account.destroy! }
+    end
+  end
+
+  test "time off is editable until it ends or its year ends" do
+    assert @break.editable?
+    @break.ends_on = Date.new(2026, 10, 16)
+    assert_not @break.editable?
+    travel_to Time.utc(2027, 7, 1, 12) do
+      assert_not @year.breaks.new(starts_on: "2027-07-02", ends_on: "2027-07-03").editable?
+    end
+  end
+
+  test "only saved time off that has not started can be deleted" do
+    assert_not @break.deletable?
+    @break.save!
+    assert @break.deletable?
+    travel_to Time.utc(2026, 10, 20, 12) do
+      assert_not @break.reload.deletable?
+    end
+  end
+
+  test "time off can replace overlaps only while none of them has started" do
+    future = @year.breaks.create!(name: "Future", starts_on: "2026-10-22", ends_on: "2026-10-23")
+    assert_not @break.replaceable?([])
+    assert @break.replaceable?([future])
+    started = @year.breaks.create!(name: "Started", starts_on: "2026-10-18", ends_on: "2026-10-19")
+    travel_to Time.utc(2026, 10, 18, 12) do
+      assert_not @break.replaceable?([future, started.reload])
     end
   end
 end

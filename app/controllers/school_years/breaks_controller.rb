@@ -1,11 +1,11 @@
 class SchoolYears::BreaksController < ApplicationController
-  before_action :authenticate_user!
-  before_action :set_school_year
+  include CurrentSchoolYear
+
   before_action :set_time_off, only: %i[edit update destroy]
+  before_action :forbid_ended_year, only: %i[new edit]
 
   def new
     @time_off = @school_year.breaks.new(starts_on: current_account.today, ends_on: current_account.today)
-    head :forbidden if @school_year.ended?
   end
 
   def create
@@ -20,7 +20,7 @@ class SchoolYears::BreaksController < ApplicationController
   end
 
   def edit
-    @school_year.ended? ? head(:forbidden) : render(:new)
+    render :new
   end
 
   def update
@@ -57,8 +57,9 @@ class SchoolYears::BreaksController < ApplicationController
   def restore_error_message(entry)
     return "We couldn't restore that time off." unless entry
 
-    reason = if entry.overlaps.exists?
-      "It overlaps #{entry.overlaps.map(&:name).to_sentence}."
+    overlaps = entry.overlaps.map(&:name)
+    reason = if overlaps.any?
+      "It overlaps #{overlaps.to_sentence}."
     elsif entry.starts_on < current_account.today
       "It would start in the past."
     else
@@ -77,10 +78,6 @@ class SchoolYears::BreaksController < ApplicationController
   def render_invalid
     @conflicts = @time_off.overlaps.to_a
     render :new, status: :unprocessable_content
-  end
-
-  def set_school_year
-    @school_year = current_account.school_year || raise(ActiveRecord::RecordNotFound)
   end
 
   def set_time_off

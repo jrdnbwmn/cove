@@ -59,8 +59,8 @@
 
       <fieldset class="mt-8 flex flex-wrap gap-2" id="weekday-toggle-chips">
         <legend class="mb-2 text-sm font-medium">School days</legend>
-        <% %w[Mon Tue Wed Thu Fri Sat Sun].each_with_index do |day, index| %>
-          <%= render ToggleChipComponent.new(label: day, name: "school_weekdays[]", value: (index + 1) % 7, checked: index < 5) %>
+        <% school_weekday_options.each_with_index do |(day, value), index| %>
+          <%= render ToggleChipComponent.new(label: day, name: "school_weekdays[]", value: value, checked: index < 5) %>
         <% end %>
       </fieldset>
       <div class="mt-4 flex flex-wrap gap-4">

@@ -1,12 +1,12 @@
 class SchoolYearsController < ApplicationController
-  before_action :authenticate_user!
-  before_action :set_school_year
+  include CurrentSchoolYear
+
+  before_action :forbid_ended_year, only: :edit
 
   def show
   end
 
   def edit
-    head :forbidden if @school_year.ended?
   end
 
   def update
@@ -24,10 +24,6 @@ class SchoolYearsController < ApplicationController
   # the redirect already consumed the flash) and no #toasts, so the saved/removed toast is lost.
   def set_layout
     (turbo_frame_request? && action_name == "show") ? nil : super
-  end
-
-  def set_school_year
-    @school_year = current_account.school_year || raise(ActiveRecord::RecordNotFound)
   end
 
   def school_year_params
