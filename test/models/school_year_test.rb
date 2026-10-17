@@ -6,6 +6,14 @@ class SchoolYearTest < ActiveSupport::TestCase
     @year = school_years(:one)
   end
 
+  test "the usual start time keeps its wall clock hour when the family changes zones" do
+    Time.use_zone("Mountain Time (US & Canada)") { @year.update!(school_starts_at: "08:30") }
+    @year.account.update!(time_zone: "Eastern Time (US & Canada)")
+    Time.use_zone(@year.account.time_zone) do
+      assert_equal "08:30", @year.reload.school_starts_at.strftime("%H:%M")
+    end
+  end
+
   test "each family can find its own active year" do
     assert_equal @year, accounts(:one).school_year
     assert_equal school_years(:company), accounts(:company).school_year

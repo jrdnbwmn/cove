@@ -20,6 +20,7 @@ Rails.application.routes.draw do
   get "/schedules", to: redirect("/planner"), as: :schedules
   resource :planner, only: :show do
     resource :school_year, only: %i[show edit update] do
+      resource :shape_of_day, only: %i[edit update], controller: "school_years/shape_of_days"
       resource :end_date_preview, only: :show, controller: "school_years/end_date_previews"
       resources :breaks, path: "time_off", module: :school_years, only: %i[new create edit update destroy]
     end

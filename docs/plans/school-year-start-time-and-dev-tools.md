@@ -7,8 +7,8 @@
 
 | Task | Phase | Checkpoint | Description | Assign | Done |
 | ---- | ----- | ---------- | ----------- | ------ | ---- |
-| 1 | 1 | 1 | Build the start-time endpoint and modal | Master | |
-| 2 | 1 | 1 | Add the action to both Planner tabs | Master | |
+| 1 | 1 | 1 | Build the start-time endpoint and modal | Master | ✅ |
+| 2 | 1 | 1 | Add the action to both Planner tabs | Master | ✅ |
 | 3 | 1 | 2 | Verify start-time behavior and update header guidance | subagent | |
 | 4 | 2 | 3 | Implement the development clock and family-clock fallback | Master | |
 | 5 | 2 | 4 | Build the development clock page and guards | Master | |
@@ -295,3 +295,7 @@ Phase 1 delivers Shape of the day. Phase 2 delivers the development clock. Phase
 - Task 9 depends on Tasks 4 and 8. Tasks 7 and 9 may overlap file work once their prerequisites pass; tests remain sequential.
 - Task 10 depends on all preceding tasks.
 - Subagents do not commit. The master coordinates verification and checkpoint reviews.
+
+## Execution notes
+
+- Approved prerequisite: disable time-zone conversion for `SchoolYear#school_starts_at`, with a regression test preserving its wall-clock hour after family-zone changes.

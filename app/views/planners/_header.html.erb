@@ -1,5 +1,11 @@
 <%# locals: (active_tab:) %>
-<%= render PageHeaderComponent.new(title: "Planner") %>
+<%= render PageHeaderComponent.new(title: "Planner") do |header| %>
+  <% unless @school_year.ended? %>
+    <% header.with_primary_action do %>
+      <%= render "application/lazy_modal", src: edit_planner_school_year_shape_of_day_path, title: "Shape of the day", text: "Shape of the day", button: {variant: :outline} %>
+    <% end %>
+  <% end %>
+<% end %>
 
 <%= render UiTabsComponent.new(mode: :links, variant: :underline, label: "Planner") do |tabs| %>
   <% tabs.with_tab(title: "Schedule", href: planner_path, active: active_tab == :schedule) %>
