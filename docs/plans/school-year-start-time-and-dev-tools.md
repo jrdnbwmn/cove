@@ -16,7 +16,7 @@
 | 7 | 2 | 6 | Mount the strip and verify clock flows | subagent | ✅ |
 | 8 | 3 | 7 | Share existing default school-year calendar rules | Master | ✅ |
 | 9 | 3 | 7 | Add the three seed families | subagent | ✅ |
-| 10 | 3 | 7 | Complete final validation | Master | |
+| 10 | 3 | 7 | Complete final validation | Master | ✅ |
 
 Phase 1 delivers Shape of the day. Phase 2 delivers the development clock. Phase 3 delivers the seed scenarios. Each phase can ship independently after its checkpoints pass.
 
@@ -303,3 +303,14 @@ Phase 1 delivers Shape of the day. Phase 2 delivers the development clock. Phase
 - Task 6 followed create-component: checked RailsBlocks banner docs/examples and dry run, adapted its message/action row without its optional JS, and added the required catalog and kitchen-sink examples.
 
 - Task 7 uses the existing SidebarComponent `min_height_class: "min-h-0"` option so the strip and sidebar fit within the fixed shell. Clear-return regression also preserves the full verified origin for double-slash paths.
+
+## Final validation
+
+- Focused tests: 148 runs, 1,165 assertions, no failures or errors.
+- Full Rails suite and final checkpoint review: 1,543 runs, 8,994 assertions, no failures or errors.
+- Full system suite: 164 runs, 1,031 assertions, no failures or errors.
+- RuboCop: 699 files inspected, no offenses. ERB lint: 365 files, no errors.
+- Development `bin/rails db:seed` ran twice. All three scenarios' year/time-off attributes were unchanged on the second run; the existing clock-file state was preserved.
+- Rebuilt Tailwind and inspected desktop/390px evidence under `.context/shape-of-day-*.png` and `.context/dev-clock*.png`: visible actions, field focus, phone button order, and shell scrolling verified.
+- Reviewed committed and uncommitted changes against `origin/main`; `git diff --check` clean. Checkpoints 1–7 reviewed and committed.
+- Existing shared lazy-modal limitation observed: after Discard, the database is unchanged, but reopening the same cached modal before navigation retains its unsaved field value. Shared modal behavior remains outside this plan's scope.

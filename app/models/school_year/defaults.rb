@@ -21,11 +21,25 @@ module SchoolYear::Defaults
       end
     end
 
+    def default_starts_on(year)
+      date = Date.new(year, 8, 15)
+      date + (1 - date.wday) % 7
+    end
+
+    def default_ends_on(year)
+      date = Date.new(year + 1, 5, 31)
+      date - (date.wday - 5) % 7
+    end
+
+    def default_breaks_for(calendar_year)
+      [["Thanksgiving", thanksgiving(calendar_year), thanksgiving(calendar_year) + 1],
+        ["Winter holidays", Date.new(calendar_year, 12, 21), Date.new(calendar_year + 1, 1, 1)]]
+    end
+
     private
 
     def create_default_breaks(year, calendar_year, today)
-      [["Thanksgiving", thanksgiving(calendar_year), thanksgiving(calendar_year) + 1],
-        ["Winter holidays", Date.new(calendar_year, 12, 21), Date.new(calendar_year + 1, 1, 1)]].each do |name, first_day, last_day|
+      default_breaks_for(calendar_year).each do |name, first_day, last_day|
         next if last_day < today
 
         year.breaks.create!(name: name, starts_on: [first_day, today].max, ends_on: last_day, source: "default")
@@ -35,16 +49,6 @@ module SchoolYear::Defaults
     def thanksgiving(year)
       date = Date.new(year, 11, 1)
       date + (4 - date.wday) % 7 + 21
-    end
-
-    def default_starts_on(year)
-      date = Date.new(year, 8, 15)
-      date + (1 - date.wday) % 7
-    end
-
-    def default_ends_on(year)
-      date = Date.new(year + 1, 5, 31)
-      date - (date.wday - 5) % 7
     end
   end
 end

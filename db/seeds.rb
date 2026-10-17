@@ -99,5 +99,40 @@ if Rails.env.local?
     complimentary_premium_note: "Dev seed: complimentary Premium tester"
   )
 
+  [["new", "New Family"], ["midyear", "Mid-year Family"], ["away", "Away Family"]].each do |scenario, family_name|
+    User.transaction do
+      user = User.find_or_initialize_by(email: "#{scenario}@cove.test")
+      new_user = user.new_record?
+      if new_user
+        user.assign_attributes(name: family_name, password: "password", terms_of_service: "1", confirmed_at: Time.current)
+        user.save!
+      end
+      user.create_default_account unless user.family
+      scenario_family = user.family
+      scenario_family.update!(name: family_name) if new_user
+      next if !new_user && scenario_family.school_year
+
+      year = SchoolYear.create_default_for!(scenario_family)
+      next if scenario == "new"
+
+      today = scenario_family.today
+      calendar_year = today.year
+      calendar_year -= 1 if today < SchoolYear.default_starts_on(calendar_year)
+      starts_on = SchoolYear.default_starts_on(calendar_year)
+
+      # AIDEV-NOTE: Historical demo scenarios intentionally bypass past-day protections.
+      # Replace signup's year only on initialization; reseeding preserves parents' edits.
+      year.update_columns(starts_on: starts_on, ends_on: SchoolYear.default_ends_on(calendar_year), school_weekdays: [1, 2, 3, 4, 5], weekday_history: [])
+      year.breaks.delete_all
+      time_off = SchoolYear.default_breaks_for(calendar_year).map do |name, first, last|
+        {name: name, starts_on: first, ends_on: last, source: "default"}
+      end
+      time_off << {name: "Family day", starts_on: starts_on, ends_on: starts_on, source: "added"} if today > starts_on
+      year.breaks.insert_all!(time_off)
+      first_school_day = (starts_on..year.ends_on).find { |day| year.school_day?(day) }
+      year.update_columns(tracked_from: first_school_day)
+    end
+  end
+
   Jumpstart.grant_system_admin!(superadmin)
 end
