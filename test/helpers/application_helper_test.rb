@@ -9,30 +9,41 @@ class ApplicationHelperTest < ActionView::TestCase
     request.path = "/"
     assert dashboard_nav_active?
 
-    request.path = "/schedules"
+    request.path = "/planner"
     assert_not dashboard_nav_active?
   end
 
   test "each product page highlights only its own sidebar item" do
-    request.path = "/schedules"
-    assert schedules_nav_active?
+    request.path = "/planner"
+    assert planner_nav_active?
     assert_not classes_nav_active?
     assert_not learners_nav_active?
     assert_not dashboard_nav_active?
 
     request.path = "/classes"
     assert classes_nav_active?
-    assert_not schedules_nav_active?
+    assert_not planner_nav_active?
     assert_not learners_nav_active?
 
     request.path = "/learners"
     assert learners_nav_active?
-    assert_not schedules_nav_active?
+    assert_not planner_nav_active?
     assert_not classes_nav_active?
 
     request.path = support_path
     assert support_nav_active?
     assert_not learners_nav_active?
+  end
+
+  test "Planner stays active on both tabs and only real descendant paths" do
+    ["/planner", "/planner/school_year", "/planner/school_year/edit"].each do |path|
+      request.path = path
+      assert planner_nav_active?
+    end
+    ["/planners", "/planner_other", "/schedules"].each do |path|
+      request.path = path
+      assert_not planner_nav_active?
+    end
   end
 
   test "settings stays highlighted across profile, security, and two-factor pages" do
@@ -109,7 +120,7 @@ class ApplicationHelperTest < ActionView::TestCase
     assert_not settings_nav_active?
     assert_not family_tab_active?
     assert_not dashboard_nav_active?
-    assert_not schedules_nav_active?
+    assert_not planner_nav_active?
     assert_not classes_nav_active?
     assert_not learners_nav_active?
   end

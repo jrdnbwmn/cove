@@ -21,8 +21,8 @@
 | 12 | 2 | 6 | Add Family settings time zone | Master | ✅ |
 | 13 | 3 | 7 | Build ToggleChipComponent | Master | ✅ |
 | 14 | 3 | 7 | Register and preview toggle chips | Master | ✅ |
-| 15 | 3 | 8 | Add Planner routes and Schedule tab | Master | |
-| 16 | 3 | 8 | Rename sidebar navigation | Master | |
+| 15 | 3 | 8 | Add Planner routes and Schedule tab | Master | ✅ |
+| 16 | 3 | 8 | Rename sidebar navigation | Master | ✅ |
 | 17 | 3 | 9 | Add Edit year endpoints and form | Master | |
 | 18 | 3 | 9 | Add school-year summary states | subagent | |
 | 19 | 3 | 10 | Add time-off rows and empty state | subagent | |

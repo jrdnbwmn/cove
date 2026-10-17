@@ -81,8 +81,8 @@ module ApplicationHelper
     current_page_or_descendant?(user_root_path)
   end
 
-  def schedules_nav_active?
-    current_page_or_descendant?(schedules_path)
+  def planner_nav_active?
+    current_page_or_descendant?(planner_path)
   end
 
   def classes_nav_active?

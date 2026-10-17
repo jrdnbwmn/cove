@@ -31,7 +31,7 @@ class AppShellSystemTest < ApplicationSystemTestCase
 
     assert_selector "[data-controller='sidebar']"
     assert_link "Home", href: user_root_path
-    assert_link "Schedules", href: schedules_path
+    assert_link "Planner", href: planner_path
     assert_link "Classes", href: courses_path
     assert_link "Learners", href: learners_path
     assert_selector "a[href='#{user_root_path}'][aria-current='page']", count: 1
@@ -95,7 +95,7 @@ class AppShellSystemTest < ApplicationSystemTestCase
 
     within "dialog[open]" do
       assert_link "Home", href: user_root_path
-      assert_link "Schedules", href: schedules_path
+      assert_link "Planner", href: planner_path
       assert_link "Settings", href: edit_user_registration_path
       assert_link "Support", href: support_path
       assert_selector "button", text: "Sign out"
@@ -140,11 +140,11 @@ class AppShellSystemTest < ApplicationSystemTestCase
     visit root_path
 
     find("button[aria-label='Collapse sidebar']").click
-    find("a[href='#{schedules_path}']", match: :first).click
+    find("a[href='#{planner_path}']", match: :first).click
 
-    assert_current_path schedules_path
+    assert_current_path planner_path
     assert_selector "button[aria-label='Expand sidebar']", visible: true
-    assert_selector "a[href='#{schedules_path}'][aria-current='page']", count: 1
+    assert_selector "[data-sidebar-target='desktopSidebar'] a[href='#{planner_path}'][aria-current='page']", count: 1
     assert_no_selector "a[href='#{user_root_path}'][aria-current='page']"
   end
 

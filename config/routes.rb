@@ -17,7 +17,12 @@ Rails.application.routes.draw do
     # get "/dashboard", to: "dashboard#show", as: :user_root
   end
 
-  resources :schedules, only: :index
+  get "/schedules", to: redirect("/planner"), as: :schedules
+  resource :planner, only: :show do
+    resource :school_year, only: %i[show edit update] do
+      resources :breaks, path: "time_off", module: :school_years, only: %i[new create edit update destroy]
+    end
+  end
   resources :courses, path: "classes", except: :show do
     get :delete, on: :member
     resource :completion, only: %i[create destroy], module: :courses
