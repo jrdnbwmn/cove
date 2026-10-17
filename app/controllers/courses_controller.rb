@@ -3,13 +3,11 @@ class CoursesController < ApplicationController
 
   before_action :authenticate_user!
   before_action :set_course, only: %i[edit update delete destroy]
+  before_action :prepare_list_filters, :redirect_blank_search, only: :index
 
   helper_method :course_list_path, :course_list_params
 
   def index
-    prepare_list_filters
-    return redirect_to courses_path(course_list_params.merge(page: string_param(:page)).compact) if params[:q].is_a?(String) && @query.nil?
-
     filtered = filtered_courses
     filtered = filtered.search(@query) if @query
     # AIDEV-NOTE: Counts follow filters and search without loading every class.
@@ -73,6 +71,13 @@ class CoursesController < ApplicationController
     @query = string_param(:q)&.strip&.slice(0, 100)&.presence
     @subject_options = Course.subject_filter_options_for(Current.account)
     @family_has_courses = Current.account.courses.exists?
+  end
+
+  # AIDEV-NOTE: A blank or whitespace-only search is dropped from the URL so it never lingers as an empty `q=`.
+  def redirect_blank_search
+    return unless params[:q].is_a?(String) && @query.nil?
+
+    redirect_to courses_path(course_list_params.merge(page: string_param(:page)).compact)
   end
 
   def paginate_courses(filtered)
