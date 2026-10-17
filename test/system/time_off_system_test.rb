@@ -119,6 +119,18 @@ class TimeOffSystemTest < ApplicationSystemTestCase
     assert_equal 1, @year.breaks.where(name: "Teacher day").count
   end
 
+  test "Undo that no longer fits explains why inside School year" do
+    entry = @year.breaks.create!(name: "Teacher day", starts_on: "2026-10-20", ends_on: "2026-10-20", source: "added")
+    visit planner_school_year_path
+    find("[data-time-off='#{entry.id}'] button").click
+    within("dialog[open]") { wait_for_turbo_navigation { click_button "Delete time off" } }
+    assert_selector "[role='status']", text: "Time off removed"
+    @year.breaks.create!(name: "Co-op day", starts_on: "2026-10-20", ends_on: "2026-10-21")
+    wait_for_turbo_navigation { click_button "Undo" }
+    assert_selector "#time-off-restore-error", text: "We couldn't restore Teacher day. It overlaps Co-op day."
+    assert_not @year.breaks.exists?(name: "Teacher day")
+  end
+
   private
 
   def open_add_time_off

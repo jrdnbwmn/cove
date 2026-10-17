@@ -129,6 +129,60 @@ class SchoolYearSystemTest < ApplicationSystemTestCase
     assert_operator after[:to_go], :<, before[:to_go]
   end
 
+  test "both parents see the same school days and time off" do
+    @year.breaks.create!(name: "Co-op day", starts_on: "2026-10-20", ends_on: "2026-10-20")
+    visit planner_school_year_path
+    summary = find("p", text: /so far/).text
+    assert_selector "[data-time-off]", text: "Co-op day"
+
+    Capybara.reset_sessions!
+    login_as users(:two), scope: :user
+    visit planner_school_year_path
+    assert_equal summary, find("p", text: /so far/).text
+    assert_selector "[data-time-off]", text: "Co-op day"
+  end
+
+  test "changing the family time zone changes which day counts as today" do
+    travel_to Time.utc(2026, 10, 20, 5, 30) do
+      visit planner_school_year_path
+      mountain_so_far = summary_counts[:so_far]
+      @year.account.update!(time_zone: "Eastern Time (US & Canada)")
+      visit planner_school_year_path
+      assert_equal mountain_so_far + 1, summary_counts[:so_far]
+    end
+  end
+
+  test "a year with no school days left shows zero to go and is not ended" do
+    @year.update_columns(school_weekdays: [1])
+    travel_to Time.utc(2027, 5, 25, 12) do
+      visit planner_school_year_path
+      assert_selector "p", text: /\b0 to go/
+      assert_no_text "This year has ended."
+      assert_selector "button", text: "Edit year", exact_text: true
+    end
+  end
+
+  test "an ended year says so and offers no editing" do
+    travel_to Time.utc(2027, 6, 1, 12) do
+      visit planner_school_year_path
+      assert_text "This year has ended."
+      assert_text "Planning next year is coming soon."
+      assert_no_selector "button", text: "Edit year", exact_text: true
+      assert_no_selector "button", text: "Add time off", exact_text: true
+    end
+  end
+
+  test "Free and Premium families get the same school year tools" do
+    [:subscribed, :complimentary, :one].each do |name|
+      Capybara.reset_sessions!
+      login_as users(name), scope: :user
+      visit planner_school_year_path
+      assert_selector "button", text: "Edit year", exact_text: true
+      first("button", text: "Add time off", exact_text: true).click
+      assert_selector "dialog[open] #break_name"
+    end
+  end
+
   private
 
   def open_edit_year(visit: true)
