@@ -26,7 +26,7 @@
         <%= render FormFieldComponent.new(label: t(".search_label"), name: "q", id: "course_search", label_hidden: true) do |field| %>
           <% field.with_addon_left { icon "search", class: "size-4 text-muted-foreground" } %>
           <% field.with_input do %>
-            <%= search_field_tag :q, @query, id: "course_search", placeholder: t(".search_label"), class: "form-control min-w-0 flex-1 rounded-l-none!", maxlength: 100 %>
+            <%= search_field_tag :q, @query, id: "course_search", placeholder: t(".search_label"), class: "form-control min-w-0 flex-1 rounded-l-none!", maxlength: 100, autocomplete: "off" %>
           <% end %>
         <% end %>
       </div>
