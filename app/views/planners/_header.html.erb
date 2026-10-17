@@ -2,7 +2,7 @@
 <%= render PageHeaderComponent.new(title: "Planner") do |header| %>
   <% unless @school_year.ended? %>
     <% header.with_primary_action do %>
-      <%= render "application/lazy_modal", src: edit_planner_school_year_shape_of_day_path, title: "Shape of the day", text: "Shape of the day", button: {variant: :outline} %>
+      <%= render "application/lazy_modal", src: edit_planner_school_year_shape_of_day_path, text: "Shape of the day", button: {variant: :outline} %>
     <% end %>
   <% end %>
 <% end %>

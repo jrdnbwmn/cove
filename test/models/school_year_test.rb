@@ -14,6 +14,30 @@ class SchoolYearTest < ActiveSupport::TestCase
     end
   end
 
+  test "the usual start time can be set changed and cleared without extra validation" do
+    assert @year.update(school_starts_at: "08:30")
+    assert_equal "08:30", @year.reload.school_starts_at.strftime("%H:%M")
+    assert @year.update(school_starts_at: "09:45")
+    assert_equal "09:45", @year.reload.school_starts_at.strftime("%H:%M")
+
+    ["", "not-a-time"].each do |value|
+      @year.update!(school_starts_at: "08:30")
+      assert @year.update(school_starts_at: value)
+      assert_nil @year.reload.school_starts_at
+    end
+  end
+
+  test "an ended year refuses changes to its usual start time" do
+    @year.update!(school_starts_at: "08:30")
+    travel_to Time.utc(2027, 6, 1, 12) do
+      ["09:45", ""].each do |value|
+        assert_not @year.update(school_starts_at: value)
+        assert_includes @year.errors[:base], SchoolYear::ENDED_ERROR
+        assert_equal "08:30", @year.reload.school_starts_at.strftime("%H:%M")
+      end
+    end
+  end
+
   test "each family can find its own active year" do
     assert_equal @year, accounts(:one).school_year
     assert_equal school_years(:company), accounts(:company).school_year
