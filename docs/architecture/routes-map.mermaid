@@ -35,6 +35,16 @@ graph LR
     LearnerArchive[POST/DELETE /learners/:learner_id/archive] --> LearnerArchivesController[Learners::ArchivesController#create, #destroy]
   end
 
+  subgraph Planner
+    PlannerPage[GET /planner] --> PlannersController[PlannersController#show]
+    OldSchedules[GET /schedules] --> PlannerRedirect[301 redirect to /planner]
+    SchoolYear[GET /planner/school_year and /edit] --> SchoolYearsController[SchoolYearsController#show, #edit]
+    UpdateSchoolYear[PATCH/PUT /planner/school_year] --> SchoolYearUpdate[SchoolYearsController#update]
+    EndDatePreview[GET /planner/school_year/end_date_preview] --> EndDatePreviewsController[SchoolYears::EndDatePreviewsController#show]
+    TimeOff[/planner/school_year/time_off] --> BreaksController[SchoolYears::BreaksController#new, #create]
+    TimeOffEntry[/planner/school_year/time_off/:id] --> BreakChanges[SchoolYears::BreaksController#edit, #update, #destroy]
+  end
+
   subgraph Classes
     Courses[/classes] --> CoursesController[CoursesController#index, #new, #create, #edit, #update, #delete, #destroy]
     CourseCompletion[POST/DELETE /classes/:course_id/completion] --> CourseCompletionsController[Courses::CompletionsController#create, #destroy]

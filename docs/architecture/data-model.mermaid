@@ -13,6 +13,7 @@ erDiagram
     bigint owner_id FK
     boolean personal
     datetime archived_at
+    string time_zone
     integer account_users_count
     integer learner_limit
     boolean complimentary_premium
@@ -46,6 +47,27 @@ erDiagram
     string subject
     datetime completed_at
     datetime archived_at
+  }
+
+  SCHOOL_YEAR {
+    bigint id PK
+    bigint account_id FK
+    date starts_on
+    date ends_on
+    string status
+    integer_array school_weekdays
+    time school_starts_at
+    date tracked_from
+    jsonb weekday_history
+  }
+
+  BREAK {
+    bigint id PK
+    bigint school_year_id FK
+    string name
+    date starts_on
+    date ends_on
+    string source
   }
 
   ENROLLMENT {
@@ -121,6 +143,18 @@ erDiagram
   ACCOUNT ||--o{ ACCOUNT_USER : admin parents
   ACCOUNT ||--o{ LEARNER : learners
   ACCOUNT ||--o{ COURSE : classes
+  ACCOUNT ||--o{ SCHOOL_YEAR : school_years
+  SCHOOL_YEAR ||--o{ BREAK : time_off
+
+  %% One active school year per family, enforced by a partial unique index.
+  %% SchoolYear::Counting computes school days from weekdays and time off;
+  %% weekday_history preserves earlier weekday choices, and tracked_from
+  %% distinguishes days before tracking began. School days are never stored.
+  %% SchoolYear::Defaults creates the initial year and default time off.
+  %% Break is time off in the UI; source is default, added, or repeating.
+  %% Account#today uses the family time_zone with a 1am day boundary.
+  %% Current applies the family zone to requests; new families inherit their
+  %% owner's zone. School years and time off are destroyed with their family.
   COURSE ||--o{ ENROLLMENT : enrollments
   LEARNER ||--o{ ENROLLMENT : enrollments
 
