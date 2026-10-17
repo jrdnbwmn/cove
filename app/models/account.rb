@@ -12,6 +12,7 @@ class Account < ApplicationRecord
   scope :archived, -> { where.not(archived_at: nil) }
 
   validates :personal, exclusion: {in: [true], message: "must be false"}
+  validates :time_zone, inclusion: {in: ->(_) { ActiveSupport::TimeZone.all.map(&:name) }}
   validates :learner_limit, numericality: {only_integer: true, greater_than_or_equal_to: -> { Account.default_learner_limit }}
   validates :complimentary_premium_note, presence: true, if: :complimentary_premium?
 
@@ -25,6 +26,11 @@ class Account < ApplicationRecord
 
   def parents
     admins
+  end
+
+  # AIDEV-NOTE: School days turn over at 1am in the shared family zone.
+  def today
+    (Time.current.in_time_zone(time_zone) - 1.hour).to_date
   end
 
   def full?

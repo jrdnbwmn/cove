@@ -5,6 +5,54 @@ class AccountTest < ActiveSupport::TestCase
   include ActiveJob::TestHelper
   include StripeScheduleHelper
 
+  test "families default to Mountain time and require a recognized Rails time zone" do
+    account = Account.new(owner: users(:admin), name: "Clock family")
+    assert_equal "Mountain Time (US & Canada)", account.time_zone
+    ActiveSupport::TimeZone.all.each do |zone|
+      account.time_zone = zone.name
+      assert account.valid?, zone.name
+    end
+    [nil, "", "Unknown/Zone", "America/Denver"].each do |zone|
+      account.time_zone = zone
+      assert_not account.valid?
+      assert_not_empty account.errors[:time_zone]
+    end
+  end
+
+  test "the family day turns over at one in the morning" do
+    account = accounts(:one)
+    travel_to Time.utc(2026, 10, 17, 6, 59) do
+      assert_equal Date.new(2026, 10, 16), account.today
+    end
+    travel_to Time.utc(2026, 10, 17, 7) do
+      assert_equal Date.new(2026, 10, 17), account.today
+    end
+  end
+
+  test "the family day follows its own zone across date boundaries" do
+    travel_to Time.utc(2026, 10, 17, 12) do
+      account = accounts(:one)
+      account.time_zone = "International Date Line West"
+      assert_equal Date.new(2026, 10, 16), account.today
+      account.time_zone = "Nuku'alofa"
+      assert_equal Date.new(2026, 10, 18), account.today
+    end
+  end
+
+  test "the family clock subtracts an elapsed hour across daylight saving transitions" do
+    account = accounts(:one)
+    {
+      Time.utc(2026, 3, 8, 7, 59) => Date.new(2026, 3, 7),
+      Time.utc(2026, 3, 8, 8) => Date.new(2026, 3, 8),
+      Time.utc(2026, 3, 8, 9) => Date.new(2026, 3, 8),
+      Time.utc(2026, 11, 1, 6, 59) => Date.new(2026, 10, 31),
+      Time.utc(2026, 11, 1, 7) => Date.new(2026, 11, 1),
+      Time.utc(2026, 11, 1, 8) => Date.new(2026, 11, 1)
+    }.each do |instant, day|
+      travel_to(instant) { assert_equal day, account.today }
+    end
+  end
+
   test "validates uniqueness of domain" do
     account = accounts(:company).dup
     assert_not account.valid?
