@@ -71,6 +71,16 @@ class Dev::ClocksTest < ActionDispatch::IntegrationTest
     end
   end
 
+  test "a same origin referrer with a double slash path remains on this origin" do
+    with_development do
+      sign_in users(:one)
+      DevClock.set(Date.new(2026, 10, 14))
+      delete dev_clock_path, headers: {"Referer" => "http://www.example.com//elsewhere.test/path"}
+      assert_redirected_to "http://www.example.com//elsewhere.test/path"
+      assert_nil DevClock.today
+    end
+  end
+
   test "clock routes exist only in local environments" do
     %w[development test staging production].each do |environment|
       routes = ActionDispatch::Routing::RouteSet.new

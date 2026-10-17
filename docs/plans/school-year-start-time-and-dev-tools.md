@@ -13,9 +13,9 @@
 | 4 | 2 | 3 | Implement the development clock and family-clock fallback | Master | ✅ |
 | 5 | 2 | 4 | Build the development clock page and guards | Master | ✅ |
 | 6 | 2 | 5 | Create the dev clock strip component | Master | ✅ |
-| 7 | 2 | 6 | Mount the strip and verify clock flows | subagent | |
-| 8 | 3 | 7 | Share existing default school-year calendar rules | Master | |
-| 9 | 3 | 7 | Add the three seed families | subagent | |
+| 7 | 2 | 6 | Mount the strip and verify clock flows | subagent | ✅ |
+| 8 | 3 | 7 | Share existing default school-year calendar rules | Master | ✅ |
+| 9 | 3 | 7 | Add the three seed families | subagent | ✅ |
 | 10 | 3 | 7 | Complete final validation | Master | |
 
 Phase 1 delivers Shape of the day. Phase 2 delivers the development clock. Phase 3 delivers the seed scenarios. Each phase can ship independently after its checkpoints pass.
@@ -301,3 +301,5 @@ Phase 1 delivers Shape of the day. Phase 2 delivers the development clock. Phase
 - Approved prerequisite: disable time-zone conversion for `SchoolYear#school_starts_at`, with a regression test preserving its wall-clock hour after family-zone changes.
 
 - Task 6 followed create-component: checked RailsBlocks banner docs/examples and dry run, adapted its message/action row without its optional JS, and added the required catalog and kitchen-sink examples.
+
+- Task 7 uses the existing SidebarComponent `min_height_class: "min-h-0"` option so the strip and sidebar fit within the fixed shell. Clear-return regression also preserves the full verified origin for double-slash paths.

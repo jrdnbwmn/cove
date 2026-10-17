@@ -18,7 +18,8 @@ class Dev::ClocksController < ApplicationController
   def destroy
     DevClock.clear
     referrer = same_origin_referrer
-    redirect_to(referrer&.request_uri || dev_clock_path, status: :see_other)
+    # AIDEV-NOTE: Keep the verified origin: a bare path beginning // is interpreted as an external URL.
+    redirect_to(referrer ? referrer.to_s : dev_clock_path, status: :see_other)
   end
 
   private

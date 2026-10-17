@@ -14,8 +14,11 @@
            own internal scroll, with blank space once you scrolled past the inner content.
            position: fixed removes it from that flow so only the sidebar's own scroll region
            can scroll. -->
-      <div class="fixed inset-0">
-        <%= render "application/sidebar" %>
+      <div class="fixed inset-0 flex flex-col">
+        <%= render DevClockStripComponent.new %>
+        <div class="min-h-0 flex-1">
+          <%= render "application/sidebar" %>
+        </div>
       </div>
     <% else %>
       <header>
