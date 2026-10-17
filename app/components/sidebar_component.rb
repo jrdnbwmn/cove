@@ -94,7 +94,9 @@ class SidebarComponent < ViewComponent::Base
   end
 
   def sidebar_classes
-    base = "#{@collapsed_width} #{WIDTH_OPEN_VARIANTS.fetch(@width)} group/sidebar relative z-20 h-full shrink-0 overflow-hidden max-md:hidden motion-safe:transition-all motion-safe:duration-300"
+    # AIDEV-NOTE: Native details wraps expanded content in ::details-content; its height
+    # must fill the rail so the nav's flex spacer keeps the account menu at the bottom.
+    base = "#{@collapsed_width} #{WIDTH_OPEN_VARIANTS.fetch(@width)} group/sidebar relative z-20 h-full [&::details-content]:h-full shrink-0 overflow-hidden max-md:hidden motion-safe:transition-all motion-safe:duration-300"
 
     [base, variant_class_for_sidebar].join(" ")
   end
