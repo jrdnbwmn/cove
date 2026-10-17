@@ -10,7 +10,7 @@
 | 1 | 1 | 1 | Build the start-time endpoint and modal | Master | ✅ |
 | 2 | 1 | 1 | Add the action to both Planner tabs | Master | ✅ |
 | 3 | 1 | 2 | Verify start-time behavior and update header guidance | subagent | ✅ |
-| 4 | 2 | 3 | Implement the development clock and family-clock fallback | Master | |
+| 4 | 2 | 3 | Implement the development clock and family-clock fallback | Master | ✅ |
 | 5 | 2 | 4 | Build the development clock page and guards | Master | |
 | 6 | 2 | 5 | Create the dev clock strip component | Master | |
 | 7 | 2 | 6 | Mount the strip and verify clock flows | subagent | |

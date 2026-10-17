@@ -1,9 +1,36 @@
 require "test_helper"
+require "tmpdir"
 require_relative "../support/stripe_schedule_helper"
 
 class AccountTest < ActiveSupport::TestCase
   include ActiveJob::TestHelper
   include StripeScheduleHelper
+
+  test "every family shares a fixed pretend date and clearing restores its own clock" do
+    Dir.mktmpdir("cove-account-clock") do |directory|
+      Rails.stub(:env, ActiveSupport::EnvironmentInquirer.new("development")) do
+        DevClock.stub(:path, Pathname.new(directory).join("dev_today")) do
+          west = accounts(:one)
+          east = accounts(:company)
+          west.time_zone = "International Date Line West"
+          east.time_zone = "Nuku'alofa"
+          DevClock.set(Date.new(2026, 10, 14))
+          [Time.utc(2026, 10, 17, 12), Time.utc(2026, 10, 20, 12)].each do |instant|
+            travel_to instant do
+              assert_equal Date.new(2026, 10, 14), west.today
+              assert_equal west.today, east.today
+              assert_not_equal west.real_today, east.real_today
+            end
+          end
+          DevClock.clear
+          travel_to Time.utc(2026, 10, 17, 12) do
+            assert_equal Date.new(2026, 10, 16), west.today
+            assert_equal Date.new(2026, 10, 18), east.today
+          end
+        end
+      end
+    end
+  end
 
   test "families default to Mountain time and require a recognized Rails time zone" do
     account = Account.new(owner: users(:admin), name: "Clock family")

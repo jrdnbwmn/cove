@@ -41,6 +41,10 @@ class Account < ApplicationRecord
 
   # AIDEV-NOTE: School days turn over at 1am in the shared family zone.
   def today
+    DevClock.today || real_today
+  end
+
+  def real_today
     (Time.current.in_time_zone(time_zone) - 1.hour).to_date
   end
 
