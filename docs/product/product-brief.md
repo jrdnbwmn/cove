@@ -92,7 +92,10 @@ Each section is marked **Built** or **Decided, not built**.
   and can be filtered by learner (active learners)
   and by subject (case-insensitive; "Math" and "math" are one subject). Tab,
   learner, and subject filters combine, and they live only in the URL. Counts
-  follow the learner and subject filters. Unknown filter values are ignored.
+  follow the learner and subject filters and the search. Unknown filter values
+  are ignored.
+- Classes are listed as rows. Past 12 classes, the list adds search, which
+  matches class name and subject and combines with the tab and filters.
 
 ## Learner data (Decided — applies to every feature)
 

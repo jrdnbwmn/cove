@@ -477,6 +477,7 @@ class CoursesIndexTest < ActionDispatch::IntegrationTest
     get courses_path
     assert_select "label[for='course_search']", text: "Search classes"
     assert_select "input[type='search'][name='q'][placeholder='Search classes']"
+    assert_select "form[action='#{courses_path}'] button[type='submit']", text: /Search classes/
     assert_select "nav[aria-label='Pagination']"
     assert_select ".row-list > [data-course]", count: 12
     assert_select ".row-list + [data-ui-modal-turbo-frame-src-value='#{new_course_path}']", count: 0

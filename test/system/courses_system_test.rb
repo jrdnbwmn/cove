@@ -390,9 +390,13 @@ class CoursesSystemTest < ApplicationSystemTestCase
   end
 
   test "class rows align columns on desktop and stack on phones with a whole row edit target" do
-    long = Course.create!(account: accounts(:company), name: "LA 4th grade - The Good and the Beautiful, Part Two of Three", subject: "Language Arts")
+    long = Course.create!(account: accounts(:company), name: "Language Arts 4 - The Good and the Beautiful, Parts One Two and Three", subject: "Language Arts")
     Enrollment.create!(course: long, learner: learners(:one))
     Enrollment.create!(course: courses(:two), learner: learners(:two))
+    4.times do |index|
+      learner = Learner.create!(account: accounts(:company), name: "Learner with long name #{index}")
+      Enrollment.create!(course: long, learner: learner)
+    end
     visit courses_path
 
     [".course-subject", ".course-learners"].each do |column|
@@ -405,6 +409,7 @@ class CoursesSystemTest < ApplicationSystemTestCase
     within("dialog[open]") { assert_field "Name", with: long.name }
     within("dialog[open]") { click_button "Cancel" }
 
+    assert_no_selector "dialog[open]"
     page.driver.browser.execute_cdp("Emulation.setDeviceMetricsOverride", width: 390, height: 844, deviceScaleFactor: 1, mobile: true)
     assert_operator row_rect(long, ".course-subject")["y"], :>, row_rect(long, ".course-name")["y"]
     assert_operator row_rect(long, ".course-learners")["y"], :>, row_rect(long, ".course-subject")["y"]
@@ -416,7 +421,143 @@ class CoursesSystemTest < ApplicationSystemTestCase
     page.driver.browser.execute_cdp("Emulation.clearDeviceMetricsOverride")
   end
 
+  test "parents search with Enter paginate and clear search" do
+    add_workbook_classes
+    visit courses_path(q: "Workbook")
+    assert_selector "[data-course]", count: 12
+    assert_no_selector inline_add_row
+    within("nav[aria-label='Pagination']") { wait_for_turbo_navigation { click_link "2", exact: true } }
+    assert_selector "[data-course]", count: 1
+    assert_selector inline_add_row
+    assert_equal "Workbook", list_query["q"]
+    assert_equal "2", list_query["page"]
+
+    fill_in "Search classes", with: "Workbook 01"
+    wait_for_turbo_navigation { find("#course_search").send_keys(:enter) }
+    assert_selector "[data-course]", count: 1
+    assert_selector ".course-name", text: "Workbook 01"
+    assert_nil list_query["page"]
+    assert_no_selector "nav[aria-label='Pagination']"
+
+    fill_in "Search classes", with: ""
+    wait_for_turbo_navigation { find("#course_search").send_keys(:enter) }
+    assert_nil list_query["q"]
+    assert_selector "[data-course]", count: 12
+    assert_selector "nav[aria-label='Pagination']"
+
+    fill_in "Search classes", with: "Missing class"
+    wait_for_turbo_navigation { find("#course_search").send_keys(:enter) }
+    assert_text "No classes match your search or filters."
+    wait_for_turbo_navigation { click_link "Clear all" }
+    assert_nil list_query["q"]
+    assert_selector "[data-course]", count: 12
+  end
+
+  test "tabs and both filters start at page one while retaining search" do
+    add_workbook_classes
+    Course.create!(account: accounts(:company), name: "Workbook finished", subject: "Science", completed_at: Time.current)
+    %w[subject learner].each do |filter|
+      visit courses_path(q: "Workbook", page: 2)
+      find("#course_filter_#{filter} + .ts-wrapper .ts-control").click
+      label = (filter == "subject") ? "Science" : "Maya"
+      wait_for_turbo_navigation { find(".ts-dropdown [role='option']", text: label, exact_text: true).click }
+      assert_nil list_query["page"]
+      assert_equal "Workbook", list_query["q"]
+      assert_selector "[data-course]", count: 12
+    end
+    visit courses_path(q: "Workbook", page: 2, subject: "Science")
+    wait_for_turbo_navigation { click_link "Completed" }
+    assert_nil list_query["page"]
+    assert_equal "Workbook", list_query["q"]
+    assert_equal "Science", list_query["subject"]
+    assert_selector ".course-name", text: "Workbook finished"
+  end
+
+  test "adding editing and deleting from modals preserve search and page" do
+    add_workbook_classes
+    visit courses_path(q: "Workbook", page: 2)
+    within(inline_add_row) { click_button "Add class" }
+    within("dialog[open]") do
+      fill_in "Name", with: "Workbook 14"
+      wait_for_turbo_navigation { click_button "Add class" }
+    end
+    assert_equal "Workbook", list_query["q"]
+    assert_equal "2", list_query["page"]
+    assert_selector ".course-name", text: "Workbook 14"
+    course = Course.find_by!(name: "Workbook 14", account: accounts(:company))
+    find("[data-course='#{course.id}']").click
+    within("dialog[open]") do
+      fill_in "Name", with: "Workbook 15"
+      wait_for_turbo_navigation { click_button "Save" }
+    end
+    assert_equal "Workbook", list_query["q"]
+    assert_equal "2", list_query["page"]
+    assert_selector ".course-name", text: "Workbook 15"
+    open_actions_menu("Workbook 15")
+    click_button "Delete"
+    within("dialog[open]") { wait_for_turbo_navigation { click_button "Delete Workbook 15" } }
+    assert_equal "Workbook", list_query["q"]
+    assert_equal "2", list_query["page"]
+    assert_selector "[data-course]", count: 1
+  end
+
+  test "removing the final class on page two shows the remaining last page and zero matches are recoverable" do
+    add_workbook_classes
+    visit courses_path(q: "Workbook", page: 2)
+    open_actions_menu("Workbook 13")
+    wait_for_turbo_navigation { click_button "Complete" }
+    assert_selector "[data-course]", count: 12
+    assert_no_selector "nav[aria-label='Pagination']"
+    assert_selector inline_add_row
+    assert_equal "Workbook", list_query["q"]
+
+    wait_for_turbo_navigation { click_link "Completed" }
+    assert_selector "[data-course]", count: 1
+    open_actions_menu("Workbook 13")
+    wait_for_turbo_navigation { click_button "Reopen" }
+    assert_text "No classes match your search or filters."
+    assert_selector "#course_search"
+    assert_no_selector "[data-course]"
+    wait_for_turbo_navigation { click_link "Clear all" }
+    assert_text "Spanish 1"
+    assert_nil list_query["q"]
+    assert_equal "completed", list_query["status"]
+  end
+
+  test "status rows and menus remain usable by keyboard on desktop and phone" do
+    visit courses_path(status: "completed")
+    trigger = find("[data-course='#{courses(:completed).id}'] [data-course-card-link]")
+    trigger.send_keys(:enter)
+    within("dialog[open]") { assert_field "Name", with: "Spanish 1" }
+    within("dialog[open]") { click_button "Cancel" }
+    menu = find("button[aria-label='Actions for Spanish 1']")
+    menu.send_keys(:enter)
+    assert_selector "[role='menuitem']", text: "Reopen"
+    find("[role='menuitem']", text: "Edit", exact_text: true).send_keys(:enter)
+    within("dialog[open]") { assert_field "Name", with: "Spanish 1" }
+    within("dialog[open]") { click_button "Cancel" }
+
+    page.driver.browser.execute_cdp("Emulation.setDeviceMetricsOverride", width: 390, height: 844, deviceScaleFactor: 1, mobile: true)
+    visit courses_path(status: "archived")
+    assert_selector ".course-status-date", text: /Archived/
+    open_actions_menu("Woodworking")
+    assert_selector "[role='menuitem']", text: "Restore"
+  ensure
+    page.driver.browser.execute_cdp("Emulation.clearDeviceMetricsOverride")
+  end
+
   private
+
+  def add_workbook_classes
+    13.times do |index|
+      course = Course.create!(account: accounts(:company), name: format("Workbook %02d", index + 1), subject: "Science")
+      Enrollment.create!(course: course, learner: learners(:one))
+    end
+  end
+
+  def list_query
+    Rack::Utils.parse_nested_query(URI.parse(current_url).query)
+  end
 
   def row_rect(course, selector)
     find("[data-course='#{course.id}'] #{selector}", visible: :all).evaluate_script("this.getBoundingClientRect().toJSON()")

@@ -13,7 +13,7 @@
 | 4 | 2 | 3 | Replace class cards with responsive rows | Master | ✅ |
 | 5 | 2 | 3 | Connect the inline Add class row | Master | ✅ |
 | 6 | 2 | 3 | Connect search, pagination, and empty states | Master | ✅ |
-| 7 | 2 | 4 | Finish browser coverage, product docs, and validation | Master | |
+| 7 | 2 | 4 | Finish browser coverage, product docs, and validation | Master | ✅ |
 
 ## Prerequisites
 
