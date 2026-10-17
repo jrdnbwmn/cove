@@ -2,6 +2,9 @@ class SchoolYear < ApplicationRecord
   include Counting
   include Defaults
 
+  # AIDEV-NOTE: A usual start time is a wall-clock value, independent of the family zone.
+  self.skip_time_zone_conversion_for_attributes = [:school_starts_at]
+
   ENDED_ERROR = "This year has ended."
 
   belongs_to :account

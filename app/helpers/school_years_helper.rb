@@ -11,6 +11,16 @@ module SchoolYearsHelper
     %w[Mon Tue Wed Thu Fri Sat Sun].each_with_index.map { |label, index| [label, (index + 1) % 7] }
   end
 
+  def school_start_time_value(time)
+    time&.strftime("%H:%M")
+  end
+
+  def school_start_time_options(selected)
+    values = (4 * 60..21 * 60).step(15).map { |minutes| format("%02d:%02d", minutes / 60, minutes % 60) }
+    values = (values + [school_start_time_value(selected)]).compact.uniq.sort
+    [["No usual start time", ""]] + values.map { |value| [l(Time.zone.parse(value), format: :friendly), value] }
+  end
+
   def time_off_submit_label(time_off, conflicts, replaceable)
     return (conflicts.one? ? "Replace it" : "Replace them") if replaceable
 

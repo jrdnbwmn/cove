@@ -152,7 +152,11 @@ erDiagram
   %% distinguishes days before tracking began. School days are never stored.
   %% SchoolYear::Defaults creates the initial year and default time off.
   %% Break is time off in the UI; source is default, added, or repeating.
-  %% Account#today uses the family time_zone with a 1am day boundary.
+  %% school_starts_at is a wall-clock value without time-zone conversion.
+  %% Account#real_today uses the family time_zone with a 1am day boundary.
+  %% Account#today first consults DevClock, a non-persisted model that reads
+  %% the shared tmp/dev_today date override only in development.
+  %% DevClock changes school-day dates without changing system timestamps.
   %% Current applies the family zone to requests; new families inherit their
   %% owner's zone. School years and time off are destroyed with their family.
   COURSE ||--o{ ENROLLMENT : enrollments

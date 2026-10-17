@@ -40,6 +40,8 @@ graph LR
     OldSchedules[GET /schedules] --> PlannerRedirect[301 redirect to /planner]
     SchoolYear[GET /planner/school_year and /edit] --> SchoolYearsController[SchoolYearsController#show, #edit]
     UpdateSchoolYear[PATCH/PUT /planner/school_year] --> SchoolYearUpdate[SchoolYearsController#update]
+    ShapeOfDayEdit[GET /planner/school_year/shape_of_day/edit] --> ShapeOfDaysController[SchoolYears::ShapeOfDaysController#edit, #update]
+    ShapeOfDayUpdate[PATCH/PUT /planner/school_year/shape_of_day] --> ShapeOfDaysController
     EndDatePreview[GET /planner/school_year/end_date_preview] --> EndDatePreviewsController[SchoolYears::EndDatePreviewsController#show]
     TimeOff[/planner/school_year/time_off] --> BreaksController[SchoolYears::BreaksController#new, #create]
     TimeOffEntry[/planner/school_year/time_off/:id] --> BreakChanges[SchoolYears::BreaksController#edit, #update, #destroy]
@@ -71,3 +73,10 @@ graph LR
     Error404[/404] --> ErrorsController[ErrorsController#not_found]
     Error500[/500] --> ErrorsController
   end
+
+  subgraph Local development and test routes
+    DevClock[GET/PATCH/PUT/DELETE /dev/clock] --> DevClocksController[Dev::ClocksController#show, #update, #destroy]
+  end
+
+  %% Clock routes are available only when Rails.env.local?; date overrides
+  %% are read only in development.

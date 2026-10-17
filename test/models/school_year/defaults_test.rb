@@ -5,6 +5,16 @@ class SchoolYear::DefaultsTest < ActiveSupport::TestCase
     @account = Account.create!(owner: users(:admin), name: "Default family")
   end
 
+  test "shared calendar defaults expose the August start May end and winter across years" do
+    assert_equal Date.new(2026, 8, 17), SchoolYear.default_starts_on(2026)
+    assert_equal Date.new(2027, 5, 28), SchoolYear.default_ends_on(2026)
+    assert_equal [
+      ["Thanksgiving", Date.new(2026, 11, 26), Date.new(2026, 11, 27)],
+      ["Winter holidays", Date.new(2026, 12, 21), Date.new(2027, 1, 1)]
+    ], SchoolYear.default_breaks_for(2026)
+    assert_equal Date.new(2028, 1, 1), SchoolYear.default_breaks_for(2027).last.last
+  end
+
   test "upcoming default years have calculated school days and the two supplied holidays" do
     [[2026, "2026-08-17", "2027-05-28", 193],
       [2027, "2027-08-16", "2028-05-26", 194],

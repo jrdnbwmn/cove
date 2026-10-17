@@ -107,6 +107,9 @@
 
     <section class="py-10">
       <h2>Feedback</h2>
+      <div class="mt-6">
+        <%= render DevClockStripComponent.new(date: Date.new(2026, 10, 14)) %>
+      </div>
       <div class="mt-6 grid gap-6 md:grid-cols-2">
         <%= render AlertComponent.new(title: "Success! Your changes have been saved", description: "All updates have been applied successfully.", variant: :success) %>
         <%= render AlertComponent.new(title: "Something went wrong", description: "We couldn't process your request.", variant: :error) %>

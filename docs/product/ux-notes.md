@@ -138,9 +138,11 @@ Header:
   limits, counts, status notes go in the content).
 - Actions right of the title, aligned with the title line, and apply to the
   whole page: one primary (rightmost, usually "Add …"), at most two
-  secondary, the rest in a "…" menu. Tab-specific actions go inside the tab.
+  secondary, the rest in a "…" menu. Use a "…" menu only when actions don't fit
+  otherwise, never for a single item. Tab-specific actions go inside the tab.
 - Phones: actions wrap to a row under the title; the primary keeps its
-  label, secondaries move into "…". No floating action buttons.
+  label, secondaries move into "…" — unless that leaves one item, which stays a
+  visible button. No floating action buttons.
 
 Where things open:
 

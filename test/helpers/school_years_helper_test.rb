@@ -54,6 +54,33 @@ class SchoolYearsHelperTest < ActionView::TestCase
     assert_equal [["Mon", 1], ["Tue", 2], ["Wed", 3], ["Thu", 4], ["Fri", 5], ["Sat", 6], ["Sun", 0]], school_weekday_options
   end
 
+  test "a saved start time is shown as HH:MM and no start time as nothing" do
+    assert_equal "08:30", school_start_time_value(Time.zone.parse("08:30"))
+    assert_nil school_start_time_value(nil)
+  end
+
+  test "start times offer a blank choice and quarter hours in Cove's time format" do
+    options = school_start_time_options(nil)
+    assert_equal ["No usual start time", ""], options.first
+    assert_equal 70, options.size
+    assert_equal ["4:00am", "04:00"], options.second
+    assert_equal ["9:00pm", "21:00"], options.last
+    assert_includes options, ["8:30am", "08:30"]
+    assert_includes options, ["12:00pm", "12:00"]
+  end
+
+  test "saved times outside the usual choices appear once in time order" do
+    ["09:47", "22:30", "03:17"].each do |value|
+      options = school_start_time_options(Time.zone.parse(value))
+      values = options.drop(1).map(&:last)
+      assert_equal 71, options.size
+      assert_equal 1, values.count(value)
+      assert_equal values.sort, values
+      assert_includes options, [l(Time.zone.parse(value), format: :friendly), value]
+    end
+    assert_equal 70, school_start_time_options(Time.zone.parse("08:30")).size
+  end
+
   test "the time off button says what it will do" do
     entry = Break.new
     assert_equal "Add time off", time_off_submit_label(entry, [], false)

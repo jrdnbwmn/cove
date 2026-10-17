@@ -1,0 +1,10 @@
+<%# AIDEV-NOTE: Adapted from the Rails Blocks banner's flex message/action row, in normal shell flow. %>
+<div class="flex shrink-0 flex-wrap items-center justify-center gap-x-2 gap-y-1 border-b border-border bg-muted px-4 py-2 text-sm text-foreground" data-dev-clock-strip>
+  <span>Dev clock: pretending it's <%= l(@date, format: :friendly) %></span>
+  <span aria-hidden="true">·</span>
+  <%= render ButtonComponent.new(text: "Change", href: dev_clock_path, variant: :ghost, size: :xs) %>
+  <span aria-hidden="true">·</span>
+  <%= form_with url: dev_clock_path, method: :delete do %>
+    <%= render ButtonComponent.new(text: "Clear", type: "submit", variant: :ghost, size: :xs) %>
+  <% end %>
+</div>

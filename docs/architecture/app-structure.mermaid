@@ -20,11 +20,13 @@ graph TD
   Controllers --> SchoolYearControllers[school_years/]
   SchoolYearControllers --> BreaksController[BreaksController]
   SchoolYearControllers --> EndDatePreviewsController[EndDatePreviewsController]
+  SchoolYearControllers --> ShapeOfDaysController[ShapeOfDaysController]
   Controllers --> CoursesController[CoursesController]
   Controllers --> CourseControllers[courses/]
   CourseControllers --> CourseCompletionsController[CompletionsController]
   CourseControllers --> CourseArchivesController[ArchivesController]
   Controllers --> DevControllers[dev/]
+  DevControllers --> DevClocksController[ClocksController]
   Controllers --> Concerns[concerns/]
   Concerns --> CurrentSchoolYear[CurrentSchoolYear]
   Concerns --> PremiumAccess[PremiumAccess]
@@ -44,6 +46,7 @@ graph TD
   Models --> Course[Course]
   Models --> Enrollment[Enrollment]
   Models --> Current[Current]
+  Models --> DevClock[DevClock]
   Models --> SchoolYear[SchoolYear]
   Models --> Break[Break]
   Models --> SchoolYearConcerns[school_year/]
@@ -98,12 +101,15 @@ graph TD
   Views --> SchoolYearViews[school_years/]
   SchoolYearViews --> TimeOffViews[breaks/]
   SchoolYearViews --> EndDatePreviewViews[end_date_previews/]
+  SchoolYearViews --> ShapeOfDayViews[shape_of_days/edit.html.erb]
+  Views --> DevClockViews[dev/clocks/show.html.erb]
   Views --> PublicViews[public/]
   Views --> UserViews[users/]
   Views --> BillingViews[billing/subscriptions/]
   BillingViews --> PlanChangeView[plan_changes/show]
 
   App --> Components[app/components]
+  Components --> DevClockStripComponent[DevClockStripComponent]
   Components --> FormComponents[form and input components]
   Components --> NavigationComponents[navigation components]
   Components --> FeedbackComponents[alert, toast, modal, tooltip]
@@ -187,3 +193,9 @@ graph TD
   SchoolYearsController --> SchoolYearViews
   BreaksController --> TimeOffViews
   EndDatePreviewsController --> EndDatePreviewViews
+  ShapeOfDaysController --> CurrentSchoolYear
+  ShapeOfDaysController --> ShapeOfDayViews
+  DevClocksController --> DevClock
+  DevClocksController --> DevClockViews
+  DevClockStripComponent --> DevClock
+  Account --> DevClock
