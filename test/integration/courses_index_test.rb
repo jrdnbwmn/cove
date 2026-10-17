@@ -11,16 +11,30 @@ class CoursesIndexTest < ActionDispatch::IntegrationTest
     assert_equal ["Piano", "Algebra 1", "Science Lab", "Nature study"], names
   end
 
-  test "a class card shows its subject only when it has one" do
+  test "classes share a bordered row list and each row opens its edit modal" do
+    sign_in users(:one)
+
+    get courses_path
+
+    assert_select ".row-list", count: 1
+    assert_select ".row-list > [data-course]", count: 4
+    courses = [courses(:one), courses(:two), courses(:shared), courses(:no_subject)]
+    courses.each do |course|
+      assert_select "[data-course='#{course.id}'] [data-ui-modal-turbo-frame-src-value='#{edit_course_path(course)}']"
+      assert_select "[data-course='#{course.id}'] .course-name button[data-action='click->ui-modal#open:prevent']", text: course.name
+    end
+  end
+
+  test "a class row shows its subject only when it has one" do
     sign_in users(:one)
 
     get courses_path
 
     assert_select "[data-course='#{courses(:one).id}'] .course-subject", text: "Math"
-    assert_select "[data-course='#{courses(:no_subject).id}'] .course-subject", count: 0
+    assert_select "[data-course='#{courses(:no_subject).id}'] .course-subject", text: ""
   end
 
-  test "a class card shows active learners and hides archived learners" do
+  test "a class row shows active learners and hides archived learners" do
     sign_in users(:one)
 
     get courses_path
@@ -31,7 +45,7 @@ class CoursesIndexTest < ActionDispatch::IntegrationTest
     assert_no_match "Iris", response.body
   end
 
-  test "class cards show active learners without badges on Free after downgrade" do
+  test "class rows show active learners without badges on Free after downgrade" do
     sign_in users(:downgraded)
 
     get courses_path
@@ -69,44 +83,44 @@ class CoursesIndexTest < ActionDispatch::IntegrationTest
     assert_select "p", text: "Add a class for anything you want to track or grade, like Algebra 1, Piano, or Nature study."
     assert_select "button[data-action='click->ui-modal#open:prevent']", text: "Add class", count: 1
     assert_select "[data-page-header-actions]", count: 0
-    assert_select ".grid > [data-controller~='ui-modal'].h-full", count: 0
+    assert_select ".row-list + [data-controller~='ui-modal']", count: 0
   end
 
-  test "the Active class grid ends with a tile that opens the plain Add class form" do
+  test "the Active class list ends with a row trigger that opens the plain Add class form" do
     sign_in users(:one)
 
     [{}, {learner: learners(:one).id, subject: "Science"}].each do |filters|
       get courses_path(**filters)
 
       assert_response :success
-      assert_select ".grid > [data-course]", minimum: 1
-      assert_select ".grid > [data-controller~='ui-modal'].h-full", count: 1
-      assert_select ".grid > [data-ui-modal-turbo-frame-src-value='#{new_course_path}'].h-full:last-child", count: 1 do
-        assert_select "button[data-action='click->ui-modal#open:prevent']", text: "Add class"
+      assert_select ".row-list > [data-course]", minimum: 1
+      assert_select ".row-list + [data-controller~='ui-modal']", count: 1
+      assert_select ".row-list + [data-ui-modal-turbo-frame-src-value='#{new_course_path}']", count: 1 do
+        assert_select "button.border-0[data-action='click->ui-modal#open:prevent']", text: "Add class"
         assert_select "dialog h2", text: "Add class"
       end
     end
   end
 
-  test "the add class tile is absent from Completed and Archived grids" do
+  test "the add class row trigger is absent from Completed and Archived lists" do
     sign_in users(:one)
 
     %w[completed archived].each do |status|
       get courses_path(status: status)
 
-      assert_select ".grid > [data-course]", minimum: 1
-      assert_select ".grid > [data-controller~='ui-modal'].h-full", count: 0
+      assert_select ".row-list > [data-course]", minimum: 1
+      assert_select ".row-list + [data-controller~='ui-modal']", count: 0
     end
   end
 
-  test "filters that match no classes hide the add tile on every tab" do
+  test "filters that match no classes hide the add row trigger on every tab" do
     sign_in users(:one)
 
     %w[active completed archived].each do |status|
       get courses_path(status: status, subject: "Latin")
 
       assert_select "p", text: "No classes match these filters."
-      assert_select ".grid > [data-controller~='ui-modal'].h-full", count: 0
+      assert_select ".row-list + [data-controller~='ui-modal']", count: 0
     end
   end
 
@@ -192,7 +206,7 @@ class CoursesIndexTest < ActionDispatch::IntegrationTest
         assert_select "button[data-action='click->ui-modal#open:prevent']", text: "Add class"
       end
     end
-    assert_select ".grid > [data-controller~='ui-modal'].h-full", count: 0
+    assert_select ".row-list + [data-controller~='ui-modal']", count: 0
   end
 
   test "the header add action shows on every tab" do
@@ -394,7 +408,7 @@ class CoursesIndexTest < ActionDispatch::IntegrationTest
     assert_equal baseline, count_queries { get courses_path(status: "completed", learner: learners(:two).id, subject: "Math") }
   end
 
-  test "a completed class card shows its completed date and no status date on active cards" do
+  test "a completed class row shows its completed date and no status date on active rows" do
     sign_in users(:one)
 
     get courses_path(status: "completed")
@@ -406,7 +420,7 @@ class CoursesIndexTest < ActionDispatch::IntegrationTest
     assert_select ".course-status-date", count: 0
   end
 
-  test "an archived class card shows its archived date" do
+  test "an archived class row shows its archived date" do
     sign_in users(:one)
 
     get courses_path(status: "archived")
@@ -448,6 +462,150 @@ class CoursesIndexTest < ActionDispatch::IntegrationTest
 
     assert_equal %w[Edit Restore Delete], menu_items(course)
     assert_hidden_form "restore_course_#{course.id}", action: course_archive_path(course), method: "post", override: "delete"
+  end
+
+  test "search and pagination appear together above twelve classes in the current filtered tab" do
+    sign_in users(:one)
+    8.times { |i| Course.create!(account: accounts(:company), name: "Extra #{i}", subject: "Science") }
+    get courses_path
+    assert_select "input[name='q']", count: 0
+    assert_select "nav[aria-label='Pagination']", count: 0
+    assert_select ".row-list > [data-course]", count: 12
+    assert_select ".row-list + [data-ui-modal-turbo-frame-src-value='#{new_course_path}']"
+
+    Course.create!(account: accounts(:company), name: "Extra last", subject: "Science")
+    get courses_path
+    assert_select "label[for='course_search']", text: "Search classes"
+    assert_select "input[type='search'][name='q'][placeholder='Search classes']"
+    assert_select "nav[aria-label='Pagination']"
+    assert_select ".row-list > [data-course]", count: 12
+    assert_select ".row-list + [data-ui-modal-turbo-frame-src-value='#{new_course_path}']", count: 0
+
+    get courses_path(page: 2)
+    assert_select ".row-list > [data-course]", count: 1
+    assert_select ".row-list + [data-ui-modal-turbo-frame-src-value='#{new_course_path}']"
+    get courses_path(subject: "Math")
+    assert_select "input[name='q']", count: 0
+    get courses_path(status: "completed")
+    assert_select "input[name='q']", count: 0
+  end
+
+  test "search combines with filters and tab counts and stays visible with few matches" do
+    sign_in users(:one)
+    get courses_path(q: "mAtH", learner: learners(:two).id, subject: "math", status: "completed", page: 2)
+
+    assert_equal ["Spanish 1"], listed_names
+    assert_select "input[name='q'][value='mAtH']"
+    assert_select "nav a", text: /Active\s*0/
+    assert_select "nav a", text: /Completed\s*1/
+    assert_select "nav a", text: /Archived\s*0/
+    %w[active completed archived].each do |status|
+      href = courses_path({status: (status unless status == "active"), learner: learners(:two).id, subject: "math", q: "mAtH"}.compact)
+      assert_select "nav a[href='#{href}']"
+    end
+    assert_select "form[action='#{courses_path}'] input[name='page']", count: 0
+    assert_select "nav[aria-label='Pagination']", count: 0
+  end
+
+  test "search finds names and subjects but excludes other families and learner names" do
+    sign_in users(:one)
+    Course.create!(account: accounts(:one), name: "Math outsider", subject: "Math")
+    get courses_path(q: "math")
+    assert_equal ["Algebra 1"], listed_names
+    get courses_path(q: "lab")
+    assert_equal ["Science Lab"], listed_names
+    get courses_path(q: "Maya")
+    assert_empty listed_names
+  end
+
+  test "search is trimmed bounded and escaped when echoed" do
+    sign_in users(:one)
+    get courses_path(q: "  math  ")
+    assert_equal ["Algebra 1"], listed_names
+    assert_select "input[name='q'][value='math']"
+
+    get courses_path(q: "a" * 105)
+    assert_select "input[name='q']" do |inputs|
+      assert_equal "a" * 100, inputs.first["value"]
+    end
+    get courses_path(q: %(<script>alert("x")</script>))
+    assert_select "input[name='q']" do |inputs|
+      assert_equal %(<script>alert("x")</script>), inputs.first["value"]
+    end
+    assert_select "script", text: /alert/, count: 0
+  end
+
+  test "structured search is ignored and blank search is removed while keeping list state" do
+    sign_in users(:one)
+    ["q[]=math", "q[text]=math"].each do |query|
+      get "/classes?#{query}"
+      assert_response :success
+      assert_equal 4, listed_names.size
+      assert_select "input[name='q']", count: 0
+    end
+    ["", "   "].each do |query|
+      get courses_path(q: query, status: "completed", learner: learners(:two).id, subject: "Math", page: 2)
+      assert_redirected_to courses_path(status: "completed", learner: learners(:two).id, subject: "Math", page: "2")
+      follow_redirect!
+      assert_equal ["Spanish 1"], listed_names
+    end
+  end
+
+  test "search no matches offers Clear all on the same tab" do
+    sign_in users(:one)
+    %w[active completed archived].each do |status|
+      get courses_path(status: status, subject: "Math", q: "missing")
+      assert_select "p", text: "No classes match your search or filters."
+      assert_select "a[href='#{courses_path({status: (status unless status == "active")}.compact)}']", text: "Clear all"
+      assert_select ".row-list", count: 0
+      assert_select "nav[aria-label='Pagination']", count: 0
+      assert_select "input[name='q'][value='missing']"
+    end
+  end
+
+  test "invalid pages show the first page and overflowing pages show the last remaining page" do
+    sign_in users(:one)
+    10.times { |i| Course.create!(account: accounts(:company), name: "Extra #{i}") }
+    get courses_path
+    first_page = listed_names
+    ["abc", "0", "-1", "1.5", "2junk", [], {number: "2"}].each do |page|
+      get courses_path(page: page)
+      assert_response :success
+      assert_equal first_page, listed_names
+    end
+    get courses_path(page: 99)
+    assert_response :success
+    assert_equal 2, listed_names.size
+    assert_select ".row-list + [data-ui-modal-turbo-frame-src-value='#{new_course_path}']"
+
+    accounts(:company).courses.destroy_all
+    get courses_path(page: 99)
+    assert_response :success
+    assert_select "h2", text: "No classes yet"
+  end
+
+  test "pagination links retain list state while tabs and filter submission reset page" do
+    sign_in users(:one)
+    13.times do |i|
+      course = Course.create!(account: accounts(:company), name: "Math #{i}", subject: "Math", completed_at: Time.current)
+      Enrollment.create!(course: course, learner: learners(:two))
+    end
+    get courses_path(status: "completed", learner: learners(:two).id, subject: "Math", q: "math", page: 2)
+    assert_select "nav[aria-label='Pagination'] a[href]" do |links|
+      links.each do |link|
+        query = Rack::Utils.parse_nested_query(URI.parse(link["href"]).query)
+        assert_equal "completed", query["status"]
+        assert_equal learners(:two).id.to_s, query["learner"]
+        assert_equal "Math", query["subject"]
+        assert_equal "math", query["q"]
+        assert query["page"]
+      end
+    end
+    assert_select "form[action='#{courses_path}'] input[name='page']", count: 0
+    assert_select "nav[aria-label='Class status'] a[href]" do |links|
+      links.each { |link| assert_not_includes link["href"], "page=" }
+    end
+    assert_select ".row-list + [data-ui-modal-turbo-frame-src-value='#{new_course_path}']", count: 0
   end
 
   private

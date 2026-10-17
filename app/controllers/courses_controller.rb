@@ -4,24 +4,18 @@ class CoursesController < ApplicationController
   before_action :authenticate_user!
   before_action :set_course, only: %i[edit update delete destroy]
 
-  helper_method :course_list_path
+  helper_method :course_list_path, :course_list_params
 
   def index
-    @status = Course::STATUSES.include?(params[:status]) ? params[:status] : "active"
-    @filter_learners = Current.account.learners.active.ordered.to_a
-    # AIDEV-NOTE: Cards resolve enrollment IDs through the active-learner hash
-    # so archived learners stay hidden without an N+1 query. The learner filter
-    # reuses the same lookup.
-    @learners_by_id = @filter_learners.index_by(&:id)
-    @learner_filter = @learners_by_id[string_param(:learner).to_i]
-    @subject_filter = string_param(:subject)
-    @subject_options = Course.subject_filter_options_for(Current.account)
-    @family_has_courses = Current.account.courses.exists?
+    prepare_list_filters
+    return redirect_to courses_path(course_list_params.merge(page: string_param(:page)).compact) if params[:q].is_a?(String) && @query.nil?
 
     filtered = filtered_courses
-    # AIDEV-NOTE: Tab counts follow the learner and subject filters and use COUNT queries, not loaded records.
+    filtered = filtered.search(@query) if @query
+    # AIDEV-NOTE: Counts follow filters and search without loading every class.
     @status_counts = Course::STATUSES.index_with { |status| filtered.public_send(status).count }
-    @courses = filtered.public_send(@status).ordered.includes(:enrollments).load
+    @show_search = @query.present? || @status_counts[@status] > 12
+    paginate_courses(filtered)
   end
 
   def new
@@ -68,13 +62,42 @@ class CoursesController < ApplicationController
 
   private
 
-  # AIDEV-NOTE: Filter state lives only in the URL. The default Active tab is left out of it.
+  def prepare_list_filters
+    @status = Course::STATUSES.include?(params[:status]) ? params[:status] : "active"
+    @filter_learners = Current.account.learners.active.ordered.to_a
+    # AIDEV-NOTE: Resolve enrollment IDs through active learners so archived learners
+    # stay hidden without an N+1 query; the filter reuses the same lookup.
+    @learners_by_id = @filter_learners.index_by(&:id)
+    @learner_filter = @learners_by_id[string_param(:learner).to_i]
+    @subject_filter = string_param(:subject)
+    @query = string_param(:q)&.strip&.slice(0, 100)&.presence
+    @subject_options = Course.subject_filter_options_for(Current.account)
+    @family_has_courses = Current.account.courses.exists?
+  end
+
+  def paginate_courses(filtered)
+    count = @status_counts[@status]
+    requested_page = string_param(:page)
+    page = requested_page&.match?(/\A[0-9]+\z/) ? [requested_page.to_i, 1].max : 1
+    # AIDEV-NOTE: Pagy 43 returns empty overflow pages. A modal action may remove
+    # the final row, so clamp locally with the tab count we already have.
+    page = page.clamp(1, [(count / 12.0).ceil, 1].max)
+    @pagy, @courses = pagy(filtered.public_send(@status).ordered.includes(:enrollments), limit: 12, count: count, page: page)
+    @courses.load
+  end
+
+  # AIDEV-NOTE: Filter state lives only in the URL; tabs omit page to start over.
   def course_list_path(status: @status)
-    courses_path({
+    courses_path(course_list_params(status: status))
+  end
+
+  def course_list_params(status: @status)
+    {
       status: (status unless status == "active"),
       learner: @learner_filter&.id,
-      subject: @subject_filter
-    }.compact)
+      subject: @subject_filter,
+      q: @query
+    }.compact
   end
 
   def filtered_courses
@@ -100,7 +123,7 @@ class CoursesController < ApplicationController
     course.assign_learners(attributes[:learner_ids])
   end
 
-  # A status change made in the edit form gets the same toast as the card menu's action.
+  # A status change made in the edit form gets the same toast as the row menu's action.
   def update_notice(previous_status)
     return t("courses.notices.updated") if @course.status == previous_status
 
