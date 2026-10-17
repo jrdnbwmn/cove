@@ -1,0 +1,16 @@
+<%= render "planners/header", active_tab: :school_year %>
+
+<div class="mt-6 sm:mt-8 flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+  <div class="min-w-0">
+    <p><%= school_year_summary(@school_year) %></p>
+    <% if @school_year.ended? %>
+      <p class="mt-2 text-muted-foreground">Planning next year is coming soon. Your records for this year are kept.</p>
+    <% end %>
+  </div>
+  <% unless @school_year.ended? %>
+    <div class="flex shrink-0 flex-col gap-3 lg:flex-row">
+      <%= render "application/lazy_modal", src: new_planner_school_year_break_path, text: "Add time off", button: {variant: :secondary, classes: "w-full"} %>
+      <%= render "application/lazy_modal", src: edit_planner_school_year_path, text: "Edit year", button: {variant: :secondary, classes: "w-full"} %>
+    </div>
+  <% end %>
+</div>
