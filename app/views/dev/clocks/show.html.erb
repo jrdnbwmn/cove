@@ -3,8 +3,8 @@
   <% override = DevClock.today %>
   <div class="space-y-6">
     <div class="space-y-2">
-      <p>Real today for your family: <%= current_account.real_today.strftime("%-d %b %Y") %></p>
-      <p>Override: <%= override ? override.strftime("%-d %b %Y") : "none" %></p>
+      <p>Real today for your family: <%= l(current_account.real_today, format: :friendly) %></p>
+      <p>Override: <%= override ? l(override, format: :friendly) : "none" %></p>
       <p>Every family's today uses this date until you clear it.</p>
       <p class="text-sm text-muted-foreground">Edits made while pretending stay when you clear it. Reseed if data looks odd.</p>
     </div>
