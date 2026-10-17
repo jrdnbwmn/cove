@@ -27,8 +27,8 @@
 | 18 | 3 | 9 | Add school-year summary states | subagent | ✅ |
 | 19 | 3 | 10 | Add time-off rows and empty state | subagent | ✅ |
 | 20 | 3 | 10 | Add family-scoped time-off endpoints | Master | ✅ |
-| 21 | 3 | 11 | Complete time-off modal interactions | subagent | |
-| 22 | 3 | 11 | Implement transactional replacement | subagent | |
+| 21 | 3 | 11 | Complete time-off modal interactions | subagent | ✅ |
+| 22 | 3 | 11 | Implement transactional replacement | subagent | ✅ |
 | 23 | 3 | 12 | Add overlap resolution in the modal | Master | |
 | 24 | 3 | 12 | Support server-backed toast actions | Master | |
 | 25 | 3 | 13 | Add deletion and Undo | Master | |

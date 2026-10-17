@@ -1,17 +1,18 @@
-<%= form_with model: time_off, scope: :break, url: time_off.persisted? ? planner_school_year_break_path(time_off) : planner_school_year_breaks_path, id: "time-off-form", class: "flex flex-col gap-6" do |form| %>
+<% underway = time_off.persisted? && time_off.started? %>
+<%= form_with model: time_off, scope: :break, url: time_off.persisted? ? planner_school_year_break_path(time_off) : planner_school_year_breaks_path, id: "time-off-form", class: "flex flex-col gap-6", data: {controller: "time-off-dates"} do |form| %>
   <%= render FormFieldComponent.new(label: "Name", name: "break[name]", id: "break_name", error: time_off.errors[:name].first) do |field| %>
     <% field.with_input do %>
       <%= form.text_field :name, id: "break_name", class: "form-control", required: true, autocomplete: "off", autofocus: true %>
     <% end %>
   <% end %>
-  <%= render FormFieldComponent.new(label: "Start", name: "break[starts_on]", id: "break_starts_on", error: time_off.errors[:starts_on].first) do |field| %>
+  <%= render FormFieldComponent.new(label: "Start", name: "break[starts_on]", id: "break_starts_on", error: time_off.errors[:starts_on].first, helper_text: ("Already started. You can change the end date." if underway)) do |field| %>
     <% field.with_input do %>
-      <%= form.date_field :starts_on, id: "break_starts_on", class: "form-control", required: true %>
+      <%= form.date_field :starts_on, id: "break_starts_on", class: "form-control", required: true, disabled: underway, data: {time_off_dates_target: "start", action: "change->time-off-dates#updateEnd"} %>
     <% end %>
   <% end %>
   <%= render FormFieldComponent.new(label: "End", name: "break[ends_on]", id: "break_ends_on", error: time_off.errors[:ends_on].first) do |field| %>
     <% field.with_input do %>
-      <%= form.date_field :ends_on, id: "break_ends_on", class: "form-control", required: true %>
+      <%= form.date_field :ends_on, id: "break_ends_on", class: "form-control", required: true, data: {time_off_dates_target: "end"} %>
     <% end %>
   <% end %>
   <% time_off.errors[:base].each do |message| %>
