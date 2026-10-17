@@ -1,5 +1,6 @@
 class SchoolYear < ApplicationRecord
   include Counting
+  include Defaults
 
   belongs_to :account
   has_many :breaks, dependent: :destroy
