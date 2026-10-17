@@ -15,12 +15,17 @@
 <div id="toasts" data-turbo-temporary>
   <% flash.each do |key, value| %>
     <% next unless flash_keys.include?(key.to_sym) && value.present? %>
-    <% toast = value.is_a?(Hash) ? value : {title: value} %>
+    <%# AIDEV-NOTE: Flash round-trips through the session as JSON, so hash keys arrive as strings. %>
+    <% toast = value.is_a?(Hash) ? value.with_indifferent_access : {title: value} %>
     <% toast_type = toast[:icon_name] ? flash_variant(toast[:icon_name]) : flash_variant(key) %>
-    <div data-controller="flash-toast"
-         data-flash-toast-type-value="<%= toast_type %>"
-         data-flash-toast-message-value="<%= toast[:title] %>"
-         data-flash-toast-description-value="<%= toast[:description] %>"
-         data-flash-toast-auto-dismiss-value="<%= !%i[alert error].include?(key.to_sym) %>"></div>
+    <%# A server-backed action ({label:, url:, params:}) becomes a CSRF-protected POST form submitted by the bridge. %>
+    <%= tag.div data: {
+      controller: "flash-toast",
+      flash_toast_type_value: toast_type,
+      flash_toast_message_value: toast[:title],
+      flash_toast_description_value: toast[:description],
+      flash_toast_auto_dismiss_value: !%i[alert error].include?(key.to_sym),
+      flash_toast_action_value: toast[:action].presence&.slice(:label, :url, :params)&.to_json
+    } %>
   <% end %>
 </div>

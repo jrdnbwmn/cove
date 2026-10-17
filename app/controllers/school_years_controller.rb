@@ -19,6 +19,13 @@ class SchoolYearsController < ApplicationController
 
   private
 
+  # AIDEV-NOTE: Modal forms redirect here and the browser's follow-up GET still carries the
+  # Turbo-Frame header. The frame-only layout has no tracked head elements (Turbo reloads, after
+  # the redirect already consumed the flash) and no #toasts, so the saved/removed toast is lost.
+  def set_layout
+    (turbo_frame_request? && action_name == "show") ? nil : super
+  end
+
   def set_school_year
     @school_year = current_account.school_year || raise(ActiveRecord::RecordNotFound)
   end

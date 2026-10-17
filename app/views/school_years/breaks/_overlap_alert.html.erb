@@ -1,0 +1,7 @@
+<% names = conflicts.map { |entry| "#{entry.name} (#{friendly_date_range(entry.starts_on, entry.ends_on)})" } %>
+<% started = conflicts.select(&:started?) %>
+<%= render AlertComponent.new(
+  title: "This overlaps #{names.to_sentence}.",
+  variant: :warning,
+  description: (safe_join(["Time off that has started can't be replaced. Edit instead: ", safe_join(started.map { |entry| link_to(entry.name, edit_planner_school_year_break_path(entry), class: "underline") }, ", ")]) if started.any?)
+) %>

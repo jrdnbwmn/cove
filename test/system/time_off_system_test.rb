@@ -79,9 +79,29 @@ class TimeOffSystemTest < ApplicationSystemTestCase
       wait_for_turbo_navigation { click_button "Save" }
     end
     assert_no_selector "dialog[open]"
+    assert_selector "[role='status']", text: "Saved."
     assert_selector "[data-time-off='#{entry.id}']", text: "16–22 Oct"
     assert_equal Date.new(2026, 10, 16), entry.reload.starts_on
     assert_equal Date.new(2026, 10, 22), entry.ends_on
+  end
+
+  test "an overlap offers Replace it in the same modal and replaces the future entry" do
+    entry = @year.breaks.create!(name: "Teacher day", starts_on: "2026-10-20", ends_on: "2026-10-20")
+    open_add_time_off
+    within("dialog[open]") do
+      fill_in "Name", with: "Fall trip"
+      set_date "break_starts_on", "2026-10-19"
+      set_date "break_ends_on", "2026-10-21"
+      click_button "Add time off"
+      assert_text "This overlaps Teacher day (20 Oct)."
+      assert_field "Name", with: "Fall trip"
+      assert_field "Start", with: "2026-10-19"
+      assert_no_button "Add time off"
+      wait_for_turbo_navigation { click_button "Replace it" }
+    end
+    assert_no_selector "dialog[open]"
+    assert_selector "[data-time-off]", text: "Fall trip"
+    assert_not @year.breaks.exists?(id: entry.id)
   end
 
   private

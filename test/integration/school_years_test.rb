@@ -17,6 +17,13 @@ class SchoolYearsTest < ActionDispatch::IntegrationTest
     assert_redirected_to new_user_session_path
   end
 
+  test "School year keeps its full page and toasts when a modal form redirects to it" do
+    get planner_school_year_path, headers: {"Turbo-Frame" => "modal-lazy-content"}
+    assert_response :success
+    assert_select "head link[data-turbo-track='reload']"
+    assert_select "#toasts"
+  end
+
   test "either parent can edit the family's year" do
     [users(:one), users(:two)].each do |parent|
       sign_in parent

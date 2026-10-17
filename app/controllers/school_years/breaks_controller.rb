@@ -10,10 +10,10 @@ class SchoolYears::BreaksController < ApplicationController
 
   def create
     @time_off = @school_year.breaks.new(time_off_params)
-    if @time_off.save
+    if save_time_off
       redirect_to planner_school_year_path, status: :see_other, notice: "#{@time_off.name} added."
     else
-      render :new, status: :unprocessable_content
+      render_invalid
     end
   end
 
@@ -22,10 +22,11 @@ class SchoolYears::BreaksController < ApplicationController
   end
 
   def update
-    if @time_off.update(time_off_params)
+    @time_off.assign_attributes(time_off_params)
+    if save_time_off
       redirect_to planner_school_year_path, status: :see_other, notice: "Saved."
     else
-      render :new, status: :unprocessable_content
+      render_invalid
     end
   end
 
@@ -38,6 +39,18 @@ class SchoolYears::BreaksController < ApplicationController
   end
 
   private
+
+  # AIDEV-NOTE: Replace is an explicit flag only; the conflicts to delete are always re-queried by the service, never taken from params.
+  def save_time_off
+    return @time_off.save unless params.dig(:break, :replace) == "1"
+
+    ReplaceTimeOff.new(time_off: @time_off).call.success?
+  end
+
+  def render_invalid
+    @conflicts = @time_off.overlaps.to_a
+    render :new, status: :unprocessable_content
+  end
 
   def set_school_year
     @school_year = current_account.school_year || raise(ActiveRecord::RecordNotFound)

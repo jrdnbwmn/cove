@@ -1,6 +1,9 @@
 class Break < ApplicationRecord
   belongs_to :school_year
 
+  OVERLAP_ERROR = "This overlaps other time off."
+  STARTED_DELETE_ERROR = "Time off that has started can't be deleted."
+
   scope :ordered, -> { order(:starts_on, :id) }
 
   validates :name, presence: {message: "Add a name."}
@@ -34,7 +37,7 @@ class Break < ApplicationRecord
   end
 
   def does_not_overlap
-    errors.add(:base, "This overlaps other time off.") if overlaps.exists?
+    errors.add(:base, OVERLAP_ERROR) if overlaps.exists?
   end
 
   def past_days_are_protected
@@ -57,7 +60,7 @@ class Break < ApplicationRecord
     return if destroyed_by_association
     return unless started? || school_year.ended?
 
-    errors.add(:base, "Time off that has started can't be deleted.")
+    errors.add(:base, STARTED_DELETE_ERROR)
     throw :abort
   end
 end

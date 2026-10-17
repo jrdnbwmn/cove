@@ -29,8 +29,8 @@
 | 20 | 3 | 10 | Add family-scoped time-off endpoints | Master | ✅ |
 | 21 | 3 | 11 | Complete time-off modal interactions | subagent | ✅ |
 | 22 | 3 | 11 | Implement transactional replacement | subagent | ✅ |
-| 23 | 3 | 12 | Add overlap resolution in the modal | Master | |
-| 24 | 3 | 12 | Support server-backed toast actions | Master | |
+| 23 | 3 | 12 | Add overlap resolution in the modal | Master | ✅ |
+| 24 | 3 | 12 | Support server-backed toast actions | Master | ✅ |
 | 25 | 3 | 13 | Add deletion and Undo | Master | |
 | 26 | 3 | 13 | Add the end-date preview endpoint | Master | |
 | 27 | 3 | 14 | Connect preview loading and verify Edit year | subagent | |

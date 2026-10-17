@@ -14,7 +14,7 @@ class ReplaceTimeOff
       if time_off.school_year.ended?
         time_off.errors.add(:base, "This year has ended.")
       elsif conflicts.any?(&:started?)
-        time_off.errors.add(:base, "Time off that has started can't be deleted.")
+        time_off.errors.add(:base, Break::STARTED_DELETE_ERROR)
       else
         conflicts.each(&:destroy!)
         time_off.save!

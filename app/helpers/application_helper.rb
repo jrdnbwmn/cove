@@ -57,6 +57,12 @@ module ApplicationHelper
     l(time.in_time_zone, format: :friendly)
   end
 
+  def time_off_submit_label(time_off, conflicts, replaceable)
+    return (conflicts.one? ? "Replace it" : "Replace them") if replaceable
+
+    time_off.persisted? ? "Save" : "Add time off"
+  end
+
   def friendly_date_range(start_date, end_date)
     start_date = start_date.in_time_zone.to_date
     end_date = end_date.in_time_zone.to_date
