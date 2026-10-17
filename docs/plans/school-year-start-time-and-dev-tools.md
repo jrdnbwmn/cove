@@ -17,8 +17,9 @@
 | 8 | 3 | 7 | Share existing default school-year calendar rules | Master | ✅ |
 | 9 | 3 | 7 | Add the three seed families | subagent | ✅ |
 | 10 | 3 | 7 | Complete final validation | Master | ✅ |
+| 11 | 1 | 8 | Switch the start time to a searchable time dropdown | Master | |
 
-Phase 1 delivers Shape of the day. Phase 2 delivers the development clock. Phase 3 delivers the seed scenarios. Each phase can ship independently after its checkpoints pass.
+Phase 1 delivers Shape of the day. Phase 2 delivers the development clock. Phase 3 delivers the seed scenarios. Each phase can ship independently after its checkpoints pass. Task 11 is a Phase 1 design change added after Tasks 1–10 shipped; it replaces Task 1's `form.time_field`.
 
 ## Prerequisites
 
@@ -50,7 +51,7 @@ Phase 1 delivers Shape of the day. Phase 2 delivers the development clock. Phase
 - Singular `/planner/school_year/shape_of_day`, supporting `edit` and `update`.
 - Include `CurrentSchoolYear`; apply `forbid_ended_year` to both actions. Permit only `school_starts_at`.
 - Return successful saves to the originating Planner tab using `ReferrerPath` and an exact allowlist of the two tab paths; default to School year.
-- Render the complete form inside `modal-lazy-content`, using `FormFieldComponent`, `form.time_field`, and existing Cancel/Save buttons.
+- Render the complete form inside `modal-lazy-content`, using `FormFieldComponent`, `form.time_field`, and existing Cancel/Save buttons. *(Superseded by Task 11: the field is now a `SelectComponent`.)*
 
 **NOT in scope:** Year dates, weekdays, time periods, estimated-time displays, or Premium gating.
 
@@ -284,6 +285,32 @@ Phase 1 delivers Shape of the day. Phase 2 delivers the development clock. Phase
 3. **Verify:** Rebuild Tailwind before visual inspection. Capture desktop and phone screenshots under `.context/` for both Planner tabs, the modal, the clock page, and the active strip. Inspect for overflow, button visibility, focus, and shell scrolling. Run `git diff origin/main...`, inspect uncommitted changes, and run `git diff --check`.
 4. Run **review-changes-mini for Checkpoint 7, Tasks 8–10**, exactly once after all three finish. For a parallel batch, the master runs it after the entire batch returns.
 
+### Task 11 [Master]: Switch the start time to a searchable time dropdown
+
+**Skills:** write-tests, style-ui
+
+**Reference:** `app/views/learners/_form.html.erb` (blank option chosen again via `select_allow_empty_option_value`), `app/views/accounts/_form.html.erb` (`SelectComponent` in a modal), `app/helpers/school_years_helper.rb` (`school_weekday_options`), `config/locales/en.yml` (`time.formats.friendly`), `test/system/account_system_test.rb` (driving tom-select in a dialog), design → Shape of the day modal
+
+**Prototype:** None — follow the updated design.
+
+**Primary tasks:** 1. Set or change the start time. 2. Clear it.
+
+**In scope:**
+
+- Five files: `app/views/school_years/shape_of_days/edit.html.erb`, `app/helpers/school_years_helper.rb`, the existing `test/helpers/school_years_helper_test.rb`, `test/integration/school_years/shape_of_days_test.rb`, and `test/system/shape_of_day_system_test.rb`.
+- Add `school_start_time_options(selected)` to `SchoolYearsHelper`: `["No usual start time", ""]` first, then 69 options from 4:00am to 9:00pm (inclusive) in 15-minute steps. Labels use `l(time, format: :friendly)` ("8:30am", "12:00pm"); values are `"HH:MM"`. If `selected` is set and not in the list (off-grid or outside the range), insert it in time order.
+- Replace `form.time_field` with `SelectComponent` (name `school_year[school_starts_at]`, id `school_year_school_starts_at`, `selected:` the saved `"HH:MM"` or `""`, `placeholder: nil`, `clearable: false`, `searchable: true`, `data: {select_allow_empty_option_value: true}`). Keep the label, help text, and inline error. Keep `FormFieldComponent` only if it wraps the select cleanly; otherwise use `SelectComponent`'s own `label`/`description`/`error`, matching `accounts/_form`.
+- Keep the controller, permitted params, return-path logic, copy, buttons, and "Saved." toast unchanged.
+
+**NOT in scope:** Controller or model changes, new validation for off-grid times, changes to `SelectComponent` or `select_controller.js`, other forms, the existing cached lazy-modal limitation noted in Final validation.
+
+**Build order:**
+
+1. **Test:** Helper test: first option is blank "No usual start time"; 70 options in total; first and last times are 4:00am and 9:00pm; labels for 8:30am and 12:00pm; an off-grid selected time (09:47) and an out-of-range one (22:30) are each inserted once, in order; an in-list selection adds nothing. Integration: replace `input[type=time]` assertions with the select and its options; edit preselects the saved time; validation re-render keeps 08:30 selected; set/change/clear/tampered cases still pass. System (desktop and 390px): open the dropdown, type in its search box to pick 8:30am, then 9:45am, then choose "No usual start time" to clear; Cancel/Keep editing/Discard still protect unsaved changes; phone Save-above-Cancel order holds; the dropdown isn't clipped by the dialog.
+2. **Implement:** Add the helper and swap the field. No other changes.
+3. **Verify:** Sequentially run `bin/rails test test/helpers/school_years_helper_test.rb test/integration/school_years/shape_of_days_test.rb`, then `bin/rails test test/system/shape_of_day_system_test.rb`, then `bin/rubocop` and `bin/erb_lint --lint-all -f compact`. Rebuild Tailwind and capture desktop and 390px screenshots of the open dropdown under `.context/shape-of-day-select-*.png`.
+4. Run **review-changes-mini for Checkpoint 8, Task 11**, exactly once.
+
 ## Task Dependencies
 
 - Task 2 depends on Task 1; Task 3 depends on Task 2.
@@ -294,6 +321,7 @@ Phase 1 delivers Shape of the day. Phase 2 delivers the development clock. Phase
 - Task 8 can be developed independently of the UI tasks; complete it before delegating Task 9.
 - Task 9 depends on Tasks 4 and 8. Tasks 7 and 9 may overlap file work once their prerequisites pass; tests remain sequential.
 - Task 10 depends on all preceding tasks.
+- Task 11 depends on Tasks 1–3 (it replaces their field and updates their tests).
 - Subagents do not commit. The master coordinates verification and checkpoint reviews.
 
 ## Execution notes

@@ -99,9 +99,22 @@ render.
 
 ### Shape of the day modal
 - Title: **Shape of the day**.
-- One field: **School usually starts at** — `form.time_field` inside
-  `FormFieldComponent`, prefilled when set. Help text: "Optional. Cove uses
-  this to estimate times on your day."
+- One field: **School usually starts at** — a `SelectComponent` dropdown
+  (not the browser's time field), preselected when set. Help text:
+  "Optional. Cove uses this to estimate times on your day."
+  - Options: a first option **No usual start time** (blank value, choosing it
+    clears the time), then every 15 minutes from 4:00am to 9:00pm, labeled in
+    Cove's time format ("8:30am", "12:00pm"). The range covers early and
+    afternoon/evening starts without a 96-item list.
+  - Searchable: the dropdown has a search box so parents can type "8:3"
+    instead of scrolling.
+  - A saved time that isn't in the list (off a 15-minute step, e.g. 9:47am,
+    or outside 4:00am–9:00pm) is added as its own option in time order and
+    stays selected, so opening and saving never changes it silently.
+  - Why not the time field: on desktop it shows `--:-- --` segments that look
+    unlike the rest of Cove, clearing it is hard to find (Safari has no clear
+    button), and the browser decides 12/24-hour display instead of Cove's
+    "8:30am" format.
 - No time periods, rows, or empty state (Today views).
 - Buttons: Cancel and Save, bottom right; stacked on phones, Save on top
   (same as Edit year's form).
@@ -135,9 +148,12 @@ otherwise unchanged.
 1. Year ends while the modal is open (stale tab): Save → 403, nothing changes.
 2. Two parents edit at once: last save wins.
 3. Time zone change: the wall-clock time stays (8:30am stays 8:30am).
-4. Display: the field uses the browser's time format; later displays (Today)
-   use "8:30am" per ux-notes formats.
-5. Tampered value: saves as not set, no error.
+4. Display: the dropdown and later displays (Today) use "8:30am" per
+   ux-notes formats (`time.formats.friendly`).
+5. Tampered value: unparseable values save as not set, no error. A valid time
+   off the 15-minute grid (e.g. "08:07" from a hand-crafted request) is saved
+   as-is — no new validation — and shows as its own option next time. The
+   same holds for a time outside 4:00am–9:00pm.
 6. Production/test: `/dev/clock` routes only under `Rails.env.local?`; the
    controller 404s outside development; `DevClock.today` is `nil` outside
    development. Test all three guards.
@@ -184,6 +200,9 @@ None.
 ## More Info
 - Rule: the usual start time is optional. With none set, Today (later) shows
   no estimated times rather than asking.
+- Design change after the first build (Task 11 in the plan): the start time
+  moved from `form.time_field` to a searchable `SelectComponent` with
+  15-minute steps from 4:00am to 9:00pm — see the Shape of the day modal section for why.
 - Design change from the ticket: the ticket specified a Planner "…" menu
   holding Shape of the day. Decided instead: no "…" menu with one item; it's a
   visible header button (see ux-notes edits above).
