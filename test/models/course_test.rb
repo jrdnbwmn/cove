@@ -288,6 +288,36 @@ class CourseBehaviorTest < ActiveSupport::TestCase
     end
   end
 
+  test "parents can find classes by name or subject regardless of case" do
+    named = Course.create!(account: @family, name: "Math Adventures", subject: "Books")
+    subject = Course.create!(account: @family, name: "Numbers", subject: "Math")
+    Course.create!(account: @family, name: "Unrelated", subject: "Arts")
+
+    assert_equal [named, subject].sort_by(&:id), @family.courses.search("aTh").sort_by(&:id)
+    assert_empty @family.courses.search("missing")
+  end
+
+  test "search treats percent and underscore as literal characters" do
+    percent = Course.create!(account: @family, name: "100% practice")
+    underscore = Course.create!(account: @family, name: "Workbook", subject: "Co_op")
+    Course.create!(account: @family, name: "100 practice", subject: "Co-op")
+
+    assert_equal [percent], @family.courses.search("%").to_a
+    assert_equal [underscore], @family.courses.search("_").to_a
+  end
+
+  test "search combines with family status learner and subject filters" do
+    learner = Learner.create!(account: @family, name: "Maya")
+    matching = Course.create!(account: @family, name: "Math Adventures", subject: "Books")
+    Enrollment.create!(course: matching, learner: learner)
+    Course.create!(account: @other_family, name: "Math Adventures", subject: "Books")
+    Course.create!(account: @family, name: "Math completed", subject: "Books", completed_at: Time.current)
+    Course.create!(account: @family, name: "Math alone", subject: "Books")
+
+    assert_equal [matching], @family.courses.active.taken_by(learner).with_subject("books").search("math").ordered.to_a
+    assert_empty @family.courses.active.taken_by(learner).search("Maya")
+  end
+
   test "classes can be filtered by learner" do
     assert_equal [courses(:shared)], Course.taken_by(learners(:one)).to_a
     assert_equal [courses(:completed), courses(:shared)].sort_by(&:id), Course.taken_by(learners(:two)).sort_by(&:id)

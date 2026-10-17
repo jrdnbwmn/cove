@@ -1,7 +1,9 @@
-<%# locals: (text:, tile: false, button: {}) %>
-<%# AIDEV-NOTE: The trigger inside a UiModalComponent's with_trigger slot: the inline AddTileComponent at the end of a card list, or a ButtonComponent (options in `button`). Pass the same `tile` to the modal's wrapper_classes ("h-full") so the tile fills its grid cell. %>
+<%# locals: (text:, tile: false, row: false, button: {}) %>
+<%# AIDEV-NOTE: The trigger inside a UiModalComponent's with_trigger slot: the inline AddTileComponent at the end of a card list, a muted row button, or a ButtonComponent (options in `button`). Pass the same `tile` to the modal's wrapper_classes ("h-full") so the tile fills its grid cell. %>
 <% if tile %>
   <%= render AddTileComponent.new(text: text, data: {action: "click->ui-modal#open:prevent"}) %>
+<% elsif row %>
+  <%= render ButtonComponent.new(text: text, variant: :ghost, icon: icon("plus", class: "size-full"), classes: "border-0 text-muted-foreground! justify-start w-full py-3", data: {action: "click->ui-modal#open:prevent"}) %>
 <% else %>
   <%= render ButtonComponent.new(text: text, **button, data: {action: "click->ui-modal#open:prevent"}) %>
 <% end %>

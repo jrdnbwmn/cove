@@ -19,6 +19,18 @@
   <%# AIDEV-NOTE: Hidden status keeps the tab when a filter changes. Labels are sr-only to keep the toolbar compact; the "All ..." default option names each filter visually. %>
   <%= form_with url: courses_path, method: :get, class: "mb-4 flex flex-col gap-3 sm:flex-row" do %>
     <%= hidden_field_tag :status, @status, id: nil %>
+    <% if @show_search %>
+      <%# AIDEV-NOTE: Select widgets add text inputs, so native Enter submission needs a submit button. %>
+      <%= render ButtonComponent.new(text: t(".search_label"), type: "submit", classes: "hidden!") %>
+      <div class="w-full sm:w-64">
+        <%= render FormFieldComponent.new(label: t(".search_label"), name: "q", id: "course_search", label_hidden: true) do |field| %>
+          <% field.with_addon_left { icon "search", class: "size-4 text-muted-foreground" } %>
+          <% field.with_input do %>
+            <%= search_field_tag :q, @query, id: "course_search", placeholder: t(".search_label"), class: "form-control min-w-0 flex-1 rounded-l-none!", maxlength: 100, autocomplete: "off" %>
+          <% end %>
+        <% end %>
+      </div>
+    <% end %>
     <div class="w-full sm:w-56">
       <%= render SelectComponent.new(
         name: "learner",
@@ -58,18 +70,21 @@
   </div>
 
   <% if @courses.any? %>
-    <div class="grid auto-rows-fr gap-4 sm:grid-cols-2 lg:grid-cols-3">
+    <div class="row-list">
       <% @courses.each do |course| %>
-        <%= render "course_card", course: course %>
-      <% end %>
-      <% if @status == "active" %>
-        <%= render "add_trigger", tile: true %>
+        <%= render "course_row", course: course %>
       <% end %>
     </div>
-  <% elsif @learner_filter || @subject_filter %>
+    <% if @status == "active" && @pagy.page == @pagy.pages %>
+      <%= render "add_trigger", row: true %>
+    <% end %>
+    <% if @pagy.pages > 1 %>
+      <%= render PaginationComponent.new(pagy: @pagy, preserve_params: course_list_params, classes: "mt-6") %>
+    <% end %>
+  <% elsif @learner_filter || @subject_filter || @query %>
     <div class="flex flex-col items-start gap-3 py-6">
-      <p class="text-muted-foreground"><%= t(".no_match") %></p>
-      <%= render ButtonComponent.new(text: t(".clear_filters"), variant: :outline, href: courses_path({status: (@status unless @status == "active")}.compact)) %>
+      <p class="text-muted-foreground"><%= t(@query ? ".no_match_search" : ".no_match") %></p>
+      <%= render ButtonComponent.new(text: t(@query ? ".clear_all" : ".clear_filters"), variant: :outline, href: courses_path({status: (@status unless @status == "active")}.compact)) %>
     </div>
   <% elsif @status == "active" %>
     <%= render EmptyStateComponent.new(title: t(".none_active_title"), description: t(".none_active_description")) do |empty_state| %>

@@ -30,6 +30,11 @@ class Course < ApplicationRecord
   # AIDEV-NOTE: Raw SQL because Rails has no scope for case-insensitive ordering with NULLs last.
   scope :ordered, -> { order(Arel.sql("subject IS NULL ASC, lower(subject) ASC, lower(name) ASC")) }
 
+  scope :search, ->(term) {
+    pattern = "%#{sanitize_sql_like(term)}%"
+    where("name ILIKE :pattern OR subject ILIKE :pattern", pattern: pattern)
+  }
+
   scope :active, -> { where(completed_at: nil, archived_at: nil) }
   scope :completed, -> { where.not(completed_at: nil) }
   scope :archived, -> { where.not(archived_at: nil) }
