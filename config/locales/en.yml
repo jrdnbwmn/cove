@@ -694,10 +694,6 @@ en:
     invalid: "Choose whether you want to receive marketing updates."
     protected: "You can't restore this marketing subscription from Cove."
 
-  schedules:
-    index:
-      description: "Plan your family's time, block by block."
-
   courses:
     index:
       title: "Classes"

@@ -2,7 +2,7 @@
 <% starts_locked = begun && school_year.tracked_from.nil? %>
 <% starts_help = begun ? (starts_locked ? "The year has started." : "The year has started. You can only move the start earlier.") : nil %>
 
-<%= form_with model: school_year, url: planner_school_year_path, class: "flex flex-col gap-6" do |form| %>
+<%= form_with model: school_year, url: planner_school_year_path, class: "flex flex-col gap-6", data: {controller: "school-year-preview", school_year_preview_url_value: planner_school_year_end_date_preview_path} do |form| %>
   <% school_year.errors[:base].each do |message| %>
     <p class="text-sm text-red-600"><%= message %></p>
   <% end %>
@@ -13,7 +13,14 @@
   <% end %>
   <%= render FormFieldComponent.new(label: "Ends", name: "school_year[ends_on]", error: school_year.errors[:ends_on].first) do |field| %>
     <% field.with_input do %>
-      <%= form.date_field :ends_on, class: "form-control", required: true %>
+      <%= form.date_field :ends_on, class: "form-control", required: true, data: {school_year_preview_target: "ends", action: "input->school-year-preview#update"} %>
+      <%# AIDEV-NOTE: No src until Ends changes, so nothing loads when the modal opens. The skeleton stands in for the frame while a preview is loading. %>
+      <div class="mt-2" aria-live="polite">
+        <%= turbo_frame_tag "end-date-preview", class: "block text-sm text-muted-foreground", data: {school_year_preview_target: "frame", action: "turbo:before-fetch-response->school-year-preview#beforeFetchResponse turbo:before-frame-render->school-year-preview#rendered turbo:frame-render->school-year-preview#rendered turbo:fetch-request-error->school-year-preview#failed turbo:frame-missing->school-year-preview#failed"} %>
+        <div class="hidden" data-school-year-preview-target="skeleton" aria-hidden="true">
+          <%= render SkeletonComponent.new(width: "w-40") %>
+        </div>
+      </div>
     <% end %>
   <% end %>
   <fieldset aria-describedby="school-weekdays-help school-weekdays-error">

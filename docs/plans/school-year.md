@@ -33,8 +33,8 @@
 | 24 | 3 | 12 | Support server-backed toast actions | Master | ✅ |
 | 25 | 3 | 13 | Add deletion and Undo | Master | ✅ |
 | 26 | 3 | 13 | Add the end-date preview endpoint | Master | ✅ |
-| 27 | 3 | 14 | Connect preview loading and verify Edit year | subagent | |
-| 28 | 3 | 14 | Remove retired Schedules files | Master | |
+| 27 | 3 | 14 | Connect preview loading and verify Edit year | subagent | ✅ |
+| 28 | 3 | 14 | Remove retired Schedules files | Master | ✅ |
 | 29 | 4 | 15 | Update product rules and glossary | Master | |
 | 30 | 4 | 15 | Run final acceptance and visual checks | Master | |
 
