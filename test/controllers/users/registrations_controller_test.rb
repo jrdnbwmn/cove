@@ -31,6 +31,38 @@ class Users::RegistrationsControllerTest < ActionDispatch::IntegrationTest
   end
 
   class BasicRegistrationTest < Users::RegistrationsControllerTest
+    test "signup normalizes the browser IANA time zone before creating the family" do
+      post user_registration_url, params: @user_params.deep_merge(user: {time_zone: "America/New_York"})
+      assert_response :redirect
+      user = User.find_by!(email: @user_params[:user][:email])
+      assert_equal "Eastern Time (US & Canada)", user.time_zone
+      assert_equal user.time_zone, user.family.time_zone
+    end
+
+    [nil, "Unknown/Zone", ""].each do |zone|
+      test "signup with #{zone.inspect} browser zone uses the family fallback" do
+        post user_registration_url, params: @user_params.deep_merge(user: {time_zone: zone})
+        assert_response :redirect
+        user = User.find_by!(email: @user_params[:user][:email])
+        assert_nil user.time_zone
+        assert_equal "Mountain Time (US & Canada)", user.family.time_zone
+      end
+    end
+
+    test "an invited parent keeps the destination family's time zone" do
+      family = accounts(:invited)
+      family.update!(time_zone: "Pacific Time (US & Canada)")
+      invitation = AccountInvitation.create!(account: family, invited_by: family.owner, name: "Zone Parent", email: "zone-parent@example.com", admin: true)
+      assert_no_difference "SchoolYear.count" do
+        post user_registration_url, params: @user_params.deep_merge(invite: invitation.token, user: {time_zone: "Asia/Tokyo"})
+      end
+      user = User.find_by!(email: invitation.email)
+      assert_includes ActiveSupport::TimeZone.all.map(&:name), user.time_zone
+      assert_equal "Asia/Tokyo", ActiveSupport::TimeZone[user.time_zone].tzinfo.identifier
+      assert_equal family, user.family
+      assert_equal "Pacific Time (US & Canada)", family.reload.time_zone
+    end
+
     test "blocks an owner from deleting their login while another parent exists" do
       sign_in users(:one)
 

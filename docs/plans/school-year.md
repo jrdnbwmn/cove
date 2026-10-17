@@ -15,8 +15,8 @@
 | 6 | 1 | 3 | Implement school-day counting | subagent | ✅ |
 | 7 | 1 | 4 | Implement default years | Master | ✅ |
 | 8 | 1 | 4 | Provision and backfill family years | Master | ✅ |
-| 9 | 2 | 5 | Normalize signup time zones | Master | |
-| 10 | 2 | 5 | Capture the browser time zone | subagent | |
+| 9 | 2 | 5 | Normalize signup time zones | Master | ✅ |
+| 10 | 2 | 5 | Capture the browser time zone | subagent | ✅ |
 | 11 | 2 | 6 | Apply the family zone to requests | Master | |
 | 12 | 2 | 6 | Add Family settings time zone | Master | |
 | 13 | 3 | 7 | Build ToggleChipComponent | Master | |
