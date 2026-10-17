@@ -14,3 +14,27 @@
     </div>
   <% end %>
 </div>
+
+<div id="time-off-restore-error" role="alert" class="mt-4 text-sm text-red-700 empty:hidden"><%= flash[:restore_error] %></div>
+
+<section class="mt-8 sm:mt-12" aria-labelledby="time-off-heading">
+  <h2 id="time-off-heading" class="mb-4">Time off</h2>
+  <% if @school_year.breaks.any? %>
+    <div class="divide-y divide-border">
+      <%= render partial: "break", collection: @school_year.breaks.ordered, as: :time_off %>
+      <% unless @school_year.ended? %>
+        <div id="time-off-inline-add">
+          <%= render "application/lazy_modal", src: new_planner_school_year_break_path, text: "Add time off", row: true %>
+        </div>
+      <% end %>
+    </div>
+  <% else %>
+    <%= render EmptyStateComponent.new(title: "No time off yet.", description: "Add some when you plan days off.", heading_level: 3) do |empty_state| %>
+      <% unless @school_year.ended? %>
+        <% empty_state.with_primary_action do %>
+          <%= render "application/lazy_modal", src: new_planner_school_year_break_path, text: "Add time off" %>
+        <% end %>
+      <% end %>
+    <% end %>
+  <% end %>
+</section>

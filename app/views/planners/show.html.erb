@@ -1,9 +1,4 @@
-<%= render PageHeaderComponent.new(title: "Planner") %>
-
-<%= render UiTabsComponent.new(mode: :links, variant: :underline, label: "Planner") do |tabs| %>
-  <% tabs.with_tab(title: "Schedule", href: planner_path, active: true) %>
-  <% tabs.with_tab(title: "School year", href: planner_school_year_path) %>
-<% end %>
+<%= render "header", active_tab: :schedule %>
 
 <div class="mt-6 sm:mt-8">
   <%= render EmptyStateComponent.new(title: "Coming soon", description: "Schedule planning will be available here.") do |component| %>
