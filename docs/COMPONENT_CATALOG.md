@@ -14,6 +14,7 @@
 | `SwitchComponent` | Renders a toggle switch with label, status, and validation state. | `label`, `name`, `checked`, `show_icons`, `disabled` | — | `SwitchComponentPreview` |
 | `SelectComponent` | Renders a locally enhanced single or multiple select. | `name`, `options`, `selected`, `multiple`, `error` | — | `SelectComponentPreview` |
 | `PasswordComponent` | Renders a password input with visibility toggle and optional guidance. | `name`, `show_strength`, `show_requirements`, `error` | — | `PasswordComponentPreview` |
+| `DevClockStripComponent` | Shows the development date override with Change and Clear actions. | `date` | `ButtonComponent` | `DevClockStripComponentPreview` |
 | `AlertComponent` | Renders a titled feedback message with a semantic variant and optional icon. | `title`, `description`, `variant`, `show_icon` | — | `AlertComponentPreview` |
 | `BadgeComponent` | Renders a small status/tag label with color, size, dot, and remove-button options. | `text`, `variant`, `size`, `pill`, `dot`, `removable` | — | `BadgeComponentPreview` |
 | `LoadingIndicatorComponent` | Renders a spinner, dots, bars, or progress bar loading indicator. | `type`, `size`, `color`, `text`, `progress` | — | `LoadingIndicatorComponentPreview` |
@@ -1042,3 +1043,23 @@ the rest.
 <%= render ComponentName.new(argument: value) %>
 ```
 ````
+
+### DevClockStripComponent
+
+**Purpose:** Shows a compact, wrapping development clock strip. Renders only in
+development with an override; mounted once by the signed-in shell.
+
+**Arguments:** `date` (Date or nil, defaults to `DevClock.today`). A supplied date
+supports previews without writing the clock file.
+
+**Composes:** `ButtonComponent` for Change and the Clear form submit button.
+
+**States:** Active override; hidden without an override or outside development.
+
+**Preview:** `DevClockStripComponentPreview` (`default`, `no_override`).
+
+**Usage:**
+
+```erb
+<%= render DevClockStripComponent.new %>
+```
