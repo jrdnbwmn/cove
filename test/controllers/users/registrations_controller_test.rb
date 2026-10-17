@@ -39,6 +39,14 @@ class Users::RegistrationsControllerTest < ActionDispatch::IntegrationTest
       assert_equal user.time_zone, user.family.time_zone
     end
 
+    test "signup accepts a US browser zone outside the Rails display-name list" do
+      post user_registration_url, params: @user_params.deep_merge(user: {time_zone: "America/Detroit"})
+      assert_response :redirect
+      user = User.find_by!(email: @user_params[:user][:email])
+      assert_equal "America/Detroit", user.time_zone
+      assert_equal user.time_zone, user.family.time_zone
+    end
+
     [nil, "Unknown/Zone", ""].each do |zone|
       test "signup with #{zone.inspect} browser zone uses the family fallback" do
         post user_registration_url, params: @user_params.deep_merge(user: {time_zone: zone})

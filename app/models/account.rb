@@ -13,13 +13,17 @@ class Account < ApplicationRecord
   scope :archived, -> { where.not(archived_at: nil) }
 
   validates :personal, exclusion: {in: [true], message: "must be false"}
-  validates :time_zone, inclusion: {in: ->(_) { ActiveSupport::TimeZone.all.map(&:name) }}
+  validates :time_zone, inclusion: {in: ->(_) { Account.time_zones.map(&:name) }}
   validates :learner_limit, numericality: {only_integer: true, greater_than_or_equal_to: -> { Account.default_learner_limit }}
   validates :complimentary_premium_note, presence: true, if: :complimentary_premium?
 
   # AIDEV-NOTE: The database default is the single source for the advertised family cap.
   def self.default_learner_limit
     column_defaults.fetch("learner_limit").to_i
+  end
+
+  def self.time_zones
+    (ActiveSupport::TimeZone.us_zones + ActiveSupport::TimeZone.all).uniq(&:name)
   end
 
   before_destroy :cancel_live_subscriptions!

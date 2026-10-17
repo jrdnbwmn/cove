@@ -12,6 +12,23 @@
     <% end %>
   <% end %>
 
+  <% time_zones = Account.time_zones.map { |zone| [zone.to_s, zone.name] } %>
+  <% if account.time_zone.present? && time_zones.none? { |_, value| value == account.time_zone } %>
+    <% time_zones << ["Unknown time zone: #{account.time_zone}", account.time_zone] %>
+  <% end %>
+  <%= render SelectComponent.new(
+    label: "Time zone",
+    name: "account[time_zone]",
+    id: "account_time_zone",
+    options: time_zones,
+    selected: account.time_zone,
+    placeholder: nil,
+    clearable: false,
+    description: "Sets when each school day starts and ends for everyone in your family.",
+    error: account.errors[:time_zone].first,
+    classes: "mb-6"
+  ) %>
+
   <% if Jumpstart::Multitenancy.domain? %>
     <%= render FormFieldComponent.new(
       label: form.object.class.human_attribute_name(:domain),

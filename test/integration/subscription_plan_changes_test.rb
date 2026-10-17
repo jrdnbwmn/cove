@@ -140,7 +140,7 @@ class SubscriptionPlanChangesTest < ActionDispatch::IntegrationTest
     schedule = pending_schedule(from: plans(:premium_yearly), to: plans(:premium_monthly))
     subscription.update!(object: {"schedule" => schedule})
     user = users(:subscribed)
-    switch_date = I18n.l(Time.find_zone!(user.time_zone).at(schedule["phases"].last["start_date"]).to_date, format: :long)
+    switch_date = I18n.l(Time.find_zone!(user.family.time_zone).at(schedule["phases"].last["start_date"]).to_date, format: :long)
     sign_in user
 
     get edit_billing_subscription_path(subscription)

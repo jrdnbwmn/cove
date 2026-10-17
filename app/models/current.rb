@@ -13,13 +13,14 @@ class Current < ActiveSupport::CurrentAttributes
 
   def user=(value)
     super
-    Time.zone = Time.find_zone(value&.time_zone)
+    Time.zone = Time.find_zone(account&.time_zone || value&.time_zone)
   end
 
   def account=(value)
     super
     @account_user = nil
     @other_accounts = nil
+    Time.zone = Time.find_zone(value&.time_zone || user&.time_zone)
   end
 
   def account_user
