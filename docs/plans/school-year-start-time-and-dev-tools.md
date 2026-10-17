@@ -17,7 +17,7 @@
 | 8 | 3 | 7 | Share existing default school-year calendar rules | Master | ✅ |
 | 9 | 3 | 7 | Add the three seed families | subagent | ✅ |
 | 10 | 3 | 7 | Complete final validation | Master | ✅ |
-| 11 | 1 | 8 | Switch the start time to a searchable time dropdown | Master | |
+| 11 | 1 | 8 | Switch the start time to a searchable time dropdown | Master | ✅ |
 
 Phase 1 delivers Shape of the day. Phase 2 delivers the development clock. Phase 3 delivers the seed scenarios. Each phase can ship independently after its checkpoints pass. Task 11 is a Phase 1 design change added after Tasks 1–10 shipped; it replaces Task 1's `form.time_field`.
 
@@ -342,3 +342,12 @@ Phase 1 delivers Shape of the day. Phase 2 delivers the development clock. Phase
 - Rebuilt Tailwind and inspected desktop/390px evidence under `.context/shape-of-day-*.png` and `.context/dev-clock*.png`: visible actions, field focus, phone button order, and shell scrolling verified.
 - Reviewed committed and uncommitted changes against `origin/main`; `git diff --check` clean. Checkpoints 1–7 reviewed and committed.
 - Existing shared lazy-modal limitation observed: after Discard, the database is unchanged, but reopening the same cached modal before navigation retains its unsaved field value. Shared modal behavior remains outside this plan's scope.
+
+### Task 11 validation
+
+- TDD: new helper/integration coverage failed against the time field, then passed with the searchable select (21 runs, 191 assertions).
+- Desktop and 390px system coverage: 4 runs, 182 assertions, no failures or errors; set/change/clear from both tabs, preselection, unsaved-change protection, phone button order, and clickable unclipped search results verified.
+- Full Rails suite: 1,546 runs, 9,034 assertions, no failures or errors.
+- RuboCop: 700 files, no offenses. ERB lint: 365 files, no errors.
+- Rebuilt Tailwind and inspected `.context/shape-of-day-select-1400.png` and `.context/shape-of-day-select-390.png`.
+- Checkpoint 8 mini review: implementation matches Task 11, no blocking issues; `git diff --check` clean.

@@ -23,7 +23,11 @@ class SchoolYears::ShapeOfDaysTest < ActionDispatch::IntegrationTest
       assert_select "turbo-frame#modal-lazy-content form[action=?]", planner_school_year_shape_of_day_path
       assert_select "h2.font-sans", text: "Shape of the day"
       assert_select "label", text: "School usually starts at"
-      assert_select "input[type=time][name='school_year[school_starts_at]']"
+      assert_select "select#school_year_school_starts_at[name='school_year[school_starts_at]'][data-select-dropdown-input-value=true][data-select-allow-empty-option-value=true]" do
+        assert_select "option", count: 70
+        assert_select "option[value='']", text: "No usual start time"
+        assert_select "option[value='08:30']", text: "8:30am"
+      end
       assert_select "p", text: "Optional. Cove uses this to estimate times on your day."
       ["08:30", "09:45", "", "nonsense"].each do |value|
         patch planner_school_year_shape_of_day_path, params: {school_year: {school_starts_at: value}}
@@ -36,6 +40,15 @@ class SchoolYears::ShapeOfDaysTest < ActionDispatch::IntegrationTest
         end
       end
       sign_out parent
+    end
+  end
+
+  test "editing preserves saved usual off-grid and out-of-range times" do
+    ["08:30", "09:47", "22:30"].each do |value|
+      @year.update!(school_starts_at: value)
+      get edit_planner_school_year_shape_of_day_path
+      assert_response :success
+      assert_select "select option[value=?][selected]", value, count: 1
     end
   end
 
@@ -71,7 +84,7 @@ class SchoolYears::ShapeOfDaysTest < ActionDispatch::IntegrationTest
     patch planner_school_year_shape_of_day_path, params: {school_year: {school_starts_at: "08:30"}}
     assert_response :unprocessable_content
     assert_select "turbo-frame#modal-lazy-content h2", text: "Shape of the day"
-    assert_select "input[type=time][value='08:30:00.000']"
+    assert_select "select option[value='08:30'][selected]"
     assert_select "p", text: "Choose at least one school day."
     assert_nil @year.reload.school_starts_at
   end

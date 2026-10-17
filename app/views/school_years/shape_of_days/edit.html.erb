@@ -4,11 +4,19 @@
     <% @school_year.errors.map(&:message).each do |message| %>
       <p class="text-sm text-red-600"><%= message %></p>
     <% end %>
-    <%= render FormFieldComponent.new(label: "School usually starts at", name: "school_year[school_starts_at]", helper_text: "Optional. Cove uses this to estimate times on your day.", error: @school_year.errors[:school_starts_at].first) do |field| %>
-      <% field.with_input do %>
-        <%= form.time_field :school_starts_at, class: "form-control" %>
-      <% end %>
-    <% end %>
+    <%= render SelectComponent.new(
+      label: "School usually starts at",
+      name: "school_year[school_starts_at]",
+      id: "school_year_school_starts_at",
+      options: school_start_time_options(@school_year.school_starts_at),
+      selected: @school_year.school_starts_at&.strftime("%H:%M") || "",
+      placeholder: nil,
+      clearable: false,
+      searchable: true,
+      description: "Optional. Cove uses this to estimate times on your day.",
+      error: @school_year.errors[:school_starts_at].first,
+      data: {select_allow_empty_option_value: true}
+    ) %>
     <div class="flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
       <%= render ButtonComponent.new(text: "Cancel", variant: :outline, data: {action: "click->ui-modal#close:prevent"}) %>
       <%= render ButtonComponent.new(text: "Save", type: "submit") %>

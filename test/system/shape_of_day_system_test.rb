@@ -20,7 +20,7 @@ class ShapeOfDaySystemTest < ApplicationSystemTestCase
         @year.update!(school_starts_at: nil)
         visit path
         open_shape_of_day
-        assert_field "School usually starts at", type: "time", with: ""
+        assert_start_time ""
         assert_text "Optional. Cove uses this to estimate times on your day."
         assert_phone_button_order if width == 390
         set_start_time "08:30"
@@ -28,13 +28,13 @@ class ShapeOfDaySystemTest < ApplicationSystemTestCase
         assert_equal "08:30", @year.reload.school_starts_at.strftime("%H:%M")
 
         open_shape_of_day
-        assert_field "School usually starts at", with: /\A08:30/
+        assert_start_time "08:30"
         set_start_time "09:45"
         save_start_time(path)
         assert_equal "09:45", @year.reload.school_starts_at.strftime("%H:%M")
 
         open_shape_of_day
-        assert_field "School usually starts at", with: /\A09:45/
+        assert_start_time "09:45"
         set_start_time ""
         save_start_time(path)
         assert_nil @year.reload.school_starts_at
@@ -56,7 +56,7 @@ class ShapeOfDaySystemTest < ApplicationSystemTestCase
         click_button "Cancel"
         assert_text "Discard your changes?"
         click_button "Keep editing"
-        assert_field "School usually starts at", with: /\A09:45/
+        assert_start_time "09:45"
         click_button "Cancel"
         click_button "Discard", exact: true
       end
@@ -75,11 +75,27 @@ class ShapeOfDaySystemTest < ApplicationSystemTestCase
   end
 
   def set_start_time(value)
-    page.execute_script(<<~JS, find("#school_year_school_starts_at"), value)
-      arguments[0].value = arguments[1];
-      arguments[0].dispatchEvent(new Event("input", { bubbles: true }));
-      arguments[0].dispatchEvent(new Event("change", { bubbles: true }));
+    find("#school_year_school_starts_at + .ts-wrapper .ts-control").click
+    label = value.empty? ? "No usual start time" : I18n.l(Time.zone.parse(value), format: :friendly)
+    find("dialog[open] .ts-dropdown input").set(label)
+    assert_selector "dialog[open] .ts-dropdown .option", count: 1
+    option = find("dialog[open] .ts-dropdown [data-value='#{value}']", text: label, exact_text: true)
+    assert option.evaluate_script(<<~JS)
+      (() => {
+        const rect = this.getBoundingClientRect();
+        const hit = document.elementFromPoint(rect.left + rect.width / 2, rect.top + rect.height / 2);
+        return rect.left >= 0 && rect.right <= window.innerWidth &&
+          rect.top >= 0 && rect.bottom <= window.innerHeight && this.contains(hit);
+      })()
     JS
+    option.click
+    assert_start_time value
+  end
+
+  def assert_start_time(value)
+    assert_selector "#school_year_school_starts_at option:checked", visible: :all do |option|
+      option.value == value
+    end
   end
 
   def save_start_time(path)
