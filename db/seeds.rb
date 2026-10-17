@@ -99,7 +99,7 @@ if Rails.env.local?
     complimentary_premium_note: "Dev seed: complimentary Premium tester"
   )
 
-  [["new", "New Family"], ["midyear", "Mid-year Family"], ["away", "Away Family"]].each do |scenario, family_name|
+  seed_scenario_family = ->(scenario, family_name) do
     User.transaction do
       user = User.find_or_initialize_by(email: "#{scenario}@cove.test")
       new_user = user.new_record?
@@ -132,6 +132,9 @@ if Rails.env.local?
       first_school_day = (starts_on..year.ends_on).find { |day| year.school_day?(day) }
       year.update_columns(tracked_from: first_school_day)
     end
+  end
+  [["new", "New Family"], ["midyear", "Mid-year Family"], ["away", "Away Family"]].each do |scenario, family_name|
+    seed_scenario_family.call(scenario, family_name)
   end
 
   Jumpstart.grant_system_admin!(superadmin)

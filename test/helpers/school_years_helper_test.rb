@@ -54,6 +54,11 @@ class SchoolYearsHelperTest < ActionView::TestCase
     assert_equal [["Mon", 1], ["Tue", 2], ["Wed", 3], ["Thu", 4], ["Fri", 5], ["Sat", 6], ["Sun", 0]], school_weekday_options
   end
 
+  test "a saved start time is shown as HH:MM and no start time as nothing" do
+    assert_equal "08:30", school_start_time_value(Time.zone.parse("08:30"))
+    assert_nil school_start_time_value(nil)
+  end
+
   test "start times offer a blank choice and quarter hours in Cove's time format" do
     options = school_start_time_options(nil)
     assert_equal ["No usual start time", ""], options.first

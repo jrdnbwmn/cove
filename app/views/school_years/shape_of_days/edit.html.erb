@@ -9,7 +9,7 @@
       name: "school_year[school_starts_at]",
       id: "school_year_school_starts_at",
       options: school_start_time_options(@school_year.school_starts_at),
-      selected: @school_year.school_starts_at&.strftime("%H:%M") || "",
+      selected: school_start_time_value(@school_year.school_starts_at) || "",
       placeholder: nil,
       clearable: false,
       searchable: true,
